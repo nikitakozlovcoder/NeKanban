@@ -1,0 +1,16 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+mat-slider {
+    width: 300px;
+}
+mat-form-field
+{
+    width:100%;
+}
+.login_button
+{
+    width: 100%;
+}

@@ -1,0 +1,36 @@
+<mat-form-field appearance="fill">
+    <mat-label>Имя</mat-label>
+    <input matInput placeholder="Иван" [formControl]="name" required>
+    <mat-error *ngIf="name.invalid">Поле не должно быть пустым!</mat-error>
+</mat-form-field>
+<mat-form-field appearance="fill">
+    <mat-label>Фамилия</mat-label>
+    <input matInput placeholder="Иванов" [formControl]="surname" required>
+    <mat-error *ngIf="surname.invalid">Поле не должно быть пустым!</mat-error>
+</mat-form-field>
+<mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input matInput placeholder="pat@example.com" [formControl]="email" required>
+    <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+</mat-form-field>
+<mat-form-field appearance="fill">
+    <mat-label>Пароль</mat-label>
+    <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password" required>
+    
+    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+    <mat-error *ngIf="password.errors?.['minlength']">Длина пароля должна быть не менее 8 символов!</mat-error>
+    <mat-error *ngIf="password.errors?.['required']">Поле не должно быть пустым!</mat-error>
+</mat-form-field>
+<mat-form-field appearance="fill">
+    <mat-label>Повторите пароль</mat-label>
+    <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password_confirmation" required>
+    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+    <mat-error *ngIf="password_confirmation.errors?.['minlength']">Длина пароля должна быть не менее 8 символов!</mat-error>
+    <mat-error *ngIf="password_confirmation.errors?.['required']">Поле не должно быть пустым!</mat-error>
+    <mat-error *ngIf="password_confirmation.errors?.['passwordMismatch']">Значения паролей должны совпадать!</mat-error>
+</mat-form-field>
+<button class = "register_button" mat-raised-button color="primary" (click)="registerUser()">Зарегистрироваться</button>

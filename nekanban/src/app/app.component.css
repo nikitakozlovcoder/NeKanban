@@ -1,0 +1,14 @@
+.login_fields 
+{
+
+    display: flex;
+    justify-content: center;
+    
+    
+}
+app-login, app-register
+{
+    width: 400px;
+    margin-top: 20px;
+
+}
