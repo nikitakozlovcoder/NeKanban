@@ -59,5 +59,4 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         }
         return user.ToApplicationUserVm();
     }
-    
 }

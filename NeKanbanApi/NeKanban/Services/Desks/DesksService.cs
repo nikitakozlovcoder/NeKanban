@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NeKanban.Constants;
 using NeKanban.Controllers.Models;
 using NeKanban.Data;
 using NeKanban.Data.Entities;
@@ -28,9 +29,8 @@ public class DesksService : BaseService, IDesksService
     {
         var desk = deskCreateModel.ToDesk();
         var user = await UserManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-      
         await _deskRepository.Create(desk, ct);
-        await _deskUserService.CreateDeskUser(desk.Id, user.Id, ct);
+        await _deskUserService.CreateDeskUser(desk.Id, user.Id, RoleType.Owner, ct);
         return await GetDesk(desk.Id, ct);
     }
 
@@ -56,5 +56,12 @@ public class DesksService : BaseService, IDesksService
         throw new NotImplementedException();
     }
 
+    public async Task<List<DeskVm>> GetForUser(int userId, CancellationToken ct)
+    {
+        var desks = await _deskRepository.QueryableSelect()
+            .Include(x => x.DeskUsers).ThenInclude(x=> x.User)
+            .Where(x => x.DeskUsers.Any(du => du.UserId == userId)).ToListAsync(ct);
+        return desks.Select(x => x.ToDeskVm()).ToList();
+    }
    
 }

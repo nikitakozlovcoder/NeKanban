@@ -1,4 +1,5 @@
-﻿using NeKanban.Controllers.Models;
+﻿using NeKanban.Constants;
+using NeKanban.Controllers.Models;
 using NeKanban.Data.Entities;
 using NeKanban.Services.ViewModels;
 
@@ -39,7 +40,9 @@ public static class ToExtensions
     {
         return new DeskUserVm
         {
-            User = deskUser.User?.ToApplicationUserVm()
+            User = deskUser.User?.ToApplicationUserVm(),
+            Role = deskUser.Role,
+            RoleName = deskUser.Role.ToString()
         };
     }
     

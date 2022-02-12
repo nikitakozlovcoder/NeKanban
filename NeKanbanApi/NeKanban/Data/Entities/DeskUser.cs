@@ -1,4 +1,6 @@
-﻿namespace NeKanban.Data.Entities;
+﻿using NeKanban.Constants;
+
+namespace NeKanban.Data.Entities;
 
 public class DeskUser : IHasPk<int>
 {
@@ -7,5 +9,6 @@ public class DeskUser : IHasPk<int>
     public int UserId { get; set; }
     public virtual ApplicationUser? User { get; set; }
     public virtual Desk? Desk { get; set; }
+    public RoleType Role { get; set; }
     
 }

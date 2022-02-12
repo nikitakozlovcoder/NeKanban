@@ -10,4 +10,5 @@ public interface IDesksService
     Task<DeskVm> DeleteDesk(int id, CancellationToken ct);
     Task<DeskVm> GetDesk(int id, CancellationToken ct);
     Task<DeskVm> UpdateDesk(int id, CancellationToken ct);
+    Task<List<DeskVm>> GetForUser(int userId, CancellationToken ct);
 }
