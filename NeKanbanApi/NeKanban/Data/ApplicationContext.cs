@@ -14,6 +14,6 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
     }
     public DbSet<Desk>? Desk { get; set; }
     public DbSet<DeskUser>? DeskUser { get; set; }
-    
+    public DbSet<Column>? Column { get; set; }
     
 }

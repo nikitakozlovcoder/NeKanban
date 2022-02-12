@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Microsoft.EntityFrameworkCore;
+using NeKanban.Constants;
 using NeKanban.Data;
 using NeKanban.Data.Entities;
 using NeKanban.ExceptionHandling;
@@ -17,13 +18,13 @@ public class DeskUserService : IDeskUserService
         _deskUserRepository = deskUserRepository;
     }
 
-    public Task CreateDeskUser(int deskId, int userId, CancellationToken ct)
+    public Task CreateDeskUser(int deskId, int userId, RoleType role, CancellationToken ct)
     {
-
         return _deskUserRepository.Create(new DeskUser
         {
             DeskId = deskId,
-            UserId = userId
+            UserId = userId,
+            Role = role
         }, ct);
     }
 
