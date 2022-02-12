@@ -64,7 +64,14 @@ builder.Services.AddSwaggerGen(x =>
     });
 });
 var jwt = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        x =>
+        {
+            x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        });
+});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
@@ -107,8 +114,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
