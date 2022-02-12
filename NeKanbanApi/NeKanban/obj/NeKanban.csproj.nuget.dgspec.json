@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Applications\\NeKanban\\NeKanbanApi\\NeKanban\\NeKanban.csproj": {}
+    "C:\\Users\\user\\Documents\\MyProjects\\AngularTest\\NeKanbanApi\\NeKanban\\NeKanban.csproj": {}
   },
   "projects": {
-    "D:\\Applications\\NeKanban\\NeKanbanApi\\NeKanban\\NeKanban.csproj": {
+    "C:\\Users\\user\\Documents\\MyProjects\\AngularTest\\NeKanbanApi\\NeKanban\\NeKanban.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Applications\\NeKanban\\NeKanbanApi\\NeKanban\\NeKanban.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Documents\\MyProjects\\AngularTest\\NeKanbanApi\\NeKanban\\NeKanban.csproj",
         "projectName": "NeKanban",
-        "projectPath": "D:\\Applications\\NeKanban\\NeKanbanApi\\NeKanban\\NeKanban.csproj",
-        "packagesPath": "C:\\Users\\Nik\\.nuget\\packages\\",
-        "outputPath": "D:\\Applications\\NeKanban\\NeKanbanApi\\NeKanban\\obj\\",
+        "projectPath": "C:\\Users\\user\\Documents\\MyProjects\\AngularTest\\NeKanbanApi\\NeKanban\\NeKanban.csproj",
+        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\user\\Documents\\MyProjects\\AngularTest\\NeKanbanApi\\NeKanban\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Nik\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -88,7 +85,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
