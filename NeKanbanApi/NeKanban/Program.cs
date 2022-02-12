@@ -64,14 +64,7 @@ builder.Services.AddSwaggerGen(x =>
     });
 });
 var jwt = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        x =>
-        {
-            x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-        });
-});
+builder.Services.AddCors();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
@@ -106,7 +99,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 
 
 var app = builder.Build();
-app.UseCors("AllowAll");
+app.UseCors(x=> x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
