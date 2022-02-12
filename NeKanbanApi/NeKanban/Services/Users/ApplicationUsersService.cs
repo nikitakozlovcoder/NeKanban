@@ -25,7 +25,7 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         _tokenProviderService = tokenProviderService;
     }
 
-    public async Task<ApplicationUserVm> Login(UserLoginModel userLoginModel, CancellationToken ct)
+    public async Task<ApplicationUserVm> Login<T>(T userLoginModel, CancellationToken ct) where T : UserLoginModel
     {
         var user = await _userRepository.GetFirstOrDefault(x => x.Email == userLoginModel.Email, ct);
         if (user == null || !await UserManager.CheckPasswordAsync(user, userLoginModel.Password))
@@ -47,8 +47,7 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, identityResult.Errors.First().Code);
         }
-        
-        return await GetById(user.Id, ct);
+        return await Login(userRegister, ct);
     }
 
     public async Task<ApplicationUserVm> GetById(int id,  CancellationToken ct)
