@@ -1,6 +1,8 @@
 ﻿using NeKanban.Constants;
+using NeKanban.Constants.Security;
 using NeKanban.Controllers.Models;
 using NeKanban.Data.Entities;
+using NeKanban.Helpers;
 using NeKanban.Services.ViewModels;
 
 namespace NeKanban.Mappings;
@@ -27,13 +29,15 @@ public static class ToExtensions
         };
     }
     
-    public static DeskVm ToDeskVm(this Desk desk)
+    public static DeskVm ToDeskVm(this Desk desk, int? userId)
     {
-       return new DeskVm
+        var role = userId.HasValue ? desk.DeskUsers.FirstOrDefault(x => x.UserId == userId)?.Role : null;
+        var canViewInviteLink = role.HasValue && PermissionChecker.CheckPermission(role.Value, PermissionType.ViewInviteLink);
+        return new DeskVm
         {
             Id = desk.Id,
             Name = desk.Name,
-            InviteLink = desk.InviteLink,
+            InviteLink =  canViewInviteLink ? desk.InviteLink : null,
             DeskUsers = desk.DeskUsers.Select(deskUser => deskUser.ToDeskUserVm()).ToList()
         };
     }

@@ -44,7 +44,8 @@ public class DesksService : BaseService, IDesksService
         var desk = await _deskRepository.QueryableSelect().Include(x => x.DeskUsers)
             .ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id, ct);
         EnsureEntityExists(desk);
-        return desk!.ToDeskVm();
+        var user = await UserManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
+        return desk!.ToDeskVm(user.Id);
 
     }
     

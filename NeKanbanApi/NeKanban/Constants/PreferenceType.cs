@@ -8,5 +8,5 @@ public enum PreferenceType
 
 public static class PreferenceTypeConstraints
 {
-    public static PreferenceType[] ExclusivePreferenceTypes = {PreferenceType.Favourite};
+    public static readonly PreferenceType[] ExclusivePreferenceTypes = {PreferenceType.Favourite};
 }

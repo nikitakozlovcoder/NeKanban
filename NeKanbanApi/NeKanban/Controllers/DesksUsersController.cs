@@ -10,6 +10,7 @@ using NeKanban.Services.ViewModels;
 
 namespace NeKanban.Controllers;
 
+[ApiController]
 [Route("[controller]/[action]")]
 [Authorize]
 public class DesksUsersController : BaseAuthController
