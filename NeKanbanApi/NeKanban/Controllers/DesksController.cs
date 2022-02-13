@@ -35,7 +35,7 @@ public class DesksController : BaseAuthController
     }
     
     [HttpPut("{id:int}")]
-    public Task<DeskVm> InviteList([FromBody]DeskInviteLinkModel inviteLinkModel, int id, CancellationToken ct = default)
+    public Task<DeskVm> InviteLink([FromBody]DeskInviteLinkModel inviteLinkModel, int id, CancellationToken ct = default)
     {
         return _desksService.UpdateDesk(inviteLinkModel, id, ct);
     }
