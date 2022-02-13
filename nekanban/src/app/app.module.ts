@@ -49,7 +49,8 @@ const appRoutes: Routes =[
   providers: [UserService,
   DeskService,
   BaseHttpService,
-  DeskGuard],
+  DeskGuard,
+    DeskComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

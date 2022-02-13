@@ -5,7 +5,7 @@
     <h2 class="mat-h2">Мои доски</h2>
     <mat-nav-list>
       <mat-list-item *ngFor="let desk of desks; index as i">
-        <a matLine (click) = "changeDesk(i)">{{ desk.name }}</a>
+        <a matLine (click) = "changeDesk(i)">{{ desk.name }} {{desk.deskUser.preference}} <mat-divider></mat-divider></a>
       </mat-list-item>
 
       <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
@@ -25,9 +25,13 @@
         </button>
         <span>NeKanban</span>
         <span class="example-spacer"></span>
-        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+        <button *ngIf="getDesk().deskUser.preference" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(getDesk().id)">
           <mat-icon>favorite</mat-icon>
         </button>
+        <button *ngIf="!getDesk().deskUser.preference" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "addToFavourite(getDesk().id)">
+          <mat-icon>favorite_border</mat-icon>
+        </button>
+
         <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
           <mat-icon>share</mat-icon>
         </button>
@@ -37,8 +41,59 @@
       </mat-toolbar>
     </p>
 
-    <p>
-      {{ getDesk().name }}
-    </p>
+
+      <mat-card>
+        <mat-card-title-group>
+          <mat-card-title>
+            <p>{{getDesk().name}}</p>
+          </mat-card-title>
+          <mat-card-subtitle>
+            <p>Создатель: {{getDesk().deskUser.user.name}}</p>
+          </mat-card-subtitle>
+        </mat-card-title-group>
+      </mat-card>
+      <mat-card class = "desk-cards">
+        <mat-card class = "settings-card">
+          <mat-card-title>
+            <p>Настройки доски</p>
+          </mat-card-title>
+
+          <mat-card-content>
+            <mat-form-field appearance="fill">
+              <mat-label>Название доски</mat-label>
+              <input matInput placeholder="Новая доска" [formControl]="name" required>
+              <mat-error *ngIf="name.invalid">Поле не должно быть пустым!</mat-error>
+            </mat-form-field>
+            <button class = "register_button" mat-raised-button color="primary" (click)="updateDesk(getDesk().id)">Обновить название</button>
+
+          </mat-card-content>
+          <mat-card-subtitle class="invite-link">
+            <p>Ссылка для приглашения участников:</p>
+            <p class="p-link">JHBVG,jhdbgvdbdvkldvkjbd</p>
+          </mat-card-subtitle>
+          <mat-expansion-panel (opened)="panelOpenState = true"
+                               (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Пользователи
+              </mat-panel-title>
+              <mat-panel-description>
+
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-nav-list class ="users-list">
+              <mat-list-item *ngFor="let tes of test; index as i">
+                <a matLine>{{tes}} <mat-divider></mat-divider></a>
+              </mat-list-item>
+
+              <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
+
+            </mat-nav-list>
+          </mat-expansion-panel>
+          <p>fg,fgl.</p>
+        </mat-card>
+      </mat-card>
+
+
   </mat-sidenav-content>
 </mat-sidenav-container>

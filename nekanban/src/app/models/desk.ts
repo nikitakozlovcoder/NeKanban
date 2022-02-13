@@ -1,12 +1,15 @@
 ﻿import {DeskUsers} from "./deskusers";
 
 export class Desk {
+  id: number;
   name: string;
   invite_link: string;
-  deskUsers: DeskUsers[];
-  constructor(name: string, invite_link: string, deskUsers: DeskUsers[]) {
+  //deskUsers: DeskUsers[];
+  deskUser: DeskUsers;
+  constructor(id: number, name: string, invite_link: string, deskUser: DeskUsers) {
     this.name = name;
     this.invite_link = invite_link;
-    this.deskUsers = deskUsers;
+    this.deskUser = deskUser;
+    this.id = id;
   }
 }

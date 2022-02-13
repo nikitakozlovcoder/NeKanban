@@ -1,5 +1,5 @@
 ﻿import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {BaseHttpService} from "./base_http.service";
@@ -23,6 +23,7 @@ export class DeskService {
     let desks: Desk[] = [];
     this.http.get<Desk[]>(this.http_service.base_url + "Desks/GetForUser", httpOptions).subscribe({
       next: (data: Desk[]) => {
+        //console.log(data);
         /*console.log(data);
         data.forEach(element => {
           console.log(element);
@@ -46,6 +47,33 @@ export class DeskService {
       })
     }
     this.http.post(this.http_service.base_url + "Desks/CreateDesk", body, httpOptions).subscribe({
+      next: data => {
+
+      },
+      error: error => {
+        console.error('There was an error!', error.message);
+      }
+    })
+  }
+  addPreference(id: number, preference: number)  {
+    const body = {preference: preference};
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    return this.http.put<Desk[]>(this.http_service.base_url + "DesksUsers/SetPreferenceType/" + id, body, httpOptions);
+  }
+  updateDesk(id: number, name: string) {
+    const body = {name: name};
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    this.http.put(this.http_service.base_url + "Desks/UpdateDesk/" + id, body, httpOptions).subscribe({
       next: data => {
 
       },

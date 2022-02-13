@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, Validators} from "@angular/forms";
 import {DeskService} from "../services/desk.service";
+import {Router} from "@angular/router";
+import {DeskComponent} from "../desk/desk.component";
 
 @Component({
   selector: 'app-desk-creation',
@@ -9,7 +11,7 @@ import {DeskService} from "../services/desk.service";
 })
 export class DeskCreationComponent implements OnInit {
 
-  constructor(private deskService: DeskService) { }
+  constructor(private deskService: DeskService, private router: Router, private deskComponent: DeskComponent) { }
 
   ngOnInit(): void {
   }
@@ -17,5 +19,7 @@ export class DeskCreationComponent implements OnInit {
 
   createDesk() {
     this.deskService.addDesk(this.name.value);
+    this.deskComponent.closeDialog();
+    this.router.navigate(['']);
   }
 }

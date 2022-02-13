@@ -31,5 +31,29 @@
 {
   width: 100%;
 }
+.desk-cards {
+ margin: 20px;
+  height: 100%;
+}
+.settings-card{
 
+
+  height: 80%;
+  width: 400px;
+  float: right;
+}
+mat-form-field
+{
+  width:100%;
+}
+.invite-link {
+  margin-top: 20px !important;
+}
+.invite-link .p-link {
+  text-decoration: underline;
+}
+.users-list {
+  max-height: 400px;
+  overflow: auto;
+}
 
