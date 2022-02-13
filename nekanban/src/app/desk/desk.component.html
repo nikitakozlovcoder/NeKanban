@@ -1,0 +1,44 @@
+
+<mat-sidenav-container class="example-container" >
+  <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
+               (closed)="events.push('close!')">
+    <h2 class="mat-h2">Мои доски</h2>
+    <mat-nav-list>
+      <mat-list-item *ngFor="let desk of desks; index as i">
+        <a matLine (click) = "changeDesk(i)">{{ desk.name }}</a>
+      </mat-list-item>
+
+      <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
+
+    </mat-nav-list>
+    <div class = "menu-bottom-button">
+      <button class = "register_button" mat-raised-button color="primary" (click)="showDeskCreation()">Создать доску</button>
+    </div>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <p>
+      <mat-toolbar color="primary">
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>NeKanban</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+          <mat-icon>favorite</mat-icon>
+        </button>
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+          <mat-icon>share</mat-icon>
+        </button>
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" (click)="logout()">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </mat-toolbar>
+    </p>
+
+    <p>
+      {{ getDesk().name }}
+    </p>
+  </mat-sidenav-content>
+</mat-sidenav-container>

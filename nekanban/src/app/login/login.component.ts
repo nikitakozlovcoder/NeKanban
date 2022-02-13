@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, ValidationErrors, Validators} from '@angular/forms';
-import { User, UserService } from '../services/user.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -26,15 +26,17 @@ export class LoginComponent implements OnInit {
   }
   getRequiredErrorMessage() {
     return 'Поле не должно быть пустым!';
-    
+
   }
   makeLogin() {
+    /*console.log(localStorage.getItem("token"));
     let user  = this.userService.getUsers().find(el => el.email === this.email.value);
     if (user != undefined && user.password === this.password.value) {
       console.log("Logged in! Hello, " + user.name + " " + user.surname);
     }
     else {
       console.log("Error!");
-    }
+    }*/
+    this.userService.loginUser(this.email.value, this.password.value);
   }
 }

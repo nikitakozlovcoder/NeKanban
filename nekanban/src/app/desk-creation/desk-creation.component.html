@@ -1,0 +1,7 @@
+<mat-form-field appearance="fill">
+  <mat-label>Название доски</mat-label>
+  <input matInput placeholder="Новая доска" [formControl]="name" required>
+  <mat-error *ngIf="name.invalid">Поле не должно быть пустым!</mat-error>
+</mat-form-field>
+<button class = "register_button" mat-raised-button color="primary" (click)="createDesk()">Создать доску</button>
+

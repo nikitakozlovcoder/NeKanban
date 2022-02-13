@@ -1,51 +1,51 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
+import { User } from "../models/user";
+import {ActivatedRoute, Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {LoginComponent} from "../login/login.component";
+import {DialogComponent} from "../dialog/dialog.component";
+import {BaseHttpService} from "./base_http.service";
 
-export class User {
-    name: string;
-    surname: string;
-    email: string;
-    password: string;
-    constructor(name: string, surname: string, email: string, password: string) {
-      this.name = name;
-      this.email = email;
-      this.surname = surname;
-      this.password = password;
-    }
-  }
+
 @Injectable()
 export class UserService {
   name = "";
   id = 0;
-  base_url = "https://localhost:7146/";
-  constructor(private http: HttpClient) { }
-    private users : User[] = [new User("Alex", "Alexov", "a@gmail.com", "123456789")]
-    getUsers() : User[] {
-        return this.users;
-    }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      width: '250px',
+    });
+
+  }
+  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router, public dialog: MatDialog,
+              private http_service: BaseHttpService) { }
     addUser(name: string, surname: string, email: string, password: string) {
       const body = {"email": email, "password": password, "name": name, "surname": surname};
-      const test_body = {title: "foo", body: "bar", userId: 1};
-      console.log(body);
-      /*this.http.post<any>("https://jsonplaceholder.typicode.com/posts", test_body).subscribe({
+      this.http.post<any>(this.http_service.base_url + "Users/Register", body).subscribe({
         next: data => {
-          this.name = data.title;
-          this.id = data.id;
-          console.log(this);
-        },
-        error: error => {
-          console.error('There was an error!', error.message);
-        }
-      })*/
-      this.http.post<any>(this.base_url + "Users/Register", body).subscribe({
-        next: data => {
-          this.name = data.name;
-          console.log(this);
+          localStorage.setItem("token", data.token.tokenValue);
         },
         error: error => {
           console.error('There was an error!', error.message);
         }
       })
-        this.users.push(new User(name, surname, email, password));
+    }
+    loginUser(email: string, password: string) {
+      const body = {email: email, password: password};
+      this.http.post<any>(this.http_service.base_url + "Users/Login", body).subscribe( {
+        next: data => {
+          localStorage.setItem("token", data.token.tokenValue);
+          this.router.navigate(['']);
+        },
+        error: error => {
+          this.openDialog();
+          console.error('There was an error!', error.message);
+        }
+      })
+    }
+    logoutUser() {
+      localStorage.removeItem("token");
     }
 }

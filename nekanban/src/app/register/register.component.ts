@@ -13,7 +13,7 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  
+
   hide = true;
   email = new FormControl('', [Validators.required, Validators.email]);
   name = new FormControl('', [Validators.required]);
@@ -29,30 +29,23 @@ export class RegisterComponent implements OnInit {
   }
   getRequiredErrorMessage() {
     return 'Поле не должно быть пустым!';
-    
+
   }
-  passwordMatchValidator (password: FormControl) : ValidatorFn { 
+  passwordMatchValidator (password: FormControl) : ValidatorFn {
     return (passwordConfirmation) => {
       if (password.value === passwordConfirmation.value)
         return null;
       else
         return {passwordMismatch: true};
     }
-    
+
   };
   registerUser() {
-    if (this.userService.getUsers().find(el => el.email === this.email.value) != undefined) {
-      console.log("error!");
-    }
-    else {
-      if (this.email.invalid || this.name.invalid || this.surname.invalid || this.password.invalid || this.password_confirmation.invalid) {
-        console.log("Unable to register");
-      }
-      else {
-        this.userService.addUser(this.name.value, this.surname.value, this.email.value, this.password.value);
-        console.log("success");
-      }
-      
+    if (this.email.invalid || this.name.invalid || this.surname.invalid || this.password.invalid || this.password_confirmation.invalid) {
+      console.log("Unable to register");
+    } else {
+      this.userService.addUser(this.name.value, this.surname.value, this.email.value, this.password.value);
+      console.log("success");
     }
   }
 }
