@@ -1,21 +1,26 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Constants;
+using NeKanban.Controllers.Models;
 using NeKanban.Data;
 using NeKanban.Data.Entities;
 using NeKanban.ExceptionHandling;
 using NeKanban.Mappings;
+using NeKanban.Services.MyDesks;
 using NeKanban.Services.ViewModels;
 
 namespace NeKanban.Services.DesksUsers;
 
-public class DeskUserService : IDeskUserService
+public class DeskUserService : BaseService, IDeskUserService
 {
     private readonly IRepository<DeskUser> _deskUserRepository;
+    private readonly IMyDesksService _myDesksService;
 
-    public DeskUserService(IRepository<DeskUser> deskUserRepository)
+    public DeskUserService(IRepository<DeskUser> deskUserRepository, UserManager<ApplicationUser> userManager, IMyDesksService myDesksService) : base(userManager)
     {
         _deskUserRepository = deskUserRepository;
+        _myDesksService = myDesksService;
     }
 
     public Task CreateDeskUser(int deskId, int userId, RoleType role, CancellationToken ct)
@@ -36,7 +41,47 @@ public class DeskUserService : IDeskUserService
         {
             throw new HttpStatusCodeException(HttpStatusCode.NotFound, nameof(deskUser));
         }
-
         return deskUser.ToDeskUserVm();
+    }
+
+    public async Task RemoveFromDesk(int userId, int id, CancellationToken ct)
+    {
+        var deskUser = await _deskUserRepository
+            .GetFirstOrDefault(x=> x.UserId == userId && x.DeskId == id, ct);
+        EnsureEntityExists(deskUser);
+        if (deskUser!.Role == RoleType.Owner)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "Can`t remove owner");
+        }
+      
+        await _deskUserRepository.Remove(deskUser!, ct);
+    }
+
+    public async Task<List<DeskLightVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId,
+        CancellationToken ct)
+    {
+        var deskUser =
+            await _deskUserRepository.GetFirstOrDefault(x => x.UserId == applicationUser.Id && x.DeskId == deskId, ct);
+        EnsureEntityExists(deskUser);
+        deskUser!.Preference = preferenceType.Preference;
+        await _deskUserRepository.Update(deskUser, ct);
+        if (PreferenceTypeConstraints.ExclusivePreferenceTypes.Contains(preferenceType.Preference))
+        {
+            await ResetPreferences(PreferenceType.Favourite, deskUser.Id, ct);
+        }
+
+        return await _myDesksService.GetForUser(applicationUser.Id, ct);
+    }
+
+
+    private async Task ResetPreferences(PreferenceType type, int preserveId, CancellationToken ct)
+    {
+        var deskUsers = await _deskUserRepository.QueryableSelect()
+            .Where(x => x.Preference == type && x.Id != preserveId).ToListAsync(ct);
+        foreach (var deskUser in deskUsers)
+        {
+            deskUser.Preference = PreferenceType.Normal;
+            await _deskUserRepository.Update(deskUser, ct);
+        }
     }
 }

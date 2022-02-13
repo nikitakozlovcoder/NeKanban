@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using NeKanban.Controllers.Models;
+using NeKanban.Data.Entities;
 using NeKanban.Services.Users;
 using NeKanban.Services.ViewModels;
 
@@ -7,11 +9,11 @@ namespace NeKanban.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-public class UsersController : ControllerBase
+public class UsersController : BaseAuthController
 {
     private readonly IApplicationUsersService _applicationUsersService;
     
-    public UsersController(IApplicationUsersService applicationUsersService)
+    public UsersController(IApplicationUsersService applicationUsersService, UserManager<ApplicationUser> userManager) : base(userManager)
     {
         _applicationUsersService = applicationUsersService;
     }

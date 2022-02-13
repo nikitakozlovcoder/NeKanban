@@ -10,5 +10,6 @@ public class DeskUser : IHasPk<int>
     public virtual ApplicationUser? User { get; set; }
     public virtual Desk? Desk { get; set; }
     public RoleType Role { get; set; }
-    
+    public PreferenceType Preference { get; set; } = PreferenceType.Normal;
+
 }

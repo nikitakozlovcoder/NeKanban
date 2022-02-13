@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NeKanban.Controllers.Models;
 using NeKanban.Data.Entities;
 using NeKanban.Services.Desks;
+using NeKanban.Services.MyDesks;
 using NeKanban.Services.ViewModels;
 
 namespace NeKanban.Controllers;
@@ -11,14 +12,14 @@ namespace NeKanban.Controllers;
 [ApiController]
 [Authorize]
 [Route("[controller]/[action]")]
-public class DesksController : ControllerBase
+public class DesksController : BaseAuthController
 {
     private readonly IDesksService _desksService;
-    private readonly UserManager<ApplicationUser> _userManager;
-    public DesksController(IDesksService desksService, UserManager<ApplicationUser> userManager)
+    private readonly IMyDesksService _myDesksService;
+    public DesksController(IDesksService desksService, UserManager<ApplicationUser> userManager, IMyDesksService myDesksService) : base(userManager)
     {
         _desksService = desksService;
-        _userManager = userManager;
+        _myDesksService = myDesksService;
     }
     
     [HttpPost]
@@ -27,10 +28,22 @@ public class DesksController : ControllerBase
         return _desksService.CreateDesk(deskCreateModel, ct);
     }
     
-    [HttpGet]
-    public async Task<List<DeskVm>> GetForUser(CancellationToken ct = default)
+    [HttpPut("{id:int}")]
+    public Task<DeskVm> UpdateDesk([FromBody]DeskUpdateModel deskUpdateModel, int id, CancellationToken ct = default)
     {
-        var user = await _userManager.GetUserAsync(User);
-        return await _desksService.GetForUser(user.Id, ct);
+        return _desksService.UpdateDesk(deskUpdateModel, id, ct);
+    }
+    
+    [HttpPut("{id:int}")]
+    public Task<DeskVm> InviteLink([FromBody]DeskInviteLinkModel inviteLinkModel, int id, CancellationToken ct = default)
+    {
+        return _desksService.UpdateDesk(inviteLinkModel, id, ct);
+    }
+
+    [HttpGet]
+    public async Task<List<DeskLightVm>> GetForUser(CancellationToken ct = default)
+    {
+        var user = await GetApplicationUser();
+        return await _myDesksService.GetForUser(user.Id, ct);
     }
 }

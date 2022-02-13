@@ -1,6 +1,6 @@
 ﻿namespace NeKanban.Services.ViewModels;
 
-public class DeskVm
+public class DeskVm : BaseIdVm
 {
     public string Name { get; set; } = "";
     public string? InviteLink { get; set; }

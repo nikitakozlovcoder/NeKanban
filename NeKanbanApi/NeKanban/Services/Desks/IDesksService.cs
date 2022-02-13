@@ -9,6 +9,7 @@ public interface IDesksService
     Task<DeskVm> CreateDesk(DeskCreateModel deskCreateModel, CancellationToken ct);
     Task<DeskVm> DeleteDesk(int id, CancellationToken ct);
     Task<DeskVm> GetDesk(int id, CancellationToken ct);
-    Task<DeskVm> UpdateDesk(int id, CancellationToken ct);
-    Task<List<DeskVm>> GetForUser(int userId, CancellationToken ct);
+    Task<DeskVm> UpdateDesk(DeskUpdateModel deskUpdateModel, int id, CancellationToken ct);
+    Task<DeskVm> UpdateDesk(DeskInviteLinkModel inviteLinkModel, int id, CancellationToken ct);
+    Task<DeskVm> UpdateDesk(DeskRemoveUsersModel deskRemoveUsersModel, int id, CancellationToken ct);
 }
