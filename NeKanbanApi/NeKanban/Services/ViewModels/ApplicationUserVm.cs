@@ -1,6 +1,6 @@
 ﻿namespace NeKanban.Services.ViewModels;
 
-public class ApplicationUserVm
+public class ApplicationUserVm : BaseIdVm
 {
     public string Name { get; set; } = "";
     public string Surname { get; set; } = "";

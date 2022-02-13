@@ -11,6 +11,7 @@ public static class ToExtensions
     {
         return new ApplicationUserVm
         {
+            Id = applicationUser.Id,
             Name = applicationUser.Name ?? "",
             Surname = applicationUser.Surname ?? "",
             Token = token,
@@ -30,6 +31,7 @@ public static class ToExtensions
     {
        return new DeskVm
         {
+            Id = desk.Id,
             Name = desk.Name,
             InviteLink = desk.InviteLink,
             DeskUsers = desk.DeskUsers.Select(deskUser => deskUser.ToDeskUserVm()).ToList()
@@ -40,9 +42,20 @@ public static class ToExtensions
     {
         return new DeskUserVm
         {
+            Id = deskUser.Id,
             User = deskUser.User?.ToApplicationUserVm(),
             Role = deskUser.Role,
-            RoleName = deskUser.Role.ToString()
+            Preference = deskUser.Preference
+        };
+    }
+    
+    public static DeskLightVm ToDeskLightVm(this Desk desk)
+    {
+        return new DeskLightVm
+        {
+            Id = desk.Id,
+            Name = desk.Name,
+            DeskUser = desk.DeskUsers.FirstOrDefault()?.ToDeskUserVm()
         };
     }
     

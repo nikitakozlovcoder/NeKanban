@@ -11,6 +11,7 @@ using NeKanban.ExceptionHandling;
 using NeKanban.Options;
 using NeKanban.Services.Desks;
 using NeKanban.Services.DesksUsers;
+using NeKanban.Services.MyDesks;
 using NeKanban.Services.Tokens;
 using NeKanban.Services.Users;
 
@@ -27,6 +28,7 @@ builder.Services.AddScoped<IdentityDbContext<ApplicationUser, ApplicationRole, i
 builder.Services.AddScoped<ITokenProviderService, TokenProviderService>();
 builder.Services.AddScoped<IDesksService, DesksService>();
 builder.Services.AddScoped<IDeskUserService, DeskUserService>();
+builder.Services.AddScoped<IMyDesksService, MyDesksService>();
 
 builder.Services.AddDbContext<ApplicationContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

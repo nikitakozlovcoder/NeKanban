@@ -11,4 +11,10 @@ public static class FromExtensions
         applicationUser.Name = userRegister.Name;
         applicationUser.Surname = userRegister.Surname;
     }
+
+    public static void FromUpdateModel(this Desk desk, DeskUpdateModel deskUpdateModel)
+    {
+        desk.Name = deskUpdateModel.Name;
+    }
+    
 }

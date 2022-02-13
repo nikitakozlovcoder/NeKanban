@@ -21,7 +21,6 @@ public class TokenProviderService : ITokenProviderService
     {
         var handler = new JwtSecurityTokenHandler();
         var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret!));
-
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Issuer = _jwtSettings.Issuer,

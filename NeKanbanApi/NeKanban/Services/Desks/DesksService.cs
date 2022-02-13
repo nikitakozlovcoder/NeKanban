@@ -43,25 +43,40 @@ public class DesksService : BaseService, IDesksService
     {
         var desk = await _deskRepository.QueryableSelect().Include(x => x.DeskUsers)
             .ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id, ct);
-        if (desk == null)
+        EnsureEntityExists(desk);
+        return desk!.ToDeskVm();
+
+    }
+    
+    public async Task<DeskVm> UpdateDesk(DeskUpdateModel deskUpdateModel, int id, CancellationToken ct)
+    {
+        var desk = await _deskRepository.QueryableSelect().FirstOrDefaultAsync(x => x.Id == id, ct);
+        EnsureEntityExists(desk);
+        desk!.FromUpdateModel(deskUpdateModel);
+        await _deskRepository.Update(desk!, ct);
+        return await GetDesk(desk!.Id, ct);
+    }
+
+    public async Task<DeskVm> UpdateDesk(DeskInviteLinkModel inviteLinkModel, int id, CancellationToken ct)
+    {
+        var desk = await _deskRepository.QueryableSelect().FirstOrDefaultAsync(x => x.Id == id, ct);
+        EnsureEntityExists(desk);
+        desk!.InviteLink = inviteLinkModel.Action switch
         {
-            throw new HttpStatusCodeException(HttpStatusCode.NotFound);
+            InviteLinkAction.Remove => null,
+            InviteLinkAction.Generate => Guid.NewGuid().ToString(),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        await _deskRepository.Update(desk, ct);
+        return await GetDesk(desk.Id, ct);
+    }
+    
+    public async Task<DeskVm> UpdateDesk(DeskRemoveUsersModel deskRemoveUsersModel, int id, CancellationToken ct)
+    {
+        foreach (var userId in deskRemoveUsersModel.UsersToRemove)
+        {
+            await _deskUserService.RemoveFromDesk(userId, id, ct);
         }
-        return desk.ToDeskVm();
-
+        return await GetDesk(id, ct);
     }
-
-    public Task<DeskVm> UpdateDesk(int id, CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<List<DeskVm>> GetForUser(int userId, CancellationToken ct)
-    {
-        var desks = await _deskRepository.QueryableSelect()
-            .Include(x => x.DeskUsers).ThenInclude(x=> x.User)
-            .Where(x => x.DeskUsers.Any(du => du.UserId == userId)).ToListAsync(ct);
-        return desks.Select(x => x.ToDeskVm()).ToList();
-    }
-   
 }
