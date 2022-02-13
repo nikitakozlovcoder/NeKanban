@@ -39,6 +39,12 @@ public class DesksController : BaseAuthController
     {
         return _desksService.UpdateDesk(inviteLinkModel, id, ct);
     }
+    
+    [HttpGet("{id:int}")]
+    public Task<DeskVm> GetDesk(int id, CancellationToken ct = default)
+    {
+        return _desksService.GetDesk(id, ct);
+    }
 
     [HttpGet]
     public async Task<List<DeskLightVm>> GetForUser(CancellationToken ct = default)
