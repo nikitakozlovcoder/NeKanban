@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NeKanban.Controllers.Models;
+using NeKanban.Controllers.Models.DeskModels;
 using NeKanban.Data.Entities;
 using NeKanban.Services.Desks;
 using NeKanban.Services.MyDesks;
@@ -51,5 +52,12 @@ public class DesksController : BaseAuthController
     {
         var user = await GetApplicationUser();
         return await _myDesksService.GetForUser(user.Id, ct);
+    }
+    
+    [HttpDelete]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct = default)
+    {
+        await _desksService.DeleteDesk(id, ct);
+        return Ok();
     }
 }

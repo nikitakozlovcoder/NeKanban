@@ -1,4 +1,7 @@
 ﻿using NeKanban.Controllers.Models;
+using NeKanban.Controllers.Models.ColumnModels;
+using NeKanban.Controllers.Models.DeskModels;
+using NeKanban.Controllers.Models.UserModel;
 using NeKanban.Data.Entities;
 
 namespace NeKanban.Mappings;
@@ -16,5 +19,11 @@ public static class FromExtensions
     {
         desk.Name = deskUpdateModel.Name;
     }
+    public static void FromCreateModel(this Column column, ColumnCreateModel model)
+    {
+        column.Name = model.Name;
+
+    }
+    
     
 }

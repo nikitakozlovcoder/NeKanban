@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Identity;
 using NeKanban.Controllers.Models;
+using NeKanban.Controllers.Models.UserModel;
 using NeKanban.Data;
 using NeKanban.Data.Entities;
 using NeKanban.ExceptionHandling;

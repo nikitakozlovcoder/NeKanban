@@ -9,6 +9,7 @@ using NeKanban.Data;
 using NeKanban.Data.Entities;
 using NeKanban.ExceptionHandling;
 using NeKanban.Options;
+using NeKanban.Services.Columns;
 using NeKanban.Services.Desks;
 using NeKanban.Services.DesksUsers;
 using NeKanban.Services.MyDesks;
@@ -23,12 +24,14 @@ builder.Services.AddControllers();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddScoped<IApplicationUsersService, ApplicationUsersService>();
+builder.Services.AddScoped<ITransactionFactory, TransactionFactory>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IdentityDbContext<ApplicationUser, ApplicationRole, int>, ApplicationContext>();
 builder.Services.AddScoped<ITokenProviderService, TokenProviderService>();
 builder.Services.AddScoped<IDesksService, DesksService>();
 builder.Services.AddScoped<IDeskUserService, DeskUserService>();
 builder.Services.AddScoped<IMyDesksService, MyDesksService>();
+builder.Services.AddScoped<IColumnsService, ColumnsService>();
 
 builder.Services.AddDbContext<ApplicationContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -116,12 +119,17 @@ app.MapControllers();
 
 app.Use(async (context, next) =>
 {
+
+    var transactionFactory = context.RequestServices.GetRequiredService<ITransactionFactory>();
+    await using var transaction = await transactionFactory.CreateTransaction();
     try
     {
         await next(context);
+        await transaction.CommitAsync();
     }
     catch (HttpStatusCodeException e)
     {
+        await transaction.RollbackAsync();
         context.Response.StatusCode = (int) e.Status;
         await context.Response.WriteAsJsonAsync(e.Message);
     }

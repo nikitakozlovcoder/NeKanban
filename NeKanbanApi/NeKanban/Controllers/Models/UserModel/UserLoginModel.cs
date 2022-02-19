@@ -1,4 +1,4 @@
-﻿namespace NeKanban.Controllers.Models;
+﻿namespace NeKanban.Controllers.Models.UserModel;
 
 public class UserLoginModel
 {
