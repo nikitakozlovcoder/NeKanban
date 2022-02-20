@@ -26,6 +26,7 @@
 }
 .menu-bottom-button {
   flex: 1;
+  float: left;
 }
 .register_button
 {
@@ -40,6 +41,12 @@
 
 
   box-shadow: 0 0 3px;
+  margin-left: auto;
+}
+.settings-card mat-card-title p {
+  display: flex;
+}
+.settings-card mat-card-title p mat-icon {
   margin-left: auto;
 }
 mat-form-field
@@ -174,4 +181,7 @@ mat-form-field
 }
 .mat-typography p {
   margin: 0 !important;
+}
+.add-column-button {
+  display: block;
 }

@@ -13,7 +13,7 @@ import {MatDialogRef} from "@angular/material/dialog";
 })
 export class DeskCreationComponent implements OnInit {
 
-  constructor(private deskService: DeskService, private router: Router, private deskComponent: DeskComponent, public dialogRef: MatDialogRef<DeskCreationComponent>) { }
+  constructor(private deskService: DeskService, private deskComponent: DeskComponent, public dialogRef: MatDialogRef<DeskCreationComponent>) { }
 
   ngOnInit(): void {
   }

@@ -29,10 +29,10 @@
         </button>
         <span>NeKanban</span>
         <span class="example-spacer"></span>
-        <button *ngIf="desk!.deskUsers[0].preference" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(desk?.id)">
+        <button *ngIf="getCurrentDesk()!.deskUser.preference" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(desk?.id)">
           <mat-icon>favorite</mat-icon>
         </button>
-        <button *ngIf="!desk!.deskUsers[0].preference" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "addToFavourite(desk?.id)">
+        <button *ngIf="!getCurrentDesk()!.deskUser.preference" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "addToFavourite(desk?.id)">
           <mat-icon>favorite_border</mat-icon>
         </button>
 
@@ -56,108 +56,72 @@
           </mat-card-subtitle>
         </mat-card-title-group>
       </mat-card>
+
       <mat-card class = "desk-cards">
+        <mat-card-title>
+          <div class = "menu-bottom-button">
+            <button class = "add-column-button" mat-raised-button color="primary" (click)="openColumnCreationDialog()"><mat-icon>add</mat-icon></button>
+          </div>
+        </mat-card-title>
 
-        <div class="column-cards">
-          <div class="box-column-cards">
-            <mat-card class = "column-card">
-              <mat-card-title>
-                <p>To do
-                  <button mat-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
-                  <mat-menu #menu="matMenu">
-                    <button mat-menu-item>Item 1</button>
-                    <button mat-menu-item>Item 2</button>
-                  </mat-menu>
-                </p>
-              </mat-card-title>
+        <!--<div cdkDropListGroup>-->
+          <div cdkDropListGroup class="column-cards">
+            <div class="box-column-cards">
+              <div *ngFor="let column of columns">
+                <mat-card class = "column-card">
+                  <mat-card-title>
+                    <p>{{column.name}}
+                      <button mat-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+                      <mat-menu #menu="matMenu">
+                        <button mat-menu-item><mat-icon>edit</mat-icon>Редактировать</button>
+                        <button mat-menu-item (click)="removeColumn(column.id)"><mat-icon>delete</mat-icon>Удалить</button>
+                      </mat-menu>
+                    </p>
+                  </mat-card-title>
 
-              <mat-card-content>
-                <mat-card-subtitle>
-                  <p>Задачи:</p>
-                  <button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" >
-                    <mat-icon>add</mat-icon>
-                  </button>
-                </mat-card-subtitle>
-                <div
-                  cdkDropList
-                  #doneList="cdkDropList"
-                  [cdkDropListData]="done"
-                  [cdkDropListConnectedTo]="[todoList]"
-                  class="example-list"
-                  (cdkDropListDropped)="drop($event)">
-                  <div class="example-box" *ngFor="let item of done" cdkDrag (click)="showTaskCreation()">{{item}}<mat-icon (click)="showDeskCreation()">edit</mat-icon></div>
-                </div>
-              </mat-card-content>
-              <mat-expansion-panel (opened)="panelOpenState = true"
-                                   (closed)="panelOpenState = false">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Пользователи
-                  </mat-panel-title>
-                  <mat-panel-description>
+                  <mat-card-content>
+                    <mat-card-subtitle>
+                      <p>Задачи:</p>
+                      <button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" >
+                        <mat-icon>add</mat-icon>
+                      </button>
+                    </mat-card-subtitle>
+                    <div
+                      cdkDropList
+                      [cdkDropListData]="done"
+                      class="example-list"
+                      (cdkDropListDropped)="drop($event)">
+                      <div class="example-box" *ngFor="let item of done" cdkDrag (click)="showTaskCreation()">{{item}}<mat-icon (click)="showDeskCreation()">edit</mat-icon></div>
+                    </div>
+                  </mat-card-content>
+                  <mat-expansion-panel (opened)="panelOpenState = true"
+                                       (closed)="panelOpenState = false">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        Пользователи
+                      </mat-panel-title>
+                      <mat-panel-description>
 
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                <mat-nav-list class ="users-list">
-                  <mat-list-item *ngFor="let user of desk!.deskUsers; index as i">
-                    <a matLine>{{user.user.name}} </a><mat-divider></mat-divider>
-                  </mat-list-item>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <mat-nav-list class ="users-list">
+                      <mat-list-item *ngFor="let user of desk!.deskUsers; index as i">
+                        <a matLine>{{user.user.name}} </a><mat-divider></mat-divider>
+                      </mat-list-item>
 
-                  <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
+                      <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
 
-                </mat-nav-list>
-              </mat-expansion-panel>
-              <p>fg,fgl.</p>
-            </mat-card>
-            <mat-card class = "column-card">
-              <mat-card-title>
-                <p>Done
-                  <button mat-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
-                  <mat-menu #menu="matMenu">
-                    <button mat-menu-item>Item 1</button>
-                    <button mat-menu-item>Item 2</button>
-                  </mat-menu>
-                </p>
-              </mat-card-title>
+                    </mat-nav-list>
+                  </mat-expansion-panel>
+                  <p>fg,fgl.</p>
+                </mat-card>
+              </div>
 
-              <mat-card-content>
-                <mat-card-subtitle>
-                  <p>Задачи:</p>
-                </mat-card-subtitle>
-                <div
-                  cdkDropList
-                  #todoList="cdkDropList"
-                  [cdkDropListData]="todo"
-                  [cdkDropListConnectedTo]="[doneList]"
-                  class="example-list"
-                  (cdkDropListDropped)="drop($event)">
-                  <div class="example-box" *ngFor="let item of todo" cdkDrag (click)="showTaskCreation()">{{item}}<mat-icon (click)="showDeskCreation()">edit</mat-icon></div>
-                </div>
-              </mat-card-content>
-              <mat-expansion-panel (opened)="panelOpenState = true"
-                                   (closed)="panelOpenState = false">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Пользователи
-                  </mat-panel-title>
-                  <mat-panel-description>
+            </div>
 
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                <mat-nav-list class ="users-list">
-                  <mat-list-item *ngFor="let user of desk!.deskUsers; index as i">
-                    <a matLine>{{user.user.name}} </a><mat-divider></mat-divider>
-                  </mat-list-item>
-
-                  <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
-
-                </mat-nav-list>
-              </mat-expansion-panel>
-              <p>fg,fgl.</p>
-            </mat-card>
           </div>
 
-        </div>
+
         <mat-card class = "settings-card">
           <mat-card-title>
             <p>Настройки доски<mat-icon>settings</mat-icon></p>

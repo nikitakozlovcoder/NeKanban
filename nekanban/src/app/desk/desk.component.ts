@@ -10,6 +10,9 @@ import {FormControl, Validators} from "@angular/forms";
 import {Observable} from "rxjs";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {TaskCreationComponent} from "../task-creation/task-creation.component";
+import {Column} from "../models/column";
+import {ColumnCreationComponent} from "../column-creation/column-creation.component";
+import {ColumnService} from "../services/column.service";
 
 @Component({
   selector: 'app-desk',
@@ -24,7 +27,8 @@ export class DeskComponent implements OnInit {
   desk: Desk | undefined;
   index: number = 0;
   changed_index: number = -1;
-  columns: string[] = ['To do', 'done'];
+  current_id: number = -1;
+  columns: Column[] = [];
   //desk: Desk;
   todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
 
@@ -43,7 +47,7 @@ export class DeskComponent implements OnInit {
     }
   }
 
-  constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog) {
+  constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService) {
     this.opened = false;
 
     //console.log(this.desks);
@@ -52,6 +56,7 @@ export class DeskComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDesks();
+
   }
   test: string[] = ['hi', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'k', 'i'];
   name = new FormControl('', [Validators.required, Validators.minLength(8)]);
@@ -62,13 +67,16 @@ export class DeskComponent implements OnInit {
         this.desks = data;
         console.log(this.desks);
         let founded = this.desks.find(el => el.deskUser.preference === 1);
+
         if (founded != undefined) {
           let id = founded.id;
+          this.current_id = id;
           this.deskService.getDesk(id).subscribe({
             next: (data: Desk) => {
               this.desk = data;
               console.log("Preference founded");
               console.log(this.desk);
+              this.getColumns();
             },
             error: err => {
               console.log(err);
@@ -78,11 +86,13 @@ export class DeskComponent implements OnInit {
         }
         else {
           let id = this.desks[0].id;
+          this.current_id = id;
           console.log("Preference not founded");
           this.deskService.getDesk(id).subscribe({
             next: (data: Desk) => {
               this.desk = data;
               console.log(this.desk);
+              this.getColumns();
             },
             error: err => {
               console.log(err);
@@ -102,15 +112,17 @@ export class DeskComponent implements OnInit {
       width: '250px',
     });
     dialogRef.afterClosed().subscribe( result => {
-      this.desk = result;
-      this.deskService.getDesks().subscribe({
-        next: (data: Desk[]) => {
-          this.desks = data;
-        },
-        error: err => {
-          console.log(err);
-        }
-      });
+      if (result != undefined) {
+        this.desk = result;
+        this.deskService.getDesks().subscribe({
+          next: (data: Desk[]) => {
+            this.desks = data;
+          },
+          error: err => {
+            console.log(err);
+          }
+        });
+      }
     });
 
   }
@@ -120,17 +132,37 @@ export class DeskComponent implements OnInit {
     });
 
   }
+  openColumnCreationDialog() {
+    const dialogRef = this.dialog.open(ColumnCreationComponent, {
+      data: {deskId: this.desk?.id}
+      //width: '500px',
+    });
+    dialogRef.afterClosed().subscribe( result => {
+      if (result != undefined) {
+        this.columns = result;
+        /*this.deskService.getDesks().subscribe({
+          next: (data: Desk[]) => {
+            this.desks = data;
+          },
+          error: err => {
+            console.log(err);
+          }
+        });*/
+      }
+    })
+  }
   closeDialog() {
     this.dialog.closeAll();
   }
   changeDesk(id: number) {
-    //.changed_index = index;
+    this.current_id = id;
     this.opened = false;
     this.deskService.getDesk(id).subscribe({
       next: (data: Desk) => {
         this.desk = data;
         console.log("Changed desk to:");
         console.log(this.desk);
+        this.getColumns();
       },
       error: err => {
         console.log(err);
@@ -258,5 +290,33 @@ export class DeskComponent implements OnInit {
   getDeskOwner() {
     return this.desk?.deskUsers.find(el => el.role === 2);
   }
+  getCurrentDesk() {
+    return this.desks.find(el => el.id === this.current_id);
+  }
+  getColumns() {
+    console.log("hi");
+    this.columnService.getColumns(this.desk!.id).subscribe({
+      next: data => {
+        this.columns = data;
+        console.log(this.columns);
+      },
+      error: err => {
+        console.log(err);
+
+      }
+    })
+  }
+  removeColumn(columnId: number) {
+    this.columnService.removeColumn(columnId).subscribe({
+      next: data => {
+        this.columns = data;
+      },
+      error: err => {
+        console.log(err);
+
+      }
+    })
+  }
+
 
 }

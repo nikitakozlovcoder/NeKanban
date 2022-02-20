@@ -22,6 +22,8 @@ import {DeskGuard} from "./guards/desk.guard";
 import { DeskCreationComponent } from './desk-creation/desk-creation.component';
 import { DeskCreationDialogComponent } from './desk-creation-dialog/desk-creation-dialog.component';
 import { TaskCreationComponent } from './task-creation/task-creation.component';
+import { ColumnCreationComponent } from './column-creation/column-creation.component';
+import {ColumnService} from "./services/column.service";
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -39,6 +41,7 @@ const appRoutes: Routes =[
     DeskCreationComponent,
     DeskCreationDialogComponent,
     TaskCreationComponent,
+    ColumnCreationComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -54,7 +57,8 @@ const appRoutes: Routes =[
   DeskService,
   BaseHttpService,
   DeskGuard,
-    DeskComponent],
+    DeskComponent,
+  ColumnService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

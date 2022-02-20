@@ -5,6 +5,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {BaseHttpService} from "./base_http.service";
 import {DeskUsers} from "../models/deskusers";
 import {Desk} from "../models/desk";
+import {Column} from "../models/column";
 
 @Injectable()
 export class DeskService {
@@ -72,4 +73,5 @@ export class DeskService {
     }
     return this.http.get<Desk>(this.http_service.base_url + "Desks/GetDesk/" + id, httpOptions);
   }
+
 }
