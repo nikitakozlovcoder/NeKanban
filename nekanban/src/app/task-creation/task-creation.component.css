@@ -1,0 +1,31 @@
+.column-card {
+  display: flex;
+  flex-direction: row;
+}
+.task-settings-card {
+  min-width: 300px;
+}
+.employees-list {
+  max-height: 300px;
+  overflow: auto;
+}
+.employees-settings {
+  display: flex;
+  margin-bottom: 20px;
+}
+.employees-settings button {
+  margin-left: auto;
+}
+.employees-settings p {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  margin: 0px !important;
+}
+.mat-list-item a {
+  display: flex;
+}
+.mat-list-item a mat-icon {
+  margin-left: auto;
+}

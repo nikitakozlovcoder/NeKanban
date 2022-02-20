@@ -32,15 +32,15 @@
   width: 100%;
 }
 .desk-cards {
+  display: flex;
  margin: 20px;
-  height: 100%;
+  /*height: 100%;*/
 }
 .settings-card{
 
 
-  height: 80%;
-  width: 400px;
-  float: right;
+  box-shadow: 0 0 3px;
+  margin-left: auto;
 }
 mat-form-field
 {
@@ -56,4 +56,122 @@ mat-form-field
   max-height: 400px;
   overflow: auto;
 }
+/*.settings-card mat-card-title p mat-icon {
+  position: relative;
+  float: right;
+  width: 40px;
+}*/
+.mat-button {
+  min-width: 10px !important;
+  padding: 0 !important;
+}
+.column-card mat-card-title p button {
 
+  position: relative;
+  float: right;
+  width: 40px;
+  height: 24px;
+  align-items: center;
+}
+.column-card mat-card-title p button mat-icon {
+  vertical-align: super;
+}
+.invite-link p mat-icon {
+  height: 17px;
+  vertical-align: sub;
+}
+.column-card {
+  width: auto;
+  float: left;
+  margin-right: 15px;
+}
+/* For drag dnd drop lists
+.example-container {
+  width: 400px;
+  max-width: 100%;
+  margin: 0 25px 25px 0;
+  display: inline-block;
+  vertical-align: top;
+}*/
+
+.example-list {
+  margin-top: 10px;
+  border: solid 1px #ccc;
+  min-height: 60px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+}
+
+.example-box {
+  padding: 20px 10px;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.column-card mat-card-subtitle {
+  margin-top: 15px;
+  display: flex;
+}
+
+.column-cards {
+  flex: 1;
+  display: flex;
+  overflow: auto
+  /*overflow-x: scroll;*/
+  /*width: fit-content;*/
+  /*height: 80%*/
+}
+.box-column-cards {
+  display: flex;
+  min-height: min-content;
+}
+
+.column-card mat-card-subtitle button {
+  margin-left: auto;
+  position: relative;
+  float: right;
+}
+.column-card mat-card-subtitle p {
+  margin: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
+.mat-typography p {
+  margin: 0 !important;
+}

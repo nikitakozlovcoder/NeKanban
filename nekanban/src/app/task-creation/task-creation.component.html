@@ -1,0 +1,45 @@
+<mat-card class = "column-card">
+  <div>
+    <mat-card-title>
+      <p>Моя задача</p>
+    </mat-card-title>
+
+    <mat-card-content>
+      <mat-card-subtitle>
+        <p>Описание:</p>
+      </mat-card-subtitle>
+      Какое-то описание задачи <br> Пусть имеется набор предметов, каждый из которых имеет два параметра — масса и ценность. Также имеется рюкзак определённой грузоподъёмности. Задача заключается в том, чтобы собрать рюкзак с максимальной ценностью предметов внутри, соблюдая при этом ограничение рюкзака на суммарную массу.
+    </mat-card-content>
+  </div>
+
+  <mat-card class = "task-settings-card">
+    <mat-card-title>
+      <p>Свойства задания</p>
+    </mat-card-title>
+
+    <mat-card-content>
+      <mat-card-subtitle>
+        <p>Создано:</p>
+      </mat-card-subtitle>
+      Ивановым И. И.
+      <mat-card-subtitle>
+        <div class="employees-settings">
+          <p>Исполнители:</p>
+          <button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <mat-nav-list class ="employees-list">
+          <mat-list-item *ngFor="let employee of employess">
+            <a matLine>{{employee}}<mat-icon>cancel</mat-icon></a><mat-divider></mat-divider>
+          </mat-list-item>
+
+          <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
+
+        </mat-nav-list>
+      </mat-card-subtitle>
+    </mat-card-content>
+  </mat-card>
+</mat-card>
+
+<!--<button class = "register_button" mat-raised-button color="primary" (click)="createDesk()">Создать доску</button>-->

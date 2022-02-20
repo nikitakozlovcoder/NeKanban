@@ -12,7 +12,7 @@ export class DeskService {
   name ='';
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router, public dialog: MatDialog,
               private http_service: BaseHttpService) { }
-  getDesks() : Desk[] {
+  getDesks() {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -20,23 +20,10 @@ export class DeskService {
       })
     }
     console.log(httpOptions.headers.get('Authorization'));
-    let desks: Desk[] = [];
-    this.http.get<Desk[]>(this.http_service.base_url + "Desks/GetForUser", httpOptions).subscribe({
-      next: (data: Desk[]) => {
-        //console.log(data);
-        /*console.log(data);
-        data.forEach(element => {
-          console.log(element);
-        })*/
-        //desks = data;
-        data.forEach(el => desks.push(Object.assign({}, el)));
-      },
-      error: error => {
-        console.error('There was an error!', error.message);
-      }
-    })
+    //let desks: Desk[] = [];
+    return this.http.get<Desk[]>(this.http_service.base_url + "Desks/GetForUser", httpOptions);
     //console.log(desks);
-    return desks;
+    //return desks;
   }
   addDesk(name: string) {
     const body = {name: name};
@@ -46,14 +33,7 @@ export class DeskService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    this.http.post(this.http_service.base_url + "Desks/CreateDesk", body, httpOptions).subscribe({
-      next: data => {
-
-      },
-      error: error => {
-        console.error('There was an error!', error.message);
-      }
-    })
+    return this.http.post<Desk>(this.http_service.base_url + "Desks/CreateDesk", body, httpOptions);
   }
   addPreference(id: number, preference: number)  {
     const body = {preference: preference};
@@ -73,13 +53,23 @@ export class DeskService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    this.http.put(this.http_service.base_url + "Desks/UpdateDesk/" + id, body, httpOptions).subscribe({
+    /*this.http.put(this.http_service.base_url + "Desks/UpdateDesk/" + id, body, httpOptions).subscribe({
       next: data => {
 
       },
       error: error => {
         console.error('There was an error!', error.message);
       }
-    })
+    })*/
+    return this.http.put<Desk>(this.http_service.base_url + "Desks/UpdateDesk/" + id, body, httpOptions);
+  }
+  getDesk(id: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    return this.http.get<Desk>(this.http_service.base_url + "Desks/GetDesk/" + id, httpOptions);
   }
 }
