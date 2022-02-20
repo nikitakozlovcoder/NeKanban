@@ -1,4 +1,5 @@
 ﻿using NeKanban.Controllers.Models;
+using NeKanban.Controllers.Models.UserModel;
 using NeKanban.Services.ViewModels;
 
 namespace NeKanban.Services.Users;

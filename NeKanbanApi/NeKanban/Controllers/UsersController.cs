@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NeKanban.Controllers.Models;
+using NeKanban.Controllers.Models.UserModel;
 using NeKanban.Data.Entities;
 using NeKanban.Services.Users;
 using NeKanban.Services.ViewModels;

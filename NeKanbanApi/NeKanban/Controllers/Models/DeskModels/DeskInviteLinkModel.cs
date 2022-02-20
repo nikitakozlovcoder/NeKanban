@@ -1,6 +1,6 @@
 ﻿using NeKanban.Constants;
 
-namespace NeKanban.Controllers.Models;
+namespace NeKanban.Controllers.Models.DeskModels;
 
 public class DeskInviteLinkModel
 {

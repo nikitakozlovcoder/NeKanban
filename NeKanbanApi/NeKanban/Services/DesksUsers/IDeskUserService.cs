@@ -1,5 +1,6 @@
 ﻿using NeKanban.Constants;
 using NeKanban.Controllers.Models;
+using NeKanban.Controllers.Models.DeskModels;
 using NeKanban.Data.Entities;
 using NeKanban.Services.ViewModels;
 

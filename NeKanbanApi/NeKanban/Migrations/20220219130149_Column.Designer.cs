@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NeKanban.Data;
 
@@ -11,9 +12,10 @@ using NeKanban.Data;
 namespace NeKanban.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220219130149_Column")]
+    partial class Column
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,9 +239,6 @@ namespace NeKanban.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("DeskId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -251,8 +250,6 @@ namespace NeKanban.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DeskId");
 
                     b.ToTable("Column");
                 });
@@ -357,17 +354,6 @@ namespace NeKanban.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NeKanban.Data.Entities.Column", b =>
-                {
-                    b.HasOne("NeKanban.Data.Entities.Desk", "Desk")
-                        .WithMany("Columns")
-                        .HasForeignKey("DeskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Desk");
-                });
-
             modelBuilder.Entity("NeKanban.Data.Entities.DeskUser", b =>
                 {
                     b.HasOne("NeKanban.Data.Entities.Desk", "Desk")
@@ -389,8 +375,6 @@ namespace NeKanban.Migrations
 
             modelBuilder.Entity("NeKanban.Data.Entities.Desk", b =>
                 {
-                    b.Navigation("Columns");
-
                     b.Navigation("DeskUsers");
                 });
 #pragma warning restore 612, 618

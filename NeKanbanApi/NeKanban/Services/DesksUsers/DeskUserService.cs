@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Constants;
 using NeKanban.Controllers.Models;
+using NeKanban.Controllers.Models.DeskModels;
 using NeKanban.Data;
 using NeKanban.Data.Entities;
 using NeKanban.ExceptionHandling;
@@ -23,9 +24,15 @@ public class DeskUserService : BaseService, IDeskUserService
         _myDesksService = myDesksService;
     }
 
-    public Task CreateDeskUser(int deskId, int userId, RoleType role, CancellationToken ct)
+    public async Task CreateDeskUser(int deskId, int userId, RoleType role, CancellationToken ct)
     {
-        return _deskUserRepository.Create(new DeskUser
+        var exists = await _deskUserRepository.QueryableSelect()
+            .AnyAsync(x => x.UserId == userId && x.DeskId == deskId, ct);
+        if (exists)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.UserAlreadyAddedToDesk);
+        }
+        await _deskUserRepository.Create(new DeskUser
         {
             DeskId = deskId,
             UserId = userId,
@@ -51,7 +58,7 @@ public class DeskUserService : BaseService, IDeskUserService
         EnsureEntityExists(deskUser);
         if (deskUser!.Role == RoleType.Owner)
         {
-            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "Can`t remove owner");
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantRemoveOwnerFromDesk);
         }
       
         await _deskUserRepository.Remove(deskUser!, ct);

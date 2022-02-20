@@ -19,6 +19,7 @@ public class MyDesksService : IMyDesksService
     {
         var desks = await _deskRepository.QueryableSelect()
             .Include(x => x.DeskUsers.Where(du => du.UserId == userId)).ThenInclude(x=> x.User)
+            .Where(x=> x.DeskUsers.Any(du => du.UserId == userId))
             .ToListAsync(ct);
         return desks.Select(x => x.ToDeskLightVm()).ToList();
     }
