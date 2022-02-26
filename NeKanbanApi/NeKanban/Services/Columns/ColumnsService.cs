@@ -67,9 +67,13 @@ public class ColumnsService : BaseService, IColumnsService
 
     }
 
-    public Task<List<ColumnVm>> UpdateColumn(int columnId, ColumnUpdateModel model, CancellationToken ct)
+    public async Task<List<ColumnVm>> UpdateColumn(int columnId, ColumnUpdateModel model, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var column = await _columnRepository.QueryableSelect().SingleOrDefaultAsync(x => x.Id == columnId, ct);
+        EnsureEntityExists(column);
+        column!.FromUpdateModel(model);
+        await _columnRepository.Update(column!, ct);
+        return await GetColumns(column!.DeskId, ct);
     }
 
     public async Task<List<ColumnVm>> MoveColumn(int columnId, ColumnMoveModel model, CancellationToken ct)

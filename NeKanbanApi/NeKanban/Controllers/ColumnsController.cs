@@ -32,6 +32,18 @@ public class ColumnsController : BaseAuthController
         return await _columnsService.CreateColumn(deskId, model, ColumnType.General, ct);
     }
     
+    [HttpPut("{columnId:int}")]
+    public async Task<List<ColumnVm>> UpdateColumn(int columnId, [FromBody]ColumnUpdateModel model, CancellationToken ct)
+    {
+        return await _columnsService.UpdateColumn(columnId, model, ct);
+    }
+    
+    [HttpPut("{columnId:int}")]
+    public async Task<List<ColumnVm>> MoveColumn(int columnId, [FromBody]ColumnMoveModel model, CancellationToken ct)
+    {
+        return await _columnsService.MoveColumn(columnId, model, ct);
+    }
+    
     [HttpDelete("{columnId:int}")]
     public async Task<List<ColumnVm>> DeleteColumn(int columnId, CancellationToken ct)
     {

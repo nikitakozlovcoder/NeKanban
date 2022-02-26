@@ -94,5 +94,28 @@ public static class ToExtensions
     }
 
     #endregion
+    #region ToDo
+
+    public static ToDoVm ToToDoVm(this ToDo toDo)
+    {
+        return new ToDoVm()
+        {
+            Id = toDo.Id,
+            Body = toDo.Body,
+            Name = toDo.Name,
+            ToDoUsers  = toDo.ToDoUsers.Select(x=> x.ToToDoUserVm()).ToList()
+        };
+    }
+    
+    public static ToDoUserVm ToToDoUserVm(this ToDoUser toDoUser)
+    {
+        return new ToDoUserVm()
+        {
+           ToDoUserType = toDoUser.ToDoUserType,
+           DeskUser = toDoUser.DeskUser?.ToDeskUserLightVm()
+        };
+    }
+
+    #endregion
     
 }

@@ -13,6 +13,7 @@ using NeKanban.Services.Columns;
 using NeKanban.Services.Desks;
 using NeKanban.Services.DesksUsers;
 using NeKanban.Services.MyDesks;
+using NeKanban.Services.ToDos;
 using NeKanban.Services.Tokens;
 using NeKanban.Services.Users;
 
@@ -32,6 +33,7 @@ builder.Services.AddScoped<IDesksService, DesksService>();
 builder.Services.AddScoped<IDeskUserService, DeskUserService>();
 builder.Services.AddScoped<IMyDesksService, MyDesksService>();
 builder.Services.AddScoped<IColumnsService, ColumnsService>();
+builder.Services.AddScoped<IToDoService, ToDoService>();
 
 builder.Services.AddDbContext<ApplicationContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -119,20 +121,15 @@ app.MapControllers();
 
 app.Use(async (context, next) =>
 {
-
-    var transactionFactory = context.RequestServices.GetRequiredService<ITransactionFactory>();
-    await using var transaction = await transactionFactory.CreateTransaction();
     try
     {
         await next(context);
-        await transaction.CommitAsync();
+      
     }
     catch (HttpStatusCodeException e)
     {
-        await transaction.RollbackAsync();
         context.Response.StatusCode = (int) e.Status;
         await context.Response.WriteAsJsonAsync(e.Message);
     }
-   
 });
 app.Run();

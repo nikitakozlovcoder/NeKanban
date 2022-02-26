@@ -53,19 +53,6 @@ namespace NeKanban.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Column",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Column", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Desk",
                 columns: table => new
                 {
@@ -186,6 +173,28 @@ namespace NeKanban.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Column",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    DeskId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Column", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Column_Desk_DeskId",
+                        column: x => x.DeskId,
+                        principalTable: "Desk",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DeskUser",
                 columns: table => new
                 {
@@ -193,7 +202,8 @@ namespace NeKanban.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DeskId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false)
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    Preference = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -210,6 +220,54 @@ namespace NeKanban.Migrations
                         principalTable: "Desk",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ToDo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ColumnId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ToDo", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ToDo_Column_ColumnId",
+                        column: x => x.ColumnId,
+                        principalTable: "Column",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ToDoUser",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ToDoId = table.Column<int>(type: "int", nullable: false),
+                    DeskUserId = table.Column<int>(type: "int", nullable: false),
+                    ToDoUserType = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ToDoUser", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ToDoUser_DeskUser_DeskUserId",
+                        column: x => x.DeskUserId,
+                        principalTable: "DeskUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ToDoUser_ToDo_ToDoId",
+                        column: x => x.ToDoId,
+                        principalTable: "ToDo",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -252,6 +310,11 @@ namespace NeKanban.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Column_DeskId",
+                table: "Column",
+                column: "DeskId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DeskUser_DeskId",
                 table: "DeskUser",
                 column: "DeskId");
@@ -260,6 +323,21 @@ namespace NeKanban.Migrations
                 name: "IX_DeskUser_UserId",
                 table: "DeskUser",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToDo_ColumnId",
+                table: "ToDo",
+                column: "ColumnId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToDoUser_DeskUserId",
+                table: "ToDoUser",
+                column: "DeskUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToDoUser_ToDoId",
+                table: "ToDoUser",
+                column: "ToDoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -280,16 +358,22 @@ namespace NeKanban.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Column");
-
-            migrationBuilder.DropTable(
-                name: "DeskUser");
+                name: "ToDoUser");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "DeskUser");
+
+            migrationBuilder.DropTable(
+                name: "ToDo");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Column");
 
             migrationBuilder.DropTable(
                 name: "Desk");

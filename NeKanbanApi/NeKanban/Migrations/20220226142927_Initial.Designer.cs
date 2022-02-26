@@ -12,8 +12,8 @@ using NeKanban.Data;
 namespace NeKanban.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220213103445_Preference")]
-    partial class Preference
+    [Migration("20220226142927_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -239,11 +239,22 @@ namespace NeKanban.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("DeskId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DeskId");
 
                     b.ToTable("Column");
                 });
@@ -297,6 +308,57 @@ namespace NeKanban.Migrations
                     b.ToTable("DeskUser");
                 });
 
+            modelBuilder.Entity("NeKanban.Data.Entities.ToDo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ColumnId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ColumnId");
+
+                    b.ToTable("ToDo");
+                });
+
+            modelBuilder.Entity("NeKanban.Data.Entities.ToDoUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DeskUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ToDoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ToDoUserType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeskUserId");
+
+                    b.HasIndex("ToDoId");
+
+                    b.ToTable("ToDoUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("NeKanban.Data.Entities.ApplicationRole", null)
@@ -348,6 +410,17 @@ namespace NeKanban.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("NeKanban.Data.Entities.Column", b =>
+                {
+                    b.HasOne("NeKanban.Data.Entities.Desk", "Desk")
+                        .WithMany("Columns")
+                        .HasForeignKey("DeskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Desk");
+                });
+
             modelBuilder.Entity("NeKanban.Data.Entities.DeskUser", b =>
                 {
                     b.HasOne("NeKanban.Data.Entities.Desk", "Desk")
@@ -367,9 +440,51 @@ namespace NeKanban.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("NeKanban.Data.Entities.ToDo", b =>
+                {
+                    b.HasOne("NeKanban.Data.Entities.Column", "Column")
+                        .WithMany("ToDos")
+                        .HasForeignKey("ColumnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Column");
+                });
+
+            modelBuilder.Entity("NeKanban.Data.Entities.ToDoUser", b =>
+                {
+                    b.HasOne("NeKanban.Data.Entities.DeskUser", "DeskUser")
+                        .WithMany()
+                        .HasForeignKey("DeskUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NeKanban.Data.Entities.ToDo", "ToDo")
+                        .WithMany("ToDoUsers")
+                        .HasForeignKey("ToDoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DeskUser");
+
+                    b.Navigation("ToDo");
+                });
+
+            modelBuilder.Entity("NeKanban.Data.Entities.Column", b =>
+                {
+                    b.Navigation("ToDos");
+                });
+
             modelBuilder.Entity("NeKanban.Data.Entities.Desk", b =>
                 {
+                    b.Navigation("Columns");
+
                     b.Navigation("DeskUsers");
+                });
+
+            modelBuilder.Entity("NeKanban.Data.Entities.ToDo", b =>
+                {
+                    b.Navigation("ToDoUsers");
                 });
 #pragma warning restore 612, 618
         }
