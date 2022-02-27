@@ -23,7 +23,7 @@ public class ToDosController : BaseAuthController
         return await _toDoService.GetToDos(deskId, ct);
     }
     
-    [HttpGet("{deskId:int}")]
+    [HttpPost("{deskId:int}")]
     public async Task<List<ToDoVm>> CreateToDo(int deskId, ToDoCreateModel model, CancellationToken ct)
     {
         var user = await GetApplicationUser();

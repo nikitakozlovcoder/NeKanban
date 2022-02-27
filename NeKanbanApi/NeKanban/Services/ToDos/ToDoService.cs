@@ -41,6 +41,9 @@ public class ToDoService : BaseService, IToDoService
             .ThenInclude(x=> x.ToDoUsers)
             .ThenInclude(x=> x.DeskUser)
             .ThenInclude(x=> x!.User)
+            .Include(x => x.Columns)
+            .ThenInclude(x=> x.ToDos)
+            .ThenInclude(x=> x.Column)
             .SingleOrDefaultAsync(x => x.Id == deskId, ct);
         
         EnsureEntityExists(desk);

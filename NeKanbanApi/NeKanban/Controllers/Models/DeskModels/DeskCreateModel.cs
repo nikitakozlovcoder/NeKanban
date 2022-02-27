@@ -4,6 +4,6 @@ namespace NeKanban.Controllers.Models.DeskModels;
 
 public class DeskCreateModel
 {
-    [MinLength(8)]
+    [MinLength(6)]
     public string Name { get; set; } = "";
 }
