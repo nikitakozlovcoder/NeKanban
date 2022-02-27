@@ -101,6 +101,7 @@ public static class ToExtensions
         return new ToDoVm()
         {
             Id = toDo.Id,
+            Column = toDo.Column?.ToColumnVm(),
             Body = toDo.Body,
             Name = toDo.Name,
             ToDoUsers  = toDo.ToDoUsers.Select(x=> x.ToToDoUserVm()).ToList()
