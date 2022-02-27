@@ -37,16 +37,13 @@ public class ToDoService : BaseService, IToDoService
     {
         var desk = await _deskRepository.QueryableSelect().FirstOrDefaultAsync(x=> x.Id == deskId, cancellationToken: ct);
         EnsureEntityExists(desk);
-        await _toDoRepository.QueryableSelect()
+        var todos = await _toDoRepository.QueryableSelect()
                 .Include(x=> x.ToDoUsers)
                 .ThenInclude(x=> x.DeskUser)
                 .ThenInclude(x=> x!.User)
                 .Include(x=> x.Column)
-                .Where(x => x.Column!.DeskId == deskId)
-                .ToListAsync(ct);
+                .Where(x => x.Column!.DeskId == deskId).ToListAsync(ct);
         
-      
-        var todos = desk!.Columns.SelectMany(x => x.ToDos);
         return todos.Select(x => x.ToToDoVm()).ToList();
     }
 
