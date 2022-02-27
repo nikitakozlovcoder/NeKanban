@@ -35,15 +35,16 @@ public class ToDoService : BaseService, IToDoService
 
     public async Task<List<ToDoVm>> GetToDos(int deskId, CancellationToken ct)
     {
-        var desk = await _deskRepository.QueryableSelect()
-            .Include(x=> x.Columns)
-            .ThenInclude(x=> x.ToDos)
-            .ThenInclude(x=> x.ToDoUsers)
-            .ThenInclude(x=> x.DeskUser)
-            .ThenInclude(x=> x!.User)
-            .SingleOrDefaultAsync(x => x.Id == deskId, ct);
-        
+        var desk = await _deskRepository.QueryableSelect().FirstOrDefaultAsync(x=> x.Id == deskId);
         EnsureEntityExists(desk);
+        await _toDoRepository.QueryableSelect()
+                .Include(x=> x.ToDoUsers)
+                .ThenInclude(x=> x.DeskUser)
+                .ThenInclude(x=> x!.User)
+                .Include(x=> x.Column)
+                .SingleOrDefaultAsync(x => x.Id == deskId, ct);
+        
+      
         var todos = desk!.Columns.SelectMany(x => x.ToDos);
         return todos.Select(x => x.ToToDoVm()).ToList();
     }
