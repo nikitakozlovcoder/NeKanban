@@ -15,13 +15,22 @@ public class ToDoService : BaseService, IToDoService
     private readonly IRepository<Desk> _deskRepository;
     private readonly IRepository<ToDo> _toDoRepository;
     private readonly IColumnsService _columnsService;
+    private readonly IRepository<DeskUser> _deskUserRepository;
+    private readonly IRepository<ToDoUser> _toDoUserRepository;
 
-    public ToDoService(IRepository<Desk> deskRepository, 
-        UserManager<ApplicationUser> userManager, IColumnsService columnsService, IRepository<ToDo> toDoRepository) : base(userManager)
+    public ToDoService(
+        IRepository<Desk> deskRepository, 
+        UserManager<ApplicationUser> userManager, 
+        IColumnsService columnsService, 
+        IRepository<ToDo> toDoRepository, 
+        IRepository<DeskUser> deskUserRepository, 
+        IRepository<ToDoUser> toDoUserRepository) : base(userManager)
     {
         _deskRepository = deskRepository;
         _columnsService = columnsService;
         _toDoRepository = toDoRepository;
+        _deskUserRepository = deskUserRepository;
+        _toDoUserRepository = toDoUserRepository;
     }
 
     public async Task<List<ToDoVm>> GetToDos(int deskId, CancellationToken ct)
@@ -41,11 +50,22 @@ public class ToDoService : BaseService, IToDoService
 
     public async Task<List<ToDoVm>> CreateToDo(int deskId, ApplicationUser user, ToDoCreateModel model, CancellationToken ct)
     {
+        var deskUser = await _deskUserRepository.QueryableSelect()
+            .FirstOrDefaultAsync(x => x.UserId == user.Id && x.DeskId == deskId, ct); 
+        EnsureEntityExists(deskUser);
         var todo = new ToDo();
         todo.FromCreateModel(model);
         var columns = await _columnsService.GetColumns(deskId, ct);
-        todo.ColumnId =  columns.Single(x => x.Type == ColumnType.Start).Id;
+        todo.ColumnId = columns.Single(x => x.Type == ColumnType.Start).Id;
         await _toDoRepository.Create(todo, ct);
+
+        var creator = new ToDoUser
+        {
+            ToDoUserType = ToDoUserType.Creator,
+            ToDoId = todo.Id,
+            DeskUserId = deskUser!.Id
+        };
+        await _toDoUserRepository.Create(creator, ct);
         return await GetToDos(deskId, ct);
     }
 
