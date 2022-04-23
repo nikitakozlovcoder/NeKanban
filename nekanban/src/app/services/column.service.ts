@@ -50,4 +50,14 @@ export class ColumnService {
     const body = {position: position};
     return this.http.put<Column[]>(this.http_service.base_url + "Columns/MoveColumn/" + columnId, body, httpOptions);
   }
+  updateColumn(columnId: number, name: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    const body = {name: name};
+    return this.http.put<Column[]>(this.http_service.base_url + "Columns/UpdateColumn/" + columnId, body, httpOptions);
+  }
 }

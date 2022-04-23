@@ -27,6 +27,8 @@ import {ColumnService} from "./services/column.service";
 import { InviteComponent } from './invite/invite.component';
 import { TodoCreationComponent } from './todo-creation/todo-creation.component';
 import {TodoService} from "./services/todo.service";
+import { TodoEditingComponent } from './todo-editing/todo-editing.component';
+import { ColumnUpdatingComponent } from './column-updating/column-updating.component';
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -48,6 +50,8 @@ const appRoutes: Routes =[
     ColumnCreationComponent,
     InviteComponent,
     TodoCreationComponent,
+    TodoEditingComponent,
+    ColumnUpdatingComponent,
   ],
   imports: [
     BrowserAnimationsModule,

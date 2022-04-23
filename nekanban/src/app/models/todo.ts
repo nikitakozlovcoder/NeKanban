@@ -6,8 +6,8 @@ export class Todo {
   name: string;
   body: string;
   column: Column;
-  toDoUsers: ToDoUsers;
-  constructor(id: number, name: string, body: string, column: Column, toDoUsers: ToDoUsers) {
+  toDoUsers: ToDoUsers[];
+  constructor(id: number, name: string, body: string, column: Column, toDoUsers: ToDoUsers[]) {
     this.id = id;
     this.name = name;
     this.body = body;

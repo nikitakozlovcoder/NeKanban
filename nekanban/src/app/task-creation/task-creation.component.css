@@ -29,3 +29,6 @@
 .mat-list-item a mat-icon {
   margin-left: auto;
 }
+.description {
+  min-width: 500px;
+}

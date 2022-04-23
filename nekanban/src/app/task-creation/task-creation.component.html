@@ -1,14 +1,14 @@
 <mat-card class = "column-card">
   <div>
     <mat-card-title>
-      <p>Моя задача</p>
+      <p>{{data.todo.name}}</p>
     </mat-card-title>
 
     <mat-card-content>
       <mat-card-subtitle>
         <p>Описание:</p>
       </mat-card-subtitle>
-      Какое-то описание задачи <br> Пусть имеется набор предметов, каждый из которых имеет два параметра — масса и ценность. Также имеется рюкзак определённой грузоподъёмности. Задача заключается в том, чтобы собрать рюкзак с максимальной ценностью предметов внутри, соблюдая при этом ограничение рюкзака на суммарную массу.
+      <p class="description">{{data.todo.body}}</p>
     </mat-card-content>
   </div>
 
@@ -21,7 +21,7 @@
       <mat-card-subtitle>
         <p>Создано:</p>
       </mat-card-subtitle>
-      Ивановым И. И.
+      {{getToDoCreator()!.deskUser.user.name}}
       <mat-card-subtitle>
         <div class="employees-settings">
           <p>Исполнители:</p>

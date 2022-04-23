@@ -59,6 +59,24 @@
         </mat-card-title-group>
       </mat-card>
 
+      <!--<mat-card>
+        <div cdkDropList
+             [cdkDropListData]="columns"
+             class="example-list test-list"
+             (cdkDropListDropped)="drop_column($event)"
+             cdkDropListOrientation="horizontal"
+        >
+          <div *ngFor="let column of columns">
+            <mat-card cdkDrag>
+              <mat-card-title>
+                {{column.name}}
+              </mat-card-title>
+            </mat-card>
+          </div>
+        </div>
+
+
+      </mat-card>-->
       <mat-card class = "desk-cards">
         <mat-card-title>
           <div class = "menu-bottom-button">
@@ -71,6 +89,7 @@
              [cdkDropListData]="columns"
              class="example-list"
              (cdkDropListDropped)="drop_column($event)"
+             cdkDropListOrientation="horizontal"
         >
           <!--<div *ngFor="let column of columns">
             <div cdkDrag>
@@ -87,7 +106,7 @@
                     <p>{{column.name}}
                       <button mat-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                       <mat-menu #menu="matMenu">
-                        <button mat-menu-item><mat-icon>edit</mat-icon>Редактировать</button>
+                        <button mat-menu-item (click)="openColumnUpdatingDialog(column)"><mat-icon>edit</mat-icon>Редактировать</button>
                         <button mat-menu-item (click)="removeColumn(column.id)"><mat-icon>delete</mat-icon>Удалить</button>
                       </mat-menu>
                     </p>
@@ -105,7 +124,7 @@
                       [cdkDropListData]="getToDosForColumn(column.id)"
                       class="example-list"
                       (cdkDropListDropped)="drop($event)">
-                      <div class="example-box" *ngFor="let toDo of getToDosForColumn(column.id)" cdkDrag (click)="showTaskCreation()">{{toDo.name}}<mat-icon (click)="showDeskCreation()">edit</mat-icon></div>
+                      <div class="example-box" *ngFor="let toDo of getToDosForColumn(column.id)" cdkDrag (click)="openTaskCreationDialog(toDo)">{{toDo.name}}<mat-icon (click)="openToDoEditingDialog(toDo)">edit</mat-icon></div>
                     </div>
                   </mat-card-content>
                   <mat-expansion-panel (opened)="panelOpenState = true"

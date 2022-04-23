@@ -16,6 +16,8 @@ import {ColumnService} from "../services/column.service";
 import {Todo} from "../models/todo";
 import {TodoService} from "../services/todo.service";
 import {TodoCreationComponent} from "../todo-creation/todo-creation.component";
+import {TodoEditingComponent} from "../todo-editing/todo-editing.component";
+import {ColumnUpdatingComponent} from "../column-updating/column-updating.component";
 
 @Component({
   selector: 'app-desk',
@@ -58,22 +60,27 @@ export class DeskComponent implements OnInit {
     console.log(event.previousIndex);
     console.log("Current index");
     console.log(event.currentIndex);
-    this.columnService.moveColumn(event.container.data[event.previousIndex].id, event.container.data[event.currentIndex].order + 1).subscribe({
-      next: data => {
-        this.columns = data.sort(function (a: Column, b: Column) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
-      },
-      error: err => {
-        console.log(err);
-      }
-    })
+    if (event.previousIndex != 0 && event.previousIndex != event.container.data.length - 1 && event.currentIndex != 0 && event.currentIndex != event.container.data.length - 1) {
+      //moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      this.columnService.moveColumn(event.container.data[event.previousIndex].id, event.container.data[event.currentIndex].order + 1).subscribe({
+        next: data => {
+          this.columns = data.sort(function (a: Column, b: Column) {
+            if (a.order > b.order) {
+              return 1;
+            }
+            if (a.order < b.order) {
+              return -1;
+            }
+            return 0;
+          });
+        },
+        error: err => {
+          console.log(err);
+        }
+      })
+    }
+
+
     /*if (event.previousContainer === event.container) {
       console.log("same container");
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -179,8 +186,9 @@ export class DeskComponent implements OnInit {
     });
 
   }
-  openTaskCreationDialog(): void {
+  openTaskCreationDialog(todo: Todo): void {
     const dialogRef = this.dialog.open(TaskCreationComponent, {
+      data: {todo: todo}
       //width: '500px',
     });
 
@@ -264,9 +272,6 @@ export class DeskComponent implements OnInit {
 
       }
     });*/
-  }
-  showTaskCreation() {
-    this.openTaskCreationDialog();
   }
   addToFavourite(index: number |undefined) {
     /*this.desks.forEach( (el, index) => {
@@ -458,7 +463,7 @@ export class DeskComponent implements OnInit {
   }
   openToDoCreationDialog() {
     const dialogRef = this.dialog.open(TodoCreationComponent, {
-      data: {deskId: this.desk?.id}
+      data: {deskId: this.desk?.id, isEdit: false}
       //width: '500px',
     });
     dialogRef.afterClosed().subscribe( result => {
@@ -475,8 +480,40 @@ export class DeskComponent implements OnInit {
       }
     })
   }
+  openToDoEditingDialog(todo: Todo) {
+    const dialogRef = this.dialog.open(TodoEditingComponent, {
+      data: {deskId: this.desk?.id, toDo: todo}
+      //width: '500px',
+    });
+  }
 
-
+  openColumnUpdatingDialog(column: Column) {
+    const dialogRef = this.dialog.open(ColumnUpdatingComponent, {
+      data: {deskId: this.desk?.id, column: column}
+      //width: '500px',
+    });
+    dialogRef.afterClosed().subscribe( result => {
+      if (result != undefined) {
+        this.columns = result.sort(function (a: Column, b: Column) {
+          if (a.order > b.order) {
+            return 1;
+          }
+          if (a.order < b.order) {
+            return -1;
+          }
+          return 0;
+        });;
+        /*this.deskService.getDesks().subscribe({
+          next: (data: Desk[]) => {
+            this.desks = data;
+          },
+          error: err => {
+            console.log(err);
+          }
+        });*/
+      }
+    })
+  }
 
   movies = [
     'Episode I - The Phantom Menace',
