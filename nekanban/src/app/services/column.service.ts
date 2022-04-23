@@ -37,4 +37,17 @@ export class ColumnService {
     }
     return this.http.delete<Column[]>(this.http_service.base_url + "Columns/DeleteColumn/" + columnId, httpOptions);
   }
+  moveColumn(columnId: number, position: number) {
+    console.log("-------------");
+    console.log(columnId, position);
+    console.log("-------------");
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    const body = {position: position};
+    return this.http.put<Column[]>(this.http_service.base_url + "Columns/MoveColumn/" + columnId, body, httpOptions);
+  }
 }

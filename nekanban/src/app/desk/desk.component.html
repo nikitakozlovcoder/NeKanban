@@ -29,6 +29,8 @@
         </button>
         <span>NeKanban</span>
         <span class="example-spacer"></span>
+        <mat-icon>account_circle</mat-icon>
+        <span class="user-name">{{ getCurrentUser().name}}</span>
         <button *ngIf="getCurrentDesk()!.deskUser.preference" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(desk?.id)">
           <mat-icon>favorite</mat-icon>
         </button>
@@ -65,10 +67,22 @@
         </mat-card-title>
 
         <!--<div cdkDropListGroup>-->
+        <div cdkDropList
+             [cdkDropListData]="columns"
+             class="example-list"
+             (cdkDropListDropped)="drop_column($event)"
+        >
+          <!--<div *ngFor="let column of columns">
+            <div cdkDrag>
+              {{column.name}}
+            </div>
+          </div>--
+          class="column-cards"-->
           <div cdkDropListGroup class="column-cards">
+
             <div class="box-column-cards">
               <div *ngFor="let column of columns">
-                <mat-card class = "column-card">
+                <mat-card class = "column-card" cdkDrag>
                   <mat-card-title>
                     <p>{{column.name}}
                       <button mat-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
@@ -82,16 +96,16 @@
                   <mat-card-content>
                     <mat-card-subtitle>
                       <p>Задачи:</p>
-                      <button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" >
+                      <button *ngIf="column.order == -1" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" (click)="openToDoCreationDialog()" >
                         <mat-icon>add</mat-icon>
                       </button>
                     </mat-card-subtitle>
                     <div
                       cdkDropList
-                      [cdkDropListData]="done"
+                      [cdkDropListData]="getToDosForColumn(column.id)"
                       class="example-list"
                       (cdkDropListDropped)="drop($event)">
-                      <div class="example-box" *ngFor="let item of done" cdkDrag (click)="showTaskCreation()">{{item}}<mat-icon (click)="showDeskCreation()">edit</mat-icon></div>
+                      <div class="example-box" *ngFor="let toDo of getToDosForColumn(column.id)" cdkDrag (click)="showTaskCreation()">{{toDo.name}}<mat-icon (click)="showDeskCreation()">edit</mat-icon></div>
                     </div>
                   </mat-card-content>
                   <mat-expansion-panel (opened)="panelOpenState = true"
@@ -118,8 +132,9 @@
               </div>
 
             </div>
-
           </div>
+        </div>
+
 
 
         <mat-card class = "settings-card">
@@ -136,9 +151,10 @@
             <button class = "register_button" mat-raised-button color="primary" (click)="updateDesk(desk!.id)">Обновить название</button>
 
           </mat-card-content>
-          <mat-card-subtitle class="invite-link">
+          <mat-card-subtitle *ngIf="hasAccessToInviteLink()" class="invite-link">
             <p><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
-            <p class="p-link">{{ desk!.inviteLink }}</p>
+            <p *ngIf="hasInviteLink()" class="p-link">{{ getInviteLink() }}</p>
+            <button *ngIf="!hasInviteLink()" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
           </mat-card-subtitle>
           <mat-expansion-panel (opened)="panelOpenState = true"
                                (closed)="panelOpenState = false">
@@ -152,17 +168,21 @@
             </mat-expansion-panel-header>
             <mat-nav-list class ="users-list">
               <mat-list-item *ngFor="let user of desk!.deskUsers; index as i">
-                <a matLine>{{user.user.name}} </a><mat-divider></mat-divider>
+                <a matLine>{{user.user.name}} <mat-icon  *ngIf="hasAccessToInviteLink()" (click)="removeUser([user.user.id])">cancel</mat-icon></a><mat-divider></mat-divider>
               </mat-list-item>
 
               <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
 
             </mat-nav-list>
           </mat-expansion-panel>
+          <button *ngIf="hasAccessToInviteLink()" class = "desk-remove-button" mat-raised-button color="warn" (click)="removeDesk(desk!.id)"><mat-icon>delete</mat-icon>Удалить доску</button>
 
         </mat-card>
 
       </mat-card>
+    <!--<div cdkDropList class="example-list" (cdkDropListDropped)="drop_movie($event)">
+      <div class="example-box" *ngFor="let movie of movies" cdkDrag>{{movie}}</div>
+    </div>-->
 
 
   </mat-sidenav-content>

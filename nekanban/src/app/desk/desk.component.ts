@@ -13,6 +13,9 @@ import {TaskCreationComponent} from "../task-creation/task-creation.component";
 import {Column} from "../models/column";
 import {ColumnCreationComponent} from "../column-creation/column-creation.component";
 import {ColumnService} from "../services/column.service";
+import {Todo} from "../models/todo";
+import {TodoService} from "../services/todo.service";
+import {TodoCreationComponent} from "../todo-creation/todo-creation.component";
 
 @Component({
   selector: 'app-desk',
@@ -29,12 +32,13 @@ export class DeskComponent implements OnInit {
   changed_index: number = -1;
   current_id: number = -1;
   columns: Column[] = [];
+  toDos: Todo[] = [];
   //desk: Desk;
   todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
 
   done = ['Get up', 'Brush teeth', 'Take a shower', 'Check e-mail', 'Walk dog'];
 
-  drop(event: CdkDragDrop<string[]>) {
+  drop(event: CdkDragDrop<Todo[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -47,7 +51,53 @@ export class DeskComponent implements OnInit {
     }
   }
 
-  constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService) {
+  drop_column(event: CdkDragDrop<Column[]>) {
+    console.log("Container data");
+    console.log(event.container.data);
+    console.log("Previous index");
+    console.log(event.previousIndex);
+    console.log("Current index");
+    console.log(event.currentIndex);
+    this.columnService.moveColumn(event.container.data[event.previousIndex].id, event.container.data[event.currentIndex].order + 1).subscribe({
+      next: data => {
+        this.columns = data.sort(function (a: Column, b: Column) {
+          if (a.order > b.order) {
+            return 1;
+          }
+          if (a.order < b.order) {
+            return -1;
+          }
+          return 0;
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
+    /*if (event.previousContainer === event.container) {
+      console.log("same container");
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      console.log("different container");
+      this.columnService.moveColumn(event.container.data[event.currentIndex].id, event.currentIndex).subscribe({
+        next: data => {
+          this.columns = data;
+        },
+        error: err => {
+          console.log(err);
+        }
+      })
+      /*transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    }*/
+  }
+
+  constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService,
+              private todoService: TodoService) {
     this.opened = false;
 
     //console.log(this.desks);
@@ -56,7 +106,7 @@ export class DeskComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDesks();
-
+    //console.log(JSON.parse(localStorage.getItem("currentUser")!));
   }
   test: string[] = ['hi', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'k', 'i'];
   name = new FormControl('', [Validators.required, Validators.minLength(8)]);
@@ -77,6 +127,7 @@ export class DeskComponent implements OnInit {
               console.log("Preference founded");
               console.log(this.desk);
               this.getColumns();
+              this.getToDos(this.desk.id);
             },
             error: err => {
               console.log(err);
@@ -93,6 +144,7 @@ export class DeskComponent implements OnInit {
               this.desk = data;
               console.log(this.desk);
               this.getColumns();
+              this.getToDos(this.desk.id);
             },
             error: err => {
               console.log(err);
@@ -117,6 +169,7 @@ export class DeskComponent implements OnInit {
         this.deskService.getDesks().subscribe({
           next: (data: Desk[]) => {
             this.desks = data;
+            this.getColumns();
           },
           error: err => {
             console.log(err);
@@ -139,7 +192,15 @@ export class DeskComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
-        this.columns = result;
+        this.columns = result.sort(function (a: Column, b: Column) {
+          if (a.order > b.order) {
+            return 1;
+          }
+          if (a.order < b.order) {
+            return -1;
+          }
+          return 0;
+        });
         /*this.deskService.getDesks().subscribe({
           next: (data: Desk[]) => {
             this.desks = data;
@@ -297,7 +358,16 @@ export class DeskComponent implements OnInit {
     console.log("hi");
     this.columnService.getColumns(this.desk!.id).subscribe({
       next: data => {
-        this.columns = data;
+        this.columns = data.sort(function (a, b) {
+          if (a.order > b.order) {
+            return 1;
+          }
+          if (a.order < b.order) {
+            return -1;
+          }
+          return 0;
+        });
+        //this.columns
         console.log(this.columns);
       },
       error: err => {
@@ -318,5 +388,116 @@ export class DeskComponent implements OnInit {
     })
   }
 
+  generateLink() {
+    this.deskService.setLink(this.desk!.id).subscribe( {
+      next: data => {
+        this.desk = data;
+        console.log(this.desk);
+      },
+      error: err => {
+        console.log(err);
+
+      }
+    })
+  }
+  hasInviteLink() {
+    return !(this.desk?.inviteLink === null);
+  }
+  hasAccessToInviteLink() {
+    return this.getDeskOwner()!.user.id === this.getCurrentUser().id;
+  }
+  getInviteLink() {
+    if (this.hasInviteLink()) {
+      return "localhost:4200/invite?desk=" + this.desk?.inviteLink;
+    }
+    return null;
+  }
+  getCurrentUser() {
+    return JSON.parse(localStorage.getItem("currentUser")!);
+  }
+
+  removeUser(usersId: number[]) {
+    this.deskService.removeUserFromDesk(usersId, this.desk!.id).subscribe({
+      next: data => {
+        this.desk = data;
+        //console.log(this.desk);
+      },
+      error: err => {
+        console.log(err);
+
+      }
+    })
+  }
+  removeDesk(deskId: number) {
+    this.deskService.removeDesk(deskId).subscribe({
+      next: data => {
+        this.loadDesks();
+        //console.log(this.desk);
+      },
+      error: err => {
+        console.log(err);
+
+      }
+    })
+  }
+  getToDos(deskId: number) {
+    this.todoService.getToDos(deskId).subscribe({
+      next: data => {
+        this.toDos = data;
+        console.log(this.toDos);
+        //console.log(this.desk);
+      },
+      error: err => {
+        console.log(err);
+
+      }
+    })
+  }
+  getToDosForColumn(columnId: number) {
+    return this.toDos.filter( todo => todo.column.id === columnId);
+  }
+  openToDoCreationDialog() {
+    const dialogRef = this.dialog.open(TodoCreationComponent, {
+      data: {deskId: this.desk?.id}
+      //width: '500px',
+    });
+    dialogRef.afterClosed().subscribe( result => {
+      if (result != undefined) {
+        this.toDos = result;
+        /*this.deskService.getDesks().subscribe({
+          next: (data: Desk[]) => {
+            this.desks = data;
+          },
+          error: err => {
+            console.log(err);
+          }
+        });*/
+      }
+    })
+  }
+
+
+
+  movies = [
+    'Episode I - The Phantom Menace',
+    'Episode II - Attack of the Clones',
+    'Episode III - Revenge of the Sith',
+    'Episode IV - A New Hope',
+    'Episode V - The Empire Strikes Back',
+    'Episode VI - Return of the Jedi',
+    'Episode VII - The Force Awakens',
+    'Episode VIII - The Last Jedi',
+    'Episode IX – The Rise of Skywalker',
+  ];
+
+  drop_movie(event: CdkDragDrop<string[]>) {
+    console.log("Moviee data");
+    console.log(this.movies);
+    console.log("Prev index");
+    console.log(event.previousIndex);
+    console.log("Current index");
+    console.log(event.currentIndex);
+    moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
+  }
 
 }

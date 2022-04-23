@@ -36,6 +36,7 @@ export class UserService {
       const body = {email: email, password: password};
       this.http.post<any>(this.http_service.base_url + "Users/Login", body).subscribe( {
         next: data => {
+          localStorage.setItem("currentUser", JSON.stringify(data));
           localStorage.setItem("token", data.token.tokenValue);
           this.router.navigate(['']);
         },
@@ -47,5 +48,6 @@ export class UserService {
     }
     logoutUser() {
       localStorage.removeItem("token");
+      localStorage.removeItem("currentUser");
     }
 }

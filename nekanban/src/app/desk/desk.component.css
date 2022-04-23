@@ -42,6 +42,8 @@
 
   box-shadow: 0 0 3px;
   margin-left: auto;
+  display: flex;
+  flex-direction: column;
 }
 .settings-card mat-card-title p {
   display: flex;
@@ -185,7 +187,19 @@ mat-form-field
 .add-column-button {
   display: block;
 }
-
+.user-name {
+  margin-right: 40px;
+}
+.users-list .mat-list-item a {
+  display: flex;
+}
+.users-list .mat-list-item a mat-icon {
+  margin-left: auto;
+}
+.desk-remove-button {
+  width: 100%;
+  margin-top: auto;
+}
 
 
 

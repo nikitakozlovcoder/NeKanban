@@ -24,10 +24,14 @@ import { DeskCreationDialogComponent } from './desk-creation-dialog/desk-creatio
 import { TaskCreationComponent } from './task-creation/task-creation.component';
 import { ColumnCreationComponent } from './column-creation/column-creation.component';
 import {ColumnService} from "./services/column.service";
+import { InviteComponent } from './invite/invite.component';
+import { TodoCreationComponent } from './todo-creation/todo-creation.component';
+import {TodoService} from "./services/todo.service";
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
-  { path: '', component: DeskComponent, canActivate: [DeskGuard]}
+  { path: '', component: DeskComponent, canActivate: [DeskGuard]},
+  { path: 'invite', component: InviteComponent}
 ];
 
 @NgModule({
@@ -42,6 +46,8 @@ const appRoutes: Routes =[
     DeskCreationDialogComponent,
     TaskCreationComponent,
     ColumnCreationComponent,
+    InviteComponent,
+    TodoCreationComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -58,7 +64,8 @@ const appRoutes: Routes =[
   BaseHttpService,
   DeskGuard,
     DeskComponent,
-  ColumnService],
+  ColumnService,
+    TodoService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

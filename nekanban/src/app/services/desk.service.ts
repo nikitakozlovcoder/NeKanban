@@ -6,13 +6,17 @@ import {BaseHttpService} from "./base_http.service";
 import {DeskUsers} from "../models/deskusers";
 import {Desk} from "../models/desk";
 import {Column} from "../models/column";
+import {Todo} from "../models/todo";
 
 @Injectable()
 export class DeskService {
 
-  name ='';
+  name = '';
+
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router, public dialog: MatDialog,
-              private http_service: BaseHttpService) { }
+              private http_service: BaseHttpService) {
+  }
+
   getDesks() {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -26,6 +30,7 @@ export class DeskService {
     //console.log(desks);
     //return desks;
   }
+
   addDesk(name: string) {
     const body = {name: name};
     const httpOptions = {
@@ -36,7 +41,8 @@ export class DeskService {
     }
     return this.http.post<Desk>(this.http_service.base_url + "Desks/CreateDesk", body, httpOptions);
   }
-  addPreference(id: number, preference: number)  {
+
+  addPreference(id: number, preference: number) {
     const body = {preference: preference};
     const httpOptions = {
       headers: new HttpHeaders({
@@ -46,6 +52,7 @@ export class DeskService {
     }
     return this.http.put<Desk[]>(this.http_service.base_url + "DesksUsers/SetPreferenceType/" + id, body, httpOptions);
   }
+
   updateDesk(id: number, name: string) {
     const body = {name: name};
     const httpOptions = {
@@ -64,6 +71,7 @@ export class DeskService {
     })*/
     return this.http.put<Desk>(this.http_service.base_url + "Desks/UpdateDesk/" + id, body, httpOptions);
   }
+
   getDesk(id: number) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -74,4 +82,48 @@ export class DeskService {
     return this.http.get<Desk>(this.http_service.base_url + "Desks/GetDesk/" + id, httpOptions);
   }
 
+  setLink(deskId: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    const body = {action: 1};
+    return this.http.put<Desk>(this.http_service.base_url + "Desks/InviteLink/" + deskId, body, httpOptions);
+  }
+
+  inviteByLink(guid: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    const body = {uid: guid};
+    return this.http.put<Desk>(this.http_service.base_url + "DesksUsers/AddUserByLink/", body, httpOptions);
+  }
+
+  removeUserFromDesk(usersId: number[], deskId: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    const body = {usersToRemove: usersId};
+    return this.http.put<Desk>(this.http_service.base_url + "DesksUsers/RemoveUsers/" + deskId, body, httpOptions);
+  }
+
+  removeDesk(deskId: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    return this.http.delete(this.http_service.base_url + "Desks/Delete?id=" + deskId, httpOptions);
+  }
+
 }
+
