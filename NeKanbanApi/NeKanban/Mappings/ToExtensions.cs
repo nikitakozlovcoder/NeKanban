@@ -98,9 +98,10 @@ public static class ToExtensions
 
     public static ToDoVm ToToDoVm(this ToDo toDo)
     {
-        return new ToDoVm()
+        return new ToDoVm
         {
             Id = toDo.Id,
+            Order = toDo.Order,
             Column = toDo.Column?.ToColumnVm(),
             Body = toDo.Body,
             Name = toDo.Name,
@@ -110,10 +111,11 @@ public static class ToExtensions
     
     public static ToDoUserVm ToToDoUserVm(this ToDoUser toDoUser)
     {
-        return new ToDoUserVm()
+        return new ToDoUserVm
         {
-           ToDoUserType = toDoUser.ToDoUserType,
-           DeskUser = toDoUser.DeskUser?.ToDeskUserLightVm()
+            Id = toDoUser.Id,
+            ToDoUserType = toDoUser.ToDoUserType,
+            DeskUser = toDoUser.DeskUser?.ToDeskUserLightVm()
         };
     }
 

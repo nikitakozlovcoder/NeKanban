@@ -14,6 +14,7 @@ using NeKanban.Services.Desks;
 using NeKanban.Services.DesksUsers;
 using NeKanban.Services.MyDesks;
 using NeKanban.Services.ToDos;
+using NeKanban.Services.ToDos.ToDoUsers;
 using NeKanban.Services.Tokens;
 using NeKanban.Services.Users;
 
@@ -23,7 +24,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddScoped<IApplicationUsersService, ApplicationUsersService>();
 builder.Services.AddScoped<ITransactionFactory, TransactionFactory>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -34,6 +34,7 @@ builder.Services.AddScoped<IDeskUserService, DeskUserService>();
 builder.Services.AddScoped<IMyDesksService, MyDesksService>();
 builder.Services.AddScoped<IColumnsService, ColumnsService>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
+builder.Services.AddScoped<IToDoUserService, ToDoUserService>();
 
 builder.Services.AddDbContext<ApplicationContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
