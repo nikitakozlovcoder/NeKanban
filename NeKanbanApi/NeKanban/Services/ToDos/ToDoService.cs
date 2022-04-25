@@ -54,8 +54,10 @@ public class ToDoService : BaseService, IToDoService
         EnsureEntityExists(deskUser);
         var todo = new ToDo();
         todo.FromCreateModel(model);
+      
         var columns = await _columnsService.GetColumns(deskId, ct);
         todo.ColumnId = columns.Single(x => x.Type == ColumnType.Start).Id;
+        todo.Order = await GetCreateOrderInColum(todo.ColumnId, ct);
         await _toDoRepository.Create(todo, ct);
 
         var creator = new ToDoUser
@@ -68,14 +70,58 @@ public class ToDoService : BaseService, IToDoService
         return await GetToDos(deskId, ct);
     }
 
-
-    public Task<List<ToDoVm>> MoveToDo(int toDoId, ToDoMoveModel model, CancellationToken ct)
+    private async Task<int> GetCreateOrderInColum(int todoColumnId, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var minId = await _toDoRepository.QueryableSelect().Where(x => x.ColumnId == todoColumnId)
+            .MinAsync(x => (int?)x.Order, ct) ?? 0;
+        return Math.Min(minId, 0) - 1;
     }
 
-    public Task<List<ToDoVm>> UpdateToDo(int toDoId, ToDoUpdateModel model, CancellationToken ct)
+
+    public async Task<List<ToDoVm>> MoveToDo(int toDoId, ToDoMoveModel model, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        //TODO check permission and columnId in desk
+        var toDo = await _toDoRepository.QueryableSelect().Include(x=> x.Column)
+            .FirstOrDefaultAsync(x => x.Id == toDoId, ct);
+        EnsureEntityExists(toDo);
+        var others = await _toDoRepository.QueryableSelect()
+            .Where(x => x.ColumnId == model.ColumnId && x.Id != toDoId && x.Order >= toDo!.Order).OrderBy(x=> x.Order).ToListAsync(ct);
+        var order = model.Order;
+        toDo!.ColumnId = model.ColumnId;
+        toDo.Order = order;
+        
+        foreach (var item in others)
+        {
+            if (item.Order == order)
+            {
+                item.Order = order++;
+                await _toDoRepository.Update(item, ct);
+            }
+            else
+            {
+                break;
+            }
+        }
+        
+        await _toDoRepository.Update(toDo, ct);
+        return await GetToDos(toDo.Column!.DeskId, ct);
+    }
+
+    public async Task<ToDoVm> UpdateToDo(int toDoId, ToDoUpdateModel model, CancellationToken ct)
+    {
+        var todo = await GetToDo(toDoId, ct);
+        EnsureEntityExists(todo);
+        todo!.FromUpdateModel(model);
+        await _toDoRepository.Update(todo!, ct);
+        return todo!.ToToDoVm();
+    }
+
+    public Task<ToDo?> GetToDo(int toDoId, CancellationToken ct)
+    {
+        return _toDoRepository.QueryableSelect().Include(x => x.ToDoUsers)
+            .ThenInclude(x => x.DeskUser)
+            .ThenInclude(x => x!.User)
+            .Include(x => x.Column)
+            .FirstOrDefaultAsync(x => x.Id== toDoId, ct);
     }
 }
