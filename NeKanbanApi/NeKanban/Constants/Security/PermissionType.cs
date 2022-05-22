@@ -1,4 +1,4 @@
-﻿namespace NeKanban.Constants;
+﻿namespace NeKanban.Constants.Security;
 
 public enum PermissionType
 {
@@ -11,5 +11,6 @@ public enum PermissionType
     AssignTasks,
     AssignTasksThemself,
     UpdateTask,
-    MoveTasks
+    MoveTasks,
+    AccessDesk
 }

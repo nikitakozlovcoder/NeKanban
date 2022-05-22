@@ -10,6 +10,10 @@ public class PermissionsRoleMapping
     {
         var userPermissions = new List<PermissionVm>
         {
+            new ()
+            {
+                Permission = PermissionType.AccessDesk
+            },
             new()
             {
                 Permission = PermissionType.AssignTasksThemself
