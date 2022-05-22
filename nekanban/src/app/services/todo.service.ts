@@ -32,4 +32,57 @@ export class TodoService {
     };
     return this.http.post<Todo[]>(this.http_service.base_url + "ToDos/CreateToDo/" + deskId, requestBody, httpOptions);
   }
+  assignUser(todoId: number, deskUserId: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    const requestBody = {
+      descUserId: deskUserId
+    };
+    return this.http.put<Todo>(this.http_service.base_url + "ToDos/AssignUser/" + todoId, requestBody, httpOptions);
+  }
+  removeUser(todoUserId: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      }),
+      body: {
+        toDoUserId: todoUserId
+      }
+    }
+    /*const requestBody = {
+      toDoUserId: todoUserId
+    };*/
+    return this.http.delete<Todo>(this.http_service.base_url + "ToDos/RemoveUser/", httpOptions);
+  }
+  updateToDo(todoId: number, name: string, body: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    const requestBody = {
+      name: name,
+      body: body
+    };
+    return this.http.put<Todo>(this.http_service.base_url + "ToDos/UpdateToDo/" + todoId, requestBody, httpOptions);
+  }
+  moveToDo(todoId: number, columnId: number, order: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      })
+    }
+    const requestBody = {
+      columnId: columnId,
+      order: order
+    };
+    return this.http.put<Todo[]>(this.http_service.base_url + "ToDos/MoveToDo/" + todoId, requestBody, httpOptions);
+  }
 }
