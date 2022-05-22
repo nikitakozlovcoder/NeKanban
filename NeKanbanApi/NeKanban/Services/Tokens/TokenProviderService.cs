@@ -11,7 +11,6 @@ namespace NeKanban.Services.Tokens;
 public class TokenProviderService : ITokenProviderService
 {
     private readonly JwtSettings _jwtSettings;
-
     public TokenProviderService(IOptions<JwtSettings> jwtSettings)
     {
         _jwtSettings = jwtSettings.Value;

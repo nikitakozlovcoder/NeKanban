@@ -51,10 +51,10 @@ builder.Services.AddSwaggerGen(x =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
+    
     x.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
         {
-            
             new OpenApiSecurityScheme
             {
                 Reference = new OpenApiReference
@@ -71,6 +71,7 @@ builder.Services.AddSwaggerGen(x =>
         }
     });
 });
+
 var jwt = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
 builder.Services.AddCors();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -86,6 +87,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwt.Secret!)),
         };
     });
+
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
     {
@@ -103,8 +105,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddRoles<ApplicationRole>()
     .AddEntityFrameworkStores<ApplicationContext>()
     .AddDefaultTokenProviders();
-
-
 
 var app = builder.Build();
 app.UseCors(x=> x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
@@ -133,4 +133,5 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsJsonAsync(e.Message);
     }
 });
+
 app.Run();

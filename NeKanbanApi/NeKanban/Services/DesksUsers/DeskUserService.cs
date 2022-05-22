@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NeKanban.Constants;
 using NeKanban.Controllers.Models;
 using NeKanban.Controllers.Models.DeskModels;
+using NeKanban.Controllers.Models.DeskUserModels;
 using NeKanban.Data;
 using NeKanban.Data.Entities;
 using NeKanban.ExceptionHandling;
@@ -80,6 +81,23 @@ public class DeskUserService : BaseService, IDeskUserService
         return await _myDesksService.GetForUser(applicationUser.Id, ct);
     }
 
+    public async Task<List<DeskUserVm>> ChangeRole(DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct)
+    {
+        var deskUser = await _deskUserRepository.QueryableSelect()
+            .FirstOrDefaultAsync(x => x.Id == deskUserId, ct);
+        EnsureEntityExists(deskUser);
+        //TODO check that current user has permission to do so by deskUser.DeskId
+
+        if (model.Role == RoleType.Owner)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
+        }
+
+        deskUser!.Role = model.Role;
+        await _deskUserRepository.Update(deskUser, ct);
+        return await GetDeskUsers(deskUser.DeskId, ct);
+    }
+
 
     private async Task ResetPreferences(PreferenceType type, int preserveId, CancellationToken ct)
     {
@@ -90,5 +108,14 @@ public class DeskUserService : BaseService, IDeskUserService
             deskUser.Preference = PreferenceType.Normal;
             await _deskUserRepository.Update(deskUser, ct);
         }
+    }
+
+    private async Task<List<DeskUserVm>> GetDeskUsers(int deskId, CancellationToken ct)
+    {
+        var deskUsers = await _deskUserRepository.QueryableSelect()
+            .Include(x=> x.User)
+            .Where(x => x.DeskId == deskId).ToListAsync(ct);
+        return deskUsers.Select(x => x.ToDeskUserVm()).ToList();
+
     }
 }
