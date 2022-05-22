@@ -12,5 +12,6 @@ public enum PermissionType
     AssignTasksThemself,
     UpdateTask,
     MoveTasks,
-    AccessDesk
+    AccessDesk,
+    RemoveUsers
 }

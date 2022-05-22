@@ -62,6 +62,10 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.UpdateGeneralDesk
+            },
+            new()
+            {
+                Permission = PermissionType.RemoveUsers
             }
         };
         ownerPermissions.AddRange(managerPermissions);
