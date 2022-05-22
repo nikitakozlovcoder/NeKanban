@@ -10,6 +10,10 @@ public class PermissionsRoleMapping
     {
         var userPermissions = new List<PermissionVm>
         {
+            new ()
+            {
+                Permission = PermissionType.AccessDesk
+            },
             new()
             {
                 Permission = PermissionType.AssignTasksThemself
@@ -58,6 +62,10 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.UpdateGeneralDesk
+            },
+            new()
+            {
+                Permission = PermissionType.RemoveUsers
             }
         };
         ownerPermissions.AddRange(managerPermissions);

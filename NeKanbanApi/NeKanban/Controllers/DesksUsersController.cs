@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NeKanban.Constants;
 using NeKanban.Controllers.Models;
 using NeKanban.Controllers.Models.DeskModels;
+using NeKanban.Controllers.Models.DeskUserModels;
 using NeKanban.Data.Entities;
 using NeKanban.Services.Desks;
 using NeKanban.Services.DesksUsers;
@@ -43,5 +44,11 @@ public class DesksUsersController : BaseAuthController
     {
         var user = await GetApplicationUser();
         return await _desksService.AddUserToDesk(model, user, ct);
+    }
+    
+    [HttpPut("{deskUserId:int}")]
+    public async Task<List<DeskUserVm>> ChangeRole([FromBody]DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct = default)
+    {
+        return await _deskUserService.ChangeRole(model, deskUserId, ct);
     }
 }

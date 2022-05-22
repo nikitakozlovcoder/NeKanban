@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Net;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Constants;
 using NeKanban.Controllers.Models.ToDoModels;
 using NeKanban.Data;
 using NeKanban.Data.Entities;
+using NeKanban.ExceptionHandling;
 using NeKanban.Mappings;
 using NeKanban.Services.Columns;
 using NeKanban.Services.ViewModels;
@@ -17,6 +19,7 @@ public class ToDoService : BaseService, IToDoService
     private readonly IColumnsService _columnsService;
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IRepository<ToDoUser> _toDoUserRepository;
+    private readonly IRepository<Column> _columnRepository;
 
     public ToDoService(
         IRepository<Desk> deskRepository, 
@@ -24,13 +27,15 @@ public class ToDoService : BaseService, IToDoService
         IColumnsService columnsService, 
         IRepository<ToDo> toDoRepository, 
         IRepository<DeskUser> deskUserRepository, 
-        IRepository<ToDoUser> toDoUserRepository) : base(userManager)
+        IRepository<ToDoUser> toDoUserRepository,
+        IRepository<Column> columnRepository) : base(userManager)
     {
         _deskRepository = deskRepository;
         _columnsService = columnsService;
         _toDoRepository = toDoRepository;
         _deskUserRepository = deskUserRepository;
         _toDoUserRepository = toDoUserRepository;
+        _columnRepository = columnRepository;
     }
 
     public async Task<List<ToDoVm>> GetToDos(int deskId, CancellationToken ct)
@@ -80,10 +85,16 @@ public class ToDoService : BaseService, IToDoService
 
     public async Task<List<ToDoVm>> MoveToDo(int toDoId, ToDoMoveModel model, CancellationToken ct)
     {
-        //TODO check permission and columnId in desk
+        //TODO check permission
         var toDo = await _toDoRepository.QueryableSelect().Include(x=> x.Column)
             .FirstOrDefaultAsync(x => x.Id == toDoId, ct);
         EnsureEntityExists(toDo);
+        var isMoveValid = await _columnRepository.QueryableSelect()
+            .AnyAsync(x => x.Id == model.ColumnId && x.DeskId == toDo!.Column!.DeskId, ct);
+        if (!isMoveValid)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest);
+        }
         var others = await _toDoRepository.QueryableSelect()
             .Where(x => x.ColumnId == model.ColumnId && x.Id != toDoId && x.Order >= toDo!.Order).OrderBy(x=> x.Order).ToListAsync(ct);
         var order = model.Order;
@@ -122,6 +133,6 @@ public class ToDoService : BaseService, IToDoService
             .ThenInclude(x => x.DeskUser)
             .ThenInclude(x => x!.User)
             .Include(x => x.Column)
-            .FirstOrDefaultAsync(x => x.Id== toDoId, ct);
+            .FirstOrDefaultAsync(x => x.Id == toDoId, ct);
     }
 }
