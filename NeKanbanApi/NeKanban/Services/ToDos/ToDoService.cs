@@ -105,7 +105,7 @@ public class ToDoService : BaseService, IToDoService
         {
             if (item.Order == order)
             {
-                item.Order = order++;
+                item.Order = ++order;
                 await _toDoRepository.Update(item, ct);
             }
             else
