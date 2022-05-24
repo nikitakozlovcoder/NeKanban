@@ -73,6 +73,12 @@ export class TodoService {
     return this.http.put<Todo>(this.http_service.base_url + "ToDos/UpdateToDo/" + todoId, requestBody, httpOptions);
   }
   moveToDo(todoId: number, columnId: number, order: number) {
+    console.log("Moving TODO");
+    console.log(todoId);
+    console.log("in column");
+    console.log(columnId);
+    console.log("To");
+    console.log(order);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

@@ -42,7 +42,14 @@ export class DeskComponent implements OnInit {
 
   drop(event: CdkDragDrop<Todo[]>, columnId: number) {
     if (event.previousContainer === event.container) {
-      this.todoService.moveToDo(event.container.data[event.previousIndex].id, event.container.data[event.previousIndex].column.id, event.container.data[event.currentIndex].order + 1).subscribe({
+      let position;
+      if (event.previousIndex < event.currentIndex) {
+        position = event.container.data[event.currentIndex].order + 1;
+      }
+      else {
+        position = event.container.data[event.currentIndex].order;
+      }
+      this.todoService.moveToDo(event.container.data[event.previousIndex].id, event.container.data[event.previousIndex].column.id, position).subscribe({
         next: data => {
           this.toDos = data;
         },
@@ -73,8 +80,17 @@ export class DeskComponent implements OnInit {
       console.log(event.container);
       console.log(event.currentIndex);
       let newOrder;
+      let newIndex;
       if (event.container.data.length > 0) {
-        newOrder = event.container.data[event.currentIndex].order + 1;
+        if (event.currentIndex == event.container.data.length) {
+          console.log("yes");
+          newOrder = event.container.data[event.currentIndex-1].order + 1;
+        }
+        else {
+          console.log("no");
+          newOrder = event.container.data[event.currentIndex].order;
+        }
+        //newIndex = event.currentIndex;
       }
       else {
         newOrder = 0;
@@ -106,8 +122,14 @@ export class DeskComponent implements OnInit {
     console.log("Current index");
     console.log(event.currentIndex);
     if (event.previousIndex != 0 && event.previousIndex != event.container.data.length - 1 && event.currentIndex != 0 && event.currentIndex != event.container.data.length - 1) {
-      //moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      this.columnService.moveColumn(event.container.data[event.previousIndex].id, event.container.data[event.currentIndex].order + 1).subscribe({
+      let position;
+      if (event.previousIndex < event.currentIndex) {
+        position = event.container.data[event.currentIndex].order + 1;
+      }
+      else {
+        position = event.container.data[event.currentIndex].order;
+      }
+      this.columnService.moveColumn(event.container.data[event.previousIndex].id, position).subscribe({
         next: data => {
           this.columns = data.sort(function (a: Column, b: Column) {
             if (a.order > b.order) {
@@ -123,6 +145,7 @@ export class DeskComponent implements OnInit {
           console.log(err);
         }
       })
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     }
 
 
