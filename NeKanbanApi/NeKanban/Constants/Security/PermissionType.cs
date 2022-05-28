@@ -8,10 +8,13 @@ public enum PermissionType
     DeleteDesk,
     CreateColumns,
     ManageColumns,
-    AssignTasks,
+    ManageAssigners,
     AssignTasksThemself,
+    CreateTasks,
     UpdateTask,
+    DeleteTask,
     MoveTasks,
     AccessDesk,
-    RemoveUsers
+    RemoveUsers,
+    ChangeUserRole,
 }

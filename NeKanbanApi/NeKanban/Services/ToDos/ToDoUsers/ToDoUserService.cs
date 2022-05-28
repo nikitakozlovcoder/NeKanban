@@ -56,4 +56,13 @@ public class ToDoUserService : BaseService, IToDoUserService
         await _toDoUserRepository.Remove(toDoUser, ct);
         return (await _toDoService.GetToDo(toDoUser.ToDoId, ct))!.ToToDoVm();
     }
+
+    public async Task<int> GetToDoUserUserId(int toDoUserId, CancellationToken ct)
+    {
+        var todoUser = await _toDoUserRepository.QueryableSelect()
+            .Include(x=> x.DeskUser)
+            .FirstOrDefaultAsync(x => x.Id == toDoUserId, ct);
+        EnsureEntityExists(todoUser);
+        return todoUser!.DeskUser!.UserId;
+    }
 }

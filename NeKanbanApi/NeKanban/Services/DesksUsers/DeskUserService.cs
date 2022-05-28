@@ -86,7 +86,6 @@ public class DeskUserService : BaseService, IDeskUserService
         var deskUser = await _deskUserRepository.QueryableSelect()
             .FirstOrDefaultAsync(x => x.Id == deskUserId, ct);
         EnsureEntityExists(deskUser);
-        //TODO check that current user has permission to do so by deskUser.DeskId
 
         if (model.Role == RoleType.Owner)
         {
@@ -98,7 +97,13 @@ public class DeskUserService : BaseService, IDeskUserService
         return await GetDeskUsers(deskUser.DeskId, ct);
     }
 
-
+    public async Task<int> GetDeskUserUserId(int deskUserId, CancellationToken ct)
+    {
+        var deskUser = await _deskUserRepository.QueryableSelect().FirstOrDefaultAsync(x => x.Id == deskUserId ,ct);
+        EnsureEntityExists(deskUser);
+        return deskUser!.UserId;
+    }
+    
     private async Task ResetPreferences(PreferenceType type, int preserveId, CancellationToken ct)
     {
         var deskUsers = await _deskUserRepository.QueryableSelect()

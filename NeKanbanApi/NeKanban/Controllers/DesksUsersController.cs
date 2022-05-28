@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NeKanban.Constants;
+using NeKanban.Constants.Security;
 using NeKanban.Controllers.Models;
 using NeKanban.Controllers.Models.DeskModels;
 using NeKanban.Controllers.Models.DeskUserModels;
@@ -20,16 +21,21 @@ public class DesksUsersController : BaseAuthController
     private readonly IDesksService _desksService;
     private readonly IDeskUserService _deskUserService;
 
-    public DesksUsersController(IDesksService desksService, IDeskUserService deskUserService, UserManager<ApplicationUser> userManager) : base(userManager)
+    public DesksUsersController(
+        IDesksService desksService, 
+        IDeskUserService deskUserService, 
+        UserManager<ApplicationUser> userManager,
+        IServiceProvider serviceProvider) : base(userManager, serviceProvider)
     {
         _desksService = desksService;
         _deskUserService = deskUserService;
     }
 
     [HttpPut("{deskId:int}")]
-    public Task<DeskVm> RemoveUsers([FromBody]DeskRemoveUsersModel deskRemoveUsersModel, int deskId, CancellationToken ct = default)
+    public async Task<DeskVm> RemoveUsers([FromBody]DeskRemoveUsersModel deskRemoveUsersModel, int deskId, CancellationToken ct = default)
     {
-        return _desksService.UpdateDesk(deskRemoveUsersModel, deskId, ct);
+        await EnsureAbleTo<Desk>(PermissionType.RemoveUsers, deskId, ct);
+        return await _desksService.UpdateDesk(deskRemoveUsersModel, deskId, ct);
     }
     
     [HttpPut("{deskId:int}")]
@@ -49,6 +55,7 @@ public class DesksUsersController : BaseAuthController
     [HttpPut("{deskUserId:int}")]
     public async Task<List<DeskUserVm>> ChangeRole([FromBody]DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct = default)
     {
+        await EnsureAbleTo<DeskUser>(PermissionType.ChangeUserRole, deskUserId, ct);
         return await _deskUserService.ChangeRole(model, deskUserId, ct);
     }
 }

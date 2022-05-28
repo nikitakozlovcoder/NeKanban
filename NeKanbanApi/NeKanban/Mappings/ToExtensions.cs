@@ -25,9 +25,6 @@ public static class ToExtensions
     #endregion
 
     #region Desk
-
-    
-    
     public static Desk ToDesk(this DeskCreateModel deskCreateModel)
     {
         return new Desk

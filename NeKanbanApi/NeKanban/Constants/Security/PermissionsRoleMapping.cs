@@ -4,7 +4,7 @@ namespace NeKanban.Constants.Security;
 
 public class PermissionsRoleMapping
 {
-    public List<DeskRoleVm> DeskRoles { get; set; } = new List<DeskRoleVm>();
+    public List<DeskRoleVm> DeskRoles { get; } = new ();
 
     public PermissionsRoleMapping()
     {
@@ -21,14 +21,26 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.MoveTasks
+            },
+            new ()
+            {
+                Permission = PermissionType.CreateTasks
+            },
+            new()
+            {
+                Permission = PermissionType.UpdateTask
+            },
+            new()
+            {
+                Permission = PermissionType.DeleteTask
             }
         };
         
-       var managerPermissions = new List<PermissionVm>
+        var managerPermissions = new List<PermissionVm>
         {
             new()
             {
-                Permission = PermissionType.AssignTasks
+                Permission = PermissionType.ManageAssigners
             },
             new()
             {
@@ -41,10 +53,6 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.ManageColumns
-            },
-            new()
-            {
-                Permission = PermissionType.UpdateTask
             }
         };
         managerPermissions.AddRange(userPermissions);
@@ -66,6 +74,10 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.RemoveUsers
+            },
+            new()
+            {
+                Permission = PermissionType.ChangeUserRole
             }
         };
         ownerPermissions.AddRange(managerPermissions);

@@ -13,6 +13,7 @@ using NeKanban.Services.Columns;
 using NeKanban.Services.Desks;
 using NeKanban.Services.DesksUsers;
 using NeKanban.Services.MyDesks;
+using NeKanban.Services.Security;
 using NeKanban.Services.ToDos;
 using NeKanban.Services.ToDos.ToDoUsers;
 using NeKanban.Services.Tokens;
@@ -35,6 +36,10 @@ builder.Services.AddScoped<IMyDesksService, MyDesksService>();
 builder.Services.AddScoped<IColumnsService, ColumnsService>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
 builder.Services.AddScoped<IToDoUserService, ToDoUserService>();
+builder.Services.AddScoped<IEntityProtector<Desk>, DeskEntityProtector>();
+builder.Services.AddScoped<IEntityProtector<DeskUser>, DeskUserEntityProtector>();
+builder.Services.AddScoped<IEntityProtector<Column>, ColumnEntityProtector>();
+builder.Services.AddScoped<IEntityProtector<ToDo>, ToDoEntityProtector>();
 
 builder.Services.AddDbContext<ApplicationContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
