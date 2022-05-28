@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="NeKanban.Data.Entities.ApplicationRole">
+    <Position X="11.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Entities\ApplicationRole.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NeKanban.Data.Entities.ApplicationUser">
+    <Position X="11" Y="2.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Entities\ApplicationUser.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NeKanban.Data.Entities.Column">
+    <Position X="1" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAAAAAAAAAAAACAAAQAAAAAAAAAIQBAAAAAAAA=</HashCode>
+      <FileName>Data\Entities\Column.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Desk" />
+      <Property Name="Type" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="ToDos" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NeKanban.Data.Entities.Desk">
+    <Position X="5.75" Y="3" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAAAAAAEAAAAAAAQAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Data\Entities\Desk.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NeKanban.Data.Entities.DeskUser">
+    <Position X="7.5" Y="5.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAEACAAAoAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Data\Entities\DeskUser.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Role" />
+      <Property Name="User" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NeKanban.Data.Entities.ToDo">
+    <Position X="3" Y="5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAAAAAAAgAAAABBAAQAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Entities\ToDo.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NeKanban.Data.Entities.ToDoUser">
+    <Position X="2.25" Y="8.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAQAAIAAAAAAAAAAAAAAAAAAAAEAAAAAgAAA=</HashCode>
+      <FileName>Data\Entities\ToDoUser.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ToDo" />
+      <Property Name="ToDoUserType" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Identity.IdentityUser&lt;TKey&gt;">
+    <Position X="13.5" Y="1.5" Width="3" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Identity.IdentityRole&lt;TKey&gt;">
+    <Position X="7.5" Y="0.5" Width="2.75" />
+    <TypeIdentifier />
+  </Class>
+  <Enum Name="NeKanban.Constants.RoleType">
+    <Position X="11.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAACAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constants\Security\RolesConstants.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="NeKanban.Constants.ToDoUserType">
+    <Position X="6" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Constants\ToDoUserType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="NeKanban.Constants.ColumnType">
+    <Position X="5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAACAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constants\ColumnType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
