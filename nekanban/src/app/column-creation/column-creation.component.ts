@@ -19,7 +19,7 @@ export class ColumnCreationComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  name = new FormControl('', [Validators.required, Validators.minLength(8)]);
+  name = new FormControl('', [Validators.required, Validators.minLength(3)]);
 
   createColumn() {
     this.columnService.addColumn(this.data.deskId, this.name.value).subscribe({

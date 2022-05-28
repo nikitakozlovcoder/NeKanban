@@ -27,13 +27,14 @@
 .menu-bottom-button {
   flex: 1;
   float: left;
+  width: 100%;
 }
 .register_button
 {
   width: 100%;
 }
 .desk-cards {
-  display: flex;
+  /*display: flex;*/
  margin: 20px;
   /*height: 100%;*/
 }
@@ -212,4 +213,8 @@ mat-form-field
   height: 70px !important;
   display: flex;
   justify-content: space-between;
+}
+.desk-cards-inside {
+  margin-top: 40px;
+  display: flex;
 }

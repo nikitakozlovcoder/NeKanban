@@ -21,6 +21,9 @@ import {ColumnUpdatingComponent} from "../column-updating/column-updating.compon
 import {MatSelectChange} from "@angular/material/select";
 import {RolesService} from "../services/roles.service";
 import {DeskUsers} from "../models/deskusers";
+import {DeskRole} from "../models/deskrole";
+import {Role} from "../models/Role";
+import {DeskUserService} from "../services/deskUser.service";
 
 @Component({
   selector: 'app-desk',
@@ -40,6 +43,12 @@ export class DeskComponent implements OnInit {
   toDos: Todo[] = [];
   //desk: Desk;
 
+  currentRoles : DeskRole[] = [];
+  zero  =0;
+  one = 1;
+  two = 2;
+  roles : Role[] = [new Role(0, "Участник"), new Role(1, "Менеджер"), new Role(2, "Создатель")];
+  //rolesControl = new FormControl();
 
   drop(event: CdkDragDrop<Todo[]>, columnId: number) {
     if (event.previousContainer === event.container) {
@@ -174,7 +183,7 @@ export class DeskComponent implements OnInit {
   }
 
   constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService,
-              private todoService: TodoService, private rolesService: RolesService) {
+              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService) {
     this.opened = false;
 
     //console.log(this.desks);
@@ -186,8 +195,7 @@ export class DeskComponent implements OnInit {
     this.rolesService.initRoles();
     //console.log(JSON.parse(localStorage.getItem("currentUser")!));
   }
-  test: string[] = ['hi', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'k', 'i'];
-  name = new FormControl('', [Validators.required, Validators.minLength(8)]);
+  name = new FormControl('', [Validators.required, Validators.minLength(6)]);
   panelOpenState = false;
   loadDesks() {
     this.deskService.getDesks().subscribe({
@@ -600,8 +608,15 @@ export class DeskComponent implements OnInit {
     })
   }
 
-  changeUserRole(event: MatSelectChange) {
-
+  changeUserRole(event: MatSelectChange, deskUserId: number) {
+    this.deskUserService.changeRole(deskUserId, event.value).subscribe({
+      next: (data: DeskUsers[]) => {
+        this.desk!.deskUsers = data;
+      },
+      error: err => {
+        console.log(err);
+      }
+    });
   }
   checkUserPermission(deskUser: DeskUsers, permissionName: string) {
     return this.rolesService.userHasPermission(deskUser, permissionName);
