@@ -15,7 +15,9 @@ public class UsersController : BaseAuthController
 {
     private readonly IApplicationUsersService _applicationUsersService;
     
-    public UsersController(IApplicationUsersService applicationUsersService, UserManager<ApplicationUser> userManager) : base(userManager)
+    public UsersController(IApplicationUsersService applicationUsersService,
+        UserManager<ApplicationUser> userManager,
+        IServiceProvider serviceProvider) : base(userManager, serviceProvider)
     {
         _applicationUsersService = applicationUsersService;
     }

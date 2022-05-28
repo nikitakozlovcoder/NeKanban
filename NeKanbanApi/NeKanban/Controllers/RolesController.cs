@@ -10,7 +10,9 @@ namespace NeKanban.Controllers;
 [Route("[controller]/[action]")]
 public class RolesController : BaseAuthController
 {
-    public RolesController(UserManager<ApplicationUser> userManager) : base(userManager)
+    public RolesController(
+        UserManager<ApplicationUser> userManager,
+        IServiceProvider serviceProvider) : base(userManager, serviceProvider)
     {
     }
     [HttpGet]

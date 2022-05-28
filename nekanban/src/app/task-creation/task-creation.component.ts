@@ -137,7 +137,8 @@ export class TaskCreationComponent implements OnInit {
   changeSingleUser(select:MatSelect) {
     let newIds : number[] = select.value;
     if (newIds.length === 0) {
-      this.toDoService.removeUser(this.data.deskUser.id).subscribe({
+      let todo = this.data.todo.toDoUsers.find(obj => obj.deskUser.user.id === this.data.deskUser.user.id);
+      this.toDoService.removeUser(todo!.id).subscribe({
         next: data => {
           this.data.todo = data;
         },
@@ -147,14 +148,17 @@ export class TaskCreationComponent implements OnInit {
       })
     }
     else {
-      this.toDoService.assignUser(this.data.todo.id, this.data.deskUser.id).subscribe({
-        next: data => {
-          this.data.todo = data;
-        },
-        error: err => {
-          console.log(err);
-        }
-      })
+      if (!this.usersSelected.includes(this.data.deskUser.user.id)) {
+        this.toDoService.assignUser(this.data.todo.id, this.data.deskUser.id).subscribe({
+          next: data => {
+            this.data.todo = data;
+          },
+          error: err => {
+            console.log(err);
+          }
+        })
+      }
+
     }
   }
 
