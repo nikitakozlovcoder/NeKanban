@@ -29,6 +29,7 @@ import { TodoCreationComponent } from './todo-creation/todo-creation.component';
 import {TodoService} from "./services/todo.service";
 import { TodoEditingComponent } from './todo-editing/todo-editing.component';
 import { ColumnUpdatingComponent } from './column-updating/column-updating.component';
+import {RolesService} from "./services/roles.service";
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -69,7 +70,8 @@ const appRoutes: Routes =[
   DeskGuard,
     DeskComponent,
   ColumnService,
-    TodoService],
+    TodoService,
+  RolesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

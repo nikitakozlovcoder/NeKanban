@@ -18,6 +18,9 @@ import {TodoService} from "../services/todo.service";
 import {TodoCreationComponent} from "../todo-creation/todo-creation.component";
 import {TodoEditingComponent} from "../todo-editing/todo-editing.component";
 import {ColumnUpdatingComponent} from "../column-updating/column-updating.component";
+import {MatSelectChange} from "@angular/material/select";
+import {RolesService} from "../services/roles.service";
+import {DeskUsers} from "../models/deskusers";
 
 @Component({
   selector: 'app-desk',
@@ -36,9 +39,7 @@ export class DeskComponent implements OnInit {
   columns: Column[] = [];
   toDos: Todo[] = [];
   //desk: Desk;
-  todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
 
-  done = ['Get up', 'Brush teeth', 'Take a shower', 'Check e-mail', 'Walk dog'];
 
   drop(event: CdkDragDrop<Todo[]>, columnId: number) {
     if (event.previousContainer === event.container) {
@@ -57,7 +58,8 @@ export class DeskComponent implements OnInit {
           console.log(err);
         }
       })
-      //moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      console.log(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       console.log(columnId);
       console.log(event.previousContainer);
@@ -105,12 +107,12 @@ export class DeskComponent implements OnInit {
           console.log(err);
         }
       });
-      /*transferArrayItem(
+      transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex,
-      );*/
+      );
     }
   }
 
@@ -172,7 +174,7 @@ export class DeskComponent implements OnInit {
   }
 
   constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService,
-              private todoService: TodoService) {
+              private todoService: TodoService, private rolesService: RolesService) {
     this.opened = false;
 
     //console.log(this.desks);
@@ -181,6 +183,7 @@ export class DeskComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDesks();
+    this.rolesService.initRoles();
     //console.log(JSON.parse(localStorage.getItem("currentUser")!));
   }
   test: string[] = ['hi', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'k', 'i'];
@@ -256,7 +259,7 @@ export class DeskComponent implements OnInit {
   }
   openTaskCreationDialog(todo: Todo): void {
     const dialogRef = this.dialog.open(TaskCreationComponent, {
-      data: {todo: todo, desk: this.desk}
+      data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser}
       //width: '500px',
     });
 
@@ -597,6 +600,12 @@ export class DeskComponent implements OnInit {
     })
   }
 
+  changeUserRole(event: MatSelectChange) {
+
+  }
+  checkUserPermission(deskUser: DeskUsers, permissionName: string) {
+    return this.rolesService.userHasPermission(deskUser, permissionName);
+  }
   movies = [
     'Episode I - The Phantom Menace',
     'Episode II - Attack of the Clones',

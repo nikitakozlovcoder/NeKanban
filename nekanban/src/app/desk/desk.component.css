@@ -90,7 +90,7 @@ mat-form-field
   vertical-align: sub;
 }
 .column-card {
-  width: auto;
+  width: 200px;
   float: left;
   margin-right: 15px;
   margin-bottom: 10px;
@@ -204,5 +204,12 @@ mat-form-field
 .test-list {
   display: flex;
 }
-
-
+.role-selector {
+  width: 150px;
+  margin-top: 10px;
+}
+.single-user {
+  height: 70px !important;
+  display: flex;
+  justify-content: space-between;
+}

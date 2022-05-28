@@ -27,14 +27,23 @@
           <p>Исполнители:</p>
           <mat-form-field class="user-select" appearance="fill">
             <mat-label>Исполнители</mat-label>
-            <mat-select #select [formControl]="users" multiple (closed)="changeUsers(select)">
-              <mat-select-trigger>
+            <mat-select *ngIf="checkUserPermission(data.deskUser, 'AssignTasks')" #select [formControl]="users" multiple (closed)="changeUsers(select)">
+              <!--<mat-select-trigger>
                 {{users.value ? users.value[0] : ''}}
                 <span *ngIf="users.value?.length > 1" class="example-additional-selection">
         (+{{users.value.length - 1}} {{users.value?.length === 2 ? 'еще' : 'еще'}})
       </span>
-              </mat-select-trigger>
+              </mat-select-trigger>-->
               <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}}</mat-option>
+            </mat-select>
+            <mat-select *ngIf="!checkUserPermission(data.deskUser, 'AssignTasks')" #select [formControl]="users" multiple (closed)="changeSingleUser(select)">
+              <!--<mat-select-trigger>
+                {{users.value ? users.value[0] : ''}}
+                <span *ngIf="users.value?.length > 1" class="example-additional-selection">
+        (+{{users.value.length - 1}} {{users.value?.length === 2 ? 'еще' : 'еще'}})
+      </span>
+              </mat-select-trigger>-->
+              <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}}</mat-option>
             </mat-select>
             <!--<mat-select [formControl]="toppings" multiple>
               <mat-select-trigger>
@@ -52,7 +61,7 @@
         </div>
         <mat-nav-list class ="employees-list">
           <mat-list-item *ngFor="let user of getToDoUsers()">
-            <a matLine>{{user.deskUser.user.name}}<mat-icon>cancel</mat-icon></a><mat-divider></mat-divider>
+            <a matLine>{{user.deskUser.user.name}}</a><mat-divider></mat-divider>
           </mat-list-item>
 
           <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->

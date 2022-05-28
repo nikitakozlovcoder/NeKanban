@@ -96,7 +96,7 @@ public class ToDoService : BaseService, IToDoService
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest);
         }
         var others = await _toDoRepository.QueryableSelect()
-            .Where(x => x.ColumnId == model.ColumnId && x.Id != toDoId && x.Order >= toDo!.Order).OrderBy(x=> x.Order).ToListAsync(ct);
+            .Where(x => x.ColumnId == model.ColumnId && x.Id != toDoId && x.Order >= model.Order).OrderBy(x=> x.Order).ToListAsync(ct);
         var order = model.Order;
         toDo!.ColumnId = model.ColumnId;
         toDo.Order = order;

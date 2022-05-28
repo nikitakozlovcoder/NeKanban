@@ -6,6 +6,8 @@ import {Desk} from "../models/desk";
 import {User} from "../models/user";
 import {MatSelect, MatSelectChange} from "@angular/material/select";
 import {TodoService} from "../services/todo.service";
+import {RolesService} from "../services/roles.service";
+import {DeskUsers} from "../models/deskusers";
 interface Topping {
   name: string;
   price: number;
@@ -18,7 +20,7 @@ interface Topping {
 })
 export class TaskCreationComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk}, private toDoService: TodoService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUsers}, private toDoService: TodoService, private rolesService: RolesService) { }
 
   employess : string[] = ['ivan', 'petr', 'konstantin', 'adam', 'ivan', 'petr', 'konstantin', 'adam']
 
@@ -86,6 +88,8 @@ export class TaskCreationComponent implements OnInit {
   }
   changeUsers(select:MatSelect)  {
     let newIds : number[] = select.value;
+    console.log("New ids:");
+    console.log(newIds);
     let appearedIds: number[] = [];
     newIds.forEach(el => {
       if (!this.usersSelected.includes(el)) {
@@ -120,10 +124,38 @@ export class TaskCreationComponent implements OnInit {
         }
       })
     })
+    this.usersSelected  = newIds;
     console.log("Appeared ids: ");
     console.log(appearedIds);
     console.log("Disappeared ids: ");
     console.log(disappearedIds);
     console.log(select.value);
   }
+  checkUserPermission(deskUser: DeskUsers, permissionName: string) {
+    return this.rolesService.userHasPermission(deskUser, permissionName);
+  }
+  changeSingleUser(select:MatSelect) {
+    let newIds : number[] = select.value;
+    if (newIds.length === 0) {
+      this.toDoService.removeUser(this.data.deskUser.id).subscribe({
+        next: data => {
+          this.data.todo = data;
+        },
+        error: err => {
+          console.log(err);
+        }
+      })
+    }
+    else {
+      this.toDoService.assignUser(this.data.todo.id, this.data.deskUser.id).subscribe({
+        next: data => {
+          this.data.todo = data;
+        },
+        error: err => {
+          console.log(err);
+        }
+      })
+    }
+  }
+
 }
