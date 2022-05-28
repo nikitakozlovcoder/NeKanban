@@ -40,6 +40,7 @@ builder.Services.AddScoped<IEntityProtector<Desk>, DeskEntityProtector>();
 builder.Services.AddScoped<IEntityProtector<DeskUser>, DeskUserEntityProtector>();
 builder.Services.AddScoped<IEntityProtector<Column>, ColumnEntityProtector>();
 builder.Services.AddScoped<IEntityProtector<ToDo>, ToDoEntityProtector>();
+builder.Services.AddScoped<IEntityProtector<ToDoUser>, ToDoUserProtector>();
 
 builder.Services.AddDbContext<ApplicationContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
