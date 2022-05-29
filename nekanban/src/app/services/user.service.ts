@@ -10,8 +10,6 @@ import {BaseHttpService} from "./base_http.service";
 
 @Injectable()
 export class UserService {
-  name = "";
-  id = 0;
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogComponent, {
@@ -19,15 +17,18 @@ export class UserService {
     });
 
   }
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router, public dialog: MatDialog,
+  constructor(private http: HttpClient, private router: Router, public dialog: MatDialog,
               private http_service: BaseHttpService) { }
     addUser(name: string, surname: string, email: string, password: string) {
       const body = {"email": email, "password": password, "name": name, "surname": surname};
       this.http.post<any>(this.http_service.base_url + "Users/Register", body).subscribe({
         next: data => {
+          localStorage.setItem("currentUser", JSON.stringify(data));
           localStorage.setItem("token", data.token.tokenValue);
+          this.router.navigate(['']);
         },
         error: error => {
+          this.openDialog();
           console.error('There was an error!', error.message);
         }
       })

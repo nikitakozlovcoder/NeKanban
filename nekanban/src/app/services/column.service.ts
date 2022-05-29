@@ -7,8 +7,7 @@ import {Column} from "../models/column";
 
 @Injectable()
 export class ColumnService {
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router, public dialog: MatDialog,
-              private http_service: BaseHttpService) { }
+  constructor(private http: HttpClient, private http_service: BaseHttpService) { }
   getColumns(deskId: number) {
     const httpOptions = {
       headers: new HttpHeaders({

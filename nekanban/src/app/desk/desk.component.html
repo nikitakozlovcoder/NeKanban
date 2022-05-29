@@ -54,7 +54,7 @@
             <p>{{desk?.name}}</p>
           </mat-card-title>
           <mat-card-subtitle>
-            <p>Владелец: {{getDeskOwner()!.user.name}}</p>
+            <p>Руководитель: {{getDeskOwner()!.user.name}}</p>
           </mat-card-subtitle>
         </mat-card-title-group>
       </mat-card>
@@ -122,10 +122,10 @@
                       </mat-card-subtitle>
                       <div
                         cdkDropList
-                        [cdkDropListData]="getToDosForColumn(column.id)"
+                        [cdkDropListData]="column.todos"
                         class="example-list"
                         (cdkDropListDropped)="drop($event, column.id)">
-                        <div class="example-box" *ngFor="let toDo of getToDosForColumn(column.id)" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? 'false' : true" (click)="openTaskCreationDialog(toDo)">{{toDo.name}}<mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon></div>
+                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? 'false' : true" (click)="openTaskCreationDialog(toDo)">{{toDo.name}}<mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon></div>
                       </div>
                     </mat-card-content>
                     <!--<mat-expansion-panel (opened)="panelOpenState = true"
@@ -188,7 +188,7 @@
               </mat-expansion-panel-header>
               <mat-nav-list class ="users-list">
                 <mat-list-item class="single-user" *ngFor="let user of desk!.deskUsers; index as i">
-                  <div matLine>{{user.user.name}}
+                  <p>{{user.user.name}}</p>
                     <mat-form-field *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2" class = "role-selector" appearance="fill">
                       <mat-label>Роль</mat-label>
                       <mat-select (selectionChange)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role">
@@ -203,14 +203,14 @@
                       </mat-select>
 
                     </mat-form-field>
-                    <div *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role === 2">
+                    <div class="role-name" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role === 2">
                       {{desk!.deskUsers[i].roleName}}
                     </div>
-                    <div *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole')">
+                    <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole')">
                       {{desk!.deskUsers[i].roleName}}
                     </div>
-                    <mat-icon  *ngIf="hasAccessToInviteLink()" (click)="removeUser([user.user.id])">cancel</mat-icon>
-                  </div>
+                    <mat-icon class="cancel-icon" *ngIf="hasAccessToInviteLink()" (click)="removeUser([user.user.id])">cancel</mat-icon>
+
                   <mat-divider></mat-divider>
                 </mat-list-item>
 

@@ -193,7 +193,7 @@ mat-form-field
   margin-right: 40px;
 }
 .users-list .mat-list-item a {
-  display: flex;
+  /*display: flex;*/
 }
 .users-list .mat-list-item a mat-icon {
   margin-left: auto;
@@ -208,13 +208,32 @@ mat-form-field
 .role-selector {
   width: 150px;
   margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .single-user {
   height: 70px !important;
-  display: flex;
-  justify-content: space-between;
+  /*display: flex;
+  justify-content: space-between;*/
+}
+.single-user div {
+  height: 70px !important;
+  /*display: flex;
+  justify-content: space-between;*/
 }
 .desk-cards-inside {
   margin-top: 40px;
   display: flex;
+}
+.mat-line {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.cancel-icon {
+  margin-left: auto;
+}
+.role-name {
+  padding-top: 35px;
+  margin-left: auto;
+  margin-right: auto;
 }

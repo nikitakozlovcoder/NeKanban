@@ -4,10 +4,8 @@ import {DeskService} from "../services/desk.service";
 import {UserService} from "../services/user.service";
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
-import {DialogComponent} from "../dialog/dialog.component";
 import {DeskCreationComponent} from "../desk-creation/desk-creation.component";
 import {FormControl, Validators} from "@angular/forms";
-import {Observable} from "rxjs";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {TaskCreationComponent} from "../task-creation/task-creation.component";
 import {Column} from "../models/column";
@@ -47,7 +45,7 @@ export class DeskComponent implements OnInit {
   zero  =0;
   one = 1;
   two = 2;
-  roles : Role[] = [new Role(0, "Участник"), new Role(1, "Менеджер"), new Role(2, "Создатель")];
+  roles : Role[] = [new Role(0, "Участник"), new Role(1, "Менеджер")];
   //rolesControl = new FormControl();
 
   drop(event: CdkDragDrop<Todo[]>, columnId: number) {
@@ -151,6 +149,7 @@ export class DeskComponent implements OnInit {
             }
             return 0;
           });
+          this.reloadTodosForColumns(this.toDos);
         },
         error: err => {
           console.log(err);
@@ -266,11 +265,34 @@ export class DeskComponent implements OnInit {
 
   }
   openTaskCreationDialog(todo: Todo): void {
+    console.log(this.toDos);
     const dialogRef = this.dialog.open(TaskCreationComponent, {
       data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser}
       //width: '500px',
     });
-
+  dialogRef.afterClosed().subscribe( result => {
+    /*console.log(result);
+    console.log(this.toDos);
+    console.log(this.columns);*/
+    let idx = this.toDos.indexOf(todo);
+    this.toDos[idx] = result;
+    console.log(this.toDos);
+    this.reloadTodosForColumns(this.toDos);
+    console.log(this.columns);
+  })
+  }
+  reloadTodosForColumns(todos : Todo[]) {
+    for (let i = 0; i < this.columns.length; i++) {
+      this.columns[i].todos = todos.filter(todo => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
+        if (a.order > b.order) {
+          return 1;
+        }
+        if (a.order < b.order) {
+          return -1;
+        }
+        return 0;
+      });
+    }
   }
   openColumnCreationDialog() {
     const dialogRef = this.dialog.open(ColumnCreationComponent, {
@@ -288,6 +310,8 @@ export class DeskComponent implements OnInit {
           }
           return 0;
         });
+        this.reloadTodosForColumns(this.toDos);
+
         /*this.deskService.getDesks().subscribe({
           next: (data: Desk[]) => {
             this.desks = data;
@@ -464,7 +488,17 @@ export class DeskComponent implements OnInit {
   removeColumn(columnId: number) {
     this.columnService.removeColumn(columnId).subscribe({
       next: data => {
-        this.columns = data;
+        this.columns = data.sort(function (a: Column, b: Column) {
+          if (a.order > b.order) {
+            return 1;
+          }
+          if (a.order < b.order) {
+            return -1;
+          }
+          return 0;
+        });
+        this.reloadTodosForColumns(this.toDos);
+
       },
       error: err => {
         console.log(err);
@@ -529,6 +563,17 @@ export class DeskComponent implements OnInit {
     this.todoService.getToDos(deskId).subscribe({
       next: data => {
         this.toDos = data;
+        for (let i = 0; i < this.columns.length; i++) {
+          this.columns[i].todos =  data.filter( todo => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
+            if (a.order > b.order) {
+              return 1;
+            }
+            if (a.order < b.order) {
+              return -1;
+            }
+            return 0;
+          });
+        }
         console.log(this.toDos);
         //console.log(this.desk);
       },
@@ -556,7 +601,17 @@ export class DeskComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
-        this.toDos = result;
+        for (let i = 0; i < this.columns.length; i++) {
+          this.columns[i].todos =  result.filter( (todo : Todo) => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
+            if (a.order > b.order) {
+              return 1;
+            }
+            if (a.order < b.order) {
+              return -1;
+            }
+            return 0;
+          });
+        }
         /*this.deskService.getDesks().subscribe({
           next: (data: Desk[]) => {
             this.desks = data;
@@ -596,6 +651,7 @@ export class DeskComponent implements OnInit {
           }
           return 0;
         });
+        this.reloadTodosForColumns(this.toDos);
         /*this.deskService.getDesks().subscribe({
           next: (data: Desk[]) => {
             this.desks = data;

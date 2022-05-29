@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Todo} from "../models/todo";
 import {Column} from "../models/column";
 import {FormControl, Validators} from "@angular/forms";
 import {ColumnService} from "../services/column.service";

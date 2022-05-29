@@ -1,5 +1,5 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../models/todo";
 import {FormControl, Validators} from "@angular/forms";
 import {Desk} from "../models/desk";
@@ -8,11 +8,7 @@ import {MatSelect, MatSelectChange} from "@angular/material/select";
 import {TodoService} from "../services/todo.service";
 import {RolesService} from "../services/roles.service";
 import {DeskUsers} from "../models/deskusers";
-interface Topping {
-  name: string;
-  price: number;
-  id: number;
-}
+
 @Component({
   selector: 'app-task-creation',
   templateUrl: './task-creation.component.html',
@@ -20,22 +16,9 @@ interface Topping {
 })
 export class TaskCreationComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUsers}, private toDoService: TodoService, private rolesService: RolesService) { }
-
-  employess : string[] = ['ivan', 'petr', 'konstantin', 'adam', 'ivan', 'petr', 'konstantin', 'adam']
-
-  selectedToppingList: Topping[] = [
-    {name: "Apple", price: 2000, id: 1}
-  ];
-  toppingList: Topping[] = [
-    {name: "Apple", price: 2000, id: 1},
-    {name: "Banana", price: 300, id: 2},
-    {name: "Potato", price: 500, id: 3}
-  ];
-  //selectedToppingList: string[] = ['Mushroom', 'Onion', 'Tomato'];
-  toppings = new FormControl(this.selectedToppingList, Validators.required);
-
-  //toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUsers}, private toDoService: TodoService, private rolesService: RolesService, public dialogRef: MatDialogRef<TaskCreationComponent>) {
+    this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
+  }
 
   usersSelected : number[] = this.getIdsOfSelectedUsers();
 
@@ -51,8 +34,10 @@ export class TaskCreationComponent implements OnInit {
     console.log(this.getAllTodoUsers().includes(testUser!));*/
     console.log(this.usersSelected);
   }
-  getSelectedUsers() {
 
+  closeDialog() {
+    console.log("Fired");
+    this.dialogRef.close(this.data.todo);
   }
   getToDoCreator() {
     return this.data.todo.toDoUsers.find(el => el.toDoUserType == 0);

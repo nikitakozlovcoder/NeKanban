@@ -16,7 +16,7 @@
 <mat-form-field appearance="fill">
     <mat-label>Пароль</mat-label>
     <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password" required>
-    
+
     <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
       <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
     </button>
@@ -25,9 +25,9 @@
 </mat-form-field>
 <mat-form-field appearance="fill">
     <mat-label>Повторите пароль</mat-label>
-    <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password_confirmation" required>
-    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+    <input matInput [type]="hideConfirm ? 'password' : 'text'" [formControl]="password_confirmation" required>
+    <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
+      <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
     </button>
     <mat-error *ngIf="password_confirmation.errors?.['minlength']">Длина пароля должна быть не менее 8 символов!</mat-error>
     <mat-error *ngIf="password_confirmation.errors?.['required']">Поле не должно быть пустым!</mat-error>

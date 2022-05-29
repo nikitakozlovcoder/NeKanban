@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, Validators} from "@angular/forms";
 import {DeskService} from "../services/desk.service";
-import {Router} from "@angular/router";
-import {DeskComponent} from "../desk/desk.component";
 import {Desk} from "../models/desk";
 import {MatDialogRef} from "@angular/material/dialog";
 
@@ -13,7 +11,7 @@ import {MatDialogRef} from "@angular/material/dialog";
 })
 export class DeskCreationComponent implements OnInit {
 
-  constructor(private deskService: DeskService, private deskComponent: DeskComponent, public dialogRef: MatDialogRef<DeskCreationComponent>) { }
+  constructor(private deskService: DeskService, public dialogRef: MatDialogRef<DeskCreationComponent>) { }
 
   ngOnInit(): void {
   }

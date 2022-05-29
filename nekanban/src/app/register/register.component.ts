@@ -15,6 +15,7 @@ export class RegisterComponent implements OnInit {
   }
 
   hide = true;
+  hideConfirm = true;
   email = new FormControl('', [Validators.required, Validators.email]);
   name = new FormControl('', [Validators.required]);
   surname = new FormControl('', [Validators.required]);

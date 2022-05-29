@@ -20,7 +20,6 @@ import {DeskService} from "./services/desk.service";
 import {BaseHttpService} from "./services/base_http.service";
 import {DeskGuard} from "./guards/desk.guard";
 import { DeskCreationComponent } from './desk-creation/desk-creation.component';
-import { DeskCreationDialogComponent } from './desk-creation-dialog/desk-creation-dialog.component';
 import { TaskCreationComponent } from './task-creation/task-creation.component';
 import { ColumnCreationComponent } from './column-creation/column-creation.component';
 import {ColumnService} from "./services/column.service";
@@ -47,7 +46,6 @@ const appRoutes: Routes =[
     DialogComponent,
     DeskComponent,
     DeskCreationComponent,
-    DeskCreationDialogComponent,
     TaskCreationComponent,
     ColumnCreationComponent,
     InviteComponent,
