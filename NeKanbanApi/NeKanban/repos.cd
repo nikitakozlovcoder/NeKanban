@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="NeKanban.Data.Repository&lt;TEntity&gt;">
+    <Position X="5.5" Y="6.5" Width="7" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAABADAAAAAJAAAAAAACEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\Repository.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_dbSet" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Microsoft.EntityFrameworkCore.DbSet&lt;TEntity&gt;">
+    <Position X="13" Y="3" Width="6.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="NeKanban.Data.IRepository&lt;TEntity&gt;">
+    <Position X="5.5" Y="3.75" Width="6.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAADAAAAABAAAAAAACEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="NeKanban.Data.IHasPk&lt;TPkType&gt;">
+    <Position X="5.5" Y="2.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\HasPk.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

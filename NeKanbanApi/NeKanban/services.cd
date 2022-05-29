@@ -22,8 +22,8 @@
       <FileName>Data\Entities\Column.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="Type" />
       <Property Name="Desk" />
+      <Property Name="Type" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="ToDos" />
@@ -31,7 +31,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="NeKanban.Data.Entities.Desk">
-    <Position X="5.75" Y="3.25" Width="3.25" />
+    <Position X="5.75" Y="3" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAACAABAAAAAAAEAAAAAAAQAAAAAAAAAAAAAAAgAAAA=</HashCode>
       <FileName>Data\Entities\Desk.cs</FileName>
@@ -45,29 +45,21 @@
       <FileName>Data\Entities\DeskUser.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Property Name="User" />
       <Property Name="Role" />
+      <Property Name="User" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="NeKanban.Data.Entities.ToDo">
-    <Position X="2" Y="5.25" Width="3.25" />
-    <AssociationLine Name="ToDoUsers" Type="NeKanban.Data.Entities.ToDoUser">
-      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
-        <Position X="0.11" Y="0.06" Height="0.182" Width="2.031" />
-      </MemberNameLabel>
-    </AssociationLine>
+    <Position X="3" Y="5" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAECAAAAAAAAAgAAAABBAAQAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>Data\Entities\ToDo.cs</FileName>
     </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Property Name="ToDoUsers" />
-    </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="NeKanban.Data.Entities.ToDoUser">
-    <Position X="2" Y="9.5" Width="2.5" />
+    <Position X="2.25" Y="8.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAACAABAAQAAIAAAAAAAAAAAAAAAAAAAAEAAAAAgAAA=</HashCode>
       <FileName>Data\Entities\ToDoUser.cs</FileName>
@@ -75,7 +67,6 @@
     <ShowAsAssociation>
       <Property Name="ToDo" />
       <Property Name="ToDoUserType" />
-      <Property Name="DeskUser" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
@@ -84,7 +75,7 @@
     <TypeIdentifier />
   </Class>
   <Class Name="Microsoft.AspNetCore.Identity.IdentityRole&lt;TKey&gt;">
-    <Position X="7.75" Y="0.5" Width="2.75" />
+    <Position X="7.5" Y="0.5" Width="2.75" />
     <TypeIdentifier />
   </Class>
   <Enum Name="NeKanban.Constants.RoleType">
@@ -95,7 +86,7 @@
     </TypeIdentifier>
   </Enum>
   <Enum Name="NeKanban.Constants.ToDoUserType">
-    <Position X="5.5" Y="8.75" Width="1.5" />
+    <Position X="6" Y="8.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
       <FileName>Constants\ToDoUserType.cs</FileName>

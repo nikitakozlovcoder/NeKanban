@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NeKanban.Constants;
 using NeKanban.Data;
 using NeKanban.Data.Entities;
 
-namespace NeKanban.Services.Security;
+namespace NeKanban.Security;
 
 public class ColumnEntityProtector : BaseEntityProtector<Column>
 {

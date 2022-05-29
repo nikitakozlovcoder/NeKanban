@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NeKanban.Constants.Security;
 using NeKanban.Data.Entities;
 using NeKanban.ExceptionHandling;
-using NeKanban.Services.Security;
+using NeKanban.Security;
 
 namespace NeKanban.Controllers;
 

@@ -2,7 +2,7 @@
 using NeKanban.Data;
 using NeKanban.Data.Entities;
 
-namespace NeKanban.Services.Security;
+namespace NeKanban.Security;
 
 public class DeskUserEntityProtector : BaseEntityProtector<DeskUser>
 {
