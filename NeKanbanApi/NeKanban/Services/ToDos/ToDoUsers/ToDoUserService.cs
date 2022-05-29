@@ -32,7 +32,7 @@ public class ToDoUserService : BaseService, IToDoUserService
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "User already assigned");
         }
-        //TODO check for permission
+      
         var toDoUser = new ToDoUser
         {
             DeskUserId = deskUserId,

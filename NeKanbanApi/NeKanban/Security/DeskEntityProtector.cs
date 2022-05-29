@@ -1,11 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NeKanban.Constants;
-using NeKanban.Constants.Security;
-using NeKanban.Data;
+﻿using NeKanban.Data;
 using NeKanban.Data.Entities;
-using NeKanban.Helpers;
 
-namespace NeKanban.Services.Security;
+namespace NeKanban.Security;
 
 public class DeskEntityProtector : BaseEntityProtector<Desk>
 {

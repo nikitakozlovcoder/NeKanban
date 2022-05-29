@@ -58,5 +58,4 @@ public class ColumnsController : BaseAuthController
         await EnsureAbleTo<Column>(PermissionType.ManageColumns, columnId, ct);
         return await _columnsService.DeleteColumn(columnId, ct);
     }
-
 }

@@ -8,12 +8,13 @@ using Microsoft.OpenApi.Models;
 using NeKanban.Data;
 using NeKanban.Data.Entities;
 using NeKanban.ExceptionHandling;
+using NeKanban.Extensions;
 using NeKanban.Options;
+using NeKanban.Security;
 using NeKanban.Services.Columns;
 using NeKanban.Services.Desks;
 using NeKanban.Services.DesksUsers;
 using NeKanban.Services.MyDesks;
-using NeKanban.Services.Security;
 using NeKanban.Services.ToDos;
 using NeKanban.Services.ToDos.ToDoUsers;
 using NeKanban.Services.Tokens;
@@ -41,9 +42,7 @@ builder.Services.AddScoped<IEntityProtector<DeskUser>, DeskUserEntityProtector>(
 builder.Services.AddScoped<IEntityProtector<Column>, ColumnEntityProtector>();
 builder.Services.AddScoped<IEntityProtector<ToDo>, ToDoEntityProtector>();
 builder.Services.AddScoped<IEntityProtector<ToDoUser>, ToDoUserProtector>();
-
-builder.Services.AddDbContext<ApplicationContext>(x =>
-    x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.AddDatabase();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>
 {

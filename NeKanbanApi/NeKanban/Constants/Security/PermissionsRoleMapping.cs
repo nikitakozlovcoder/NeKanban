@@ -29,10 +29,6 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.UpdateTask
-            },
-            new()
-            {
-                Permission = PermissionType.DeleteTask
             }
         };
         

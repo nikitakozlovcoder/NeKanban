@@ -1,7 +1,7 @@
 ﻿using NeKanban.Constants.Security;
 using NeKanban.Data.Entities;
 
-namespace NeKanban.Services.Security;
+namespace NeKanban.Security;
 
 public interface IEntityProtector<TEntity>
 {
