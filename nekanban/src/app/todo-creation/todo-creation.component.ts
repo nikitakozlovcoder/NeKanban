@@ -17,7 +17,7 @@ export class TodoCreationComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  name = new FormControl('', [Validators.required, Validators.minLength(8)]);
+  name = new FormControl('', [Validators.required, Validators.minLength(3)]);
   body = new FormControl('', [Validators.required, Validators.minLength(10)]);
 
   createToDo() {

@@ -22,6 +22,7 @@ import {DeskUsers} from "../models/deskusers";
 import {DeskRole} from "../models/deskrole";
 import {Role} from "../models/Role";
 import {DeskUserService} from "../services/deskUser.service";
+import {BaseHttpService} from "../services/base_http.service";
 
 @Component({
   selector: 'app-desk',
@@ -39,6 +40,7 @@ export class DeskComponent implements OnInit {
   current_id: number = -1;
   columns: Column[] = [];
   toDos: Todo[] = [];
+  clientBaseHref = "http://localhost:4200/";
   //desk: Desk;
 
   currentRoles : DeskRole[] = [];
@@ -46,6 +48,7 @@ export class DeskComponent implements OnInit {
   one = 1;
   two = 2;
   roles : Role[] = [new Role(0, "Участник"), new Role(1, "Менеджер")];
+  roleNames: string[] = ["Участник", "Менеджер", "Руководитель"];
   //rolesControl = new FormControl();
 
   drop(event: CdkDragDrop<Todo[]>, columnId: number) {
@@ -182,7 +185,7 @@ export class DeskComponent implements OnInit {
   }
 
   constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService,
-              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService) {
+              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService, private http_service: BaseHttpService) {
     this.opened = false;
 
     //console.log(this.desks);
@@ -250,16 +253,23 @@ export class DeskComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
+        console.log("Not undefined");
+        console.log(result);
         this.desk = result;
+        this.current_id = this.desk!.id;
         this.deskService.getDesks().subscribe({
           next: (data: Desk[]) => {
             this.desks = data;
+            console.log(data);
             this.getColumns();
           },
           error: err => {
             console.log(err);
           }
         });
+      }
+      else {
+        console.log("Undefined");
       }
     });
 
@@ -476,6 +486,7 @@ export class DeskComponent implements OnInit {
           }
           return 0;
         });
+        this.reloadTodosForColumns(this.toDos);
         //this.columns
         console.log(this.columns);
       },
@@ -527,7 +538,7 @@ export class DeskComponent implements OnInit {
   }
   getInviteLink() {
     if (this.hasInviteLink()) {
-      return "localhost:4200/invite?desk=" + this.desk?.inviteLink;
+      return this.clientBaseHref + "invite?desk=" + this.desk?.inviteLink;
     }
     return null;
   }
@@ -601,6 +612,7 @@ export class DeskComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
+        this.toDos = result;
         for (let i = 0; i < this.columns.length; i++) {
           this.columns[i].todos =  result.filter( (todo : Todo) => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
             if (a.order > b.order) {
@@ -676,27 +688,6 @@ export class DeskComponent implements OnInit {
   }
   checkUserPermission(deskUser: DeskUsers, permissionName: string) {
     return this.rolesService.userHasPermission(deskUser, permissionName);
-  }
-  movies = [
-    'Episode I - The Phantom Menace',
-    'Episode II - Attack of the Clones',
-    'Episode III - Revenge of the Sith',
-    'Episode IV - A New Hope',
-    'Episode V - The Empire Strikes Back',
-    'Episode VI - Return of the Jedi',
-    'Episode VII - The Force Awakens',
-    'Episode VIII - The Last Jedi',
-    'Episode IX – The Rise of Skywalker',
-  ];
-
-  drop_movie(event: CdkDragDrop<string[]>) {
-    console.log("Moviee data");
-    console.log(this.movies);
-    console.log("Prev index");
-    console.log(event.previousIndex);
-    console.log("Current index");
-    console.log(event.currentIndex);
-    moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
   }
 
 }

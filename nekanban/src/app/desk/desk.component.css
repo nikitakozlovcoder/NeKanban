@@ -40,7 +40,7 @@
 }
 .settings-card{
 
-
+  min-width: 300px;
   box-shadow: 0 0 3px;
   margin-left: auto;
   display: flex;
@@ -236,4 +236,13 @@ mat-form-field
   padding-top: 35px;
   margin-left: auto;
   margin-right: auto;
+}
+mat-card-title p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.todo-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
 }

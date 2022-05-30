@@ -1,4 +1,4 @@
-<div *ngIf="desks.length > 0">
+<div *ngIf="desks.length > 0 && desk != undefined">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
                  (closed)="events.push('close!')">
@@ -125,7 +125,7 @@
                         [cdkDropListData]="column.todos"
                         class="example-list"
                         (cdkDropListDropped)="drop($event, column.id)">
-                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? 'false' : true" (click)="openTaskCreationDialog(toDo)">{{toDo.name}}<mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon></div>
+                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? 'false' : true" (click)="openTaskCreationDialog(toDo)"><p class="todo-name">{{toDo.name}}</p><mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon></div>
                       </div>
                     </mat-card-content>
                     <!--<mat-expansion-panel (opened)="panelOpenState = true"
@@ -204,10 +204,10 @@
 
                     </mat-form-field>
                     <div class="role-name" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role === 2">
-                      {{desk!.deskUsers[i].roleName}}
+                      {{roleNames[desk!.deskUsers[i].role]}}
                     </div>
                     <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole')">
-                      {{desk!.deskUsers[i].roleName}}
+                      {{roleNames[desk!.deskUsers[i].role]}}
                     </div>
                     <mat-icon class="cancel-icon" *ngIf="hasAccessToInviteLink()" (click)="removeUser([user.user.id])">cancel</mat-icon>
 
@@ -234,7 +234,7 @@
   </mat-sidenav-container>
 
 </div>
-<div *ngIf="desks.length == 0">
+<div *ngIf="desks.length === 0 || desk === undefined">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
                  (closed)="events.push('close!')">
