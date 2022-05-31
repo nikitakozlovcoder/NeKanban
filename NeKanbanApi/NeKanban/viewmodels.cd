@@ -1,98 +1,140 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
-  <Class Name="NeKanban.Services.Columns.ColumnsService">
-    <Position X="21.5" Y="8" Width="3" />
+  <Class Name="NeKanban.Services.ViewModels.ApplicationUserVm">
+    <Position X="14" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAQkAAAAAQAAAAAAAAIAAACQAAAA=</HashCode>
-      <FileName>Services\Columns\ColumnsService.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="NeKanban.Services.Desks.DesksService">
-    <Position X="17.75" Y="10.75" Width="3.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAABAgBAAAAAAYAgAAAAAAAAAAAAAQQAAAAACAAA=</HashCode>
-      <FileName>Services\Desks\DesksService.cs</FileName>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAQABAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Services\ViewModels\ApplicationUserVm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="_columnsService" />
+      <Property Name="Token" />
     </ShowAsAssociation>
-    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="NeKanban.Services.DesksUsers.DeskUserService">
-    <Position X="10.25" Y="9.5" Width="3.25" />
+  <Class Name="NeKanban.Services.ViewModels.BaseIdVm">
+    <Position X="19.25" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgAAAAAAABAAAgABAAEEAAAAAAAAAAAAAEEAAAAAACA=</HashCode>
-      <FileName>Services\DesksUsers\DeskUserService.cs</FileName>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\BaseIdVm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NeKanban.Services.ViewModels.ColumnVm">
+    <Position X="16" Y="7.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAABAAAAAAAAQAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\ColumnVm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NeKanban.Services.ViewModels.DeskLightVm">
+    <Position X="23.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\DeskLightVm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="_myDesksService" />
+      <Property Name="DeskUser" />
     </ShowAsAssociation>
-    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="NeKanban.Services.MyDesks.MyDesksService">
-    <Position X="10.75" Y="5.75" Width="3" />
+  <Class Name="NeKanban.Services.ViewModels.DeskRoleVm">
+    <Position X="19.5" Y="4.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Services\MyDesks\MyDesksService.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="NeKanban.Services.ToDos.ToDoService">
-    <Position X="13.75" Y="11" Width="3.25" />
-    <AssociationLine Name="_columnsService" Type="NeKanban.Services.Columns.IColumnsService">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="0.222" Y="0.06" />
-      </MemberNameLabel>
-    </AssociationLine>
-    <TypeIdentifier>
-      <HashCode>BAAAAAAAAAmAAAEAEAkAAAAAAAAAAAAAAAAAAAQCAQE=</HashCode>
-      <FileName>Services\ToDos\ToDoService.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAEAAAEAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\DeskRoleVm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="_columnsService" />
+      <Property Name="Role" />
     </ShowAsAssociation>
-    <Lollipop Position="0.2" />
+    <ShowAsCollectionAssociation>
+      <Property Name="Permissions" />
+    </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="NeKanban.Services.Tokens.TokenProviderService">
-    <Position X="14.25" Y="5" Width="2.25" />
+  <Class Name="NeKanban.Services.ViewModels.DeskUserLightVm">
+    <Position X="14.25" Y="9.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAACAA=</HashCode>
-      <FileName>Services\Tokens\TokenProviderService.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="NeKanban.Services.Users.ApplicationUsersService">
-    <Position X="17.25" Y="5.25" Width="3.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAgAAAAAAAAQABAAAAAAAABAAAAAAAQAAAAAIA=</HashCode>
-      <FileName>Services\Users\ApplicationUsersService.cs</FileName>
+      <HashCode>AAABAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\DeskUserLightVm.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="_tokenProviderService" />
+      <Property Name="User" />
     </ShowAsAssociation>
-    <Lollipop Position="0.2" />
   </Class>
-  <Interface Name="NeKanban.Services.Columns.IColumnsService">
-    <Position X="17.5" Y="8" Width="3.5" />
+  <Class Name="NeKanban.Services.ViewModels.DeskUserVm">
+    <Position X="19.25" Y="7.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAEAAAQAAAAAAQAAAAAAAAIAAACAAAAA=</HashCode>
-      <FileName>Services\Columns\IColumnsService.cs</FileName>
+      <HashCode>AAABAAAAAAAAAAAAEAAAAAIAAAAAAAAAAIAAEAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\DeskUserVm.cs</FileName>
     </TypeIdentifier>
-  </Interface>
-  <Interface Name="NeKanban.Services.MyDesks.IMyDesksService">
-    <Position X="14.25" Y="7.75" Width="3" />
+  </Class>
+  <Class Name="NeKanban.Services.ViewModels.DeskVm">
+    <Position X="26" Y="7.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Services\MyDesks\IMyDesksService.cs</FileName>
+      <HashCode>AAAAAABAAAAAAAEAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\DeskVm.cs</FileName>
     </TypeIdentifier>
-  </Interface>
-  <Interface Name="NeKanban.Services.Tokens.ITokenProviderService">
-    <Position X="11.5" Y="4" Width="2.25" />
+    <ShowAsCollectionAssociation>
+      <Property Name="DeskUsers" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="NeKanban.Services.ViewModels.PermissionVm">
+    <Position X="22.75" Y="5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAA=</HashCode>
-      <FileName>Services\Tokens\ITokenProviderService.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\PermissionVm.cs</FileName>
     </TypeIdentifier>
-  </Interface>
+    <ShowAsAssociation>
+      <Property Name="Permission" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NeKanban.Services.ViewModels.ToDoUserVm">
+    <Position X="27.5" Y="5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Services\ViewModels\ToDoUserVm.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ToDoUserType" />
+      <Property Name="DeskUser" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NeKanban.Services.ViewModels.ToDoVm">
+    <Position X="22" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAABBAAQAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\ToDoVm.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Column" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="ToDoUsers" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="NeKanban.Services.ViewModels.Token">
+    <Position X="25.25" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Services\ViewModels\Token.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="NeKanban.Constants.ToDoUserType">
+    <Position X="30" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Constants\ToDoUserType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="NeKanban.Constants.RoleType">
+    <Position X="22.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAACAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constants\Security\RolesConstants.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="NeKanban.Constants.Security.PermissionType">
+    <Position X="24.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQABCAAIAAAAAACABAIAAAAAAAAogBQIAAAAAAAA=</HashCode>
+      <FileName>Constants\Security\PermissionType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

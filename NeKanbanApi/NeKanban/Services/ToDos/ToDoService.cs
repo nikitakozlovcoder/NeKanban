@@ -85,7 +85,6 @@ public class ToDoService : BaseService, IToDoService
 
     public async Task<List<ToDoVm>> MoveToDo(int toDoId, ToDoMoveModel model, CancellationToken ct)
     {
-        //TODO check permission
         var toDo = await _toDoRepository.QueryableSelect().Include(x=> x.Column)
             .FirstOrDefaultAsync(x => x.Id == toDoId, ct);
         EnsureEntityExists(toDo);
