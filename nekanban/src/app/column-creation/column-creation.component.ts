@@ -18,11 +18,16 @@ export class ColumnCreationComponent implements OnInit {
   name = new FormControl('', [Validators.required, Validators.minLength(3)]);
 
   createColumn() {
-    this.columnService.addColumn(this.data.deskId, this.name.value).subscribe({
-      next: (data: Column[]) => {
-        this.dialogRef.close(data);
-      }
-    });
+    if (this.name.invalid) {
+      this.name.markAsTouched();
+    }
+    else {
+      this.columnService.addColumn(this.data.deskId, this.name.value).subscribe({
+        next: (data: Column[]) => {
+          this.dialogRef.close(data);
+        }
+      });
+    }
   }
 
 }

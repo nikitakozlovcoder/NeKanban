@@ -21,14 +21,6 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.MoveTasks
-            },
-            new ()
-            {
-                Permission = PermissionType.CreateTasks
-            },
-            new()
-            {
-                Permission = PermissionType.UpdateTask
             }
         };
         
@@ -49,6 +41,14 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.ManageColumns
+            },
+            new ()
+            {
+                Permission = PermissionType.CreateTasks
+            },
+            new()
+            {
+                Permission = PermissionType.UpdateTask
             }
         };
         managerPermissions.AddRange(userPermissions);

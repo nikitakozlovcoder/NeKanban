@@ -44,6 +44,11 @@ export class RegisterComponent implements OnInit {
   registerUser() {
     if (this.email.invalid || this.name.invalid || this.surname.invalid || this.password.invalid || this.password_confirmation.invalid) {
       console.log("Unable to register");
+      this.name.markAsTouched();
+      this.surname.markAsTouched();
+      this.email.markAsTouched();
+      this.password.markAsTouched();
+      this.password_confirmation.markAsTouched();
     } else {
       this.userService.addUser(this.name.value, this.surname.value, this.email.value, this.password.value);
       console.log("success");

@@ -40,7 +40,7 @@ export class DeskComponent implements OnInit {
   current_id: number = -1;
   columns: Column[] = [];
   toDos: Todo[] = [];
-  clientBaseHref = "http://localhost:4200/";
+  clientBaseHref = "";
   //desk: Desk;
 
   currentRoles : DeskRole[] = [];
@@ -195,6 +195,7 @@ export class DeskComponent implements OnInit {
   ngOnInit(): void {
     this.loadDesks();
     this.rolesService.initRoles();
+    this.clientBaseHref = window.location.href;
     //console.log(JSON.parse(localStorage.getItem("currentUser")!));
   }
   name = new FormControl('', [Validators.required, Validators.minLength(6)]);
@@ -249,7 +250,7 @@ export class DeskComponent implements OnInit {
   }
   openDialog(): void {
     const dialogRef = this.dialog.open(DeskCreationComponent, {
-      width: '250px',
+      width: '400px',
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
@@ -306,8 +307,8 @@ export class DeskComponent implements OnInit {
   }
   openColumnCreationDialog() {
     const dialogRef = this.dialog.open(ColumnCreationComponent, {
-      data: {deskId: this.desk?.id}
-      //width: '500px',
+      data: {deskId: this.desk?.id},
+      width: '400px'
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
@@ -444,20 +445,26 @@ export class DeskComponent implements OnInit {
 
   }
   updateDesk(id: number) {
-    this.deskService.updateDesk(this.desk!.id, this.name.value).subscribe({
-      next: (data: Desk) => {
-        //console.log(data);
-        /*let finded = this.desks.find( el => el.id === id);
-        //console.log(finded);
-        let index = -1;
-        if (finded != undefined) {
-          index = this.desks.indexOf(finded);
-          this.desks[index] = data;
-          console.log(this.desks);
-        }*/
-        this.desk = data;
-      }
-    })
+    if (this.name.invalid) {
+      this.name.markAsTouched();
+    }
+    else {
+      this.deskService.updateDesk(this.desk!.id, this.name.value).subscribe({
+        next: (data: Desk) => {
+          //console.log(data);
+          /*let finded = this.desks.find( el => el.id === id);
+          //console.log(finded);
+          let index = -1;
+          if (finded != undefined) {
+            index = this.desks.indexOf(finded);
+            this.desks[index] = data;
+            console.log(this.desks);
+          }*/
+          this.desk = data;
+        }
+      })
+    }
+
     //this.refresh();
   }
   isCurrentDesk(index: number) {
@@ -607,8 +614,8 @@ export class DeskComponent implements OnInit {
   }
   openToDoCreationDialog() {
     const dialogRef = this.dialog.open(TodoCreationComponent, {
-      data: {deskId: this.desk?.id, isEdit: false}
-      //width: '500px',
+      data: {deskId: this.desk?.id, isEdit: false},
+      width: '400px'
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
@@ -637,8 +644,8 @@ export class DeskComponent implements OnInit {
   }
   openToDoEditingDialog(todo: Todo) {
     const dialogRef = this.dialog.open(TodoEditingComponent, {
-      data: {deskId: this.desk?.id, toDo: todo}
-      //width: '500px',
+      data: {deskId: this.desk?.id, toDo: todo},
+      width: '400px'
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
@@ -649,8 +656,8 @@ export class DeskComponent implements OnInit {
 
   openColumnUpdatingDialog(column: Column) {
     const dialogRef = this.dialog.open(ColumnUpdatingComponent, {
-      data: {deskId: this.desk?.id, column: column}
-      //width: '500px',
+      data: {deskId: this.desk?.id, column: column},
+      width: '400px'
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {

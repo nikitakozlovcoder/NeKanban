@@ -15,13 +15,18 @@ export class DeskCreationComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  name = new FormControl('', [Validators.required, Validators.minLength(8)]);
+  name = new FormControl('', [Validators.required, Validators.minLength(6)]);
 
   createDesk() {
-    this.deskService.addDesk(this.name.value).subscribe({
-      next: (data: Desk) => {
-        this.dialogRef.close(data);
-      }
-    });
+    if (this.name.invalid) {
+      this.name.markAsTouched();
+    }
+    else {
+      this.deskService.addDesk(this.name.value).subscribe({
+        next: (data: Desk) => {
+          this.dialogRef.close(data);
+        }
+      });
+    }
   }
 }

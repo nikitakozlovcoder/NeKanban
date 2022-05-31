@@ -21,10 +21,16 @@ export class TodoCreationComponent implements OnInit {
   body = new FormControl('', [Validators.required, Validators.minLength(10)]);
 
   createToDo() {
-    this.todoService.addToDo(this.data.deskId, this.name.value, this.body.value).subscribe({
-      next: (data: Todo[]) => {
-        this.dialogRef.close(data);
-      }
-    });
+    if (this.name.invalid || this.body.invalid) {
+      this.name.markAsTouched();
+      this.body.markAsTouched();
+    }
+    else {
+      this.todoService.addToDo(this.data.deskId, this.name.value, this.body.value).subscribe({
+        next: (data: Todo[]) => {
+          this.dialogRef.close(data);
+        }
+      });
+    }
   }
 }

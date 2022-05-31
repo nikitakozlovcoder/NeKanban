@@ -51,7 +51,7 @@
       <mat-card>
         <mat-card-title-group>
           <mat-card-title>
-            <p>{{desk?.name}}</p>
+            <p class="desk-name">{{desk?.name}}</p>
           </mat-card-title>
           <mat-card-subtitle>
             <p>Руководитель: {{getDeskOwner()!.user.name}}</p>
@@ -103,14 +103,14 @@
               <div class="box-column-cards">
                 <div *ngFor="let column of columns">
                   <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(column.type === 0 && checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')) ? 'false' : 'true'">
-                    <mat-card-title>
-                      <p>{{column.name}}
+                    <mat-card-title class="column-card-title">
+                      <p>{{column.name}}</p>
                         <button mat-button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')" [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                         <mat-menu #menu="matMenu">
                           <button mat-menu-item (click)="openColumnUpdatingDialog(column)"><mat-icon>edit</mat-icon>Редактировать</button>
                           <button mat-menu-item *ngIf="getToDosForColumn(column.id).length === 0" (click)="removeColumn(column.id)"><mat-icon>delete</mat-icon>Удалить</button>
                         </mat-menu>
-                      </p>
+
                     </mat-card-title>
 
                     <mat-card-content>
@@ -166,7 +166,8 @@
               <mat-form-field  appearance="fill">
                 <mat-label>Название доски</mat-label>
                 <input matInput placeholder="Новая доска" [formControl]="name" required>
-                <mat-error *ngIf="name.invalid">Поле не должно быть пустым!</mat-error>
+                <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
+                <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 6 символов!</mat-error>
               </mat-form-field>
               <button class = "register_button" mat-raised-button color="primary" (click)="updateDesk(desk!.id)">Обновить название</button>
 
@@ -264,7 +265,7 @@
         <mat-icon>account_circle</mat-icon>
         <span class="user-name">{{ getCurrentUser().name}}</span>
         <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-          <mat-icon>favorite</mat-icon>
+          <mat-icon>favorite_border</mat-icon>
         </button>
 
         <!--<button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">

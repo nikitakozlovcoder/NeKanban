@@ -15,13 +15,18 @@ export class ColumnUpdatingComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  name = new FormControl(this.data.column.name, [Validators.required, Validators.minLength(8)]);
+  name = new FormControl(this.data.column.name, [Validators.required, Validators.minLength(3)]);
 
   updateColumn() {
-    this.columnService.updateColumn(this.data.column.id, this.name.value).subscribe({
-      next: (data: Column[]) => {
-        this.dialogRef.close(data);
-      }
-    });
+    if (this.name.invalid) {
+      this.name.markAsTouched();
+    }
+    else {
+      this.columnService.updateColumn(this.data.column.id, this.name.value).subscribe({
+        next: (data: Column[]) => {
+          this.dialogRef.close(data);
+        }
+      });
+    }
   }
 }
