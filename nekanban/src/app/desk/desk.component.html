@@ -125,7 +125,7 @@
                         [cdkDropListData]="column.todos"
                         class="example-list"
                         (cdkDropListDropped)="drop($event, column.id)">
-                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? 'false' : true" (click)="openTaskCreationDialog(toDo)"><p class="todo-name">{{toDo.name}}</p><mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon></div>
+                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? 'false' : true" ><p (click)="openTaskCreationDialog(toDo)" class="todo-name">{{toDo.name}}</p><mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon></div>
                       </div>
                     </mat-card-content>
                     <!--<mat-expansion-panel (opened)="panelOpenState = true"

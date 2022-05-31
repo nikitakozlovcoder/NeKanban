@@ -34,11 +34,11 @@
         (+{{users.value.length - 1}} {{users.value?.length === 2 ? 'еще' : 'еще'}})
       </span>
               </mat-select-trigger>-->
-              <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}}</mat-option>
+              <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
             </mat-select>
             <mat-select *ngIf="!checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="users" multiple (closed)="changeSingleUser(select)">
 
-              <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}}</mat-option>
+              <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
             </mat-select>
             <!--<mat-select [formControl]="toppings" multiple>
               <mat-select-trigger>
@@ -56,7 +56,7 @@
         </div>
         <mat-nav-list class ="employees-list">
           <mat-list-item *ngFor="let user of getToDoUsers()">
-            <a matLine>{{user.deskUser.user.name}}</a><mat-divider></mat-divider>
+            <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
           </mat-list-item>
 
           <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->

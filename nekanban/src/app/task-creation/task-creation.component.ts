@@ -26,12 +26,6 @@ export class TaskCreationComponent implements OnInit {
 
 
   ngOnInit(): void {
-    /*console.log(this.getDeskUsers());
-    console.log(this.getAllTodoUsers());
-    let testUser : User | undefined = this.getDeskUsers().find(el => el.name === "Name");
-    console.log("Finded ");
-    console.log(testUser);
-    console.log(this.getAllTodoUsers().includes(testUser!));*/
     console.log(this.usersSelected);
   }
 
@@ -50,12 +44,9 @@ export class TaskCreationComponent implements OnInit {
     let deskUsers: User[] = [];
     let toDoCreator = this.getToDoCreator()!.deskUser.user;
     this.data.desk.deskUsers.forEach( el => {
-      //if (el.user.id !== toDoCreator.id) {
-        deskUsers.push(el.user);
-      //}
+      deskUsers.push(el.user);
     })
     return deskUsers;
-    //return this.data.desk.deskUsers;
   }
   getAllTodoUsers() : User[] {
     let todoUsers : User[] = [];
@@ -66,11 +57,6 @@ export class TaskCreationComponent implements OnInit {
   }
   getIdsOfSelectedUsers() : number[] {
     let selectedUsers : User[] = this.getDeskUsers().filter(el => this.getAllTodoUsers().some(someEl => someEl.id === el.id) && this.data.todo.toDoUsers.find(todoUser => todoUser.deskUser.user.id === el.id  && todoUser.toDoUserType != 0));
-    /*let selectedUsers : User[];
-    this.getDeskUsers().forEach(user => {
-
-    })*/
-    //let owner = selectedUsers.find(user => user.id === this.getToDoCreator()!.deskUser.user.id);
     console.log(selectedUsers);
     let ids : number[] = [];
     selectedUsers.forEach( el => {

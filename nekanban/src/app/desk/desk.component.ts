@@ -277,11 +277,11 @@ export class DeskComponent implements OnInit {
   }
   openTaskCreationDialog(todo: Todo): void {
     console.log(this.toDos);
-    const dialogRef = this.dialog.open(TaskCreationComponent, {
+    const dialogRefView = this.dialog.open(TaskCreationComponent, {
       data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser}
       //width: '500px',
     });
-  dialogRef.afterClosed().subscribe( result => {
+  dialogRefView.afterClosed().subscribe( result => {
     /*console.log(result);
     console.log(this.toDos);
     console.log(this.columns);*/
@@ -451,21 +451,12 @@ export class DeskComponent implements OnInit {
     else {
       this.deskService.updateDesk(this.desk!.id, this.name.value).subscribe({
         next: (data: Desk) => {
-          //console.log(data);
-          /*let finded = this.desks.find( el => el.id === id);
-          //console.log(finded);
-          let index = -1;
-          if (finded != undefined) {
-            index = this.desks.indexOf(finded);
-            this.desks[index] = data;
-            console.log(this.desks);
-          }*/
           this.desk = data;
+          let index = this.desks.findIndex(el => el.id === this.desk!.id);
+          this.desks[index].name = data.name;
         }
       })
     }
-
-    //this.refresh();
   }
   isCurrentDesk(index: number) {
     return this.changed_index === index || this.index === index;
@@ -648,9 +639,16 @@ export class DeskComponent implements OnInit {
       width: '400px'
     });
     dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
+      //debugger
+      if (result !== undefined) {
+        console.log("HIII22222");
         this.toDos[this.toDos.indexOf(todo)] = result;
+        this.reloadTodosForColumns(this.toDos);
       }
+      else {
+        console.log("HIII");
+      }
+      console.log(this.toDos);
     })
   }
 
