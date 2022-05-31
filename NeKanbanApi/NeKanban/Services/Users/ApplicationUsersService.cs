@@ -26,7 +26,7 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         _tokenProviderService = tokenProviderService;
     }
 
-    public async Task<ApplicationUserVm> Login<T>(T userLoginModel, CancellationToken ct) where T : UserLoginModel
+    public async Task<ApplicationUserVm> Login(UserLoginModel userLoginModel, CancellationToken ct) 
     {
         var user = await _userRepository.GetFirstOrDefault(x => x.Email == userLoginModel.Email, ct);
         if (user == null || !await UserManager.CheckPasswordAsync(user, userLoginModel.Password))

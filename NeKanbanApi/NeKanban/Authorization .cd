@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="NeKanban.Constants.Security.PermissionsRoleMapping">
+    <Position X="20" Y="4.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Constants\Security\PermissionsRoleMapping.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="DeskRoles" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="NeKanban.Controllers.BaseAuthController">
+    <Position X="16.5" Y="3.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAABABAAA=</HashCode>
+      <FileName>Controllers\BaseAuthController.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_userManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Identity.UserManager&lt;TUser&gt;" Collapsed="true">
+    <Position X="21.25" Y="3.25" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="NeKanban.Services.ViewModels.DeskRoleVm">
+    <Position X="24.5" Y="4.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAEAAAEAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\DeskRoleVm.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Role" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Permissions" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="NeKanban.Services.ViewModels.PermissionVm">
+    <Position X="25.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\ViewModels\PermissionVm.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Permission" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="NeKanban.Helpers.PermissionChecker">
+    <Position X="17" Y="6.75" Width="6.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\PermissionChecker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NeKanban.Security.BaseEntityProtector&lt;TEntity&gt;">
+    <Position X="17.5" Y="8.5" Width="8" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAEAAAQAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\BaseEntityProtector.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NeKanban.Security.ColumnEntityProtector" Collapsed="true">
+    <Position X="17.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Security\ColumnEntityProtector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NeKanban.Security.DeskEntityProtector" Collapsed="true">
+    <Position X="19.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\DeskEntityProtector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NeKanban.Security.DeskUserEntityProtector" Collapsed="true">
+    <Position X="21.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\DeskUserEntityProtector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NeKanban.Security.ToDoEntityProtector" Collapsed="true">
+    <Position X="24.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Security\ToDoEntityProtector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NeKanban.Security.ToDoUserProtector" Collapsed="true">
+    <Position X="26.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\ToDoUserProtector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="NeKanban.Constants.RoleType">
+    <Position X="25.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAACAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Constants\Security\RolesConstants.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="NeKanban.Constants.Security.PermissionType">
+    <Position X="29" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQABCAAIAAAAAACABAIAAAAAAAAogBQIAAAAAAAA=</HashCode>
+      <FileName>Constants\Security\PermissionType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
