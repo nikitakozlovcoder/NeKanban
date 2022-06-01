@@ -189,7 +189,7 @@
               </mat-expansion-panel-header>
               <mat-nav-list class ="users-list">
                 <mat-list-item class="single-user" *ngFor="let user of desk!.deskUsers; index as i">
-                  <p>{{user.user.name}}</p>
+                  <p>{{user.user.name}} {{user.user.surname}}</p>
                     <mat-form-field *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2" class = "role-selector" appearance="fill">
                       <mat-label>Роль</mat-label>
                       <mat-select (selectionChange)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role">
@@ -210,7 +210,7 @@
                     <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole')">
                       {{roleNames[desk!.deskUsers[i].role]}}
                     </div>
-                    <mat-icon class="cancel-icon" *ngIf="hasAccessToInviteLink()" (click)="removeUser([user.user.id])">cancel</mat-icon>
+                    <mat-icon class="cancel-icon" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && desk!.deskUsers[i].role !== 2" (click)="removeUser([user.user.id])">cancel</mat-icon>
 
                   <mat-divider></mat-divider>
                 </mat-list-item>
