@@ -64,57 +64,29 @@ export class DeskComponent implements OnInit {
         next: data => {
           this.toDos = data;
         },
-        error: err => {
-          console.log(err);
+        error: _ => {
         }
       })
-      console.log(event.container.data, event.previousIndex, event.currentIndex);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      console.log(columnId);
-      console.log(event.previousContainer);
-      console.log(event.previousIndex);
-      console.log(event.container);
-      console.log(event.currentIndex);
-      /*let previousContainer = event.previousContainer;
-      let previousIndex = event.previousIndex;
-      let container = event.container;
-      let currentIndex = event.currentIndex;*/
-      /*transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
-      );*/
-      console.log("HIIIIIIIII");
-      console.log(event.previousContainer);
-      console.log(event.previousIndex);
-      console.log(event.container);
-      console.log(event.currentIndex);
       let newOrder;
-      let newIndex;
       if (event.container.data.length > 0) {
         if (event.currentIndex == event.container.data.length) {
-          console.log("yes");
           newOrder = event.container.data[event.currentIndex-1].order + 1;
         }
         else {
-          console.log("no");
           newOrder = event.container.data[event.currentIndex].order;
         }
-        //newIndex = event.currentIndex;
       }
       else {
         newOrder = 0;
       }
-      /*console.log(previousContainer.data);
-      console.log(previousContainer);*/
+
       this.todoService.moveToDo(event.previousContainer.data[event.previousIndex].id, columnId, newOrder).subscribe({
         next: data => {
           this.toDos = data;
         },
-        error: err => {
-          console.log(err);
+        error: _ => {
         }
       });
       transferArrayItem(
@@ -127,12 +99,6 @@ export class DeskComponent implements OnInit {
   }
 
   drop_column(event: CdkDragDrop<Column[]>) {
-    console.log("Container data");
-    console.log(event.container.data);
-    console.log("Previous index");
-    console.log(event.previousIndex);
-    console.log("Current index");
-    console.log(event.currentIndex);
     if (event.previousIndex != 0 && event.previousIndex != event.container.data.length - 1 && event.currentIndex != 0 && event.currentIndex != event.container.data.length - 1) {
       let position;
       if (event.previousIndex < event.currentIndex) {
@@ -154,49 +120,22 @@ export class DeskComponent implements OnInit {
           });
           this.reloadTodosForColumns(this.toDos);
         },
-        error: err => {
-          console.log(err);
+        error: _ => {
         }
       })
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     }
-
-
-    /*if (event.previousContainer === event.container) {
-      console.log("same container");
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      console.log("different container");
-      this.columnService.moveColumn(event.container.data[event.currentIndex].id, event.currentIndex).subscribe({
-        next: data => {
-          this.columns = data;
-        },
-        error: err => {
-          console.log(err);
-        }
-      })
-      /*transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
-      );
-    }*/
   }
 
   constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService,
               private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService, private http_service: BaseHttpService) {
     this.opened = false;
-
-    //console.log(this.desks);
-    //this.desk = this.desks[0];
   }
 
   ngOnInit(): void {
     this.loadDesks();
     this.rolesService.initRoles();
     this.clientBaseHref = window.location.href;
-    //console.log(JSON.parse(localStorage.getItem("currentUser")!));
   }
   name = new FormControl('', [Validators.required, Validators.minLength(6)]);
   panelOpenState = false;
@@ -204,7 +143,9 @@ export class DeskComponent implements OnInit {
     this.deskService.getDesks().subscribe({
       next: (data: Desk[]) => {
         this.desks = data;
-        console.log(this.desks);
+        if (this.desks.length === 0){
+          return;
+        }
         let founded = this.desks.find(el => el.deskUser.preference === 1);
 
         if (founded != undefined) {
@@ -213,38 +154,28 @@ export class DeskComponent implements OnInit {
           this.deskService.getDesk(id).subscribe({
             next: (data: Desk) => {
               this.desk = data;
-              console.log("Preference founded");
-              console.log(this.desk);
               this.getColumns();
               this.getToDos(this.desk.id);
             },
-            error: err => {
-              console.log(err);
-
+            error: () => {
             }
           })
         }
         else {
           let id = this.desks[0].id;
           this.current_id = id;
-          console.log("Preference not founded");
           this.deskService.getDesk(id).subscribe({
             next: (data: Desk) => {
               this.desk = data;
-              console.log(this.desk);
               this.getColumns();
               this.getToDos(this.desk.id);
             },
-            error: err => {
-              console.log(err);
-
+            error: () => {
             }
           })
         }
       },
-      error: err => {
-        console.log(err);
-
+      error: () => {
       }
     });
   }
@@ -254,44 +185,31 @@ export class DeskComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
-        console.log("Not undefined");
-        console.log(result);
         this.desk = result;
         this.current_id = this.desk!.id;
         this.deskService.getDesks().subscribe({
           next: (data: Desk[]) => {
             this.desks = data;
-            console.log(data);
             this.getColumns();
           },
-          error: err => {
-            console.log(err);
+          error: () => {
           }
         });
-      }
-      else {
-        console.log("Undefined");
       }
     });
 
   }
   openTaskCreationDialog(todo: Todo): void {
-    console.log(this.toDos);
     const dialogRefView = this.dialog.open(TaskCreationComponent, {
       data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser}
-      //width: '500px',
     });
-  dialogRefView.afterClosed().subscribe( result => {
-    /*console.log(result);
-    console.log(this.toDos);
-    console.log(this.columns);*/
-    let idx = this.toDos.indexOf(todo);
-    this.toDos[idx] = result;
-    console.log(this.toDos);
-    this.reloadTodosForColumns(this.toDos);
-    console.log(this.columns);
-  })
+    dialogRefView.afterClosed().subscribe( result => {
+      let idx = this.toDos.indexOf(todo);
+      this.toDos[idx] = result;
+      this.reloadTodosForColumns(this.toDos);
+    })
   }
+
   reloadTodosForColumns(todos : Todo[]) {
     for (let i = 0; i < this.columns.length; i++) {
       this.columns[i].todos = todos.filter(todo => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
@@ -321,16 +239,8 @@ export class DeskComponent implements OnInit {
           }
           return 0;
         });
-        this.reloadTodosForColumns(this.toDos);
 
-        /*this.deskService.getDesks().subscribe({
-          next: (data: Desk[]) => {
-            this.desks = data;
-          },
-          error: err => {
-            console.log(err);
-          }
-        });*/
+        this.reloadTodosForColumns(this.toDos);
       }
     })
   }
@@ -343,31 +253,24 @@ export class DeskComponent implements OnInit {
     this.deskService.getDesk(id).subscribe({
       next: (data: Desk) => {
         this.desk = data;
-        console.log("Changed desk to:");
-        console.log(this.desk);
         this.getColumns();
         this.getToDos(this.desk.id);
       },
-      error: err => {
-        console.log(err);
-
+      error: () => {
       }
     })
   }
   getDesk() : Desk {
-   //console.log(this.desks.length);
     if (this.changed_index === -1) {
       this.desks.forEach( (el, index) => {
         if (el.deskUser.preference === 1) {
           this.index = index;
         }
       })
-      //console.log("HHHHHHH")
-      //console.log(this.desks);
+
       return this.desks[this.index];
     }
-    //console.log("UUUUUUU")
-    //console.log(this.desks);
+
     return this.desks[this.changed_index];
   }
   logout() {
@@ -377,25 +280,9 @@ export class DeskComponent implements OnInit {
   showDeskCreation() {
     this.openDialog();
     this.opened = false;
-    /*this.deskService.getDesk(this.desks[this.desks.length - 1].id).subscribe({
-      next : (data: Desk) => {
-        console.log(data);
-        this.desk = data;
-      },
-      error: err => {
-        console.log(err);
-
-      }
-    });*/
   }
   addToFavourite(index: number |undefined) {
-    /*this.desks.forEach( (el, index) => {
-      this.deskService.addPreference(el.id, 0).subscribe({
-        next: (data: Desk[]) => {
-          this.desks = data;
-        }
-      });
-    })*/
+
     let founded = this.desks.find(el => el.deskUser.preference === 1);
     if (founded != undefined) {
       this.deskService.addPreference(founded.id, 0).subscribe({
@@ -404,26 +291,23 @@ export class DeskComponent implements OnInit {
         }
       });
     }
+
     if (index != undefined) {
       this.deskService.addPreference(index, 1).subscribe({
         next: (data: Desk[]) => {
           this.desks = data;
           this.deskService.getDesk(index).subscribe({
             next : (data: Desk) => {
-              console.log("Current desk from favourites");
-              console.log(data);
               this.desk = data;
             },
-            error: err => {
-              console.log(err);
-
+            error: () => {
             }
           });
         }
       });
     }
-
   }
+
   removeFromFavourites(index: number |undefined) {
     if (index != undefined) {
       this.deskService.addPreference(index, 0).subscribe({
@@ -431,19 +315,16 @@ export class DeskComponent implements OnInit {
           this.desks = data;
           this.deskService.getDesk(index).subscribe({
             next : (data: Desk) => {
-              //console.log(data);
               this.desk = data;
             },
-            error: err => {
-              console.log(err);
-
+            error: () => {
             }
           });
         }
       });
     }
-
   }
+
   updateDesk(id: number) {
     if (this.name.invalid) {
       this.name.markAsTouched();
@@ -458,21 +339,16 @@ export class DeskComponent implements OnInit {
       })
     }
   }
-  isCurrentDesk(index: number) {
-    return this.changed_index === index || this.index === index;
-  }
 
-  getFavourite() {
-    this.desks.find(el => el.deskUser.preference === 1);
-  }
   getDeskOwner() {
     return this.desk?.deskUsers.find(el => el.role === 2);
   }
+
   getCurrentDesk() {
     return this.desks.find(el => el.id === this.current_id);
   }
+
   getColumns() {
-    console.log("hi");
     this.columnService.getColumns(this.desk!.id).subscribe({
       next: data => {
         this.columns = data.sort(function (a, b) {
@@ -485,12 +361,8 @@ export class DeskComponent implements OnInit {
           return 0;
         });
         this.reloadTodosForColumns(this.toDos);
-        //this.columns
-        console.log(this.columns);
       },
-      error: err => {
-        console.log(err);
-
+      error: () => {
       }
     })
   }
@@ -509,9 +381,7 @@ export class DeskComponent implements OnInit {
         this.reloadTodosForColumns(this.toDos);
 
       },
-      error: err => {
-        console.log(err);
-
+      error: () => {
       }
     })
   }
@@ -520,14 +390,12 @@ export class DeskComponent implements OnInit {
     this.deskService.setLink(this.desk!.id).subscribe( {
       next: data => {
         this.desk = data;
-        console.log(this.desk);
       },
-      error: err => {
-        console.log(err);
-
+      error: () => {
       }
     })
   }
+
   hasInviteLink() {
     return !(this.desk?.inviteLink === null);
   }
@@ -548,23 +416,18 @@ export class DeskComponent implements OnInit {
     this.deskService.removeUserFromDesk(usersId, this.desk!.id).subscribe({
       next: data => {
         this.desk = data;
-        //console.log(this.desk);
       },
-      error: err => {
-        console.log(err);
-
+      error: () => {
       }
     })
   }
+
   removeDesk(deskId: number) {
     this.deskService.removeDesk(deskId).subscribe({
-      next: data => {
+      next: () => {
         this.loadDesks();
-        //console.log(this.desk);
       },
-      error: err => {
-        console.log(err);
-
+      error: () => {
       }
     })
   }
@@ -583,15 +446,12 @@ export class DeskComponent implements OnInit {
             return 0;
           });
         }
-        console.log(this.toDos);
-        //console.log(this.desk);
       },
-      error: err => {
-        console.log(err);
-
+      error: () => {
       }
     })
   }
+
   getToDosForColumn(columnId: number) {
     return this.toDos.filter( todo => todo.column.id === columnId).sort(function (a: Todo, b: Todo) {
       if (a.order > b.order) {
@@ -622,14 +482,7 @@ export class DeskComponent implements OnInit {
             return 0;
           });
         }
-        /*this.deskService.getDesks().subscribe({
-          next: (data: Desk[]) => {
-            this.desks = data;
-          },
-          error: err => {
-            console.log(err);
-          }
-        });*/
+
       }
     })
   }
@@ -639,16 +492,10 @@ export class DeskComponent implements OnInit {
       width: '400px'
     });
     dialogRef.afterClosed().subscribe( result => {
-      //debugger
       if (result !== undefined) {
-        console.log("HIII22222");
         this.toDos[this.toDos.indexOf(todo)] = result;
         this.reloadTodosForColumns(this.toDos);
       }
-      else {
-        console.log("HIII");
-      }
-      console.log(this.toDos);
     })
   }
 
@@ -657,6 +504,7 @@ export class DeskComponent implements OnInit {
       data: {deskId: this.desk?.id, column: column},
       width: '400px'
     });
+
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
         this.columns = result.sort(function (a: Column, b: Column) {
@@ -669,14 +517,6 @@ export class DeskComponent implements OnInit {
           return 0;
         });
         this.reloadTodosForColumns(this.toDos);
-        /*this.deskService.getDesks().subscribe({
-          next: (data: Desk[]) => {
-            this.desks = data;
-          },
-          error: err => {
-            console.log(err);
-          }
-        });*/
       }
     })
   }
@@ -686,8 +526,7 @@ export class DeskComponent implements OnInit {
       next: (data: DeskUsers[]) => {
         this.desk!.deskUsers = data;
       },
-      error: err => {
-        console.log(err);
+      error: () => {
       }
     });
   }

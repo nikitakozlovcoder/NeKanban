@@ -14,14 +14,12 @@ export class InviteComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams
       .subscribe(params => {
-          //console.log(params); // { orderby: "price" }
           this.deskService.inviteByLink(params["desk"]).subscribe({
-            next: data => {
-              this.router.navigate(['']);
+            next: () => {
+              this.router.navigate(['']).then();
             },
-            error: err => {
-              console.log(err);
-              this.router.navigate(['']);
+            error: () => {
+              this.router.navigate(['']).then();
             }
           });
         }

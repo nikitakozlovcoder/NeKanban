@@ -13,6 +13,5 @@ import {LoginComponent} from "./login/login.component";
 export class AppComponent {
   title = 'nekanban';
   constructor() {
-    console.log(localStorage.getItem("token"));
   }
 }

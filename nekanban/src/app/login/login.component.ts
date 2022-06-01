@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, ValidationErrors, Validators} from '@angular/forms';
 import { UserService } from '../services/user.service';
+import {BehaviorSubject, mergeMap, of} from "rxjs";
 
 @Component({
   selector: 'app-login',
@@ -8,7 +9,7 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-
+  busy = new BehaviorSubject(false);
   constructor(private userService : UserService) {  }
 
   ngOnInit(): void {
@@ -26,17 +27,13 @@ export class LoginComponent implements OnInit {
   }
   getRequiredErrorMessage() {
     return 'Поле не должно быть пустым!';
-
   }
+
   makeLogin() {
-    /*console.log(localStorage.getItem("token"));
-    let user  = this.userService.getUsers().find(el => el.email === this.email.value);
-    if (user != undefined && user.password === this.password.value) {
-      console.log("Logged in! Hello, " + user.name + " " + user.surname);
-    }
-    else {
-      console.log("Error!");
-    }*/
-    this.userService.loginUser(this.email.value, this.password.value);
+    this.busy.next(true);
+    this.userService.loginUser(this.email.value, this.password.value).subscribe({
+      next: () => this.busy.next(false),
+      error: () => this.busy.next(false)
+    });
   }
 }

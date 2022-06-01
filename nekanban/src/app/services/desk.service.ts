@@ -17,11 +17,8 @@ export class DeskService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    console.log(httpOptions.headers.get('Authorization'));
-    //let desks: Desk[] = [];
+
     return this.http.get<Desk[]>(this.http_service.base_url + "Desks/GetForUser", httpOptions);
-    //console.log(desks);
-    //return desks;
   }
 
   addDesk(name: string) {

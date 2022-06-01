@@ -33,4 +33,8 @@
     <mat-error *ngIf="password_confirmation.errors?.['required']">Поле не должно быть пустым!</mat-error>
     <mat-error *ngIf="password_confirmation.errors?.['passwordMismatch']">Значения паролей должны совпадать!</mat-error>
 </mat-form-field>
-<button class = "register_button" mat-raised-button color="primary" (click)="registerUser()">Зарегистрироваться</button>
+
+<button *ngIf="!(this.busy | async)" class = "register_button" mat-raised-button color="primary" (click)="registerUser()">Зарегистрироваться</button>
+<div *ngIf="(this.busy | async)" class="spinner__container spinner__container-centered">
+  <mat-spinner [diameter]="50"></mat-spinner>
+</div>
