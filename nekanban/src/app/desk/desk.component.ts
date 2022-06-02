@@ -44,9 +44,6 @@ export class DeskComponent implements OnInit {
   //desk: Desk;
 
   currentRoles : DeskRole[] = [];
-  zero  =0;
-  one = 1;
-  two = 2;
   roles : Role[] = [new Role(0, "Участник"), new Role(1, "Менеджер")];
   roleNames: string[] = ["Участник", "Менеджер", "Руководитель"];
   //rolesControl = new FormControl();

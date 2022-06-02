@@ -42,7 +42,6 @@ export class TaskCreationComponent implements OnInit {
   }
   getDeskUsers() : User[] {
     let deskUsers: User[] = [];
-    let toDoCreator = this.getToDoCreator()!.deskUser.user;
     this.data.desk.deskUsers.forEach( el => {
       deskUsers.push(el.user);
     })

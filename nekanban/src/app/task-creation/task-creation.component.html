@@ -21,7 +21,8 @@
       <mat-card-subtitle>
         <p>Создано:</p>
       </mat-card-subtitle>
-      {{getToDoCreator()!.deskUser.user.name}}
+      <ng-container *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}}</ng-container>
+      <ng-container *ngIf="getToDoCreator() === undefined">---</ng-container>
       <mat-card-subtitle>
         <div class="employees-settings">
           <p>Исполнители:</p>
