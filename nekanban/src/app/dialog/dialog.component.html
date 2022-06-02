@@ -1,1 +1,3 @@
-<p>Неверные данные!</p>
+<p *ngIf="this.data.errorType == this.errorsEnum.DuplicateEmail">Адрес почты уже используется</p>
+<p *ngIf="this.data.errorType == this.errorsEnum.ValidationError">Неверные данные!</p>
+<p *ngIf="this.data.errorType == this.errorsEnum.Unknown">Неизвестная ошибка</p>

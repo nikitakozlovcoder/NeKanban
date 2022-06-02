@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import { UserService } from '../services/user.service';
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-register',
@@ -8,7 +9,7 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-
+  busy = new BehaviorSubject(false);
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
@@ -39,19 +40,21 @@ export class RegisterComponent implements OnInit {
       else
         return {passwordMismatch: true};
     }
-
   };
+
   registerUser() {
     if (this.email.invalid || this.name.invalid || this.surname.invalid || this.password.invalid || this.password_confirmation.invalid) {
-      console.log("Unable to register");
       this.name.markAsTouched();
       this.surname.markAsTouched();
       this.email.markAsTouched();
       this.password.markAsTouched();
       this.password_confirmation.markAsTouched();
     } else {
-      this.userService.addUser(this.name.value, this.surname.value, this.email.value, this.password.value);
-      console.log("success");
+      this.busy.next(true);
+      this.userService.addUser(this.name.value, this.surname.value, this.email.value, this.password.value).subscribe({
+        next: () => this.busy.next(false),
+        error: () => this.busy.next(false)
+      });
     }
   }
 }

@@ -19,9 +19,9 @@ export class RolesService {
     }
     this.http.get<DeskRole[]>(this.http_service.base_url + "Roles/GetRolesAndPermissions/", httpOptions).subscribe( result => {
       this.rolesAndPermissions = result;
-      console.log(this.rolesAndPermissions);
     })
   }
+
   userHasPermission(deskUser : DeskUsers, permissionName: string) : boolean {
     return !!this.rolesAndPermissions.find(el => el.role === deskUser.role && el.permissions.find(perm => perm.permissionName === permissionName) != undefined);
 

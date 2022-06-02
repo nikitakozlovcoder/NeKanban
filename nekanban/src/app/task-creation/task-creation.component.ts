@@ -26,11 +26,9 @@ export class TaskCreationComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log(this.usersSelected);
   }
 
   closeDialog() {
-    console.log("Fired");
     this.dialogRef.close(this.data.todo);
   }
   getToDoCreator() {
@@ -56,7 +54,6 @@ export class TaskCreationComponent implements OnInit {
   }
   getIdsOfSelectedUsers() : number[] {
     let selectedUsers : User[] = this.getDeskUsers().filter(el => this.getAllTodoUsers().some(someEl => someEl.id === el.id) && this.data.todo.toDoUsers.find(todoUser => todoUser.deskUser.user.id === el.id  && todoUser.toDoUserType != 0));
-    console.log(selectedUsers);
     let ids : number[] = [];
     selectedUsers.forEach( el => {
       ids.push(el.id);
@@ -65,8 +62,6 @@ export class TaskCreationComponent implements OnInit {
   }
   changeUsers(select:MatSelect)  {
     let newIds : number[] = select.value;
-    console.log("New ids:");
-    console.log(newIds);
     let appearedIds: number[] = [];
     newIds.forEach(el => {
       if (!this.usersSelected.includes(el)) {
@@ -79,14 +74,14 @@ export class TaskCreationComponent implements OnInit {
         disappearedIds.push(el);
       }
     })
+
     appearedIds.forEach(el => {
       let deskUser = this.data.desk.deskUsers.find(obj => obj.user.id === el);
       this.toDoService.assignUser(this.data.todo.id, deskUser!.id).subscribe({
         next: data => {
           this.data.todo = data;
         },
-        error: err => {
-          console.log(err);
+        error: _ => {
         }
       })
     })
@@ -96,17 +91,11 @@ export class TaskCreationComponent implements OnInit {
         next: data => {
           this.data.todo = data;
         },
-        error: err => {
-          console.log(err);
+        error: _ => {
         }
       })
     })
     this.usersSelected  = newIds;
-    console.log("Appeared ids: ");
-    console.log(appearedIds);
-    console.log("Disappeared ids: ");
-    console.log(disappearedIds);
-    console.log(select.value);
   }
   checkUserPermission(deskUser: DeskUsers, permissionName: string) {
     return this.rolesService.userHasPermission(deskUser, permissionName);
@@ -119,8 +108,7 @@ export class TaskCreationComponent implements OnInit {
         next: data => {
           this.data.todo = data;
         },
-        error: err => {
-          console.log(err);
+        error: _ => {
         }
       })
     }
@@ -130,13 +118,10 @@ export class TaskCreationComponent implements OnInit {
           next: data => {
             this.data.todo = data;
           },
-          error: err => {
-            console.log(err);
+          error: _ => {
           }
         })
       }
-
     }
   }
-
 }

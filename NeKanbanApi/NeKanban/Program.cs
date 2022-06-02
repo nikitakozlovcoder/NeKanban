@@ -130,7 +130,6 @@ app.Use(async (context, next) =>
     try
     {
         await next(context);
-      
     }
     catch (HttpStatusCodeException e)
     {
