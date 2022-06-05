@@ -55,6 +55,7 @@
             <mat-icon>add</mat-icon>
           </button>-->
         </div>
+        <mat-spinner class="spinner-centered" *ngIf="!isLoaded" diameter="30"></mat-spinner>
         <mat-nav-list class ="employees-list">
           <mat-list-item *ngFor="let user of getToDoUsers()">
             <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>

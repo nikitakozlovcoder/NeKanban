@@ -31,12 +31,13 @@
           <span class="example-spacer"></span>
           <mat-icon>account_circle</mat-icon>
           <span class="user-name">{{ getCurrentUser().name}}</span>
-          <button *ngIf="getCurrentDesk()!.deskUser.preference" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(desk?.id)">
+          <button *ngIf="getCurrentDesk()!.deskUser.preference && isFavouriteLoaded" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(desk?.id)">
             <mat-icon>favorite</mat-icon>
           </button>
-          <button *ngIf="!getCurrentDesk()!.deskUser.preference" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "addToFavourite(desk?.id)">
+          <button *ngIf="!getCurrentDesk()!.deskUser.preference && isFavouriteLoaded" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "addToFavourite(desk?.id)">
             <mat-icon>favorite_border</mat-icon>
           </button>
+          <mat-spinner class="spinner-centered spinner-white" diameter="24" *ngIf="!isFavouriteLoaded"></mat-spinner>
 
           <!--<button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
             <mat-icon>share</mat-icon>
@@ -126,7 +127,11 @@
                         [cdkDropListData]="column.todos"
                         class="example-list"
                         (cdkDropListDropped)="drop($event, column.id)">
-                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? 'false' : true" ><p (click)="openTaskCreationDialog(toDo)" class="todo-name">{{toDo.name}}</p><mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon></div>
+                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? 'false' : true" >
+                          <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
+                          <p (click)="openTaskCreationDialog(toDo)" class="todo-name">{{toDo.name}}</p>
+                          <mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon>
+                        </div>
                       </div>
                     </mat-card-content>
                     <!--<mat-expansion-panel (opened)="panelOpenState = true"
@@ -191,6 +196,7 @@
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <mat-nav-list class ="users-list">
+                <mat-spinner class="spinner-centered" *ngIf="!isUserRemoveLoaded" diameter="20"></mat-spinner>
                 <mat-list-item class="single-user" *ngFor="let user of desk!.deskUsers; index as i">
                   <p>{{user.user.name}} {{user.user.surname}}</p>
                     <mat-form-field *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2" class = "role-selector" appearance="fill">
@@ -213,7 +219,8 @@
                     <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole')">
                       {{roleNames[desk!.deskUsers[i].role]}}
                     </div>
-                    <mat-icon class="cancel-icon" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers')" (click)="removeUser([user.user.id])">cancel</mat-icon>
+                    <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && desk!.deskUsers[i].role !== 2" (click)="removeUser([user.user.id])">cancel</mat-icon>
+
 
                   <mat-divider></mat-divider>
                 </mat-list-item>

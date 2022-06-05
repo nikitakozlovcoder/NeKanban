@@ -23,6 +23,7 @@ export class TaskCreationComponent implements OnInit {
   usersSelected : number[] = this.getIdsOfSelectedUsers();
 
   users = new FormControl(this.usersSelected);
+  isLoaded = true;
 
 
   ngOnInit(): void {
@@ -74,11 +75,14 @@ export class TaskCreationComponent implements OnInit {
         disappearedIds.push(el);
       }
     })
-
+    this.isLoaded = false;
     appearedIds.forEach(el => {
       let deskUser = this.data.desk.deskUsers.find(obj => obj.user.id === el);
       this.toDoService.assignUser(this.data.todo.id, deskUser!.id).subscribe({
         next: data => {
+          if (appearedIds.indexOf(el) === appearedIds.length - 1) {
+            this.isLoaded = true;
+          }
           this.data.todo = data;
         },
         error: _ => {
@@ -89,6 +93,9 @@ export class TaskCreationComponent implements OnInit {
       let todo = this.data.todo.toDoUsers.find(obj => obj.deskUser.user.id === el && obj.toDoUserType != 0);
       this.toDoService.removeUser(todo!.id).subscribe({
         next: data => {
+          if (disappearedIds.indexOf(el) === disappearedIds.length - 1) {
+            this.isLoaded = true;
+          }
           this.data.todo = data;
         },
         error: _ => {
@@ -104,8 +111,10 @@ export class TaskCreationComponent implements OnInit {
     let newIds : number[] = select.value;
     if (newIds.length === 0) {
       let todo = this.data.todo.toDoUsers.find(obj => obj.deskUser.user.id === this.data.deskUser.user.id);
+      this.isLoaded = false;
       this.toDoService.removeUser(todo!.id).subscribe({
         next: data => {
+          this.isLoaded = true;
           this.data.todo = data;
         },
         error: _ => {
@@ -114,8 +123,10 @@ export class TaskCreationComponent implements OnInit {
     }
     else {
       if (!this.usersSelected.includes(this.data.deskUser.user.id)) {
+        this.isLoaded = false;
         this.toDoService.assignUser(this.data.todo.id, this.data.deskUser.id).subscribe({
           next: data => {
+            this.isLoaded = true;
             this.data.todo = data;
           },
           error: _ => {

@@ -46,6 +46,9 @@ export class DeskComponent implements OnInit {
   isColumnDeleteLoaded: boolean[] = [];
   isLinkLoaded = true;
   isRemoveDeskLoaded = true;
+  isUserRemoveLoaded = true;
+  colorWarn = "warn";
+  isFavouriteLoaded = true;
   //desk: Desk;
 
   currentRoles : DeskRole[] = [];
@@ -148,6 +151,7 @@ export class DeskComponent implements OnInit {
 
         this.desks = data;
         if (this.desks.length === 0){
+          this.isLoaded = true;
           return;
         }
         let founded = this.desks.find(el => el.deskUser.preference === 1);
@@ -297,6 +301,7 @@ export class DeskComponent implements OnInit {
   addToFavourite(index: number |undefined) {
 
     let founded = this.desks.find(el => el.deskUser.preference === 1);
+    this.isFavouriteLoaded = false;
     if (founded != undefined) {
       this.deskService.addPreference(founded.id, 0).subscribe({
         next: (data: Desk[]) => {
@@ -311,6 +316,7 @@ export class DeskComponent implements OnInit {
           this.desks = data;
           this.deskService.getDesk(index).subscribe({
             next : (data: Desk) => {
+              this.isFavouriteLoaded = true;
               this.desk = data;
             },
             error: () => {
@@ -323,11 +329,13 @@ export class DeskComponent implements OnInit {
 
   removeFromFavourites(index: number |undefined) {
     if (index != undefined) {
+      this.isFavouriteLoaded = false;
       this.deskService.addPreference(index, 0).subscribe({
         next: (data: Desk[]) => {
           this.desks = data;
           this.deskService.getDesk(index).subscribe({
             next : (data: Desk) => {
+              this.isFavouriteLoaded = true;
               this.desk = data;
             },
             error: () => {
@@ -435,8 +443,10 @@ export class DeskComponent implements OnInit {
   }
 
   removeUser(usersId: number[]) {
+    this.isUserRemoveLoaded = false;
     this.deskService.removeUserFromDesk(usersId, this.desk!.id).subscribe({
       next: data => {
+        this.isUserRemoveLoaded = true;
         this.desk = data;
       },
       error: () => {
@@ -555,6 +565,9 @@ export class DeskComponent implements OnInit {
   }
   checkUserPermission(deskUser: DeskUsers, permissionName: string) {
     return this.rolesService.userHasPermission(deskUser, permissionName);
+  }
+  isUserAssigned(todo: Todo) {
+    return !!todo.toDoUsers.find(el => el.deskUser.user.id === this.getCurrentUser().id && el.toDoUserType === 1);
   }
 
 }

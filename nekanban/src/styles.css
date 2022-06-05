@@ -15,3 +15,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .spinner-centered {
   margin: 0 auto;
 }
+.mat-tooltip {
+  font-size: 14px !important;
+}
