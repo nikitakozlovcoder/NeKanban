@@ -41,6 +41,11 @@ export class DeskComponent implements OnInit {
   columns: Column[] = [];
   toDos: Todo[] = [];
   clientBaseHref = "";
+  isLoaded = false;
+  isNameUpdateLoaded = true;
+  isColumnDeleteLoaded: boolean[] = [];
+  isLinkLoaded = true;
+  isRemoveDeskLoaded = true;
   //desk: Desk;
 
   currentRoles : DeskRole[] = [];
@@ -137,8 +142,10 @@ export class DeskComponent implements OnInit {
   name = new FormControl('', [Validators.required, Validators.minLength(6)]);
   panelOpenState = false;
   loadDesks() {
+    this.isLoaded = false;
     this.deskService.getDesks().subscribe({
       next: (data: Desk[]) => {
+
         this.desks = data;
         if (this.desks.length === 0){
           return;
@@ -151,8 +158,10 @@ export class DeskComponent implements OnInit {
           this.deskService.getDesk(id).subscribe({
             next: (data: Desk) => {
               this.desk = data;
+
               this.getColumns();
               this.getToDos(this.desk.id);
+              this.name = new FormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
             },
             error: () => {
             }
@@ -166,6 +175,7 @@ export class DeskComponent implements OnInit {
               this.desk = data;
               this.getColumns();
               this.getToDos(this.desk.id);
+              this.name = new FormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
             },
             error: () => {
             }
@@ -188,6 +198,7 @@ export class DeskComponent implements OnInit {
           next: (data: Desk[]) => {
             this.desks = data;
             this.getColumns();
+            this.name = new FormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
           },
           error: () => {
           }
@@ -236,6 +247,9 @@ export class DeskComponent implements OnInit {
           }
           return 0;
         });
+        this.columns.forEach(column => {
+          this.isColumnDeleteLoaded.push(true);
+        })
 
         this.reloadTodosForColumns(this.toDos);
       }
@@ -247,11 +261,13 @@ export class DeskComponent implements OnInit {
   changeDesk(id: number) {
     this.current_id = id;
     this.opened = false;
+    this.isLoaded = false;
     this.deskService.getDesk(id).subscribe({
       next: (data: Desk) => {
         this.desk = data;
         this.getColumns();
         this.getToDos(this.desk.id);
+        this.name = new FormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
       },
       error: () => {
       }
@@ -327,8 +343,10 @@ export class DeskComponent implements OnInit {
       this.name.markAsTouched();
     }
     else {
+      this.isNameUpdateLoaded = false;
       this.deskService.updateDesk(this.desk!.id, this.name.value).subscribe({
         next: (data: Desk) => {
+          this.isNameUpdateLoaded = true;
           this.desk = data;
           let index = this.desks.findIndex(el => el.id === this.desk!.id);
           this.desks[index].name = data.name;
@@ -348,6 +366,8 @@ export class DeskComponent implements OnInit {
   getColumns() {
     this.columnService.getColumns(this.desk!.id).subscribe({
       next: data => {
+        this.isLoaded = true;
+        this.isRemoveDeskLoaded = true;
         this.columns = data.sort(function (a, b) {
           if (a.order > b.order) {
             return 1;
@@ -357,6 +377,9 @@ export class DeskComponent implements OnInit {
           }
           return 0;
         });
+        this.columns.forEach(column => {
+          this.isColumnDeleteLoaded.push(true);
+        })
         this.reloadTodosForColumns(this.toDos);
       },
       error: () => {
@@ -364,8 +387,11 @@ export class DeskComponent implements OnInit {
     })
   }
   removeColumn(columnId: number) {
+    this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = false;
     this.columnService.removeColumn(columnId).subscribe({
       next: data => {
+        this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = true
+        ;
         this.columns = data.sort(function (a: Column, b: Column) {
           if (a.order > b.order) {
             return 1;
@@ -384,8 +410,10 @@ export class DeskComponent implements OnInit {
   }
 
   generateLink() {
+    this.isLinkLoaded = false;
     this.deskService.setLink(this.desk!.id).subscribe( {
       next: data => {
+        this.isLinkLoaded = true;
         this.desk = data;
       },
       error: () => {
@@ -395,9 +423,6 @@ export class DeskComponent implements OnInit {
 
   hasInviteLink() {
     return !(this.desk?.inviteLink === null);
-  }
-  hasAccessToInviteLink() {
-    return this.getDeskOwner()!.user.id === this.getCurrentUser().id;
   }
   getInviteLink() {
     if (this.hasInviteLink()) {
@@ -420,6 +445,7 @@ export class DeskComponent implements OnInit {
   }
 
   removeDesk(deskId: number) {
+    this.isRemoveDeskLoaded = false;
     this.deskService.removeDesk(deskId).subscribe({
       next: () => {
         this.loadDesks();

@@ -17,14 +17,17 @@ export class TodoEditingComponent implements OnInit {
   }
   name = new FormControl(this.data.toDo.name, [Validators.required, Validators.minLength(3)]);
   body = new FormControl(this.data.toDo.body, [Validators.required, Validators.minLength(10)]);
+  isLoaded = true;
   updateToDo(): void {
     if (this.name.invalid || this.body.invalid) {
       this.name.markAsTouched();
       this.body.markAsTouched();
     }
     else {
+      this.isLoaded = false;
       this.todoService.updateToDo(this.data.toDo.id, this.name.value, this.body.value).subscribe({
         next: data => {
+          this.isLoaded = true;
           this.dialogRef.close(data);
         },
         error: () => {

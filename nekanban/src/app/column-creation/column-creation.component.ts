@@ -16,14 +16,17 @@ export class ColumnCreationComponent implements OnInit {
   ngOnInit(): void {
   }
   name = new FormControl('', [Validators.required, Validators.minLength(3)]);
+  isLoaded = true;
 
   createColumn() {
     if (this.name.invalid) {
       this.name.markAsTouched();
     }
     else {
+      this.isLoaded = false;
       this.columnService.addColumn(this.data.deskId, this.name.value).subscribe({
         next: (data: Column[]) => {
+          this.isLoaded = true;
           this.dialogRef.close(data);
         }
       });

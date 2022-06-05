@@ -19,6 +19,7 @@ export class TodoCreationComponent implements OnInit {
 
   name = new FormControl('', [Validators.required, Validators.minLength(3)]);
   body = new FormControl('', [Validators.required, Validators.minLength(10)]);
+  isLoaded = true;
 
   createToDo() {
     if (this.name.invalid || this.body.invalid) {
@@ -26,8 +27,10 @@ export class TodoCreationComponent implements OnInit {
       this.body.markAsTouched();
     }
     else {
+      this.isLoaded = false;
       this.todoService.addToDo(this.data.deskId, this.name.value, this.body.value).subscribe({
         next: (data: Todo[]) => {
+          this.isLoaded = true;
           this.dialogRef.close(data);
         }
       });

@@ -28,4 +28,5 @@
   <mat-error *ngIf="body.errors?.['required']">Поле не должно быть пустым!</mat-error>
   <mat-error *ngIf="body.errors?.['minlength']">Длина описания должна быть не менее 10 символов!</mat-error>
 </mat-form-field>
-<button class = "register_button" mat-raised-button color="primary" (click)="createToDo()">Создать задачу</button>
+<button *ngIf="isLoaded" class = "register_button" mat-raised-button color="primary" (click)="createToDo()">Создать задачу</button>
+<mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLoaded"></mat-spinner>

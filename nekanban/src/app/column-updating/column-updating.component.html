@@ -4,4 +4,5 @@
   <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
   <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 3 символов!</mat-error>
 </mat-form-field>
-<button class = "register_button" mat-raised-button color="primary" (click)="updateColumn()">Обновить колонку</button>
+<button *ngIf="isLoaded" class = "register_button" mat-raised-button color="primary" (click)="updateColumn()">Обновить колонку</button>
+<mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLoaded"></mat-spinner>

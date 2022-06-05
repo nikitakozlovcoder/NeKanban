@@ -258,3 +258,12 @@ mat-card-title p {
 .desk-name {
   padding-bottom: 5px;
 }
+.spinner {
+  margin: auto;
+}
+.full-height-content {
+  height: 100%;
+}
+.settings-card {
+  min-width: 400px;
+}
