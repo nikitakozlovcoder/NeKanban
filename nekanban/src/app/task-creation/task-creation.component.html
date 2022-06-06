@@ -37,7 +37,7 @@
               </mat-select-trigger>-->
               <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
             </mat-select>
-            <mat-select *ngIf="!checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="users" multiple (closed)="changeSingleUser(select)">
+            <mat-select *ngIf="!checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
 
               <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
             </mat-select>

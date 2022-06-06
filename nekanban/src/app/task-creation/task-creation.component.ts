@@ -21,8 +21,9 @@ export class TaskCreationComponent implements OnInit {
   }
 
   usersSelected : number[] = this.getIdsOfSelectedUsers();
-
+  userSelected : number[] = this.getIdOfSingleUser();
   users = new FormControl(this.usersSelected);
+  user = new FormControl(this.userSelected);
   isLoaded = true;
 
 
@@ -36,6 +37,14 @@ export class TaskCreationComponent implements OnInit {
     return this.data.todo.toDoUsers.find(el => el.toDoUserType == 0);
   }
 
+  getIdOfSingleUser() {
+    let ids : number[] = [];
+    let founded = this.getToDoUsers().find(el => el.deskUser.user.id === this.data.deskUser.user.id);
+    if (founded !== undefined) {
+      ids.push(founded.deskUser.user.id);
+    }
+    return ids;
+  }
   getToDoUsers() {
     return this.data.todo.toDoUsers.filter(el => el.toDoUserType != 0);
   }
@@ -111,6 +120,7 @@ export class TaskCreationComponent implements OnInit {
   }
   changeSingleUser(select:MatSelect) {
     let newIds : number[] = select.value;
+    console.log(select.value);
     if (newIds.length === 0) {
       let todo = this.data.todo.toDoUsers.find(obj => obj.deskUser.user.id === this.data.deskUser.user.id);
       if (todo !== undefined) {

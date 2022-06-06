@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Desk} from "../models/desk";
 import {DeskService} from "../services/desk.service";
 import {UserService} from "../services/user.service";
@@ -133,7 +133,7 @@ export class DeskComponent implements OnInit {
   }
 
   constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService,
-              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService, private http_service: BaseHttpService) {
+              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService) {
     this.opened = false;
   }
 
@@ -142,6 +142,9 @@ export class DeskComponent implements OnInit {
     this.rolesService.initRoles();
     this.clientBaseHref = window.location.href;
   }
+  /*ngAfterViewInit() {
+    this.cdr.detectChanges();
+  }*/
   name = new FormControl('', [Validators.required, Validators.minLength(6)]);
   panelOpenState = false;
   loadDesks() {
