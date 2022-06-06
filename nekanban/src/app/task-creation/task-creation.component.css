@@ -30,6 +30,7 @@
   margin-left: auto;
 }
 .description {
-  min-width: 500px;
+  min-width: 300px;
   max-width: 700px;
+  padding-right: 15px;
 }
