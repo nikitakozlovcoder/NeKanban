@@ -198,8 +198,10 @@ export class DeskComponent implements OnInit {
       if (result != undefined) {
         this.desk = result;
         this.current_id = this.desk!.id;
+        this.isLoaded = false;
         this.deskService.getDesks().subscribe({
           next: (data: Desk[]) => {
+            this.isLoaded = true;
             this.desks = data;
             this.getColumns();
             this.name = new FormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
@@ -557,7 +559,15 @@ export class DeskComponent implements OnInit {
   changeUserRole(event: MatSelectChange, deskUserId: number) {
     this.deskUserService.changeRole(deskUserId, event.value).subscribe({
       next: (data: DeskUsers[]) => {
-        this.desk!.deskUsers = data;
+        this.desk!.deskUsers = data.sort(function (a: DeskUsers, b: DeskUsers) {
+          if (a.id > b.id) {
+            return 1;
+          }
+          if (a.id < b.id) {
+            return -1;
+          }
+          return 0;
+        });
       },
       error: () => {
       }

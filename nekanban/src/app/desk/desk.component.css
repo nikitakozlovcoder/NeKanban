@@ -249,8 +249,9 @@ mat-card-title p {
   white-space: nowrap;
   margin: 0;
   padding-top: 7px;
+  padding-bottom: 5px;
 }
-.todo-name {
+.todo-name, mat-card-title p {
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 0;
@@ -262,9 +263,7 @@ mat-card-title p {
 }
 .spinner {
   margin: auto;
-}
-.full-height-content {
-  height: 100%;
+  margin-top: 20%;
 }
 .settings-card {
   min-width: 400px;
@@ -280,7 +279,18 @@ mat-card-title p {
 }
 .spinner-white {
   color: white;
+  margin-right: 10px;
 }
 mat-toolbar ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
   stroke: white;
+}
+.create-desk-button {
+  width: 280px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+mat-card-title mat-spinner {
+  margin-top: 7px;
+  padding-right: 5px;
 }

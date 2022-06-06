@@ -75,8 +75,9 @@ export class TaskCreationComponent implements OnInit {
         disappearedIds.push(el);
       }
     })
-    this.isLoaded = false;
+
     appearedIds.forEach(el => {
+      this.isLoaded = false;
       let deskUser = this.data.desk.deskUsers.find(obj => obj.user.id === el);
       this.toDoService.assignUser(this.data.todo.id, deskUser!.id).subscribe({
         next: data => {
@@ -90,6 +91,7 @@ export class TaskCreationComponent implements OnInit {
       })
     })
     disappearedIds.forEach( el => {
+      this.isLoaded = false;
       let todo = this.data.todo.toDoUsers.find(obj => obj.deskUser.user.id === el && obj.toDoUserType != 0);
       this.toDoService.removeUser(todo!.id).subscribe({
         next: data => {
@@ -111,15 +113,18 @@ export class TaskCreationComponent implements OnInit {
     let newIds : number[] = select.value;
     if (newIds.length === 0) {
       let todo = this.data.todo.toDoUsers.find(obj => obj.deskUser.user.id === this.data.deskUser.user.id);
-      this.isLoaded = false;
-      this.toDoService.removeUser(todo!.id).subscribe({
-        next: data => {
-          this.isLoaded = true;
-          this.data.todo = data;
-        },
-        error: _ => {
-        }
-      })
+      if (todo !== undefined) {
+        this.isLoaded = false;
+        this.toDoService.removeUser(todo.id).subscribe({
+          next: data => {
+            this.isLoaded = true;
+            this.data.todo = data;
+          },
+          error: _ => {
+          }
+        })
+      }
+
     }
     else {
       if (!this.usersSelected.includes(this.data.deskUser.user.id)) {
