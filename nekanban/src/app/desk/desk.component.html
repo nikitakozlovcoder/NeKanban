@@ -106,7 +106,7 @@
                   <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(column.type === 0 && checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')) ? 'false' : 'true'">
                     <mat-card-title class="column-card-title">
                       <mat-spinner *ngIf="!isColumnDeleteLoaded[i]" diameter="20"></mat-spinner>
-                      <p [matTooltip]="column.name">{{column.name}}</p>
+                      <p #columnName [matTooltip]="column.name" [matTooltipDisabled]="!(columnName.offsetWidth < columnName.scrollWidth)">{{column.name}}</p>
                         <button mat-button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')" [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                         <mat-menu #menu="matMenu">
                           <button mat-menu-item (click)="openColumnUpdatingDialog(column)"><mat-icon>edit</mat-icon>Редактировать</button>
