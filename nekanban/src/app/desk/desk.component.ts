@@ -68,6 +68,7 @@ export class DeskComponent implements OnInit {
       this.todoService.moveToDo(event.container.data[event.previousIndex].id, event.container.data[event.previousIndex].column.id, position).subscribe({
         next: data => {
           this.toDos = data;
+          this.reloadTodosForColumns(this.toDos);
         },
         error: _ => {
         }
@@ -90,6 +91,7 @@ export class DeskComponent implements OnInit {
       this.todoService.moveToDo(event.previousContainer.data[event.previousIndex].id, columnId, newOrder).subscribe({
         next: data => {
           this.toDos = data;
+          this.reloadTodosForColumns(this.toDos);
         },
         error: _ => {
         }
@@ -221,7 +223,9 @@ export class DeskComponent implements OnInit {
       data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser}
     });
     dialogRefView.afterClosed().subscribe( result => {
-      let idx = this.toDos.indexOf(todo);
+      let idx = this.toDos.findIndex(el => el.id === todo.id);
+      console.log(idx);
+      console.log(result);
       this.toDos[idx] = result;
       this.reloadTodosForColumns(this.toDos);
     })
@@ -531,7 +535,7 @@ export class DeskComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result !== undefined) {
-        this.toDos[this.toDos.indexOf(todo)] = result;
+        this.toDos[this.toDos.findIndex(el => el.id === todo.id)] = result;
         this.reloadTodosForColumns(this.toDos);
       }
     })
