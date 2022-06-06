@@ -86,7 +86,7 @@
         </mat-card-title>
 
         <!--<div cdkDropListGroup>-->
-        <div class="desk-cards-inside">
+        <div class="desk-cards-inside" [ngClass]="{'desk-cards-inside-margin' : checkUserPermission(getCurrentDesk()!.deskUser, 'CreateColumns')}">
           <div cdkDropList
                [cdkDropListData]="columns"
                class="example-list"
@@ -106,7 +106,7 @@
                   <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(column.type === 0 && checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')) ? 'false' : 'true'">
                     <mat-card-title class="column-card-title">
                       <mat-spinner *ngIf="!isColumnDeleteLoaded[i]" diameter="20"></mat-spinner>
-                      <p>{{column.name}}</p>
+                      <p [matTooltip]="column.name">{{column.name}}</p>
                         <button mat-button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')" [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                         <mat-menu #menu="matMenu">
                           <button mat-menu-item (click)="openColumnUpdatingDialog(column)"><mat-icon>edit</mat-icon>Редактировать</button>

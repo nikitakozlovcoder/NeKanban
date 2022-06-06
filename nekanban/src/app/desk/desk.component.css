@@ -224,8 +224,11 @@ mat-form-field
   justify-content: space-between;*/
 }
 .desk-cards-inside {
-  margin-top: 40px;
+  /*margin-top: 40px;*/
   display: flex;
+}
+.desk-cards-inside-margin {
+  margin-top: 40px;
 }
 .mat-line {
   margin-top: auto;
