@@ -1,0 +1,4 @@
+.idea
+NeKanbanApi/.idea
+NeKanbanApi/*/obj
+NeKanbanApi/*/bin

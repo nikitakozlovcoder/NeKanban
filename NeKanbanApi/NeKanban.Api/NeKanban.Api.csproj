@@ -23,7 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NeKanban.Api.Framework\NeKanban.Api.Framework.csproj" />
       <ProjectReference Include="..\NeKanban.Logic\NeKanban.Logic.csproj" />
       <ProjectReference Include="..\NeKanban.Security\NeKanban.Security.csproj" />
     </ItemGroup>
