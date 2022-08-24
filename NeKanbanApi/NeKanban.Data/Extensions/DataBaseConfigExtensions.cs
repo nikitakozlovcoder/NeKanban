@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NeKanban.Data.Entities;
 using NeKanban.Data.Infrastructure;
 using Npgsql;
 
@@ -32,5 +34,11 @@ public static class DataBaseConfigExtensions
         
         builder.Services.AddDbContext<ApplicationContext>(x =>
             x.UseNpgsql(npgsqlConnectionStringBuilder.ToString()));
+    }
+
+    public static void AddDataAccess(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        serviceCollection.AddScoped<IdentityDbContext<ApplicationUser, ApplicationRole, int>, ApplicationContext>();
     }
 }

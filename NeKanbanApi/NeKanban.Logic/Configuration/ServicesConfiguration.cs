@@ -6,6 +6,7 @@ using NeKanban.Logic.Services.MyDesks;
 using NeKanban.Logic.Services.ToDos;
 using NeKanban.Logic.Services.ToDos.ToDoUsers;
 using NeKanban.Logic.Services.Tokens;
+using NeKanban.Logic.Services.Users;
 using NeKanban.Services.MyDesks;
 using NeKanban.Services.ToDos.ToDoUsers;
 
@@ -22,5 +23,6 @@ public static class ServicesConfiguration
         services.AddScoped<IColumnsService, ColumnsService>();
         services.AddScoped<IToDoService, ToDoService>();
         services.AddScoped<IToDoUserService, ToDoUserService>();
+        services.AddScoped<IApplicationUsersService, ApplicationUsersService>();
     }
 }

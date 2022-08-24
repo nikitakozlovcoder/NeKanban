@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
@@ -9,9 +8,7 @@ using NeKanban.Data.Entities;
 using NeKanban.Data.Extensions;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Configuration;
-using NeKanban.Logic.EntityProtectors;
 using NeKanban.Logic.Options;
-using NeKanban.Logic.Services.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,14 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-builder.Services.AddScoped<IApplicationUsersService, ApplicationUsersService>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IdentityDbContext<ApplicationUser, ApplicationRole, int>, ApplicationContext>();
-builder.Services.AddScoped<IEntityProtector<Desk>, DeskEntityProtector>();
-builder.Services.AddScoped<IEntityProtector<DeskUser>, DeskUserEntityProtector>();
-builder.Services.AddScoped<IEntityProtector<Column>, ColumnEntityProtector>();
-builder.Services.AddScoped<IEntityProtector<ToDo>, ToDoEntityProtector>();
-builder.Services.AddScoped<IEntityProtector<ToDoUser>, ToDoUserProtector>();
+builder.Services.AddDataAccess();
+builder.Services.AddEntityProtectors();
 builder.AddDatabase();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>
