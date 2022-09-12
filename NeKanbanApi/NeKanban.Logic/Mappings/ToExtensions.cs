@@ -21,7 +21,6 @@ public static class ToExtensions
         };
     }
     #endregion
-
     #region Desk
     public static Desk ToDesk(this DeskCreateModel deskCreateModel)
     {
@@ -40,7 +39,7 @@ public static class ToExtensions
             Id = desk.Id,
             Name = desk.Name,
             InviteLink =  canViewInviteLink ? desk.InviteLink : null,
-            DeskUsers = desk.DeskUsers.Select(deskUser => deskUser.ToDeskUserLightVm()).ToList()
+            DeskUsers = desk.DeskUsers.Select(deskUser => deskUser.ToDeskUserLiteVm()).ToList()
         };
     }
     
@@ -54,9 +53,9 @@ public static class ToExtensions
             Preference = deskUser.Preference
         };
     }
-    public static DeskUserLightVm ToDeskUserLightVm(this DeskUser deskUser)
+    public static DeskUserLiteVm ToDeskUserLiteVm(this DeskUser deskUser)
     {
-        return new DeskUserLightVm
+        return new DeskUserLiteVm
         {
             Id = deskUser.Id,
             User = deskUser.User?.ToApplicationUserVm(),
@@ -64,9 +63,9 @@ public static class ToExtensions
         };
     }
     
-    public static DeskLightVm ToDeskLightVm(this Desk desk)
+    public static DeskLiteVm ToDeskLiteVm(this Desk desk)
     {
-        return new DeskLightVm
+        return new DeskLiteVm
         {
             Id = desk.Id,
             Name = desk.Name,
@@ -74,7 +73,6 @@ public static class ToExtensions
         };
     }
     #endregion
-
     #region Column
 
     public static ColumnVm ToColumnVm(this Column column)
@@ -110,10 +108,9 @@ public static class ToExtensions
         {
             Id = toDoUser.Id,
             ToDoUserType = toDoUser.ToDoUserType,
-            DeskUser = toDoUser.DeskUser?.ToDeskUserLightVm()
+            DeskUser = toDoUser.DeskUser?.ToDeskUserLiteVm()
         };
     }
 
     #endregion
-    
 }

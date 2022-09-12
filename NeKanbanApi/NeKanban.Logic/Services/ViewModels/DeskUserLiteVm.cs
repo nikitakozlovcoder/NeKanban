@@ -2,7 +2,7 @@
 
 namespace NeKanban.Logic.Services.ViewModels;
 
-public class DeskUserLightVm: BaseIdVm
+public class DeskUserLiteVm: BaseIdVm
 {
     public ApplicationUserVm? User { get; set; }
     public RoleType Role { get; set; }

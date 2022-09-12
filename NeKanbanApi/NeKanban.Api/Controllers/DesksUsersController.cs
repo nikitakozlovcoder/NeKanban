@@ -38,7 +38,7 @@ public class DesksUsersController : BaseAuthController
     }
     
     [HttpPut("{deskId:int}")]
-    public async Task<List<DeskLightVm>> SetPreferenceType([FromBody]DeskUserUpdatePreferenceType preferenceType, int deskId, CancellationToken ct = default)
+    public async Task<List<DeskLiteVm>> SetPreferenceType([FromBody]DeskUserUpdatePreferenceType preferenceType, int deskId, CancellationToken ct = default)
     {
         var user = await GetApplicationUser();
         return await _deskUserService.SetPreference(preferenceType, user, deskId, ct);

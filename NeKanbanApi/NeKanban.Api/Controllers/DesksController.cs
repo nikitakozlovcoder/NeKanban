@@ -54,7 +54,7 @@ public class DesksController : BaseAuthController
     }
 
     [HttpGet]
-    public async Task<List<DeskLightVm>> GetForUser(CancellationToken ct = default)
+    public async Task<List<DeskLiteVm>> GetForUser(CancellationToken ct = default)
     {
         var user = await GetApplicationUser();
         return await _myDesksService.GetForUser(user.Id, ct);

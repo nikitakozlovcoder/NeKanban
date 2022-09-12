@@ -11,7 +11,7 @@ public interface IDeskUserService
     Task CreateDeskUser(int deskId, int userId, RoleType role, CancellationToken ct);
     Task<DeskUserVm> GetDeskUser(int id, CancellationToken ct);
     Task RemoveFromDesk(int userId, int id, CancellationToken ct);
-    Task<List<DeskLightVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId, CancellationToken ct);
+    Task<List<DeskLiteVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId, CancellationToken ct);
     Task<List<DeskUserVm>> ChangeRole(DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct);
     Task<int> GetDeskUserUserId(int deskUserId, CancellationToken ct);
 }

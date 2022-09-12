@@ -4,6 +4,6 @@ namespace NeKanban.Services.MyDesks;
 
 public interface IMyDesksService
 {
-   Task<List<DeskLightVm>> GetForUser(int userId, CancellationToken ct);
+   Task<List<DeskLiteVm>> GetForUser(int userId, CancellationToken ct);
 
 }

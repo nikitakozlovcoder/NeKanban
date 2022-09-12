@@ -65,7 +65,7 @@ public class DeskUserService : BaseService, IDeskUserService
         await _deskUserRepository.Remove(deskUser!, ct);
     }
 
-    public async Task<List<DeskLightVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId,
+    public async Task<List<DeskLiteVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId,
         CancellationToken ct)
     {
         var deskUser =

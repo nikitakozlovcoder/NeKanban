@@ -16,12 +16,12 @@ public class MyDesksService : IMyDesksService
         _deskRepository = deskRepository;
     }
 
-    public async Task<List<DeskLightVm>> GetForUser(int userId, CancellationToken ct)
+    public async Task<List<DeskLiteVm>> GetForUser(int userId, CancellationToken ct)
     {
         var desks = await _deskRepository.QueryableSelect()
             .Include(x => x.DeskUsers.Where(du => du.UserId == userId)).ThenInclude(x=> x.User)
             .Where(x=> x.DeskUsers.Any(du => du.UserId == userId))
             .ToListAsync(ct);
-        return desks.Select(x => x.ToDeskLightVm()).ToList();
+        return desks.Select(x => x.ToDeskLiteVm()).ToList();
     }
 }
