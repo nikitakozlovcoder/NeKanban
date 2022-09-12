@@ -6,10 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./authorization.component.css']
 })
 export class AuthorizationComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit(): void {
   }
-
 }

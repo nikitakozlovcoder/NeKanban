@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
   hide = true;
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [Validators.required]);
@@ -25,6 +26,7 @@ export class LoginComponent implements OnInit {
 
     return this.email.hasError('email') ? 'Некорректный email' : '';
   }
+
   getRequiredErrorMessage() {
     return 'Поле не должно быть пустым!';
   }

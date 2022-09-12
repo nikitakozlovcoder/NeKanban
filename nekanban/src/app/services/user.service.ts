@@ -8,7 +8,6 @@ import {catchError, tap, throwError} from "rxjs";
 import ErrorTypes from "../constants/ErrorTypes";
 import {ErrorCodes} from "../constants/ErrorCodes";
 
-
 @Injectable()
 export class UserService {
 
@@ -27,8 +26,8 @@ export class UserService {
       width: '250px',
       data: {errorType: errorType}
     });
-
   }
+
   constructor(private http: HttpClient, private router: Router, public dialog: MatDialog,
               private http_service: BaseHttpService) { }
 

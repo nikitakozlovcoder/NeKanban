@@ -30,7 +30,6 @@ import {BaseHttpService} from "../services/base_http.service";
   styleUrls: ['./desk.component.css']
 })
 export class DeskComponent implements OnInit {
-
   events: string[] = [];
   opened: boolean;
   desks: Desk[] = [];
@@ -49,12 +48,9 @@ export class DeskComponent implements OnInit {
   isUserRemoveLoaded = true;
   colorWarn = "warn";
   isFavouriteLoaded = true;
-  //desk: Desk;
-
   currentRoles : DeskRole[] = [];
   roles : Role[] = [new Role(0, "Участник"), new Role(1, "Менеджер")];
   roleNames: string[] = ["Участник", "Менеджер", "Руководитель"];
-  //rolesControl = new FormControl();
 
   drop(event: CdkDragDrop<Todo[]>, columnId: number) {
     if (event.previousContainer === event.container) {
@@ -268,9 +264,11 @@ export class DeskComponent implements OnInit {
       }
     })
   }
+
   closeDialog() {
     this.dialog.closeAll();
   }
+
   changeDesk(id: number) {
     this.current_id = id;
     this.opened = false;
@@ -286,6 +284,7 @@ export class DeskComponent implements OnInit {
       }
     })
   }
+
   getDesk() : Desk {
     if (this.changed_index === -1) {
       this.desks.forEach( (el, index) => {
@@ -299,16 +298,18 @@ export class DeskComponent implements OnInit {
 
     return this.desks[this.changed_index];
   }
+
   logout() {
     this.userService.logoutUser();
     this.router.navigate(['authorization']);
   }
+
   showDeskCreation() {
     this.openDialog();
     this.opened = false;
   }
-  addToFavourite(index: number |undefined) {
 
+  addToFavourite(index: number |undefined) {
     let founded = this.desks.find(el => el.deskUser.preference === 1);
     this.isFavouriteLoaded = false;
     if (founded != undefined) {
