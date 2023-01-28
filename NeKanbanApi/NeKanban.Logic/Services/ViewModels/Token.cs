@@ -2,5 +2,5 @@
 
 public class Token
 {
-    public string? TokenValue { get; set; }
+    public required string? TokenValue { get; set; }
 }

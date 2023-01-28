@@ -1,12 +1,9 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
-using NeKanban.Data.Entities;
 using NeKanban.Data.Extensions;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Configuration;
 using NeKanban.Logic.Options;
 
@@ -71,22 +68,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityCore<ApplicationUser>(options =>
-    {
-        options.Password.RequiredLength = 6;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireDigit = false;
-        options.SignIn.RequireConfirmedAccount = false;
-        options.SignIn.RequireConfirmedEmail = false;
-        options.SignIn.RequireConfirmedPhoneNumber = false;
-        options.User.RequireUniqueEmail = true;
-    })
-    .AddSignInManager()
-    .AddRoles<ApplicationRole>()
-    .AddEntityFrameworkStores<ApplicationContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddAppIdentity();
 
 var app = builder.Build();
 app.UseCors(x=> x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());

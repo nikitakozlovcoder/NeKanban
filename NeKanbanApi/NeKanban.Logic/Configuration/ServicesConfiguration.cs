@@ -11,7 +11,7 @@ public static class ServicesConfiguration
         AddAutoServices(services);
     }
 
-    private static void AddAutoServices(IServiceCollection services)
+    private static void AddAutoServices(this IServiceCollection services)
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         foreach (var assembly in assemblies)

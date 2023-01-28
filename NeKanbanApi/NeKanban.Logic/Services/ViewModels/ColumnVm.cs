@@ -4,8 +4,8 @@ namespace NeKanban.Logic.Services.ViewModels;
 
 public class ColumnVm : BaseIdVm
 {
-    public string? Name { get; set; }
-    public ColumnType Type { get; set; }
+    public required string? Name { get; set; }
+    public required ColumnType Type { get; set; }
     public string Typename => Type.ToString();
-    public int Order { get; set; }
+    public required int Order { get; set; }
 }

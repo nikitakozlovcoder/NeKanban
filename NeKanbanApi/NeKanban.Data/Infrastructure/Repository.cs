@@ -33,6 +33,11 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         return _dbSet.Where(predicate).FirstOrDefaultAsync(ct);
     }
 
+    public Task<TEntity> Single(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    {
+        return _dbSet.Where(predicate).SingleAsync(ct);
+    }
+
     public IQueryable<TEntity> QueryableSelect()
     {
         return _dbSet;
