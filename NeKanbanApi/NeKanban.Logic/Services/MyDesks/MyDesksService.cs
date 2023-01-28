@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NeKanban.Common.Attributes;
 using NeKanban.Data.Entities;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Mappings;
@@ -7,6 +8,7 @@ using NeKanban.Services.MyDesks;
 
 namespace NeKanban.Logic.Services.MyDesks;
 
+[Injectable(typeof(IMyDesksService))]
 public class MyDesksService : IMyDesksService
 {
     private readonly IRepository<Desk> _deskRepository;

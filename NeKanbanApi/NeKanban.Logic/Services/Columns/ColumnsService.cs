@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using NeKanban.Common.Attributes;
 using NeKanban.Data.Constants;
 using NeKanban.Data.Entities;
 using NeKanban.Data.Infrastructure;
@@ -11,6 +12,7 @@ using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Logic.Services.Columns;
 
+[Injectable<IColumnsService>]
 public class ColumnsService : BaseService, IColumnsService
 {
     private readonly IRepository<Column> _columnRepository;

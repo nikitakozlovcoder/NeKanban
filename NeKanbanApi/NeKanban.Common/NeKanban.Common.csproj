@@ -6,5 +6,5 @@
         <Nullable>enable</Nullable>
         <LangVersion>preview</LangVersion>
     </PropertyGroup>
-    
+
 </Project>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using NeKanban.Common.Attributes;
 using NeKanban.Data.Constants;
 using NeKanban.Data.Entities;
 using NeKanban.Data.Infrastructure;
@@ -11,6 +12,7 @@ using NeKanban.Services.ToDos.ToDoUsers;
 
 namespace NeKanban.Logic.Services.ToDos.ToDoUsers;
 
+[Injectable(typeof(ToDoUserService))]
 public class ToDoUserService : BaseService, IToDoUserService
 {
     private readonly IRepository<ToDoUser> _toDoUserRepository;

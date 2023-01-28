@@ -3,11 +3,13 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NeKanban.Common.Attributes;
 using NeKanban.Logic.Options;
 using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Logic.Services.Tokens;
 
+[Injectable(typeof(ITokenProviderService))]
 public class TokenProviderService : ITokenProviderService
 {
     private readonly JwtSettings _jwtSettings;

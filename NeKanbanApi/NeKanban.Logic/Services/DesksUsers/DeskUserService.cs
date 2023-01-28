@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using NeKanban.Common.Attributes;
 using NeKanban.Data.Constants;
 using NeKanban.Data.Entities;
 using NeKanban.Data.Infrastructure;
@@ -14,6 +15,7 @@ using NeKanban.Services.MyDesks;
 
 namespace NeKanban.Logic.Services.DesksUsers;
 
+[Injectable(typeof(IDeskUserService))]
 public class DeskUserService : BaseService, IDeskUserService
 {
     private readonly IRepository<DeskUser> _deskUserRepository;
@@ -55,7 +57,7 @@ public class DeskUserService : BaseService, IDeskUserService
     public async Task RemoveFromDesk(int userId, int id, CancellationToken ct)
     {
         var deskUser = await _deskUserRepository
-            .GetFirstOrDefault(x=> x.UserId == userId && x.DeskId == id, ct);
+            .FirstOrDefault(x=> x.UserId == userId && x.DeskId == id, ct);
         EnsureEntityExists(deskUser);
         if (deskUser!.Role == RoleType.Owner)
         {
@@ -69,7 +71,7 @@ public class DeskUserService : BaseService, IDeskUserService
         CancellationToken ct)
     {
         var deskUser =
-            await _deskUserRepository.GetFirstOrDefault(x => x.UserId == applicationUser.Id && x.DeskId == deskId, ct);
+            await _deskUserRepository.FirstOrDefault(x => x.UserId == applicationUser.Id && x.DeskId == deskId, ct);
         EnsureEntityExists(deskUser);
         deskUser!.Preference = preferenceType.Preference;
         await _deskUserRepository.Update(deskUser, ct);

@@ -20,6 +20,7 @@ public static class ToExtensions
             Email = applicationUser.Email
         };
     }
+    
     #endregion
     #region Desk
     public static Desk ToDesk(this DeskCreateModel deskCreateModel)
@@ -30,10 +31,8 @@ public static class ToExtensions
         };
     }
     
-    public static DeskVm ToDeskVm(this Desk desk, int? userId)
+    public static DeskVm ToDeskVm(this Desk desk, bool canViewInviteLink)
     {
-        var role = userId.HasValue ? desk.DeskUsers.FirstOrDefault(x => x.UserId == userId)?.Role : null;
-        var canViewInviteLink = role.HasValue && PermissionChecker.CheckPermission(role.Value, PermissionType.ViewInviteLink);
         return new DeskVm
         {
             Id = desk.Id,
@@ -53,6 +52,7 @@ public static class ToExtensions
             Preference = deskUser.Preference
         };
     }
+    
     public static DeskUserLiteVm ToDeskUserLiteVm(this DeskUser deskUser)
     {
         return new DeskUserLiteVm
@@ -72,6 +72,7 @@ public static class ToExtensions
             DeskUser = desk.DeskUsers.FirstOrDefault()?.ToDeskUserVm()
         };
     }
+    
     #endregion
     #region Column
 

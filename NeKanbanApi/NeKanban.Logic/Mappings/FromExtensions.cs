@@ -24,6 +24,7 @@ public static class FromExtensions
     {
         column.Name = model.Name;
     }
+    
     public static void FromUpdateModel(this Column column, ColumnUpdateModel model)
     {
         column.Name = model.Name;
@@ -34,6 +35,7 @@ public static class FromExtensions
         toDo.Name = model.Name ?? "";
         toDo.Body = model.Body;
     }
+    
     public static void FromUpdateModel(this ToDo toDo, ToDoUpdateModel model)
     {
         toDo.Name = model.Name ?? "";

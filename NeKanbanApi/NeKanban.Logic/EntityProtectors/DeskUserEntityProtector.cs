@@ -14,8 +14,7 @@ public class DeskUserEntityProtector : BaseEntityProtector<DeskUser>
 
     protected override async Task<int?> GetDeskId(int entityId, CancellationToken ct)
     {
-        var deskUser = await _deskUserRepository.QueryableSelect()
-            .FirstOrDefaultAsync(x => x.Id == entityId, ct);
+        var deskUser = await _deskUserRepository.FirstOrDefault(x => x.Id == entityId, ct);
         return deskUser?.DeskId;
     }
 }

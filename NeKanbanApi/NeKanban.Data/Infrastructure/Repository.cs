@@ -23,12 +23,12 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         return _context.SaveChangesAsync(ct);
     }
 
-    public Task<List<TEntity>> Get(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    public Task<List<TEntity>> ToList(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return _dbSet.Where(predicate).ToListAsync(ct);
     }
     
-    public Task<TEntity?> GetFirstOrDefault(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    public Task<TEntity?> FirstOrDefault(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return _dbSet.Where(predicate).FirstOrDefaultAsync(ct);
     }

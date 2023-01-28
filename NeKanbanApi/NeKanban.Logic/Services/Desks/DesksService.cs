@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NeKanban.Common.Attributes;
 using NeKanban.Data.Constants;
 using NeKanban.Data.Entities;
 using NeKanban.Data.Infrastructure;
@@ -8,6 +9,7 @@ using NeKanban.Logic.Constants;
 using NeKanban.Logic.Mappings;
 using NeKanban.Logic.Models.ColumnModels;
 using NeKanban.Logic.Models.DeskModels;
+using NeKanban.Logic.SecurityProfile.Helpers;
 using NeKanban.Logic.Services.Columns;
 using NeKanban.Logic.Services.DesksUsers;
 using NeKanban.Logic.Services.ViewModels;
@@ -15,6 +17,7 @@ using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.Desks;
 
+[Injectable<IDesksService>()]
 public class DesksService : BaseService, IDesksService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -61,7 +64,9 @@ public class DesksService : BaseService, IDesksService
             .ThenInclude(x => x.User).FirstOrDefaultAsync(x => x.Id == id, ct);
         EnsureEntityExists(desk);
         var user = await UserManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
-        return desk!.ToDeskVm(user.Id);
+        var role = desk!.DeskUsers.FirstOrDefault(x => x.UserId == user.Id)?.Role;
+        var canViewInviteLink = role.HasValue && PermissionChecker.CheckPermission(role.Value, PermissionType.ViewInviteLink);
+        return desk.ToDeskVm(canViewInviteLink);
 
     }
     

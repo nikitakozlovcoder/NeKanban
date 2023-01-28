@@ -1,14 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NeKanban.Logic.Services.Columns;
-using NeKanban.Logic.Services.Desks;
-using NeKanban.Logic.Services.DesksUsers;
-using NeKanban.Logic.Services.MyDesks;
-using NeKanban.Logic.Services.ToDos;
-using NeKanban.Logic.Services.ToDos.ToDoUsers;
-using NeKanban.Logic.Services.Tokens;
-using NeKanban.Logic.Services.Users;
-using NeKanban.Services.MyDesks;
-using NeKanban.Services.ToDos.ToDoUsers;
+﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using NeKanban.Common.Attributes;
 
 namespace NeKanban.Logic.Configuration;
 
@@ -16,13 +8,36 @@ public static class ServicesConfiguration
 {
     public static void AddServices(this IServiceCollection services)
     {
-        services.AddScoped<ITokenProviderService, TokenProviderService>();
-        services.AddScoped<IDesksService, DesksService>();
-        services.AddScoped<IDeskUserService, DeskUserService>();
-        services.AddScoped<IMyDesksService, MyDesksService>();
-        services.AddScoped<IColumnsService, ColumnsService>();
-        services.AddScoped<IToDoService, ToDoService>();
-        services.AddScoped<IToDoUserService, ToDoUserService>();
-        services.AddScoped<IApplicationUsersService, ApplicationUsersService>();
+        AddAutoServices(services);
+    }
+
+    private static void AddAutoServices(IServiceCollection services)
+    {
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        foreach (var assembly in assemblies)
+        {
+            var types = assembly.GetTypes();
+            foreach (var type in types)
+            {
+                var attr = type.GetCustomAttribute<InjectableAttribute>();
+                if (attr == null)
+                {
+                    continue;
+                }
+
+                var abstractions = attr.Abstractions;
+                if (abstractions.Any())
+                {
+                    foreach (var abstraction in abstractions)
+                    {
+                        services.AddScoped(abstraction, type);
+                    }
+                }
+                else
+                {
+                    services.AddScoped(type);
+                }
+            }
+        }
     }
 }

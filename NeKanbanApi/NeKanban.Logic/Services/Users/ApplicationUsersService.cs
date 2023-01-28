@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Identity;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using NeKanban.Common.Attributes;
 using NeKanban.Data.Entities;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Mappings;
@@ -10,6 +11,7 @@ using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Logic.Services.Users;
 
+[Injectable(typeof(ApplicationUsersService))]
 public class ApplicationUsersService : BaseService, IApplicationUsersService
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -27,7 +29,7 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
 
     public async Task<ApplicationUserVm> Login(UserLoginModel userLoginModel, CancellationToken ct) 
     {
-        var user = await _userRepository.GetFirstOrDefault(x => x.Email == userLoginModel.Email, ct);
+        var user = await _userRepository.FirstOrDefault(x => x.Email == userLoginModel.Email, ct);
         if (user == null || !await UserManager.CheckPasswordAsync(user, userLoginModel.Password))
         {
             throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
@@ -52,7 +54,7 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
 
     public async Task<ApplicationUserVm> GetById(int id,  CancellationToken ct)
     {
-        var user = await _userRepository.GetFirstOrDefault(x => x.Id == id, ct);
+        var user = await _userRepository.FirstOrDefault(x => x.Id == id, ct);
         if (user == null)
         {
             throw new HttpStatusCodeException(HttpStatusCode.NotFound);

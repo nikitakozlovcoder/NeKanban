@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using NeKanban.Common.Attributes;
 using NeKanban.Data.Constants;
 using NeKanban.Data.Entities;
 using NeKanban.Data.Infrastructure;
@@ -12,6 +13,7 @@ using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Logic.Services.ToDos;
 
+[Injectable(typeof(IToDoService))]
 public class ToDoService : BaseService, IToDoService
 {
     private readonly IRepository<Desk> _deskRepository;
