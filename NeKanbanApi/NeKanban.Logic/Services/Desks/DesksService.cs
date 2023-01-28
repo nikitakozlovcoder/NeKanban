@@ -46,6 +46,7 @@ public class DesksService : BaseService, IDesksService
         {
             Name = ColumnNames.Closed
         }, ColumnType.End, ct);
+        
         return await GetDesk(desk.Id, user, ct);
     }
 
