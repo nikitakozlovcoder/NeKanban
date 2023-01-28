@@ -25,12 +25,11 @@ public class ToDoService : BaseService, IToDoService
 
     public ToDoService(
         IRepository<Desk> deskRepository, 
-        UserManager<ApplicationUser> userManager, 
         IColumnsService columnsService, 
         IRepository<ToDo> toDoRepository, 
         IRepository<DeskUser> deskUserRepository, 
         IRepository<ToDoUser> toDoUserRepository,
-        IRepository<Column> columnRepository) : base(userManager)
+        IRepository<Column> columnRepository)
     {
         _deskRepository = deskRepository;
         _columnsService = columnsService;

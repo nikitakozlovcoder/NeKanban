@@ -34,7 +34,7 @@ public class DesksUsersController : BaseAuthController
     public async Task<DeskVm> RemoveUsers([FromBody]DeskRemoveUsersModel deskRemoveUsersModel, int deskId, CancellationToken ct = default)
     {
         await EnsureAbleTo<Desk>(PermissionType.RemoveUsers, deskId, ct);
-        return await _desksService.UpdateDesk(deskRemoveUsersModel, deskId, ct);
+        return await _desksService.UpdateDesk(deskRemoveUsersModel, deskId, await GetApplicationUser(), ct);
     }
     
     [HttpPut("{deskId:int}")]

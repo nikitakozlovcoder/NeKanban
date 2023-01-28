@@ -27,30 +27,30 @@ public class DesksController : BaseAuthController
     }
     
     [HttpPost]
-    public Task<DeskVm> CreateDesk([FromBody]DeskCreateModel deskCreateModel, CancellationToken ct = default)
+    public async Task<DeskVm> CreateDesk([FromBody]DeskCreateModel deskCreateModel, CancellationToken ct = default)
     {
-        return _desksService.CreateDesk(deskCreateModel, ct);
+        return await _desksService.CreateDesk(deskCreateModel, await GetApplicationUser(), ct);
     }
     
     [HttpPut("{id:int}")]
     public async Task<DeskVm> UpdateDesk([FromBody]DeskUpdateModel deskUpdateModel, int id, CancellationToken ct = default)
     {
         await EnsureAbleTo<Desk>(PermissionType.UpdateGeneralDesk, id, ct);
-        return await _desksService.UpdateDesk(deskUpdateModel, id, ct);
+        return await _desksService.UpdateDesk(deskUpdateModel, id, await GetApplicationUser(), ct);
     }
     
     [HttpPut("{id:int}")]
     public async Task<DeskVm> InviteLink([FromBody]DeskInviteLinkModel inviteLinkModel, int id, CancellationToken ct = default)
     {
         await EnsureAbleTo<Desk>(PermissionType.ManageInviteLink, id, ct);
-        return await _desksService.UpdateDesk(inviteLinkModel, id, ct);
+        return await _desksService.UpdateDesk(inviteLinkModel, id, await GetApplicationUser(), ct);
     }
     
     [HttpGet("{id:int}")]
     public async Task<DeskVm> GetDesk(int id, CancellationToken ct = default)
     {
         await EnsureAbleTo<Desk>(PermissionType.AccessDesk, id, ct);
-        return await _desksService.GetDesk(id, ct);
+        return await _desksService.GetDesk(id, await GetApplicationUser(), ct);
     }
 
     [HttpGet]

@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
@@ -19,8 +18,7 @@ public class ToDoUserService : BaseService, IToDoUserService
     private readonly IToDoService _toDoService;
     public ToDoUserService(
         IRepository<ToDoUser> toDoUserRepository,
-        UserManager<ApplicationUser> userManager,
-        IToDoService toDoService) : base(userManager)
+        IToDoService toDoService)
     {
         _toDoUserRepository = toDoUserRepository;
         _toDoService = toDoService;

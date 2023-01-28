@@ -17,11 +17,13 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly ITokenProviderService _tokenProviderService;
+    private readonly UserManager<ApplicationUser> _userManager;
     public ApplicationUsersService(
         UserManager<ApplicationUser> userManager, 
         SignInManager<ApplicationUser> signInManager, 
-        IRepository<ApplicationUser> userRepository, ITokenProviderService tokenProviderService) : base(userManager)
+        IRepository<ApplicationUser> userRepository, ITokenProviderService tokenProviderService)
     {
+        _userManager = userManager;
         _signInManager = signInManager;
         _userRepository = userRepository;
         _tokenProviderService = tokenProviderService;
@@ -30,7 +32,7 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
     public async Task<ApplicationUserVm> Login(UserLoginModel userLoginModel, CancellationToken ct) 
     {
         var user = await _userRepository.FirstOrDefault(x => x.Email == userLoginModel.Email, ct);
-        if (user == null || !await UserManager.CheckPasswordAsync(user, userLoginModel.Password))
+        if (user == null || !await _userManager.CheckPasswordAsync(user, userLoginModel.Password))
         {
             throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
         }
@@ -44,21 +46,20 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
     {
         var user = new ApplicationUser();
         user.FromRegistrationModel(userRegister);
-        var identityResult = await UserManager.CreateAsync(user, userRegister.Password);
+        var identityResult = await _userManager.CreateAsync(user, userRegister.Password);
         if (!identityResult.Succeeded)
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, identityResult.Errors.First().Code);
         }
+        
         return await Login(userRegister, ct);
     }
 
     public async Task<ApplicationUserVm> GetById(int id,  CancellationToken ct)
     {
         var user = await _userRepository.FirstOrDefault(x => x.Id == id, ct);
-        if (user == null)
-        {
-            throw new HttpStatusCodeException(HttpStatusCode.NotFound);
-        }
-        return user.ToApplicationUserVm();
+        EnsureEntityExists(user);
+        
+        return user!.ToApplicationUserVm();
     }
 }

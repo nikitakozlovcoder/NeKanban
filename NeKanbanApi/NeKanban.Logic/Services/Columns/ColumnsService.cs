@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
@@ -18,9 +17,8 @@ public class ColumnsService : BaseService, IColumnsService
     private readonly IRepository<Column> _columnRepository;
     private readonly IRepository<Desk> _deskRepository;
     public ColumnsService(
-        UserManager<ApplicationUser> userManager, 
         IRepository<Column> columnRepository, 
-        IRepository<Desk> deskRepository) : base(userManager)
+        IRepository<Desk> deskRepository)
     {
         _columnRepository = columnRepository;
         _deskRepository = deskRepository;
@@ -40,10 +38,10 @@ public class ColumnsService : BaseService, IColumnsService
         EnsureEntityExists(column);
         if (column!.Type is ColumnType.End or ColumnType.Start)
         {
-            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Api.FrameworkExceptions.ExceptionHandling.Exceptions.CantDeleteColumnWithThisType);
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantDeleteColumnWithThisType);
         }
         
-        var deskId = column!.DeskId;
+        var deskId = column.DeskId;
         await _columnRepository.Remove(column, ct);
         return await GetColumns(deskId, ct);
     }

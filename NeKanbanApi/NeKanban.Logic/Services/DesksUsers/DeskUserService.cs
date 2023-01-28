@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
@@ -21,7 +20,7 @@ public class DeskUserService : BaseService, IDeskUserService
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IMyDesksService _myDesksService;
 
-    public DeskUserService(IRepository<DeskUser> deskUserRepository, UserManager<ApplicationUser> userManager, IMyDesksService myDesksService) : base(userManager)
+    public DeskUserService(IRepository<DeskUser> deskUserRepository, IMyDesksService myDesksService)
     {
         _deskUserRepository = deskUserRepository;
         _myDesksService = myDesksService;
@@ -64,7 +63,7 @@ public class DeskUserService : BaseService, IDeskUserService
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantRemoveOwnerFromDesk);
         }
       
-        await _deskUserRepository.Remove(deskUser!, ct);
+        await _deskUserRepository.Remove(deskUser, ct);
     }
 
     public async Task<List<DeskLiteVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId,

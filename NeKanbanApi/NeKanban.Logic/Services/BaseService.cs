@@ -7,12 +7,6 @@ namespace NeKanban.Logic.Services;
 
 public abstract class BaseService
 {
-    protected readonly UserManager<ApplicationUser> UserManager;
-    protected BaseService(UserManager<ApplicationUser> userManager)
-    {
-        UserManager = userManager;
-    }
-    
     protected static void EnsureEntityExists<TEntity>(TEntity entity)
     {
         if (entity == null)

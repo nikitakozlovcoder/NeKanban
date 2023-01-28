@@ -6,11 +6,11 @@ namespace NeKanban.Logic.Services.Desks;
 
 public interface IDesksService
 {
-    Task<DeskVm> CreateDesk(DeskCreateModel deskCreateModel, CancellationToken ct);
+    Task<DeskVm> CreateDesk(DeskCreateModel deskCreateModel, ApplicationUser user, CancellationToken ct);
     Task DeleteDesk(int id, CancellationToken ct);
-    Task<DeskVm> GetDesk(int id, CancellationToken ct);
-    Task<DeskVm> UpdateDesk(DeskUpdateModel deskUpdateModel, int id, CancellationToken ct);
-    Task<DeskVm> UpdateDesk(DeskInviteLinkModel inviteLinkModel, int id, CancellationToken ct);
-    Task<DeskVm> UpdateDesk(DeskRemoveUsersModel deskRemoveUsersModel, int id, CancellationToken ct);
+    Task<DeskVm> GetDesk(int id, ApplicationUser user, CancellationToken ct);
+    Task<DeskVm> UpdateDesk(DeskUpdateModel deskUpdateModel, int id, ApplicationUser user, CancellationToken ct);
+    Task<DeskVm> UpdateDesk(DeskInviteLinkModel inviteLinkModel, int id, ApplicationUser user, CancellationToken ct);
+    Task<DeskVm> UpdateDesk(DeskRemoveUsersModel deskRemoveUsersModel, int id, ApplicationUser user, CancellationToken ct);
     Task<DeskVm> AddUserToDesk(DeskAddUserByLinkModel model, ApplicationUser user, CancellationToken ct);
 }
