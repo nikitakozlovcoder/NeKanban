@@ -26,7 +26,7 @@ public class InitialSeeder : ISeeder
 
     public async Task Run(CancellationToken ct)
     {
-        var userVm = await _applicationUsersService.Register(new UserRegisterModel
+        var userVm = await _applicationUsersService.Create(new UserRegisterModel
         {
             Name = "Test",
             Surname = "Test",

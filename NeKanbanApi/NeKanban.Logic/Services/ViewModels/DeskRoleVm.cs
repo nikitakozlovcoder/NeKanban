@@ -4,7 +4,7 @@ namespace NeKanban.Logic.Services.ViewModels;
 
 public class DeskRoleVm
 {
-    public required RoleType Role { get; set; }
+    public RoleType Role { get; set; }
     public string RoleName => Role.ToString();
-    public required List<PermissionVm> Permissions { get; set; } = new ();
+    public List<PermissionVm> Permissions { get; set; } = new ();
 }

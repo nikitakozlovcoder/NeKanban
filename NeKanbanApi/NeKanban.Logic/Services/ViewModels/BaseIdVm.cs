@@ -2,5 +2,5 @@
 
 public abstract class BaseIdVm
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
 }

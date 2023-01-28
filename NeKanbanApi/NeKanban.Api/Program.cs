@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Data.Extensions;
+using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Configuration;
 using NeKanban.Logic.Options;
 
@@ -71,9 +72,14 @@ builder.Services.AddAuthorization();
 builder.Services.AddAppIdentity();
 
 var app = builder.Build();
-app.UseCors(x=> x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+using(var scope = app.Services.CreateScope())
+{
+    var dbCtx = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+    dbCtx.Migrate();
+}
 
 // Configure the HTTP request pipeline.
+app.UseCors(x=> x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -11,7 +11,7 @@ using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Logic.Services.Users;
 
-[Injectable(typeof(ApplicationUsersService))]
+[Injectable<IApplicationUsersService>]
 public class ApplicationUsersService : BaseService, IApplicationUsersService
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
@@ -44,14 +44,7 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
 
     public async Task<ApplicationUserVm> Register(UserRegisterModel userRegister, CancellationToken ct)
     {
-        var user = new ApplicationUser();
-        user.FromRegistrationModel(userRegister);
-        var identityResult = await _userManager.CreateAsync(user, userRegister.Password);
-        if (!identityResult.Succeeded)
-        {
-            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, identityResult.Errors.First().Code);
-        }
-        
+        await Create(userRegister, ct);
         return await Login(userRegister, ct);
     }
 
@@ -61,5 +54,18 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         EnsureEntityExists(user);
         
         return user!.ToApplicationUserVm();
+    }
+
+    public async Task<ApplicationUser> Create(UserRegisterModel userRegister, CancellationToken ct)
+    {
+        var user = new ApplicationUser();
+        user.FromRegistrationModel(userRegister);
+        var identityResult = await _userManager.CreateAsync(user, userRegister.Password);
+        if (!identityResult.Succeeded)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, identityResult.Errors.First().Code);
+        }
+
+        return user;
     }
 }

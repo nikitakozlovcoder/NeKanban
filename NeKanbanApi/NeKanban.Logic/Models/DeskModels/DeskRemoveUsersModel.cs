@@ -2,5 +2,5 @@
 
 public class DeskRemoveUsersModel
 {
-    public required List<int> UsersToRemove { get; set; } = new ();
+    public List<int> UsersToRemove { get; set; } = new ();
 }

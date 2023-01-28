@@ -2,7 +2,7 @@
 
 public class DeskLiteVm : BaseIdVm
 {
-    public required string? Name { get; set; }
-    public required DeskUserVm? DeskUser { get; set; }
+    public string? Name { get; set; }
+    public DeskUserVm? DeskUser { get; set; }
     
 }

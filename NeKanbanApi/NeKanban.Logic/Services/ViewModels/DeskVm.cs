@@ -2,7 +2,7 @@
 
 public class DeskVm : BaseIdVm
 {
-    public required string Name { get; set; } = "";
-    public required string? InviteLink { get; set; }
-    public List<DeskUserLiteVm> DeskUsers { get; set; } = new List<DeskUserLiteVm>();
+    public string Name { get; set; } = "";
+    public string? InviteLink { get; set; }
+    public List<DeskUserLiteVm> DeskUsers { get; set; } = new();
 }

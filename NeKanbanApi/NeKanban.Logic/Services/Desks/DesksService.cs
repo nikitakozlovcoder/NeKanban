@@ -20,16 +20,13 @@ namespace NeKanban.Logic.Services.Desks;
 [Injectable<IDesksService>]
 public class DesksService : BaseService, IDesksService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IRepository<Desk> _deskRepository;
     private readonly IDeskUserService _deskUserService;
     private readonly IColumnsService _columnsService;
     public DesksService(UserManager<ApplicationUser> userManager, 
-        IHttpContextAccessor httpContextAccessor, 
         IRepository<Desk> deskRepository, IDeskUserService deskUserService, 
-        IColumnsService columnsService) : base()
+        IColumnsService columnsService) 
     {
-        _httpContextAccessor = httpContextAccessor;
         _deskRepository = deskRepository;
         _deskUserService = deskUserService;
         _columnsService = columnsService;

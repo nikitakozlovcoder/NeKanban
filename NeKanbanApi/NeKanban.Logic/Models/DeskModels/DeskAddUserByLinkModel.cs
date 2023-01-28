@@ -5,5 +5,5 @@ namespace NeKanban.Logic.Models.DeskModels;
 public class DeskAddUserByLinkModel
 {
     [Required(AllowEmptyStrings = false)]
-    public required string Uid { get; set; } = "";
+    public string Uid { get; set; } = "";
 }

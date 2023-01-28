@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NeKanban.Common\NeKanban.Common.csproj" />
       <ProjectReference Include="..\NeKanban.Security\NeKanban.Security.csproj" />
     </ItemGroup>
 

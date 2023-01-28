@@ -4,5 +4,5 @@ namespace NeKanban.Logic.Models.DeskModels;
 
 public class DeskInviteLinkModel
 {
-    public required InviteLinkAction Action { get; set; } 
+    public InviteLinkAction Action { get; set; } 
 }

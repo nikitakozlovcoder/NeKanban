@@ -6,8 +6,8 @@ public class ToDoCreateModel
 {
     [Required] 
     [MinLength(3)]
-    public required string? Name { get; set; }
+    public string? Name { get; set; }
     
     [MinLength(10)]
-    public required string? Body { get; set; }
+    public string? Body { get; set; }
 }
