@@ -7,7 +7,7 @@ import {Column} from "../models/column";
 
 @Injectable()
 export class ColumnService {
-  constructor(private http: HttpClient, private http_service: BaseHttpService) { }
+  constructor(private http: HttpClient, private httpService: BaseHttpService) { }
   getColumns(deskId: number) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -15,7 +15,7 @@ export class ColumnService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    return this.http.get<Column[]>(this.http_service.base_url + "Columns/GetColumns/" + deskId, httpOptions);
+    return this.http.get<Column[]>(this.httpService.base_url + "Columns/GetColumns/" + deskId, httpOptions);
   }
   addColumn(deskId: number, name: string) {
     const httpOptions = {
@@ -25,7 +25,7 @@ export class ColumnService {
       })
     }
     const body = {name: name};
-    return this.http.post<Column[]>(this.http_service.base_url + "Columns/CreateColumn/" + deskId, body, httpOptions);
+    return this.http.post<Column[]>(this.httpService.base_url + "Columns/CreateColumn/" + deskId, body, httpOptions);
   }
   removeColumn(columnId: number) {
     const httpOptions = {
@@ -34,7 +34,7 @@ export class ColumnService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    return this.http.delete<Column[]>(this.http_service.base_url + "Columns/DeleteColumn/" + columnId, httpOptions);
+    return this.http.delete<Column[]>(this.httpService.base_url + "Columns/DeleteColumn/" + columnId, httpOptions);
   }
   moveColumn(columnId: number, position: number) {
 
@@ -45,7 +45,7 @@ export class ColumnService {
       })
     }
     const body = {position: position};
-    return this.http.put<Column[]>(this.http_service.base_url + "Columns/MoveColumn/" + columnId, body, httpOptions);
+    return this.http.put<Column[]>(this.httpService.base_url + "Columns/MoveColumn/" + columnId, body, httpOptions);
   }
   updateColumn(columnId: number, name: string) {
     const httpOptions = {
@@ -55,6 +55,6 @@ export class ColumnService {
       })
     }
     const body = {name: name};
-    return this.http.put<Column[]>(this.http_service.base_url + "Columns/UpdateColumn/" + columnId, body, httpOptions);
+    return this.http.put<Column[]>(this.httpService.base_url + "Columns/UpdateColumn/" + columnId, body, httpOptions);
   }
 }
