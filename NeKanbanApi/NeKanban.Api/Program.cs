@@ -9,15 +9,12 @@ using NeKanban.Logic.Configuration;
 using NeKanban.Logic.Options;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddDataAccess();
 builder.Services.AddEntityProtectors();
-builder.AddDatabase();
+builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>
 {
