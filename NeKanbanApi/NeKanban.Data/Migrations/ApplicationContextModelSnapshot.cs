@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NeKanban.Data;
 using NeKanban.Data.Infrastructure;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -126,7 +125,7 @@ namespace NeKanban.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.ApplicationRole", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.ApplicationRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -155,7 +154,7 @@ namespace NeKanban.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -228,7 +227,7 @@ namespace NeKanban.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.Column", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.Column", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -256,7 +255,7 @@ namespace NeKanban.Migrations
                     b.ToTable("Column");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.Desk", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.Desk", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -276,7 +275,7 @@ namespace NeKanban.Migrations
                     b.ToTable("Desk");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.DeskUser", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.DeskUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -305,7 +304,7 @@ namespace NeKanban.Migrations
                     b.ToTable("DeskUser");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.ToDo", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.ToDo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -333,7 +332,7 @@ namespace NeKanban.Migrations
                     b.ToTable("ToDo");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.ToDoUser", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.ToDoUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -361,7 +360,7 @@ namespace NeKanban.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("NeKanban.Api.Data.Entities.ApplicationRole", null)
+                    b.HasOne("NeKanban.Common.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -370,7 +369,7 @@ namespace NeKanban.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("NeKanban.Api.Data.Entities.ApplicationUser", null)
+                    b.HasOne("NeKanban.Common.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -379,7 +378,7 @@ namespace NeKanban.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("NeKanban.Api.Data.Entities.ApplicationUser", null)
+                    b.HasOne("NeKanban.Common.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -388,13 +387,13 @@ namespace NeKanban.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("NeKanban.Api.Data.Entities.ApplicationRole", null)
+                    b.HasOne("NeKanban.Common.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NeKanban.Api.Data.Entities.ApplicationUser", null)
+                    b.HasOne("NeKanban.Common.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -403,16 +402,16 @@ namespace NeKanban.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("NeKanban.Api.Data.Entities.ApplicationUser", null)
+                    b.HasOne("NeKanban.Common.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.Column", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.Column", b =>
                 {
-                    b.HasOne("NeKanban.Api.Data.Entities.Desk", "Desk")
+                    b.HasOne("NeKanban.Common.Entities.Desk", "Desk")
                         .WithMany("Columns")
                         .HasForeignKey("DeskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -421,15 +420,15 @@ namespace NeKanban.Migrations
                     b.Navigation("Desk");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.DeskUser", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.DeskUser", b =>
                 {
-                    b.HasOne("NeKanban.Api.Data.Entities.Desk", "Desk")
+                    b.HasOne("NeKanban.Common.Entities.Desk", "Desk")
                         .WithMany("DeskUsers")
                         .HasForeignKey("DeskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NeKanban.Api.Data.Entities.ApplicationUser", "User")
+                    b.HasOne("NeKanban.Common.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -440,9 +439,9 @@ namespace NeKanban.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.ToDo", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.ToDo", b =>
                 {
-                    b.HasOne("NeKanban.Api.Data.Entities.Column", "Column")
+                    b.HasOne("NeKanban.Common.Entities.Column", "Column")
                         .WithMany("ToDos")
                         .HasForeignKey("ColumnId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -451,15 +450,15 @@ namespace NeKanban.Migrations
                     b.Navigation("Column");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.ToDoUser", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.ToDoUser", b =>
                 {
-                    b.HasOne("NeKanban.Api.Data.Entities.DeskUser", "DeskUser")
+                    b.HasOne("NeKanban.Common.Entities.DeskUser", "DeskUser")
                         .WithMany()
                         .HasForeignKey("DeskUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NeKanban.Api.Data.Entities.ToDo", "ToDo")
+                    b.HasOne("NeKanban.Common.Entities.ToDo", "ToDo")
                         .WithMany("ToDoUsers")
                         .HasForeignKey("ToDoId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -470,19 +469,19 @@ namespace NeKanban.Migrations
                     b.Navigation("ToDo");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.Column", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.Column", b =>
                 {
                     b.Navigation("ToDos");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.Desk", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.Desk", b =>
                 {
                     b.Navigation("Columns");
 
                     b.Navigation("DeskUsers");
                 });
 
-            modelBuilder.Entity("NeKanban.Api.Data.Entities.ToDo", b =>
+            modelBuilder.Entity("NeKanban.Common.Entities.ToDo", b =>
                 {
                     b.Navigation("ToDoUsers");
                 });

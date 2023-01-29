@@ -9,8 +9,7 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
     public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)
     {
-        Database.OpenConnection();
-        Database.CloseConnection();
+       
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,7 +23,14 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
 
     public void Migrate()
     {
+        Database.EnsureCreated();
         Database.Migrate();
+    }
+
+    public void TestConnection()
+    {
+        Database.OpenConnection();
+        Database.CloseConnection();
     }
     
     public DbSet<Desk>? Desk { get; set; }
