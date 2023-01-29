@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.SecurityProfile.Helpers;
 using NeKanban.Security.Constants;

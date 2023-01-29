@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Attributes;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Entities;
+using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Mappings;
-using NeKanban.Logic.Services.ViewModels;
-using NeKanban.Services.MyDesks;
 
 namespace NeKanban.Logic.Services.MyDesks;
 
@@ -12,10 +12,12 @@ namespace NeKanban.Logic.Services.MyDesks;
 public class MyDesksService : IMyDesksService
 {
     private readonly IRepository<Desk> _deskRepository;
+    private readonly IMapper _mapper;
 
-    public MyDesksService(IRepository<Desk> deskRepository)
+    public MyDesksService(IRepository<Desk> deskRepository, IMapper mapper)
     {
         _deskRepository = deskRepository;
+        _mapper = mapper;
     }
 
     public async Task<List<DeskLiteVm>> GetForUser(int userId, CancellationToken ct)
@@ -24,6 +26,6 @@ public class MyDesksService : IMyDesksService
             .Include(x => x.DeskUsers.Where(du => du.UserId == userId)).ThenInclude(x=> x.User)
             .Where(x=> x.DeskUsers.Any(du => du.UserId == userId))
             .ToListAsync(ct);
-        return desks.Select(x => x.ToDeskLiteVm()).ToList();
+        return _mapper.Map<List<DeskLiteVm>>(desks);
     }
 }

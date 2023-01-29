@@ -1,7 +1,7 @@
 ﻿import {Injectable} from "@angular/core";
+import { environment } from "../../environments/environment";
 
 @Injectable()
 export class BaseHttpService {
-  base_url = "https://nekanbanapi.herokuapp.com/";
-  //base_url = "https://localhost:7146/";
+  base_url = environment.baseUrl;
 }

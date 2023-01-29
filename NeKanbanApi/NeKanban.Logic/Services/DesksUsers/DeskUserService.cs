@@ -1,16 +1,17 @@
 ﻿using System.Net;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
-using NeKanban.Data.Constants;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Constants;
+using NeKanban.Common.Entities;
+using NeKanban.Common.Models.DeskModels;
+using NeKanban.Common.Models.DeskUserModels;
+using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Mappings;
-using NeKanban.Logic.Models.DeskModels;
-using NeKanban.Logic.Models.DeskUserModels;
-using NeKanban.Logic.Services.ViewModels;
+using NeKanban.Logic.Services.MyDesks;
 using NeKanban.Security.Constants;
-using NeKanban.Services.MyDesks;
 
 namespace NeKanban.Logic.Services.DesksUsers;
 
@@ -19,11 +20,15 @@ public class DeskUserService : BaseService, IDeskUserService
 {
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IMyDesksService _myDesksService;
+    private readonly IMapper _mapper;
 
-    public DeskUserService(IRepository<DeskUser> deskUserRepository, IMyDesksService myDesksService)
+    public DeskUserService(IRepository<DeskUser> deskUserRepository,
+        IMyDesksService myDesksService,
+        IMapper mapper)
     {
         _deskUserRepository = deskUserRepository;
         _myDesksService = myDesksService;
+        _mapper = mapper;
     }
 
     public async Task CreateDeskUser(int deskId, int userId, RoleType role, CancellationToken ct)
@@ -50,7 +55,8 @@ public class DeskUserService : BaseService, IDeskUserService
         {
             throw new HttpStatusCodeException(HttpStatusCode.NotFound, nameof(deskUser));
         }
-        return deskUser.ToDeskUserVm();
+        
+        return _mapper.Map<DeskUserVm>(deskUser);
     }
 
     public async Task RemoveFromDesk(int userId, int id, CancellationToken ct)
@@ -122,7 +128,6 @@ public class DeskUserService : BaseService, IDeskUserService
         var deskUsers = await _deskUserRepository.QueryableSelect()
             .Include(x=> x.User)
             .Where(x => x.DeskId == deskId).ToListAsync(ct);
-        return deskUsers.Select(x => x.ToDeskUserVm()).ToList();
-
+        return _mapper.Map<List<DeskUserVm>>(deskUsers);
     }
 }

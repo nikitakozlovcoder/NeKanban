@@ -1,6 +1,6 @@
-﻿using NeKanban.Data.Entities;
-using NeKanban.Logic.Models.UserModel;
-using NeKanban.Logic.Services.ViewModels;
+﻿using NeKanban.Common.Entities;
+using NeKanban.Common.Models.UserModel;
+using NeKanban.Common.ViewModels;
 
 namespace NeKanban.Logic.Services.Users;
 

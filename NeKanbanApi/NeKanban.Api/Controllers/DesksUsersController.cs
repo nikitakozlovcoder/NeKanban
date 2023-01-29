@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NeKanban.Common.Entities;
+using NeKanban.Common.Models.DeskModels;
+using NeKanban.Common.Models.DeskUserModels;
+using NeKanban.Common.ViewModels;
 using NeKanban.Controllers.Auth;
-using NeKanban.Data.Entities;
-using NeKanban.Logic.Models.DeskModels;
-using NeKanban.Logic.Models.DeskUserModels;
 using NeKanban.Logic.Services.Desks;
 using NeKanban.Logic.Services.DesksUsers;
-using NeKanban.Logic.Services.ViewModels;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Controllers;

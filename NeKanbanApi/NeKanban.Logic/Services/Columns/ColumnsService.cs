@@ -1,13 +1,14 @@
 ﻿using System.Net;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
-using NeKanban.Data.Constants;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Constants;
+using NeKanban.Common.Entities;
+using NeKanban.Common.Models.ColumnModels;
+using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Mappings;
-using NeKanban.Logic.Models.ColumnModels;
-using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Logic.Services.Columns;
 
@@ -15,20 +16,23 @@ namespace NeKanban.Logic.Services.Columns;
 public class ColumnsService : BaseService, IColumnsService
 {
     private readonly IRepository<Column> _columnRepository;
+    private readonly IMapper _mapper;
     private readonly IRepository<Desk> _deskRepository;
     public ColumnsService(
         IRepository<Column> columnRepository, 
-        IRepository<Desk> deskRepository)
+        IRepository<Desk> deskRepository,
+        IMapper mapper)
     {
         _columnRepository = columnRepository;
         _deskRepository = deskRepository;
+        _mapper = mapper;
     }
 
     public async Task<List<ColumnVm>> GetColumns(int deskId, CancellationToken ct)
     {
         var columns = await _columnRepository.QueryableSelect()
             .Where(x => x.DeskId == deskId).ToListAsync(ct);
-        return columns.Select(x=> x.ToColumnVm()).ToList();
+        return _mapper.Map<List<ColumnVm>>(columns);
     }
 
     public async Task<List<ColumnVm>> DeleteColumn(int columnId, CancellationToken ct)
@@ -50,8 +54,7 @@ public class ColumnsService : BaseService, IColumnsService
     {
         var desk = await _deskRepository.QueryableSelect().FirstOrDefaultAsync(x => x.Id == deskId, ct);
         EnsureEntityExists(desk);
-        var column = new Column();
-        column.FromCreateModel(model);
+        var column = _mapper.Map<Column>(model);
         column.Order = GetColumnOrder(columnType);
         column.DeskId = deskId;
         column.Type = columnType;
@@ -64,14 +67,13 @@ public class ColumnsService : BaseService, IColumnsService
         {
             Position = 0
         }, ct);
-
     }
 
     public async Task<List<ColumnVm>> UpdateColumn(int columnId, ColumnUpdateModel model, CancellationToken ct)
     {
         var column = await _columnRepository.QueryableSelect().SingleOrDefaultAsync(x => x.Id == columnId, ct);
         EnsureEntityExists(column);
-        column!.FromUpdateModel(model);
+        _mapper.Map(model, column);
         await _columnRepository.Update(column!, ct);
         return await GetColumns(column!.DeskId, ct);
     }

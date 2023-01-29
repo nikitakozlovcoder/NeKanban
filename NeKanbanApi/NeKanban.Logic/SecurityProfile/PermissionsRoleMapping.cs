@@ -1,4 +1,4 @@
-﻿using NeKanban.Logic.Services.ViewModels;
+﻿using NeKanban.Common.ViewModels;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.SecurityProfile;

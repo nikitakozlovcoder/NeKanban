@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Entities;
 using NeKanban.Logic.EntityProtectors;
 using NeKanban.Security.Constants;
 

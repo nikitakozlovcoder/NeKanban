@@ -1,7 +1,7 @@
-﻿using NeKanban.Data.Entities;
-using NeKanban.Logic.Models.DeskModels;
-using NeKanban.Logic.Models.DeskUserModels;
-using NeKanban.Logic.Services.ViewModels;
+﻿using NeKanban.Common.Entities;
+using NeKanban.Common.Models.DeskModels;
+using NeKanban.Common.Models.DeskUserModels;
+using NeKanban.Common.ViewModels;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.DesksUsers;

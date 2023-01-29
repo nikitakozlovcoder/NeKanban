@@ -4,8 +4,8 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NeKanban.Common.Attributes;
+using NeKanban.Common.ViewModels;
 using NeKanban.Logic.Options;
-using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Logic.Services.Tokens;
 

@@ -1,6 +1,6 @@
-﻿using NeKanban.Data.Constants;
-using NeKanban.Logic.Models.ColumnModels;
-using NeKanban.Logic.Services.ViewModels;
+﻿using NeKanban.Common.Constants;
+using NeKanban.Common.Models.ColumnModels;
+using NeKanban.Common.ViewModels;
 
 namespace NeKanban.Logic.Services.Columns;
 

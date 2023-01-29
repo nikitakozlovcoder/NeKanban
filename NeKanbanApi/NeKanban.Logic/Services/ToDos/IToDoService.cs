@@ -1,6 +1,6 @@
-﻿using NeKanban.Data.Entities;
-using NeKanban.Logic.Models.ToDoModels;
-using NeKanban.Logic.Services.ViewModels;
+﻿using NeKanban.Common.Entities;
+using NeKanban.Common.Models.ToDoModels;
+using NeKanban.Common.ViewModels;
 
 namespace NeKanban.Logic.Services.ToDos;
 

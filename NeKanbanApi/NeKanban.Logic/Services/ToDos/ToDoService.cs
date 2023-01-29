@@ -1,15 +1,16 @@
 ﻿using System.Net;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
-using NeKanban.Data.Constants;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Constants;
+using NeKanban.Common.Entities;
+using NeKanban.Common.Models.ToDoModels;
+using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Mappings;
-using NeKanban.Logic.Models.ToDoModels;
 using NeKanban.Logic.Services.Columns;
-using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Logic.Services.ToDos;
 
@@ -22,6 +23,7 @@ public class ToDoService : BaseService, IToDoService
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IRepository<ToDoUser> _toDoUserRepository;
     private readonly IRepository<Column> _columnRepository;
+    private readonly IMapper _mapper;
 
     public ToDoService(
         IRepository<Desk> deskRepository, 
@@ -29,7 +31,8 @@ public class ToDoService : BaseService, IToDoService
         IRepository<ToDo> toDoRepository, 
         IRepository<DeskUser> deskUserRepository, 
         IRepository<ToDoUser> toDoUserRepository,
-        IRepository<Column> columnRepository)
+        IRepository<Column> columnRepository,
+        IMapper mapper)
     {
         _deskRepository = deskRepository;
         _columnsService = columnsService;
@@ -37,6 +40,7 @@ public class ToDoService : BaseService, IToDoService
         _deskUserRepository = deskUserRepository;
         _toDoUserRepository = toDoUserRepository;
         _columnRepository = columnRepository;
+        _mapper = mapper;
     }
 
     public async Task<List<ToDoVm>> GetToDos(int deskId, CancellationToken ct)
@@ -50,7 +54,7 @@ public class ToDoService : BaseService, IToDoService
                 .Include(x=> x.Column)
                 .Where(x => x.Column!.DeskId == deskId).ToListAsync(ct);
         
-        return todos.Select(x => x.ToToDoVm()).ToList();
+        return _mapper.Map<List<ToDoVm>>(todos);
     }
 
     public async Task<List<ToDoVm>> CreateToDo(int deskId, ApplicationUser user, ToDoCreateModel model, CancellationToken ct)
@@ -124,7 +128,7 @@ public class ToDoService : BaseService, IToDoService
         EnsureEntityExists(todo);
         todo!.FromUpdateModel(model);
         await _toDoRepository.Update(todo!, ct);
-        return todo!.ToToDoVm();
+        return _mapper.Map<ToDoVm>(todo);
     }
 
     public Task<ToDo?> GetToDo(int toDoId, CancellationToken ct)

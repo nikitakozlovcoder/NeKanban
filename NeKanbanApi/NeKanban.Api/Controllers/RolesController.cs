@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NeKanban.Common.Entities;
+using NeKanban.Common.ViewModels;
 using NeKanban.Controllers.Auth;
-using NeKanban.Data.Entities;
 using NeKanban.Logic.SecurityProfile;
-using NeKanban.Logic.Services.ViewModels;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Controllers;

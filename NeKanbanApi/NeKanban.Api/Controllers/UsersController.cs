@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NeKanban.Common.Entities;
+using NeKanban.Common.Models.UserModel;
+using NeKanban.Common.ViewModels;
 using NeKanban.Controllers.Auth;
-using NeKanban.Data.Entities;
-using NeKanban.Logic.Models.UserModel;
 using NeKanban.Logic.Services.Users;
-using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Controllers;
 

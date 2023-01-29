@@ -1,10 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
+        <EnablePreviewFeatures>true</EnablePreviewFeatures>
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>preview</LangVersion>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="12.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.2" />
+      <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="6.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NeKanban.Security\NeKanban.Security.csproj" />
+    </ItemGroup>
 
 </Project>

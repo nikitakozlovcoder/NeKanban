@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NeKanban.Common.Entities;
+using NeKanban.Common.Models.ToDoModels;
+using NeKanban.Common.ViewModels;
 using NeKanban.Controllers.Auth;
-using NeKanban.Data.Entities;
-using NeKanban.Logic.Models.ToDoModels;
 using NeKanban.Logic.Services.DesksUsers;
 using NeKanban.Logic.Services.ToDos;
-using NeKanban.Logic.Services.ViewModels;
+using NeKanban.Logic.Services.ToDos.ToDoUsers;
 using NeKanban.Security.Constants;
-using NeKanban.Services.ToDos;
-using NeKanban.Services.ToDos.ToDoUsers;
 
 namespace NeKanban.Controllers;
 

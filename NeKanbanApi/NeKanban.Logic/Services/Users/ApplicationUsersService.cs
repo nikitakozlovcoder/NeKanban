@@ -1,13 +1,14 @@
 ﻿using System.Net;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Entities;
+using NeKanban.Common.Models.UserModel;
+using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Mappings;
-using NeKanban.Logic.Models.UserModel;
 using NeKanban.Logic.Services.Tokens;
-using NeKanban.Logic.Services.ViewModels;
 
 namespace NeKanban.Logic.Services.Users;
 
@@ -18,15 +19,19 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly ITokenProviderService _tokenProviderService;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IMapper _mapper;
     public ApplicationUsersService(
         UserManager<ApplicationUser> userManager, 
         SignInManager<ApplicationUser> signInManager, 
-        IRepository<ApplicationUser> userRepository, ITokenProviderService tokenProviderService)
+        IRepository<ApplicationUser> userRepository,
+        ITokenProviderService tokenProviderService,
+        IMapper mapper)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _userRepository = userRepository;
         _tokenProviderService = tokenProviderService;
+        _mapper = mapper;
     }
 
     public async Task<ApplicationUserVm> Login(UserLoginModel userLoginModel, CancellationToken ct) 
@@ -39,7 +44,9 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
 
         var principal = await _signInManager.CreateUserPrincipalAsync(user);
         var token = _tokenProviderService.GenerateJwtToken(principal);
-        return user.ToApplicationUserVm(token);
+        var userVm = _mapper.Map<ApplicationUserVm>(user);
+        userVm.Token = token;
+        return userVm;
     }
 
     public async Task<ApplicationUserVm> Register(UserRegisterModel userRegister, CancellationToken ct)
@@ -53,13 +60,12 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         var user = await _userRepository.FirstOrDefault(x => x.Id == id, ct);
         EnsureEntityExists(user);
         
-        return user!.ToApplicationUserVm();
+        return _mapper.Map<ApplicationUserVm>(user);
     }
 
     public async Task<ApplicationUser> Create(UserRegisterModel userRegister, CancellationToken ct)
     {
-        var user = new ApplicationUser();
-        user.FromRegistrationModel(userRegister);
+        var user = _mapper.Map<ApplicationUser>(userRegister);
         var identityResult = await _userManager.CreateAsync(user, userRegister.Password);
         if (!identityResult.Succeeded)
         {

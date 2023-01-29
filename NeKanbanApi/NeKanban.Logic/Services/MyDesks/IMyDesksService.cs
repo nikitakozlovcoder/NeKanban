@@ -1,6 +1,6 @@
-﻿using NeKanban.Logic.Services.ViewModels;
+﻿using NeKanban.Common.ViewModels;
 
-namespace NeKanban.Services.MyDesks;
+namespace NeKanban.Logic.Services.MyDesks;
 
 public interface IMyDesksService
 {

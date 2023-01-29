@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Entities;
 
 namespace NeKanban.Data.Infrastructure;
 

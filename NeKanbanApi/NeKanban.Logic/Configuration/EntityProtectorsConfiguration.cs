@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Entities;
 using NeKanban.Logic.EntityProtectors;
 
 namespace NeKanban.Logic.Configuration;

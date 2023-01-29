@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Logic.Configuration;

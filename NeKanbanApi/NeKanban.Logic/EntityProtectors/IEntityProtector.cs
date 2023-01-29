@@ -1,4 +1,4 @@
-﻿using NeKanban.Data.Entities;
+﻿using NeKanban.Common.Entities;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.EntityProtectors;

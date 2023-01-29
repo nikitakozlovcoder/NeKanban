@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using NeKanban.Common.Entities;
 
 namespace NeKanban.Data.Infrastructure;
 

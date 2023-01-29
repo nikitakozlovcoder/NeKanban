@@ -1,18 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Attributes;
-using NeKanban.Data.Constants;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Constants;
+using NeKanban.Common.Entities;
+using NeKanban.Common.Models.ColumnModels;
+using NeKanban.Common.Models.DeskModels;
+using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.Constants;
 using NeKanban.Logic.Mappings;
-using NeKanban.Logic.Models.ColumnModels;
-using NeKanban.Logic.Models.DeskModels;
 using NeKanban.Logic.SecurityProfile.Helpers;
 using NeKanban.Logic.Services.Columns;
 using NeKanban.Logic.Services.DesksUsers;
-using NeKanban.Logic.Services.ViewModels;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.Desks;
@@ -23,18 +21,21 @@ public class DesksService : BaseService, IDesksService
     private readonly IRepository<Desk> _deskRepository;
     private readonly IDeskUserService _deskUserService;
     private readonly IColumnsService _columnsService;
-    public DesksService(UserManager<ApplicationUser> userManager, 
-        IRepository<Desk> deskRepository, IDeskUserService deskUserService, 
-        IColumnsService columnsService) 
+    private readonly IMapper _mapper;
+    public DesksService(IRepository<Desk> deskRepository, 
+        IDeskUserService deskUserService, 
+        IColumnsService columnsService, 
+        IMapper mapper) 
     {
         _deskRepository = deskRepository;
         _deskUserService = deskUserService;
         _columnsService = columnsService;
+        _mapper = mapper;
     }
     
     public async Task<DeskVm> CreateDesk(DeskCreateModel deskCreateModel, ApplicationUser user, CancellationToken ct)
     {
-        var desk = deskCreateModel.ToDesk();
+        var desk = _mapper.Map<Desk>(deskCreateModel);
         await _deskRepository.Create(desk, ct);
         await _deskUserService.CreateDeskUser(desk.Id, user.Id, RoleType.Owner, ct);
         await _columnsService.CreateColumn(desk.Id, new ColumnCreateModel
@@ -64,7 +65,9 @@ public class DesksService : BaseService, IDesksService
         EnsureEntityExists(desk);
         var role = desk!.DeskUsers.FirstOrDefault(x => x.UserId == user.Id)?.Role;
         var canViewInviteLink = role.HasValue && PermissionChecker.CheckPermission(role.Value, PermissionType.ViewInviteLink);
-        return desk.ToDeskVm(canViewInviteLink);
+        var deskVm = _mapper.Map<DeskVm>(desk);
+        deskVm.InviteLink = canViewInviteLink ? desk.InviteLink : null;
+        return deskVm;
 
     }
 
@@ -72,7 +75,7 @@ public class DesksService : BaseService, IDesksService
     {
         var desk = await _deskRepository.QueryableSelect().FirstOrDefaultAsync(x => x.Id == id, ct);
         EnsureEntityExists(desk);
-        desk!.FromUpdateModel(deskUpdateModel);
+        _mapper.Map(deskUpdateModel, desk);
         await _deskRepository.Update(desk!, ct);
         return await GetDesk(desk!.Id, user, ct);
     }
@@ -106,6 +109,6 @@ public class DesksService : BaseService, IDesksService
             .FirstOrDefaultAsync(x => x.InviteLink == model.Uid, ct);
         EnsureEntityExists(desk);
         await _deskUserService.CreateDeskUser(desk!.Id, user.Id, RoleType.User, ct);
-        return await GetDesk(desk!.Id, user, ct);
+        return await GetDesk(desk.Id, user, ct);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Identity;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
-using NeKanban.Data.Entities;
 
 namespace NeKanban.Logic.Services;
 

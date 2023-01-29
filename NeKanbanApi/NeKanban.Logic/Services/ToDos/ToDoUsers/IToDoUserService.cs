@@ -1,6 +1,6 @@
-﻿using NeKanban.Logic.Services.ViewModels;
+﻿using NeKanban.Common.ViewModels;
 
-namespace NeKanban.Services.ToDos.ToDoUsers;
+namespace NeKanban.Logic.Services.ToDos.ToDoUsers;
 
 public interface IToDoUserService
 {

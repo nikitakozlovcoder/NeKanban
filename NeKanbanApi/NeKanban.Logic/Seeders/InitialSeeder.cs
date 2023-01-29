@@ -1,8 +1,7 @@
 ﻿using NeKanban.Common.Attributes;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Models.DeskModels;
+using NeKanban.Common.Models.UserModel;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.Models.DeskModels;
-using NeKanban.Logic.Models.UserModel;
 using NeKanban.Logic.Services.Desks;
 using NeKanban.Logic.Services.Users;
 

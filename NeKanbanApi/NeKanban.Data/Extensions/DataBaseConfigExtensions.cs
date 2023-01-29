@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NeKanban.Data.Entities;
+using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
 using Npgsql;
 

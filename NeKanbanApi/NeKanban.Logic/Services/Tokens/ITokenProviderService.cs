@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using NeKanban.Logic.Services.ViewModels;
+using NeKanban.Common.ViewModels;
 
 namespace NeKanban.Logic.Services.Tokens;
 
