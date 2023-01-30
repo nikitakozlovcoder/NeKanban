@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {DeskService} from "../services/desk.service";
+import {DeskService} from "../../services/desk.service";
 
 @Component({
   selector: 'app-invite',

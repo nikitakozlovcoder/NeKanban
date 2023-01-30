@@ -1,8 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Column} from "../models/column";
+import {Column} from "../../../models/column";
 import {FormControl, Validators} from "@angular/forms";
-import {ColumnService} from "../services/column.service";
+import {ColumnService} from "../../../services/column.service";
 
 @Component({
   selector: 'app-column-updating',

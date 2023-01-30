@@ -1,22 +1,22 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Todo} from "../models/todo";
+import {Todo} from "../../../models/todo";
 import {FormControl, Validators} from "@angular/forms";
-import {Desk} from "../models/desk";
-import {User} from "../models/user";
+import {Desk} from "../../../models/desk";
+import {User} from "../../../models/user";
 import {MatSelect, MatSelectChange} from "@angular/material/select";
-import {TodoService} from "../services/todo.service";
-import {RolesService} from "../services/roles.service";
-import {DeskUsers} from "../models/deskusers";
+import {TodoService} from "../../../services/todo.service";
+import {RolesService} from "../../../services/roles.service";
+import {DeskUsers} from "../../../models/deskusers";
 
 @Component({
   selector: 'app-task-creation',
-  templateUrl: './task-creation.component.html',
-  styleUrls: ['./task-creation.component.css']
+  templateUrl: './todo-show.component.html',
+  styleUrls: ['./todo-show.component.css']
 })
-export class TaskCreationComponent implements OnInit {
+export class TodoShowComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUsers}, private toDoService: TodoService, private rolesService: RolesService, public dialogRef: MatDialogRef<TaskCreationComponent>) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUsers}, private toDoService: TodoService, private rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>) {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
 

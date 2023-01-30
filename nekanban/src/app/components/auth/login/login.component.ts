@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, ValidationErrors, Validators} from '@angular/forms';
-import { UserService } from '../services/user.service';
+import {UserService} from "../../../services/user.service";
 import {BehaviorSubject, mergeMap, of} from "rxjs";
 
 @Component({

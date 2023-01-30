@@ -1,28 +1,27 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {Desk} from "../models/desk";
-import {DeskService} from "../services/desk.service";
-import {UserService} from "../services/user.service";
+import {Desk} from "../../../models/desk";
+import {DeskService} from "../../../services/desk.service";
+import {UserService} from "../../../services/user.service";
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {DeskCreationComponent} from "../desk-creation/desk-creation.component";
 import {FormControl, Validators} from "@angular/forms";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {TaskCreationComponent} from "../task-creation/task-creation.component";
-import {Column} from "../models/column";
-import {ColumnCreationComponent} from "../column-creation/column-creation.component";
-import {ColumnService} from "../services/column.service";
-import {Todo} from "../models/todo";
-import {TodoService} from "../services/todo.service";
-import {TodoCreationComponent} from "../todo-creation/todo-creation.component";
-import {TodoEditingComponent} from "../todo-editing/todo-editing.component";
-import {ColumnUpdatingComponent} from "../column-updating/column-updating.component";
+import {TodoShowComponent} from "../../todo/todo-show/todo-show.component";
+import {Column} from "../../../models/column";
+import {ColumnCreationComponent} from "../../column/column-creation/column-creation.component";
+import {ColumnService} from "../../../services/column.service";
+import {Todo} from "../../../models/todo";
+import {TodoService} from "../../../services/todo.service";
+import {TodoCreationComponent} from "../../todo/todo-creation/todo-creation.component";
+import {TodoEditingComponent} from "../../todo/todo-editing/todo-editing.component";
+import {ColumnUpdatingComponent} from "../../column/column-updating/column-updating.component";
 import {MatSelectChange} from "@angular/material/select";
-import {RolesService} from "../services/roles.service";
-import {DeskUsers} from "../models/deskusers";
-import {DeskRole} from "../models/deskrole";
-import {Role} from "../models/Role";
-import {DeskUserService} from "../services/deskUser.service";
-import {BaseHttpService} from "../services/base_http.service";
+import {RolesService} from "../../../services/roles.service";
+import {DeskUsers} from "../../../models/deskusers";
+import {DeskRole} from "../../../models/deskrole";
+import {Role} from "../../../models/Role";
+import {DeskUserService} from "../../../services/deskUser.service";
 
 @Component({
   selector: 'app-desk',
@@ -35,8 +34,8 @@ export class DeskComponent implements OnInit {
   desks: Desk[] = [];
   desk: Desk | undefined;
   index: number = 0;
-  changed_index: number = -1;
-  current_id: number = -1;
+  changedIndex: number = -1;
+  currentId: number = -1;
   columns: Column[] = [];
   toDos: Todo[] = [];
   clientBaseHref = "";
@@ -46,9 +45,7 @@ export class DeskComponent implements OnInit {
   isLinkLoaded = true;
   isRemoveDeskLoaded = true;
   isUserRemoveLoaded = true;
-  colorWarn = "warn";
   isFavouriteLoaded = true;
-  currentRoles : DeskRole[] = [];
   roles : Role[] = [new Role(0, "Участник"), new Role(1, "Менеджер")];
   roleNames: string[] = ["Участник", "Менеджер", "Руководитель"];
 
@@ -159,7 +156,7 @@ export class DeskComponent implements OnInit {
 
         if (founded != undefined) {
           let id = founded.id;
-          this.current_id = id;
+          this.currentId = id;
           this.deskService.getDesk(id).subscribe({
             next: (data: Desk) => {
               this.desk = data;
@@ -174,7 +171,7 @@ export class DeskComponent implements OnInit {
         }
         else {
           let id = this.desks[0].id;
-          this.current_id = id;
+          this.currentId = id;
           this.deskService.getDesk(id).subscribe({
             next: (data: Desk) => {
               this.desk = data;
@@ -198,7 +195,7 @@ export class DeskComponent implements OnInit {
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
         this.desk = result;
-        this.current_id = this.desk!.id;
+        this.currentId = this.desk!.id;
         this.isLoaded = false;
         this.deskService.getDesks().subscribe({
           next: (data: Desk[]) => {
@@ -215,7 +212,7 @@ export class DeskComponent implements OnInit {
 
   }
   openTaskCreationDialog(todo: Todo): void {
-    const dialogRefView = this.dialog.open(TaskCreationComponent, {
+    const dialogRefView = this.dialog.open(TodoShowComponent, {
       data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser}
     });
     dialogRefView.afterClosed().subscribe( result => {
@@ -270,7 +267,7 @@ export class DeskComponent implements OnInit {
   }
 
   changeDesk(id: number) {
-    this.current_id = id;
+    this.currentId = id;
     this.opened = false;
     this.isLoaded = false;
     this.deskService.getDesk(id).subscribe({
@@ -286,7 +283,7 @@ export class DeskComponent implements OnInit {
   }
 
   getDesk() : Desk {
-    if (this.changed_index === -1) {
+    if (this.changedIndex === -1) {
       this.desks.forEach( (el, index) => {
         if (el.deskUser.preference === 1) {
           this.index = index;
@@ -296,7 +293,7 @@ export class DeskComponent implements OnInit {
       return this.desks[this.index];
     }
 
-    return this.desks[this.changed_index];
+    return this.desks[this.changedIndex];
   }
 
   logout() {
@@ -378,7 +375,7 @@ export class DeskComponent implements OnInit {
   }
 
   getCurrentDesk() {
-    return this.desks.find(el => el.id === this.current_id);
+    return this.desks.find(el => el.id === this.currentId);
   }
 
   getColumns() {

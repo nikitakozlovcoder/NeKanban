@@ -1,13 +1,13 @@
 ﻿import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {BaseHttpService} from "./base_http.service";
+import {BaseHttpService} from "./baseHttp.service";
 
 import {Desk} from "../models/desk";
 
 @Injectable()
 export class DeskService {
 
-  constructor(private http: HttpClient, private http_service: BaseHttpService) {
+  constructor(private http: HttpClient, private httpService: BaseHttpService) {
   }
 
   getDesks() {
@@ -18,7 +18,7 @@ export class DeskService {
       })
     }
 
-    return this.http.get<Desk[]>(this.http_service.base_url + "Desks/GetForUser", httpOptions);
+    return this.http.get<Desk[]>(this.httpService.baseUrl + "Desks/GetForUser", httpOptions);
   }
 
   addDesk(name: string) {
@@ -29,7 +29,7 @@ export class DeskService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    return this.http.post<Desk>(this.http_service.base_url + "Desks/CreateDesk", body, httpOptions);
+    return this.http.post<Desk>(this.httpService.baseUrl + "Desks/CreateDesk", body, httpOptions);
   }
 
   addPreference(id: number, preference: number) {
@@ -40,7 +40,7 @@ export class DeskService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    return this.http.put<Desk[]>(this.http_service.base_url + "DesksUsers/SetPreferenceType/" + id, body, httpOptions);
+    return this.http.put<Desk[]>(this.httpService.baseUrl + "DesksUsers/SetPreferenceType/" + id, body, httpOptions);
   }
 
   updateDesk(id: number, name: string) {
@@ -51,7 +51,7 @@ export class DeskService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    /*this.http.put(this.http_service.base_url + "Desks/UpdateDesk/" + id, body, httpOptions).subscribe({
+    /*this.http.put(this.httpService.base_url + "Desks/UpdateDesk/" + id, body, httpOptions).subscribe({
       next: data => {
 
       },
@@ -59,7 +59,7 @@ export class DeskService {
         console.error('There was an error!', error.message);
       }
     })*/
-    return this.http.put<Desk>(this.http_service.base_url + "Desks/UpdateDesk/" + id, body, httpOptions);
+    return this.http.put<Desk>(this.httpService.baseUrl + "Desks/UpdateDesk/" + id, body, httpOptions);
   }
 
   getDesk(id: number) {
@@ -69,7 +69,7 @@ export class DeskService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    return this.http.get<Desk>(this.http_service.base_url + "Desks/GetDesk/" + id, httpOptions);
+    return this.http.get<Desk>(this.httpService.baseUrl + "Desks/GetDesk/" + id, httpOptions);
   }
 
   setLink(deskId: number) {
@@ -80,7 +80,7 @@ export class DeskService {
       })
     }
     const body = {action: 1};
-    return this.http.put<Desk>(this.http_service.base_url + "Desks/InviteLink/" + deskId, body, httpOptions);
+    return this.http.put<Desk>(this.httpService.baseUrl + "Desks/InviteLink/" + deskId, body, httpOptions);
   }
 
   inviteByLink(guid: number) {
@@ -91,7 +91,7 @@ export class DeskService {
       })
     }
     const body = {uid: guid};
-    return this.http.put<Desk>(this.http_service.base_url + "DesksUsers/AddUserByLink/", body, httpOptions);
+    return this.http.put<Desk>(this.httpService.baseUrl + "DesksUsers/AddUserByLink/", body, httpOptions);
   }
 
   removeUserFromDesk(usersId: number[], deskId: number) {
@@ -102,7 +102,7 @@ export class DeskService {
       })
     }
     const body = {usersToRemove: usersId};
-    return this.http.put<Desk>(this.http_service.base_url + "DesksUsers/RemoveUsers/" + deskId, body, httpOptions);
+    return this.http.put<Desk>(this.httpService.baseUrl + "DesksUsers/RemoveUsers/" + deskId, body, httpOptions);
   }
 
   removeDesk(deskId: number) {
@@ -112,7 +112,7 @@ export class DeskService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    return this.http.delete(this.http_service.base_url + "Desks/Delete?id=" + deskId, httpOptions);
+    return this.http.delete(this.httpService.baseUrl + "Desks/Delete?id=" + deskId, httpOptions);
   }
 
 }
