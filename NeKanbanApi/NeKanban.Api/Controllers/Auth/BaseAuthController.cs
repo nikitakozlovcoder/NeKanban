@@ -20,7 +20,7 @@ public class BaseAuthController : ControllerBase
 
     protected Task<ApplicationUser> GetApplicationUser()
     {
-        return _userManager.GetUserAsync(User);
+        return _userManager.GetUserAsync(User)!;
     }
 
     protected async Task EnsureAbleTo<TProtectedEntity>(PermissionType permissionType, int entityId, CancellationToken ct)

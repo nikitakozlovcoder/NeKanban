@@ -1,11 +1,29 @@
-﻿version: '3.5'
+﻿version: '3.9'
 
 services:
+  api:
+    depends_on:
+      - db
+    build: 
+      context: NeKanbanApi
+      dockerfile: NeKanban.Api/Dockerfile
+    environment:
+      - 'ASPNETCORE_ENVIRONMENT=Development'
+      - 'ConnectionStrings:DefaultConnection=Host=db; Port=5432;Database=nekanban; User Id=postgres; Password=password;'
+    ports:
+      - "7146:80"
+    networks:
+      - back-end
   db:
-    image: postgres
+    image: postgres:14.6
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
+    networks:
+      - back-end
+networks:
+  back-end:
+    driver: bridge
