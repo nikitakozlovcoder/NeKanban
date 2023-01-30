@@ -24,6 +24,26 @@ services:
       - "5432:5432"
     networks:
       - back-end
+  seeder:
+      depends_on:
+        - db
+      build:
+        context: NeKanbanApi
+        dockerfile: NeKanban.Seeder/Dockerfile
+      environment:
+        - 'ConnectionStrings:DefaultConnection=Host=db; Port=5432;Database=nekanban; User Id=postgres; Password=password;'
+      networks:
+        - back-end
+  migrator:
+      depends_on:
+        - db
+      build:
+        context: NeKanbanApi
+        dockerfile: NeKanban.Migrator/Dockerfile
+      environment:
+        - 'ConnectionStrings:DefaultConnection=Host=db; Port=5432;Database=nekanban; User Id=postgres; Password=password;'
+      networks:
+        - back-end
 networks:
   back-end:
     driver: bridge

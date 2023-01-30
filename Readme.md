@@ -8,18 +8,21 @@
 - EF Core
   
 ## Запуск проекта
-В корневой папке запустить docker-compose;
+В корневой папки запустить docker-compose ```docker compose up api```;
 В папке ```/NeKanban/nekanban``` выполнить команду ```npm start``` предварительно скачав все пакеты (```npm i```)
-Запустить проект ```NeKanban```;
-При желании выполнить сид базы данных запустив проект ```NeKanban.Seeder```;
+
+### Применение миграций
+```docker compose up migrator``` или ```dotnet ef datebase udapte --verbose --project ..\NeKanban.Data``` из папки ```NeKanban/NeKanban.Api```
 
 ### Генерация миграции 
 ```dotnet ef migrations add [Migration Name] --verbose --project ..\NeKanban.Data``` из папки ```NeKanban/NeKanban.Api```
-### Применение миграций
-Запустить проект ```NeKanban.Migrator``` или ```dotnet ef datebase udapte --verbose --project ..\NeKanban.Data``` из папки ```NeKanban/NeKanban.Api```
+
+### Применение сидера
+```docker compose up seeder``` из папки ```NeKanban/NeKanban.Seeder```
 
 ## Правила работы на проекте
 [Проект в youtrack](https://nekwebteam.youtrack.cloud/agiles/141-2/)
+
 [Проект в github](https://github.com/nikitakozlovcoder/NeKanban)
 - После начала работы над задачей создается feature ветка из dev ветки, пример наименования ```NK-5```;
 - Пример именовая коммита ```NK-5 add task modal window```
@@ -32,7 +35,7 @@
 ### Frontend
 - url: http://localhost:4200
 ### Backend
-- url: https://localhost:7146
+- url: http://localhost:7146
 ### Database
 - драйвер: postgres
 - connectionstring: "Host=localhost; Port=5432;Database=nekanban; User Id=postgres; Password=password;"
