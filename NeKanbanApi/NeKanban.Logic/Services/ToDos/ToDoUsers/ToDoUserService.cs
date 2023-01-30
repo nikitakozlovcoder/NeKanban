@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AutoMapper;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
@@ -7,10 +8,10 @@ using NeKanban.Common.Constants;
 using NeKanban.Common.Entities;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.Mappings;
 
 namespace NeKanban.Logic.Services.ToDos.ToDoUsers;
 
+[UsedImplicitly]
 [Injectable<IToDoUserService>]
 public class ToDoUserService : BaseService, IToDoUserService
 {

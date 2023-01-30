@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AutoMapper;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
@@ -9,12 +10,12 @@ using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.Models.DeskUserModels;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.Mappings;
 using NeKanban.Logic.Services.MyDesks;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.DesksUsers;
 
+[UsedImplicitly]
 [Injectable(typeof(IDeskUserService))]
 public class DeskUserService : BaseService, IDeskUserService
 {

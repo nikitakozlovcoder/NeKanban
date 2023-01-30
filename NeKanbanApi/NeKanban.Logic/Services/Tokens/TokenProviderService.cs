@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NeKanban.Common.Attributes;
@@ -9,6 +10,7 @@ using NeKanban.Logic.Options;
 
 namespace NeKanban.Logic.Services.Tokens;
 
+[UsedImplicitly]
 [Injectable(typeof(ITokenProviderService))]
 public class TokenProviderService : ITokenProviderService
 {

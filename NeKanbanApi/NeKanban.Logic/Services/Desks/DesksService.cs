@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
@@ -7,7 +8,6 @@ using NeKanban.Common.Models.ColumnModels;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.Mappings;
 using NeKanban.Logic.SecurityProfile.Helpers;
 using NeKanban.Logic.Services.Columns;
 using NeKanban.Logic.Services.DesksUsers;
@@ -15,6 +15,7 @@ using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.Desks;
 
+[UsedImplicitly]
 [Injectable<IDesksService>]
 public class DesksService : BaseService, IDesksService
 {

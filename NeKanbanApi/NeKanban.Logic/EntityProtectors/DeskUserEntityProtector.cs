@@ -1,9 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
+using NeKanban.Common.Attributes;
 using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Logic.EntityProtectors;
 
+[UsedImplicitly]
+[Injectable<IEntityProtector<DeskUser>>]
 public class DeskUserEntityProtector : BaseEntityProtector<DeskUser>
 {
     private readonly IRepository<DeskUser> _deskUserRepository;

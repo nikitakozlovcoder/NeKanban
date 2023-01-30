@@ -5,7 +5,7 @@ using NeKanban.Common.Models.ToDoModels;
 
 namespace NeKanban.Common.Entities;
 
-public class ToDo: IHasPk<int>, IMapSrcDest<ToDoCreateModel, ToDo>, IMapSrcDest<ToDoUpdateModel, ToDo>
+public class ToDo: IHasPk<int>, IMapFrom<ToDoCreateModel, ToDo>, IMapFrom<ToDoUpdateModel, ToDo>
 {
     public int Id { get; set; }
     public int Order { get; set; }
@@ -16,13 +16,11 @@ public class ToDo: IHasPk<int>, IMapSrcDest<ToDoCreateModel, ToDo>, IMapSrcDest<
     
     [ForeignKey("ToDoId")]
     public virtual ICollection<ToDoUser> ToDoUsers { get; set; } = new List<ToDoUser>();
-    public static IMappingExpression<ToDoCreateModel, ToDo> ConfigureMap(IMappingExpression<ToDoCreateModel, ToDo> cfg)
+    public static void ConfigureMap(IMappingExpression<ToDoCreateModel, ToDo> cfg)
     {
-        return cfg;
     }
 
-    public static IMappingExpression<ToDoUpdateModel, ToDo> ConfigureMap(IMappingExpression<ToDoUpdateModel, ToDo> cfg)
+    public static void ConfigureMap(IMappingExpression<ToDoUpdateModel, ToDo> cfg)
     {
-        return cfg;
     }
 }

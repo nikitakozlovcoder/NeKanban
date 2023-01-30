@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Entities;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.Mappings;
 
 namespace NeKanban.Logic.Services.MyDesks;
 
+[UsedImplicitly]
 [Injectable(typeof(IMyDesksService))]
 public class MyDesksService : IMyDesksService
 {

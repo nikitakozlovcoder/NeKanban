@@ -13,7 +13,6 @@ builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddDataAccess();
-builder.Services.AddEntityProtectors();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>

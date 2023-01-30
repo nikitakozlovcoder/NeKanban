@@ -17,7 +17,7 @@ public class MappingProfile : Profile
                 var interfaces = type.GetInterfaces();
                 foreach (var typeInterface in interfaces)
                 {
-                    if (!(typeInterface.IsGenericType && typeInterface.GetGenericTypeDefinition() == typeof(IMapSrcDest<,>)))
+                    if (!(typeInterface.IsGenericType && typeInterface.GetGenericTypeDefinition() == typeof(IMapFrom<,>)))
                     {
                         continue;
                     }

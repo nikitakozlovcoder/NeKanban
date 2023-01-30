@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
@@ -9,11 +9,11 @@ using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.Mappings;
 using NeKanban.Logic.Services.Columns;
 
 namespace NeKanban.Logic.Services.ToDos;
 
+[UsedImplicitly]
 [Injectable(typeof(IToDoService))]
 public class ToDoService : BaseService, IToDoService
 {
@@ -62,9 +62,7 @@ public class ToDoService : BaseService, IToDoService
         var deskUser = await _deskUserRepository.QueryableSelect()
             .FirstOrDefaultAsync(x => x.UserId == user.Id && x.DeskId == deskId, ct); 
         EnsureEntityExists(deskUser);
-        var todo = new ToDo();
-        todo.FromCreateModel(model);
-      
+        var todo = _mapper.Map<ToDo>(model);
         var columns = await _columnsService.GetColumns(deskId, ct);
         todo.ColumnId = columns.Single(x => x.Type == ColumnType.Start).Id;
         todo.Order = await GetCreateOrderInColum(todo.ColumnId, ct);
@@ -126,7 +124,7 @@ public class ToDoService : BaseService, IToDoService
     {
         var todo = await GetToDo(toDoId, ct);
         EnsureEntityExists(todo);
-        todo!.FromUpdateModel(model);
+        _mapper.Map(model, todo);
         await _toDoRepository.Update(todo!, ct);
         return _mapper.Map<ToDoVm>(todo);
     }
