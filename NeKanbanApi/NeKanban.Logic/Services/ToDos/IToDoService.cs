@@ -10,6 +10,5 @@ public interface IToDoService
     public Task<List<ToDoVm>> CreateToDo(int deskId, ApplicationUser user, ToDoCreateModel model, CancellationToken ct);
     public Task<List<ToDoVm>> MoveToDo(int toDoId, ToDoMoveModel model,  CancellationToken ct);
     public Task<ToDoVm> UpdateToDo(int toDoId, ToDoUpdateModel model,  CancellationToken ct);
-
     public Task<ToDo?> GetToDo(int toDoId, CancellationToken ct);
 }

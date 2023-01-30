@@ -5,7 +5,7 @@ using NeKanban.Common.Models.UserModel;
 
 namespace NeKanban.Common.Entities;
 
-public class ApplicationUser : IdentityUser<int>, IHasPk<int>, IMapSrcDest<UserRegisterModel, ApplicationUser>
+public class ApplicationUser : IdentityUser<int>, IHasPk<int>, IMapFrom<UserRegisterModel, ApplicationUser>
 {
     public ApplicationUser()
     {
@@ -13,8 +13,7 @@ public class ApplicationUser : IdentityUser<int>, IHasPk<int>, IMapSrcDest<UserR
     }
     public string? Name { get; set; }
     public string? Surname { get; set; }
-    public static IMappingExpression<UserRegisterModel, ApplicationUser> ConfigureMap(IMappingExpression<UserRegisterModel, ApplicationUser> cfg)
+    public static void ConfigureMap(IMappingExpression<UserRegisterModel, ApplicationUser> cfg)
     {
-        return cfg;
     }
 }

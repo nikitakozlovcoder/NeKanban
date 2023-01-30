@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AutoMapper;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.Attributes;
@@ -8,10 +9,10 @@ using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ColumnModels;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.Mappings;
 
 namespace NeKanban.Logic.Services.Columns;
 
+[UsedImplicitly]
 [Injectable<IColumnsService>]
 public class ColumnsService : BaseService, IColumnsService
 {
