@@ -1,13 +1,13 @@
 ﻿import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {BaseHttpService} from "./base_http.service";
+import {BaseHttpService} from "./baseHttp.service";
 import {DeskRole} from "../models/deskrole";
 import {DeskUsers} from "../models/deskusers";
 
 @Injectable()
 export class RolesService {
 
-  constructor(private http: HttpClient, private http_service: BaseHttpService) {
+  constructor(private http: HttpClient, private httpService: BaseHttpService) {
   }
   rolesAndPermissions : DeskRole[] = [];
   initRoles() {
@@ -17,7 +17,7 @@ export class RolesService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    this.http.get<DeskRole[]>(this.http_service.base_url + "Roles/GetRolesAndPermissions/", httpOptions).subscribe( result => {
+    this.http.get<DeskRole[]>(this.httpService.baseUrl + "Roles/GetRolesAndPermissions/", httpOptions).subscribe(result => {
       this.rolesAndPermissions = result;
     })
   }

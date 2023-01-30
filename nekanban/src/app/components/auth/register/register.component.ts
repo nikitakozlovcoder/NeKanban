@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
-import { UserService } from '../services/user.service';
+import { UserService } from '../../../services/user.service';
 import {BehaviorSubject} from "rxjs";
 
 @Component({
@@ -28,10 +28,6 @@ export class RegisterComponent implements OnInit {
     }
 
     return this.email.hasError('email') ? 'Некорректный email' : '';
-  }
-  getRequiredErrorMessage() {
-    return 'Поле не должно быть пустым!';
-
   }
   passwordMatchValidator (password: FormControl) : ValidatorFn {
     return (passwordConfirmation) => {

@@ -1,13 +1,13 @@
 ﻿import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {BaseHttpService} from "./base_http.service";
+import {BaseHttpService} from "./baseHttp.service";
 
 import {DeskUsers} from "../models/deskusers";
 
 @Injectable()
 export class DeskUserService {
 
-  constructor(private http: HttpClient, private http_service: BaseHttpService) {
+  constructor(private http: HttpClient, private httpService: BaseHttpService) {
   }
   changeRole(deskUserId: number, role: number) {
     const httpOptions = {
@@ -17,6 +17,6 @@ export class DeskUserService {
       })
     }
     const body = {role: role};
-    return this.http.put<DeskUsers[]>(this.http_service.base_url + "DesksUsers/ChangeRole/" + deskUserId, body, httpOptions);
+    return this.http.put<DeskUsers[]>(this.httpService.baseUrl + "DesksUsers/ChangeRole/" + deskUserId, body, httpOptions);
   }
 }

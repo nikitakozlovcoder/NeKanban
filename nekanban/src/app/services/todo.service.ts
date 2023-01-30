@@ -1,13 +1,11 @@
 ﻿import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {BaseHttpService} from "./base_http.service";
+import {BaseHttpService} from "./baseHttp.service";
 import {Todo} from "../models/todo";
 
 @Injectable()
 export class TodoService {
-  constructor(private http: HttpClient, private http_service: BaseHttpService) {
+  constructor(private http: HttpClient, private httpService: BaseHttpService) {
   }
   getToDos(deskId: number) {
     const httpOptions = {
@@ -16,7 +14,7 @@ export class TodoService {
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       })
     }
-    return this.http.get<Todo[]>(this.http_service.base_url + "ToDos/GetToDos/" + deskId, httpOptions);
+    return this.http.get<Todo[]>(this.httpService.baseUrl + "ToDos/GetToDos/" + deskId, httpOptions);
   }
   addToDo(deskId: number, name: string, body: string) {
     const httpOptions = {
@@ -29,7 +27,7 @@ export class TodoService {
       name: name,
       body: body
     };
-    return this.http.post<Todo[]>(this.http_service.base_url + "ToDos/CreateToDo/" + deskId, requestBody, httpOptions);
+    return this.http.post<Todo[]>(this.httpService.baseUrl + "ToDos/CreateToDo/" + deskId, requestBody, httpOptions);
   }
   assignUser(todoId: number, deskUserId: number) {
     const httpOptions = {
@@ -41,7 +39,7 @@ export class TodoService {
     const requestBody = {
       descUserId: deskUserId
     };
-    return this.http.put<Todo>(this.http_service.base_url + "ToDos/AssignUser/" + todoId, requestBody, httpOptions);
+    return this.http.put<Todo>(this.httpService.baseUrl + "ToDos/AssignUser/" + todoId, requestBody, httpOptions);
   }
   removeUser(todoUserId: number) {
     const httpOptions = {
@@ -56,7 +54,7 @@ export class TodoService {
     /*const requestBody = {
       toDoUserId: todoUserId
     };*/
-    return this.http.delete<Todo>(this.http_service.base_url + "ToDos/RemoveUser/", httpOptions);
+    return this.http.delete<Todo>(this.httpService.baseUrl + "ToDos/RemoveUser/", httpOptions);
   }
   updateToDo(todoId: number, name: string, body: string) {
     const httpOptions = {
@@ -69,7 +67,7 @@ export class TodoService {
       name: name,
       body: body
     };
-    return this.http.put<Todo>(this.http_service.base_url + "ToDos/UpdateToDo/" + todoId, requestBody, httpOptions);
+    return this.http.put<Todo>(this.httpService.baseUrl + "ToDos/UpdateToDo/" + todoId, requestBody, httpOptions);
   }
   moveToDo(todoId: number, columnId: number, order: number) {
     const httpOptions = {
@@ -82,6 +80,6 @@ export class TodoService {
       columnId: columnId,
       order: order
     };
-    return this.http.put<Todo[]>(this.http_service.base_url + "ToDos/MoveToDo/" + todoId, requestBody, httpOptions);
+    return this.http.put<Todo[]>(this.httpService.baseUrl + "ToDos/MoveToDo/" + todoId, requestBody, httpOptions);
   }
 }

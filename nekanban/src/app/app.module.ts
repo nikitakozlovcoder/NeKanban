@@ -6,25 +6,25 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './components/auth/login/login.component';
+import { RegisterComponent } from './components/auth/register/register.component';
 import { UserService } from './services/user.service';
-import { AuthorizationComponent } from './authorization/authorization.component';
+import { AuthorizationComponent } from './components/auth/authorization/authorization.component';
 import { RouterModule, Routes } from "@angular/router";
 import { DialogComponent } from './dialog/dialog.component';
-import { DeskComponent } from './desk/desk.component';
+import { DeskComponent } from './components/desk/desk-show/desk.component';
 import { DeskService } from "./services/desk.service";
-import { BaseHttpService } from "./services/base_http.service";
+import { BaseHttpService } from "./services/baseHttp.service";
 import { DeskGuard } from "./guards/desk.guard";
-import { DeskCreationComponent } from './desk-creation/desk-creation.component';
-import { TaskCreationComponent } from './task-creation/task-creation.component';
-import { ColumnCreationComponent } from './column-creation/column-creation.component';
+import { DeskCreationComponent } from './components/desk/desk-creation/desk-creation.component';
+import { TodoShowComponent } from './components/todo/todo-show/todo-show.component';
+import { ColumnCreationComponent } from './components/column/column-creation/column-creation.component';
 import { ColumnService } from "./services/column.service";
-import { InviteComponent } from './invite/invite.component';
-import { TodoCreationComponent } from './todo-creation/todo-creation.component';
+import { InviteComponent } from './components/invite/invite.component';
+import { TodoCreationComponent } from './components/todo/todo-creation/todo-creation.component';
 import {TodoService} from "./services/todo.service";
-import { TodoEditingComponent } from './todo-editing/todo-editing.component';
-import { ColumnUpdatingComponent } from './column-updating/column-updating.component';
+import { TodoEditingComponent } from './components/todo/todo-editing/todo-editing.component';
+import { ColumnUpdatingComponent } from './components/column/column-updating/column-updating.component';
 import { RolesService } from "./services/roles.service";
 import { DeskUserService } from "./services/deskUser.service";
 
@@ -43,7 +43,7 @@ const appRoutes: Routes =[
     DialogComponent,
     DeskComponent,
     DeskCreationComponent,
-    TaskCreationComponent,
+    TodoShowComponent,
     ColumnCreationComponent,
     InviteComponent,
     TodoCreationComponent,

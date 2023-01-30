@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, Validators} from "@angular/forms";
-import {DeskService} from "../services/desk.service";
-import {Desk} from "../models/desk";
+import {DeskService} from "../../../services/desk.service";
+import {Desk} from "../../../models/desk";
 import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
