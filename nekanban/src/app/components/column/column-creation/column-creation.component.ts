@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormControl, Validators} from "@angular/forms";
+import {UntypedFormControl, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ColumnService} from "../../../services/column.service";
 import {Column} from "../../../models/column";
@@ -15,7 +15,7 @@ export class ColumnCreationComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  name = new FormControl('', [Validators.required, Validators.minLength(3)]);
+  name = new UntypedFormControl('', [Validators.required, Validators.minLength(3)]);
   isLoaded = true;
 
   createColumn() {

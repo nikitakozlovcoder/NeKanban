@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
-import {FormControl, Validators} from "@angular/forms";
+import {UntypedFormControl, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 
 @Component({
@@ -15,8 +15,8 @@ export class TodoEditingComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  name = new FormControl(this.data.toDo.name, [Validators.required, Validators.minLength(3)]);
-  body = new FormControl(this.data.toDo.body, [Validators.required, Validators.minLength(10)]);
+  name = new UntypedFormControl(this.data.toDo.name, [Validators.required, Validators.minLength(3)]);
+  body = new UntypedFormControl(this.data.toDo.body, [Validators.required, Validators.minLength(10)]);
   isLoaded = true;
   updateToDo(): void {
     if (this.name.invalid || this.body.invalid) {

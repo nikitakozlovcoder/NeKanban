@@ -1,7 +1,7 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
-import {FormControl, Validators} from "@angular/forms";
+import {UntypedFormControl, Validators} from "@angular/forms";
 import {Desk} from "../../../models/desk";
 import {User} from "../../../models/user";
 import {Comment} from "../../../models/comment";
@@ -25,13 +25,13 @@ export class TodoShowComponent implements OnInit {
 
   usersSelected : number[] = this.getIdsOfSelectedUsers();
   userSelected : number[] = this.getIdOfSingleUser();
-  users = new FormControl(this.usersSelected);
-  user = new FormControl(this.userSelected);
+  users = new UntypedFormControl(this.usersSelected);
+  user = new UntypedFormControl(this.userSelected);
   isLoaded = true;
   isSortDescending = true;
   comments: Comment[] = this.sortComments(this.dataGeneratorService.generateComments());
 
-  commentInput = new FormControl('', [Validators.required, Validators.minLength(5)]);
+  commentInput = new UntypedFormControl('', [Validators.required, Validators.minLength(5)]);
 
 
   ngOnInit(): void {

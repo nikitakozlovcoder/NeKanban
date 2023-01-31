@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {FormControl, Validators} from "@angular/forms";
+import {UntypedFormControl, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 import {Todo} from "../../../models/todo";
 
@@ -17,8 +17,8 @@ export class TodoCreationComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  name = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  body = new FormControl('', [Validators.required, Validators.minLength(10)]);
+  name = new UntypedFormControl('', [Validators.required, Validators.minLength(3)]);
+  body = new UntypedFormControl('', [Validators.required, Validators.minLength(10)]);
   isLoaded = true;
 
   createToDo() {
