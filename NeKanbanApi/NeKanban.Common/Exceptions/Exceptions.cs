@@ -1,4 +1,4 @@
-﻿namespace NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+﻿namespace NeKanban.Common.Exceptions;
 
 public static class Exceptions
 {

@@ -3,9 +3,12 @@ using AutoMapper;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
+using NeKanban.Common.DTOs.Columns;
 using NeKanban.Common.Entities;
+using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.ColumnModels;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
@@ -17,12 +20,12 @@ namespace NeKanban.Logic.Services.Columns;
 public class ColumnsService : BaseService, IColumnsService
 {
     private readonly IRepository<Column> _columnRepository;
-    private readonly IMapper _mapper;
+    private readonly IAppMapper _mapper;
     private readonly IRepository<Desk> _deskRepository;
     public ColumnsService(
         IRepository<Column> columnRepository, 
         IRepository<Desk> deskRepository,
-        IMapper mapper)
+        IAppMapper mapper)
     {
         _columnRepository = columnRepository;
         _deskRepository = deskRepository;
@@ -31,17 +34,14 @@ public class ColumnsService : BaseService, IColumnsService
 
     public async Task<List<ColumnVm>> GetColumns(int deskId, CancellationToken ct)
     {
-        var columns = await _columnRepository.QueryableSelect()
-            .Where(x => x.DeskId == deskId).ToListAsync(ct);
-        return _mapper.Map<List<ColumnVm>>(columns);
+        var columns = await _columnRepository.ProjectTo<ColumnDto>(x => x.DeskId == deskId, ct);
+        return _mapper.Map<ColumnVm, ColumnDto>(columns);
     }
 
     public async Task<List<ColumnVm>> DeleteColumn(int columnId, CancellationToken ct)
     {
-        var column = await _columnRepository.QueryableSelect()
-            .FirstOrDefaultAsync(x => x.Id == columnId, ct);
-        EnsureEntityExists(column);
-        if (column!.Type is ColumnType.End or ColumnType.Start)
+        var column = await _columnRepository.First(x => x.Id == columnId, ct);
+        if (column.Type is ColumnType.End or ColumnType.Start)
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantDeleteColumnWithThisType);
         }
@@ -53,9 +53,8 @@ public class ColumnsService : BaseService, IColumnsService
 
     public async Task<List<ColumnVm>> CreateColumn(int deskId, ColumnCreateModel model, ColumnType columnType, CancellationToken ct)
     {
-        var desk = await _deskRepository.QueryableSelect().FirstOrDefaultAsync(x => x.Id == deskId, ct);
-        EnsureEntityExists(desk);
-        var column = _mapper.Map<Column>(model);
+        await _deskRepository.AnyOrThrow(x => x.Id == deskId, ct);
+        var column = _mapper.Map<Column, ColumnCreateModel>(model);
         column.Order = GetColumnOrder(columnType);
         column.DeskId = deskId;
         column.Type = columnType;
@@ -64,6 +63,7 @@ public class ColumnsService : BaseService, IColumnsService
         {
             return await GetColumns(deskId, ct);
         }
+        
         return await MoveColumn(column.Id, new ColumnMoveModel
         {
             Position = 0
@@ -72,19 +72,16 @@ public class ColumnsService : BaseService, IColumnsService
 
     public async Task<List<ColumnVm>> UpdateColumn(int columnId, ColumnUpdateModel model, CancellationToken ct)
     {
-        var column = await _columnRepository.QueryableSelect().SingleOrDefaultAsync(x => x.Id == columnId, ct);
-        EnsureEntityExists(column);
+        var column = await _columnRepository.Single(x => x.Id == columnId, ct);
         _mapper.Map(model, column);
-        await _columnRepository.Update(column!, ct);
-        return await GetColumns(column!.DeskId, ct);
+        await _columnRepository.Update(column, ct);
+        return await GetColumns(column.DeskId, ct);
     }
 
     public async Task<List<ColumnVm>> MoveColumn(int columnId, ColumnMoveModel model, CancellationToken ct)
     {
-        var column = await _columnRepository.QueryableSelect().FirstOrDefaultAsync(x=> x.Id == columnId, ct); 
-        EnsureEntityExists(column);
-
-        var columns = await _columnRepository.QueryableSelect().Where(x => x.DeskId == column!.DeskId).ToListAsync(ct);
+        var column = await _columnRepository.First(x=> x.Id == columnId, ct);
+        var columns = await _columnRepository.ToList(x => x.DeskId == column!.DeskId, ct);
         var positionToMove = model.Position;
         foreach (var columnItem in columns.OrderBy(x=> x.Order))
         {

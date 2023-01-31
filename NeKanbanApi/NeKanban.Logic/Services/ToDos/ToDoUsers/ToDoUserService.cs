@@ -3,6 +3,7 @@ using AutoMapper;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
 using NeKanban.Common.Entities;
@@ -17,11 +18,11 @@ public class ToDoUserService : BaseService, IToDoUserService
 {
     private readonly IRepository<ToDoUser> _toDoUserRepository;
     private readonly IToDoService _toDoService;
-    private readonly IMapper _mapper;
+    private readonly IAppMapper _mapper;
     public ToDoUserService(
         IRepository<ToDoUser> toDoUserRepository,
         IToDoService toDoService,
-        IMapper mapper)
+        IAppMapper mapper)
     {
         _toDoUserRepository = toDoUserRepository;
         _toDoService = toDoService;
@@ -46,22 +47,20 @@ public class ToDoUserService : BaseService, IToDoUserService
         };
         await _toDoUserRepository.Create(toDoUser, ct);
         var todo = await _toDoService.GetToDo(todoId, ct);
-        return _mapper.Map<ToDoVm>(todo);
+        return _mapper.Map<ToDoVm, ToDo>(todo!);
     }
 
     public async Task<ToDoVm> RemoveUser(int toDoUserId, CancellationToken ct)
     {
-        var toDoUser = await _toDoUserRepository.QueryableSelect()
-            .FirstOrDefaultAsync(x => x.Id == toDoUserId, ct);
-        EnsureEntityExists(toDoUser);
-        if (toDoUser!.ToDoUserType == ToDoUserType.Creator)
+        var toDoUser = await _toDoUserRepository.Single(x => x.Id == toDoUserId, ct);
+        if (toDoUser.ToDoUserType == ToDoUserType.Creator)
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "Can`t remove creator");
         }
 
         await _toDoUserRepository.Remove(toDoUser, ct);
         var todo = await _toDoService.GetToDo(toDoUser.ToDoId, ct);
-        return _mapper.Map<ToDoVm>(todo);
+        return _mapper.Map<ToDoVm, ToDo>(todo!);
     }
 
     public async Task<int> GetToDoUserUserId(int toDoUserId, CancellationToken ct)

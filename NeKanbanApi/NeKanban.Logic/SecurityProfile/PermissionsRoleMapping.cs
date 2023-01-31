@@ -52,8 +52,8 @@ public class PermissionsRoleMapping
                 Permission = PermissionType.UpdateTask
             }
         };
-        managerPermissions.AddRange(userPermissions);
         
+        managerPermissions.AddRange(userPermissions);
         var ownerPermissions = new List<PermissionVm>
         {
             new()
@@ -77,8 +77,8 @@ public class PermissionsRoleMapping
                 Permission = PermissionType.ChangeUserRole
             }
         };
-        ownerPermissions.AddRange(managerPermissions);
         
+        ownerPermissions.AddRange(managerPermissions);
         DeskRoles.Add(new DeskRoleVm
         {
             Role = RoleType.User,

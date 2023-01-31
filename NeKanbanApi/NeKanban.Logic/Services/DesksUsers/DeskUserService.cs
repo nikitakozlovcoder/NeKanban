@@ -3,9 +3,11 @@ using AutoMapper;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
 using NeKanban.Common.Entities;
+using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.Models.DeskUserModels;
 using NeKanban.Common.ViewModels;
@@ -21,11 +23,11 @@ public class DeskUserService : BaseService, IDeskUserService
 {
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IMyDesksService _myDesksService;
-    private readonly IMapper _mapper;
+    private readonly IAppMapper _mapper;
 
     public DeskUserService(IRepository<DeskUser> deskUserRepository,
         IMyDesksService myDesksService,
-        IMapper mapper)
+        IAppMapper mapper)
     {
         _deskUserRepository = deskUserRepository;
         _myDesksService = myDesksService;
@@ -50,22 +52,20 @@ public class DeskUserService : BaseService, IDeskUserService
 
     public async Task<DeskUserVm> GetDeskUser(int id, CancellationToken ct)
     {
-        var deskUser = await _deskUserRepository.QueryableSelect()
-            .FirstOrDefaultAsync(x => x.Id == id, ct);
+        var deskUser = await _deskUserRepository.FirstOrDefault(x => x.Id == id, ct);
         if (deskUser == null)
         {
             throw new HttpStatusCodeException(HttpStatusCode.NotFound, nameof(deskUser));
         }
         
-        return _mapper.Map<DeskUserVm>(deskUser);
+        return _mapper.Map<DeskUserVm, DeskUser>(deskUser);
     }
 
     public async Task RemoveFromDesk(int userId, int id, CancellationToken ct)
     {
         var deskUser = await _deskUserRepository
-            .FirstOrDefault(x=> x.UserId == userId && x.DeskId == id, ct);
-        EnsureEntityExists(deskUser);
-        if (deskUser!.Role == RoleType.Owner)
+            .Single(x=> x.UserId == userId && x.DeskId == id, ct);
+        if (deskUser.Role == RoleType.Owner)
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantRemoveOwnerFromDesk);
         }
@@ -76,10 +76,8 @@ public class DeskUserService : BaseService, IDeskUserService
     public async Task<List<DeskLiteVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId,
         CancellationToken ct)
     {
-        var deskUser =
-            await _deskUserRepository.FirstOrDefault(x => x.UserId == applicationUser.Id && x.DeskId == deskId, ct);
-        EnsureEntityExists(deskUser);
-        deskUser!.Preference = preferenceType.Preference;
+        var deskUser = await _deskUserRepository.First(x => x.UserId == applicationUser.Id && x.DeskId == deskId, ct);
+        deskUser.Preference = preferenceType.Preference;
         await _deskUserRepository.Update(deskUser, ct);
         if (PreferenceTypeConstraints.ExclusivePreferenceTypes.Contains(preferenceType.Preference))
         {
@@ -91,32 +89,26 @@ public class DeskUserService : BaseService, IDeskUserService
 
     public async Task<List<DeskUserVm>> ChangeRole(DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct)
     {
-        var deskUser = await _deskUserRepository.QueryableSelect()
-            .FirstOrDefaultAsync(x => x.Id == deskUserId, ct);
-        EnsureEntityExists(deskUser);
-
+        var deskUser = await _deskUserRepository.Single(x => x.Id == deskUserId, ct);
         if (model.Role == RoleType.Owner)
         {
             throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
         }
 
-        deskUser!.Role = model.Role;
+        deskUser.Role = model.Role;
         await _deskUserRepository.Update(deskUser, ct);
         return await GetDeskUsers(deskUser.DeskId, ct);
     }
 
     public async Task<int> GetDeskUserUserId(int deskUserId, CancellationToken ct)
     {
-        var deskUser = await _deskUserRepository.QueryableSelect().FirstOrDefaultAsync(x => x.Id == deskUserId ,ct);
-        EnsureEntityExists(deskUser);
-        return deskUser!.UserId;
+        var deskUser = await _deskUserRepository.Single(x => x.Id == deskUserId ,ct);
+        return deskUser.UserId;
     }
     
     private async Task ResetPreferences(PreferenceType type, int preserveId, CancellationToken ct)
     {
-        var deskUsers = await _deskUserRepository.QueryableSelect()
-            .Where(x => x.Preference == type && x.Id != preserveId).ToListAsync(ct);
-        
+        var deskUsers = await _deskUserRepository.ToList(x => x.Preference == type && x.Id != preserveId, ct);
         foreach (var deskUser in deskUsers)
         {
             deskUser.Preference = PreferenceType.Normal;
@@ -129,6 +121,6 @@ public class DeskUserService : BaseService, IDeskUserService
         var deskUsers = await _deskUserRepository.QueryableSelect()
             .Include(x=> x.User)
             .Where(x => x.DeskId == deskId).ToListAsync(ct);
-        return _mapper.Map<List<DeskUserVm>>(deskUsers);
+        return _mapper.Map<DeskUserVm, DeskUser>(deskUsers);
     }
 }

@@ -1,8 +1,10 @@
+using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using NeKanban.Common.Exceptions;
 using NeKanban.Data.Extensions;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Configuration;
@@ -99,6 +101,11 @@ app.Use(async (context, next) =>
     try
     {
         await next(context);
+    }
+    catch (EntityDoesNotExists e)
+    {
+        context.Response.StatusCode = (int) HttpStatusCode.NotFound;
+        await context.Response.WriteAsJsonAsync(e.Message);
     }
     catch (HttpStatusCodeException e)
     {

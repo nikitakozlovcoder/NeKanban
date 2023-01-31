@@ -20,7 +20,7 @@ public class ColumnEntityProtector : BaseEntityProtector<Column>
     
     protected override async Task<int?> GetDeskId(int entityId, CancellationToken ct)
     {
-        var column = await _columnRepository.QueryableSelect().FirstOrDefaultAsync(x => x.Id == entityId, ct);
+        var column = await _columnRepository.FirstOrDefault(x => x.Id == entityId, ct);
         return column?.DeskId;
     }
 }
