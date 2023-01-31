@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
+using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Entities;
 using NeKanban.Common.ViewModels;
@@ -13,9 +14,9 @@ namespace NeKanban.Logic.Services.MyDesks;
 public class MyDesksService : IMyDesksService
 {
     private readonly IRepository<Desk> _deskRepository;
-    private readonly IMapper _mapper;
+    private readonly IAppMapper _mapper;
 
-    public MyDesksService(IRepository<Desk> deskRepository, IMapper mapper)
+    public MyDesksService(IRepository<Desk> deskRepository, IAppMapper mapper)
     {
         _deskRepository = deskRepository;
         _mapper = mapper;
@@ -27,6 +28,6 @@ public class MyDesksService : IMyDesksService
             .Include(x => x.DeskUsers.Where(du => du.UserId == userId)).ThenInclude(x=> x.User)
             .Where(x=> x.DeskUsers.Any(du => du.UserId == userId))
             .ToListAsync(ct);
-        return _mapper.Map<List<DeskLiteVm>>(desks);
+        return _mapper.Map<DeskLiteVm, Desk>(desks);
     }
 }

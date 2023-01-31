@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using NeKanban.Common.DTOs.ApplicationUsers;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.ViewModels;
 
-public class ApplicationUserVm : BaseIdVm, IMapFrom<ApplicationUser, ApplicationUserVm>
+public class ApplicationUserVm : BaseIdVm, IMapFrom<ApplicationUser, ApplicationUserVm>, IMapFrom<ApplicationUserDto, ApplicationUserVm>
 {
     public string Name { get; set; } = "";
     public string Surname { get; set; } = "";
@@ -15,5 +16,9 @@ public class ApplicationUserVm : BaseIdVm, IMapFrom<ApplicationUser, Application
     {
         cfg.ForMember(x => x.Name, _ => _.MapFrom(x => x.Name ?? string.Empty))
             .ForMember(x => x.Surname, _ => _.MapFrom(x => x.Surname ?? string.Empty));
+    }
+
+    public static void ConfigureMap(IMappingExpression<ApplicationUserDto, ApplicationUserVm> cfg)
+    {
     }
 }
