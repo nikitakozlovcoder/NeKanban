@@ -33,6 +33,7 @@
   min-width: 300px;
   max-width: 700px;
   padding-right: 15px;
+  white-space:pre-wrap;
 }
 .comments-card {
   margin-top: 10px;
@@ -65,9 +66,29 @@
   margin-left: 20px;
 }
 .comments-section {
-  max-height: 300px;
-  overflow: auto;
+  max-height: 200px;
 }
 .single-comment-card {
   margin: 10px;
+}
+.user-select {
+  margin-top: 10px;
+  width: 100%;
+}
+.clickable-icon {
+  cursor: pointer;
+}
+.comments-card-title {
+  display: flex;
+}
+.comments-card-title mat-icon {
+  margin-left: 30px;
+  cursor: pointer;
+}
+.comment-text {
+  white-space:pre-wrap;
+}
+.todo-wrap {
+  max-height: 100vh;
+  overflow: auto;
 }

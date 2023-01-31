@@ -103,7 +103,7 @@
 
               <div class="box-column-cards">
                 <div *ngFor="let column of columns; index as i">
-                  <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(column.type === 0 && checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')) ? 'false' : 'true'">
+                  <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(column.type === 0 && checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')) ? false : true">
                     <mat-card-title class="column-card-title">
                       <mat-spinner *ngIf="!isColumnDeleteLoaded[i]" diameter="20"></mat-spinner>
                       <p #columnName [matTooltip]="column.name" [matTooltipDisabled]="!(columnName.offsetWidth < columnName.scrollWidth)">{{column.name}}</p>
@@ -127,7 +127,7 @@
                         [cdkDropListData]="column.todos"
                         class="example-list"
                         (cdkDropListDropped)="drop($event, column.id)">
-                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? 'false' : true" >
+                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? false : true" >
                           <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
                           <p (click)="openTaskCreationDialog(toDo)" class="todo-name">{{toDo.name}}</p>
                           <mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon>

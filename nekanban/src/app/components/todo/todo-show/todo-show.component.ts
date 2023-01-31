@@ -23,6 +23,7 @@ export class TodoShowComponent implements OnInit {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
 
+
   usersSelected : number[] = this.getIdsOfSelectedUsers();
   userSelected : number[] = this.getIdOfSingleUser();
   users = new UntypedFormControl(this.usersSelected);
@@ -186,5 +187,9 @@ export class TodoShowComponent implements OnInit {
       }
       return 0;
     });
+  }
+  toggleCommentsOrder() {
+    this.isSortDescending = !this.isSortDescending;
+    this.comments = this.sortComments(this.comments);
   }
 }

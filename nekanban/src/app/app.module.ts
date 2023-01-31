@@ -28,6 +28,7 @@ import { ColumnUpdatingComponent } from './components/column/column-updating/col
 import { RolesService } from "./services/roles.service";
 import { DeskUserService } from "./services/deskUser.service";
 import {DataGeneratorService} from "./services/dataGenerator.service";
+import {NgScrollbarModule} from "ngx-scrollbar";
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -51,16 +52,17 @@ const appRoutes: Routes =[
     TodoEditingComponent,
     ColumnUpdatingComponent,
   ],
-  imports: [
-    BrowserAnimationsModule,
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    MatNativeDateModule,
-    MaterialExampleModule,
-    ReactiveFormsModule,
-    RouterModule.forRoot(appRoutes)
-  ],
+    imports: [
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        MatNativeDateModule,
+        MaterialExampleModule,
+        ReactiveFormsModule,
+        RouterModule.forRoot(appRoutes),
+        NgScrollbarModule
+    ],
   providers: [UserService,
   DeskService,
   BaseHttpService,
