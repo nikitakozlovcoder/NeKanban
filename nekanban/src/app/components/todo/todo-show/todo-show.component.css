@@ -34,3 +34,40 @@
   max-width: 700px;
   padding-right: 15px;
 }
+.comments-card {
+  margin-top: 10px;
+}
+.comments-card mat-form-field {
+  width: 100%;
+}
+.comments-card button {
+  height: 40px;
+  margin-bottom: 1.34375em;
+  margin-left: 10px;
+}
+.comment-field-group {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+.comment-properties-group {
+  display: flex;
+}
+.comment-author-name span {
+  color: rgba(0,0,0,.54);
+}
+.comment-upper-group {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.comment-controls mat-icon:last-child {
+  margin-left: 20px;
+}
+.comments-section {
+  max-height: 300px;
+  overflow: auto;
+}
+.single-comment-card {
+  margin: 10px;
+}

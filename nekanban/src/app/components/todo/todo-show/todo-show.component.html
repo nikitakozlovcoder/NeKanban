@@ -68,5 +68,39 @@
     </mat-card-content>
   </mat-card>
 </mat-card>
+<mat-card class="comments-card">
+  <mat-card-title>
+    Комментарии
+  </mat-card-title>
 
+  <div class="comment-field-group">
+    <mat-form-field appearance="fill">
+      <mat-label>Оставьте свой комментарий!</mat-label>
+      <textarea class="comment-area" [formControl]="commentInput" matInput placeholder="Текст комментария" required></textarea>
+      <mat-error *ngIf="commentInput.errors?.['required']">Поле не должно быть пустым!</mat-error>
+      <mat-error *ngIf="commentInput.errors?.['minlength']">Длина комментария должна быть не менее 5 символов!</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary"><mat-icon>send</mat-icon></button>
+  </div>
+
+  <div class="comments-section">
+    <mat-card class="single-comment-card" *ngFor="let comment of comments">
+      <div class="comment-properties-group">
+        <div class="comment-upper-group">
+          <div class="comment-author-name">
+            <b>{{comment.user.name}}</b><span> оставил(а) комментарий {{comment.datetime.toLocaleDateString('ru')}} в {{comment.datetime.toLocaleTimeString('ru')}}</span>
+          </div>
+          <div class="comment-controls">
+            <mat-icon>edit</mat-icon>
+            <mat-icon>delete</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div>
+        {{comment.text}}
+      </div>
+    </mat-card>
+  </div>
+
+</mat-card>
 <!--<button class = "register_button" mat-raised-button color="primary" (click)="createDesk()">Создать доску</button>-->
