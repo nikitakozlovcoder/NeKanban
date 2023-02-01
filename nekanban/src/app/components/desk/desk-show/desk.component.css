@@ -307,3 +307,10 @@ mat-card-title mat-spinner {
   margin-top: 7px;
   padding-right: 5px;
 }
+.p-link {
+ cursor: pointer;
+}
+.snackbar {
+  width: 180px !important;
+  min-width: 50px !important;
+}
