@@ -1,13 +1,16 @@
 import {Component, Inject, Input, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
-import {FormControl, Validators} from "@angular/forms";
+import {UntypedFormControl, Validators} from "@angular/forms";
 import {Desk} from "../../../models/desk";
 import {User} from "../../../models/user";
+import {Comment} from "../../../models/comment";
 import {MatSelect, MatSelectChange} from "@angular/material/select";
 import {TodoService} from "../../../services/todo.service";
 import {RolesService} from "../../../services/roles.service";
 import {DeskUsers} from "../../../models/deskusers";
+import {DataGeneratorService} from "../../../services/dataGenerator.service";
+import {Column} from "../../../models/column";
 
 @Component({
   selector: 'app-task-creation',
@@ -16,15 +19,20 @@ import {DeskUsers} from "../../../models/deskusers";
 })
 export class TodoShowComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUsers}, private toDoService: TodoService, private rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUsers}, private toDoService: TodoService, private rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService) {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
 
+
   usersSelected : number[] = this.getIdsOfSelectedUsers();
   userSelected : number[] = this.getIdOfSingleUser();
-  users = new FormControl(this.usersSelected);
-  user = new FormControl(this.userSelected);
+  users = new UntypedFormControl(this.usersSelected);
+  user = new UntypedFormControl(this.userSelected);
   isLoaded = true;
+  isSortDescending = true;
+  comments: Comment[] = this.sortComments(this.dataGeneratorService.generateComments());
+
+  commentInput = new UntypedFormControl('', [Validators.required, Validators.minLength(5)]);
 
 
   ngOnInit(): void {
@@ -157,5 +165,31 @@ export class TodoShowComponent implements OnInit {
         })
       }
     }
+  }
+  sortComments(comments: Comment[]): Comment[] {
+    if (this.isSortDescending) {
+      return comments.sort(function (a: Comment, b: Comment) {
+        if (a.datetime > b.datetime) {
+          return -1;
+        }
+        if (a.datetime < b.datetime) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+    return comments.sort(function (a: Comment, b: Comment) {
+      if (a.datetime > b.datetime) {
+        return 1;
+      }
+      if (a.datetime < b.datetime) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+  toggleCommentsOrder() {
+    this.isSortDescending = !this.isSortDescending;
+    this.comments = this.sortComments(this.comments);
   }
 }

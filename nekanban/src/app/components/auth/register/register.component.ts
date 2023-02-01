@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import {UntypedFormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import {BehaviorSubject} from "rxjs";
 
@@ -17,11 +17,11 @@ export class RegisterComponent implements OnInit {
 
   hide = true;
   hideConfirm = true;
-  email = new FormControl('', [Validators.required, Validators.email]);
-  name = new FormControl('', [Validators.required]);
-  surname = new FormControl('', [Validators.required]);
-  password = new FormControl('', [Validators.required, Validators.minLength(8)]);
-  password_confirmation = new FormControl('', [Validators.required, this.passwordMatchValidator(this.password)]);
+  email = new UntypedFormControl('', [Validators.required, Validators.email]);
+  name = new UntypedFormControl('', [Validators.required]);
+  surname = new UntypedFormControl('', [Validators.required]);
+  password = new UntypedFormControl('', [Validators.required, Validators.minLength(8)]);
+  password_confirmation = new UntypedFormControl('', [Validators.required, this.passwordMatchValidator(this.password)]);
   getEmailErrorMessage() {
     if (this.email.hasError('required')) {
       return 'Поле не должно быть пустым!';
@@ -29,7 +29,7 @@ export class RegisterComponent implements OnInit {
 
     return this.email.hasError('email') ? 'Некорректный email' : '';
   }
-  passwordMatchValidator (password: FormControl) : ValidatorFn {
+  passwordMatchValidator (password: UntypedFormControl) : ValidatorFn {
     return (passwordConfirmation) => {
       if (password.value === passwordConfirmation.value)
         return null;

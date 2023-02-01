@@ -33,4 +33,62 @@
   min-width: 300px;
   max-width: 700px;
   padding-right: 15px;
+  white-space:pre-wrap;
+}
+.comments-card {
+  margin-top: 10px;
+}
+.comments-card mat-form-field {
+  width: 100%;
+}
+.comments-card button {
+  height: 40px;
+  margin-bottom: 1.34375em;
+  margin-left: 10px;
+}
+.comment-field-group {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+.comment-properties-group {
+  display: flex;
+}
+.comment-author-name span {
+  color: rgba(0,0,0,.54);
+}
+.comment-upper-group {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.comment-controls mat-icon:last-child {
+  margin-left: 20px;
+}
+.comments-section {
+  max-height: 200px;
+}
+.single-comment-card {
+  margin: 10px;
+}
+.user-select {
+  margin-top: 10px;
+  width: 100%;
+}
+.clickable-icon {
+  cursor: pointer;
+}
+.comments-card-title {
+  display: flex;
+}
+.comments-card-title mat-icon {
+  margin-left: 30px;
+  cursor: pointer;
+}
+.comment-text {
+  white-space:pre-wrap;
+}
+.todo-wrap {
+  max-height: 100vh;
+  overflow: auto;
 }

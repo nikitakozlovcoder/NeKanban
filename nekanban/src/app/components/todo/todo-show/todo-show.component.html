@@ -1,72 +1,112 @@
-<mat-card class = "column-card">
-  <div>
-    <mat-card-title>
-      <p>{{data.todo.name}}</p>
-    </mat-card-title>
+<div class="todo-wrap">
+  <mat-card class = "column-card">
+    <div>
+      <mat-card-title>
+        <p>{{data.todo.name}}</p>
+      </mat-card-title>
 
-    <mat-card-content>
-      <mat-card-subtitle>
-        <p>Описание:</p>
-      </mat-card-subtitle>
-      <p class="description">{{data.todo.body}}</p>
-    </mat-card-content>
-  </div>
+      <mat-card-content>
+        <mat-card-subtitle>
+          <p>Описание:</p>
+        </mat-card-subtitle>
+        <div class="description">{{data.todo.body}}</div>
+      </mat-card-content>
+    </div>
 
-  <mat-card class = "task-settings-card">
-    <mat-card-title>
-      <p>Свойства задания</p>
-    </mat-card-title>
+    <mat-card class = "task-settings-card">
+      <mat-card-title>
+        <p>Свойства задания</p>
+      </mat-card-title>
 
-    <mat-card-content>
-      <mat-card-subtitle>
-        <p>Создано:</p>
-      </mat-card-subtitle>
-      <ng-container *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</ng-container>
-      <ng-container *ngIf="getToDoCreator() === undefined">---</ng-container>
-      <mat-card-subtitle>
-        <div class="employees-settings">
-          <p>Исполнители:</p>
-          <mat-form-field class="user-select" appearance="fill">
-            <mat-label>Исполнители</mat-label>
-            <mat-select *ngIf="checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="users" multiple (closed)="changeUsers(select)">
-              <!--<mat-select-trigger>
-                {{users.value ? users.value[0] : ''}}
-                <span *ngIf="users.value?.length > 1" class="example-additional-selection">
-        (+{{users.value.length - 1}} {{users.value?.length === 2 ? 'еще' : 'еще'}})
-      </span>
-              </mat-select-trigger>-->
-              <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
-            </mat-select>
-            <mat-select *ngIf="!checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
+      <mat-card-content>
+        <mat-card-subtitle>
+          <p>Создано:</p>
+        </mat-card-subtitle>
+        <ng-container *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</ng-container>
+        <ng-container *ngIf="getToDoCreator() === undefined">---</ng-container>
+        <mat-card-subtitle>
+          <div class="employees-settings">
+            <mat-form-field class="user-select" appearance="fill">
+              <mat-label>Исполнители</mat-label>
+              <mat-select *ngIf="checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="users" multiple (closed)="changeUsers(select)">
+                <!--<mat-select-trigger>
+                  {{users.value ? users.value[0] : ''}}
+                  <span *ngIf="users.value?.length > 1" class="example-additional-selection">
+          (+{{users.value.length - 1}} {{users.value?.length === 2 ? 'еще' : 'еще'}})
+        </span>
+                </mat-select-trigger>-->
+                <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
+              </mat-select>
+              <mat-select *ngIf="!checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
 
-              <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
-            </mat-select>
-            <!--<mat-select [formControl]="toppings" multiple>
-              <mat-select-trigger>
-                {{toppings.value ? toppings.value[0] : ''}}
-                <span *ngIf="toppings.value?.length > 1" class="example-additional-selection">
-        (+{{toppings.value.length - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})
-      </span>
-              </mat-select-trigger>
-              <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping.name}}</mat-option>
-            </mat-select>-->
-          </mat-form-field>
-          <!--<button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" >
-            <mat-icon>add</mat-icon>
-          </button>-->
-        </div>
-        <mat-spinner class="spinner-centered" *ngIf="!isLoaded" diameter="30"></mat-spinner>
-        <mat-nav-list class ="employees-list">
-          <mat-list-item *ngFor="let user of getToDoUsers()">
-            <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
-          </mat-list-item>
+                <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
+              </mat-select>
+              <!--<mat-select [formControl]="toppings" multiple>
+                <mat-select-trigger>
+                  {{toppings.value ? toppings.value[0] : ''}}
+                  <span *ngIf="toppings.value?.length > 1" class="example-additional-selection">
+          (+{{toppings.value.length - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})
+        </span>
+                </mat-select-trigger>
+                <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping.name}}</mat-option>
+              </mat-select>-->
+            </mat-form-field>
+            <!--<button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" >
+              <mat-icon>add</mat-icon>
+            </button>-->
+          </div>
+          <mat-spinner class="spinner-centered" *ngIf="!isLoaded" diameter="30"></mat-spinner>
+          <mat-nav-list class ="employees-list">
+            <mat-list-item *ngFor="let user of getToDoUsers()">
+              <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
+            </mat-list-item>
 
-          <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
+            <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
 
-        </mat-nav-list>
-      </mat-card-subtitle>
-    </mat-card-content>
+          </mat-nav-list>
+        </mat-card-subtitle>
+      </mat-card-content>
+    </mat-card>
   </mat-card>
-</mat-card>
+  <mat-card class="comments-card">
+    <mat-card-title class="comments-card-title">
+      Комментарии
+      <mat-icon (click)="toggleCommentsOrder()" *ngIf="isSortDescending" matTooltip="От новых к старым">arrow_downward</mat-icon>
+      <mat-icon (click)="toggleCommentsOrder()" *ngIf="!isSortDescending" matTooltip="От старых к новым">arrow_upward</mat-icon>
+    </mat-card-title>
 
-<!--<button class = "register_button" mat-raised-button color="primary" (click)="createDesk()">Создать доску</button>-->
+    <div class="comment-field-group">
+      <mat-form-field appearance="fill">
+        <mat-label>Оставьте свой комментарий!</mat-label>
+        <textarea cdkTextareaAutosize
+                  cdkAutosizeMinRows="1"
+                  cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentInput" matInput placeholder="Текст комментария" required></textarea>
+        <mat-error *ngIf="commentInput.errors?.['required']">Поле не должно быть пустым!</mat-error>
+        <mat-error *ngIf="commentInput.errors?.['minlength']">Длина комментария должна быть не менее 5 символов!</mat-error>
+      </mat-form-field>
+      <button mat-raised-button color="primary"><mat-icon>send</mat-icon></button>
+    </div>
+
+    <ng-scrollbar [autoHeightDisabled]="false" class="comments-section">
+      <mat-card class="single-comment-card" *ngFor="let comment of comments">
+        <div class="comment-properties-group">
+          <div class="comment-upper-group">
+            <div class="comment-author-name">
+              <b>{{comment.user.name}}</b><span> оставил(а) комментарий {{comment.datetime.toLocaleDateString('ru')}} в {{comment.datetime.toLocaleTimeString('ru')}}</span>
+            </div>
+            <div class="comment-controls">
+              <mat-icon class="clickable-icon">edit</mat-icon>
+              <mat-icon class="clickable-icon">delete</mat-icon>
+            </div>
+          </div>
+        </div>
+        <div class="comment-text">
+          {{comment.text}}
+        </div>
+      </mat-card>
+    </ng-scrollbar>
+
+  </mat-card>
+  <!--<button class = "register_button" mat-raised-button color="primary" (click)="createDesk()">Создать доску</button>-->
+
+</div>

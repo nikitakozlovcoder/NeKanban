@@ -5,7 +5,7 @@ import {UserService} from "../../../services/user.service";
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {DeskCreationComponent} from "../desk-creation/desk-creation.component";
-import {FormControl, Validators} from "@angular/forms";
+import {UntypedFormControl, Validators} from "@angular/forms";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {TodoShowComponent} from "../../todo/todo-show/todo-show.component";
 import {Column} from "../../../models/column";
@@ -140,7 +140,7 @@ export class DeskComponent implements OnInit {
   /*ngAfterViewInit() {
     this.cdr.detectChanges();
   }*/
-  name = new FormControl('', [Validators.required, Validators.minLength(6)]);
+  name = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
   panelOpenState = false;
   loadDesks() {
     this.isLoaded = false;
@@ -163,7 +163,7 @@ export class DeskComponent implements OnInit {
 
               this.getColumns();
               this.getToDos(this.desk.id);
-              this.name = new FormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
+              this.name = new UntypedFormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
             },
             error: () => {
             }
@@ -177,7 +177,7 @@ export class DeskComponent implements OnInit {
               this.desk = data;
               this.getColumns();
               this.getToDos(this.desk.id);
-              this.name = new FormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
+              this.name = new UntypedFormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
             },
             error: () => {
             }
@@ -202,7 +202,7 @@ export class DeskComponent implements OnInit {
             this.isLoaded = true;
             this.desks = data;
             this.getColumns();
-            this.name = new FormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
+            this.name = new UntypedFormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
           },
           error: () => {
           }
@@ -275,7 +275,7 @@ export class DeskComponent implements OnInit {
         this.desk = data;
         this.getColumns();
         this.getToDos(this.desk.id);
-        this.name = new FormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
+        this.name = new UntypedFormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
       },
       error: () => {
       }
