@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using AutoMapper;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;

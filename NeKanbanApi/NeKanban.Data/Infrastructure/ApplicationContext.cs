@@ -19,6 +19,9 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
             .HasOne(x => x.ToDo)
             .WithMany(x => x.ToDoUsers)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<DeskUser>().HasMany(x => x.Comments)
+            .WithOne(x => x.DeskUser).OnDelete(DeleteBehavior.SetNull);
     }
 
     public void Migrate()
