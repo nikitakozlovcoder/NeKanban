@@ -15,10 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Models" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\NeKanban.Security\NeKanban.Security.csproj" />
     </ItemGroup>
 

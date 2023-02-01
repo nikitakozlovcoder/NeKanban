@@ -22,6 +22,18 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.MoveTasks
+            },
+            new()
+            {
+                Permission = PermissionType.AddComments
+            },
+            new()
+            {
+                Permission = PermissionType.UpdateOwnComments
+            },
+            new()
+            {
+                Permission = PermissionType.DeleteOwnComments
             }
         };
         
@@ -50,6 +62,10 @@ public class PermissionsRoleMapping
             new()
             {
                 Permission = PermissionType.UpdateTask
+            },
+            new()
+            {
+                Permission = PermissionType.DeleteAnyComments
             }
         };
         
