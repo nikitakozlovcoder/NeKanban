@@ -202,6 +202,7 @@ export class TodoShowComponent implements OnInit {
   toggleCommentsOrder() {
     this.isSortDescending = !this.isSortDescending;
     this.comments = this.sortComments(this.comments);
+    this.RefreshUpdatingStatesAndFormControls();
   }
   getComments() {
     this.commentsService.getComments(this.data.todo.id).subscribe(
@@ -209,55 +210,88 @@ export class TodoShowComponent implements OnInit {
         next: data => {
           this.commentsState = LoadingStateTypes.Loaded;
           this.comments = this.SortAndMapComments(data);
-          this.comments.forEach(el => {
-            this.commentUpdatingFields.push(new UntypedFormControl(el.body, [Validators.required, Validators.minLength(10)]));
-          });
         },
         error: _ => {
         },
-        complete: () => this.InitUpdatingStates()
+        complete: () => this.RefreshUpdatingStatesAndFormControls()
       }
     )
 
   }
   createComment() {
-    this.commentSendingState = LoadingStateTypes.Loading;
-    this.commentsService.createComment(this.data.todo.id, this.commentInput.value).subscribe({
-      next: data => {
-        this.commentSendingState = LoadingStateTypes.Loaded;
-        this.comments = this.SortAndMapComments(data);
-        this.commentInput.setValue("");
-        this.commentInput.markAsUntouched();
-      },
-      error: _ => {
-      },
-      complete: () => this.InitUpdatingStates()
-    })
+    if (this.commentInput.invalid) {
+      this.commentInput.markAsTouched();
+    }
+    else {
+      this.commentSendingState = LoadingStateTypes.Loading;
+      this.commentsService.createComment(this.data.todo.id, this.commentInput.value).subscribe({
+        next: data => {
+          this.commentSendingState = LoadingStateTypes.Loaded;
+          this.comments = this.SortAndMapComments(data);
+          this.commentInput.setValue("");
+          this.commentInput.markAsUntouched();
+        },
+        error: _ => {
+        },
+        complete: () => this.RefreshUpdatingStatesAndFormControls()
+      })
+    }
   }
-  updateComment(id: number, body: string, index: number) {
-    this.commentsService.updateComment(id, body).subscribe({
-      next: data => {
-        this.comments = this.SortAndMapComments(data);
-        this.commentsUpdatingStates[index] = ViewStateTypes.Show;
-      },
-      error: _ => {
-      },
-      complete: () => this.InitUpdatingStates()
-    })
+  updateComment(id: number, index: number) {
+    if (this.commentUpdatingFields[index].invalid) {
+      this.commentUpdatingFields[index].markAsTouched();
+    }
+    else {
+      this.commentsService.updateComment(id, this.commentUpdatingFields[index].value).subscribe({
+        next: data => {
+          this.comments = this.SortAndMapComments(data);
+          this.commentsUpdatingStates[index] = ViewStateTypes.Show;
+        },
+        error: _ => {
+        }
+      })
+    }
+  }
+  deleteComment(id: number) {
+    if (id == this.data.deskUser.user.id) {
+      this.commentsService.deleteOwnComment(id).subscribe({
+        next: data => {
+          this.comments = this.SortAndMapComments(data);
+        },
+        error: _ => {
+        },
+        complete: () => this.RefreshUpdatingStatesAndFormControls()
+      })
+    }
+    else if (this.rolesService.userHasPermission(this.data.deskUser, 'DeleteAnyComments')) {
+      this.commentsService.deleteComment(id).subscribe({
+        next: data => {
+          this.comments = this.SortAndMapComments(data);
+        },
+        error: _ => {
+        },
+        complete: () => this.RefreshUpdatingStatesAndFormControls()
+      })
+    }
   }
   hideUpdatingField(index: number) {
     this.commentsUpdatingStates[index] = ViewStateTypes.Show;
+    this.commentUpdatingFields[index] = new UntypedFormControl(this.comments[index].body, [Validators.required, Validators.minLength(10)]);
   }
   private SortAndMapComments(comments: Comment[]) {
     return this.sortComments(comments.map(el => {
       return new Comment(el.id, el.body, el.deskUser, new Date(el.createdAtUtc));
     }));
   }
-  private InitUpdatingStates() {
+  private RefreshUpdatingStatesAndFormControls() {
     this.commentsUpdatingStates = [];
     this.comments.forEach(() => {
       this.commentsUpdatingStates.push(ViewStateTypes.Show);
     })
+    this.commentUpdatingFields = [];
+    this.comments.forEach(el => {
+      this.commentUpdatingFields.push(new UntypedFormControl(el.body, [Validators.required, Validators.minLength(10)]));
+    });
   }
   showCommentUpdateForm(index: number) {
     this.commentsUpdatingStates[index] = ViewStateTypes.Update;

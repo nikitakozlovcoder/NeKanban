@@ -94,11 +94,18 @@
           <div class="comment-properties-group">
             <div class="comment-upper-group">
               <div class="comment-author-name">
-                <b *ngIf="comment.deskUser != null">{{comment.deskUser.user.name}}</b><b *ngIf="comment.deskUser === null">Пользователь удален</b><span> оставил(а) комментарий {{comment.createdAtUtc.toLocaleDateString('ru')}} в {{comment.createdAtUtc.toLocaleTimeString('ru')}}</span>
+                <b *ngIf="comment.deskUser != null">{{comment.deskUser.user.name}}</b>
+                <b *ngIf="comment.deskUser === null">Пользователь удален</b><span> оставил(а) комментарий
+                {{comment.createdAtUtc.toLocaleDateString('ru')}} в {{comment.createdAtUtc.toLocaleTimeString('ru')}}</span>
               </div>
               <div class="comment-controls">
-                <mat-icon *ngIf="rolesService.userHasPermission(data.deskUser, 'UpdateOwnComments') && comment.deskUser.user.id == data.deskUser.user.id" class="clickable-icon" (click)="showCommentUpdateForm(i)">edit</mat-icon>
-                <mat-icon *ngIf="rolesService.userHasPermission(data.deskUser, 'DeleteOwnComments') && comment.deskUser.user.id == data.deskUser.user.id || rolesService.userHasPermission(data.deskUser, 'DeleteAnyComments')" class="clickable-icon">delete</mat-icon>
+                <mat-icon *ngIf="rolesService.userHasPermission(data.deskUser, 'UpdateOwnComments') &&
+                comment.deskUser.user.id == data.deskUser.user.id"
+                          class="clickable-icon" (click)="showCommentUpdateForm(i)">edit</mat-icon>
+                <mat-icon *ngIf="rolesService.userHasPermission(data.deskUser, 'DeleteOwnComments') &&
+                comment.deskUser.user.id == data.deskUser.user.id ||
+                rolesService.userHasPermission(data.deskUser, 'DeleteAnyComments')" class="clickable-icon"
+                          (click)="deleteComment(comment.id)">delete</mat-icon>
               </div>
             </div>
           </div>
@@ -112,11 +119,11 @@
             <textarea cdkTextareaAutosize
                       cdkAutosizeMinRows="1"
                       cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentUpdatingFields[i]" matInput placeholder="Текст комментария" required></textarea>
-            <mat-error *ngIf="commentInput.errors?.['required']">Поле не должно быть пустым!</mat-error>
-            <mat-error *ngIf="commentInput.errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
+            <mat-error *ngIf="commentUpdatingFields[i].errors?.['required']">Поле не должно быть пустым!</mat-error>
+            <mat-error *ngIf="commentUpdatingFields[i].errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
           </mat-form-field>
-          <button mat-raised-button color="primary" (click)="updateComment(comment.id, commentUpdatingFields[i].value, i)"><mat-icon>done</mat-icon></button>
-          <button mat-raised-button color="primary" (click)="hideUpdatingField(i)"><mat-icon>close</mat-icon></button>
+          <mat-icon class="comment-update-icon clickable-icon" (click)="updateComment(comment.id, i)">done</mat-icon>
+          <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField(i)">close</mat-icon>
 
         </div>
       </mat-card>

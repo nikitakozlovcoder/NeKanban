@@ -109,3 +109,10 @@
 .comment-updating-group button {
   margin-bottom: 0;
 }
+.comment-update-icon {
+  width: 30px;
+}
+.comment-update-icon {
+  margin-left: 15px;
+  font-weight: bold;
+}
