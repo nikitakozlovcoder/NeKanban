@@ -23,6 +23,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         _mapper = mapper;
     }
 
+    #region write
     public Task Create(TEntity item, CancellationToken ct)
     {
         _context.Entry(item).State = EntityState.Added;
@@ -40,12 +41,21 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         _context.Entry(item).State = EntityState.Modified;
         return _context.SaveChangesAsync(ct);
     }
+    #endregion
 
+    #region ToList
     public Task<List<TEntity>> ToList(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return EntityDbSet.Where(predicate).ToListAsync(ct);
     }
+
+    public Task<List<T>> ToList<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, IEnumerable<Expression<Func<TEntity, object>>>? orders = null, CancellationToken ct = default)
+    {
+        return Query(predicate, orders).Select(projection).ToListAsync(ct);
+    }
+    #endregion
     
+    #region First/Single
     public async Task<TEntity> First(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return ThrowOnNull(await EntityDbSet.Where(predicate).FirstOrDefaultAsync(ct));
@@ -66,50 +76,68 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         return EntityDbSet.Where(predicate).SingleOrDefaultAsync(ct);
     }
 
-    public IQueryable<TEntity> QueryableSelect()
+    public async Task<T> First<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
     {
-        return EntityDbSet;
+        return ThrowOnNull(await FirstOrDefault(predicate, projection, ct));
     }
 
+    public Task<T?> FirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
+    {
+        return Query(predicate, null).Select(projection).FirstOrDefaultAsync(ct);
+    }
+
+    public async Task<T> Single<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
+    {
+        return ThrowOnNull(await SingleOrDefault(predicate, projection, ct));
+    }
+
+    public Task<T?> SingleOrDefault<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
+    {
+        return Query(predicate, null).Select(projection).SingleOrDefaultAsync(ct);
+    }
+    #endregion
+
+    #region ProjectTo
     public Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : IMapFrom<TEntity, T>, new()
     {
-        return ProjectToQuery<T>(predicate, null).ToListAsync(ct);
+        return Query(predicate, null).ProjectTo<T>(_mapper.ConfigurationProvider).ToListAsync(ct);
     }
     
     public Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : IMapFrom<TEntity, T>, new()
     {
-        return ProjectToQuery<T>(predicate, orders).ToListAsync(ct);
+        return Query(predicate, orders).ProjectTo<T>(_mapper.ConfigurationProvider).ToListAsync(ct);
     }
     
     public async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : IMapFrom<TEntity, T>, new()
     {
-        return ThrowOnNull(await ProjectToQuery<T>(predicate, null).SingleOrDefaultAsync(ct));
+        return ThrowOnNull(await Query(predicate, null).ProjectTo<T>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(ct));
     }
     
     public async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : IMapFrom<TEntity, T>, new()
     {
-        return ThrowOnNull(await ProjectToQuery<T>(predicate, orders).SingleOrDefaultAsync(ct));
+        return ThrowOnNull(await Query(predicate, orders).ProjectTo<T>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(ct));
     }
     
     public Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : IMapFrom<TEntity, T>, new()
     {
-        return ProjectToQuery<T>(predicate, null).FirstOrDefaultAsync(ct);
+        return Query(predicate, null).ProjectTo<T>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(ct);
     }
     
     public Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : IMapFrom<TEntity, T>, new()
     {
-        return ProjectToQuery<T>(predicate, orders).FirstOrDefaultAsync(ct);
+        return Query(predicate, orders).ProjectTo<T>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(ct);
     }
     
     public async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : IMapFrom<TEntity, T>, new()
     {
-        return ThrowOnNull(await ProjectToQuery<T>(predicate, null).FirstOrDefaultAsync(ct));
+        return ThrowOnNull(await ProjectToFirstOrDefault<T>(predicate, ct));
     }
     
     public async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : IMapFrom<TEntity, T>, new()
     {
-        return ThrowOnNull(await ProjectToQuery<T>(predicate, orders).FirstOrDefaultAsync(ct));
+        return ThrowOnNull(await ProjectToFirstOrDefault<T>(predicate, orders, ct));
     }
+    #endregion
 
     public async Task AnyOrThrow(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
@@ -120,9 +148,13 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         }
     }
 
-    private IQueryable<T> ProjectToQuery<T>(Expression<Func<TEntity, bool>> predicate,
+    public IQueryable<TEntity> QueryableSelect()
+    {
+        return EntityDbSet;
+    }
+    
+    private IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate,
         IEnumerable<Expression<Func<TEntity, object>>>? orders)
-        where T : IMapFrom<TEntity, T>, new()
     {
         var query = EntityDbSet.Where(predicate);
         if (orders != null)
@@ -130,8 +162,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
             query = orders.Aggregate(query.OrderBy(x => true), (current, order) => current.ThenBy(order));
         }
         
-        return query.ProjectTo<T>(_mapper.ConfigurationProvider);
+        return query;
     }
+    
 
     private static T ThrowOnNull<T>(T? entity)
     {
