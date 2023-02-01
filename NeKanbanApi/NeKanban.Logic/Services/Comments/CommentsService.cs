@@ -39,6 +39,8 @@ public class CommentsService : ICommentsService
         var deskUserId = await _deskUserService.GetDeskUserId(deskId, user, ct);
         var comment = _appMapper.Map<Comment, CommentCreateModel>(model);
         comment.DeskUserId = deskUserId;
+        comment.ToDoId = toDoId;
+        comment.CreatedAtUtc = DateTime.UtcNow;
         await _commentsRepository.Create(comment, ct);
         return await GetComments(toDoId, ct);
     }

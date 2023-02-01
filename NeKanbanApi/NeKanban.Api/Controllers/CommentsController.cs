@@ -37,7 +37,7 @@ public class CommentsController : BaseAuthController
     [HttpPost("{toDoId:int}")]
     public async Task<List<CommentDto>> Create(int toDoId, [FromBody]CommentCreateModel model, CancellationToken ct)
     {
-        await EnsureAbleTo<Desk>(PermissionType.AddComments, toDoId, ct);
+        await EnsureAbleTo<ToDo>(PermissionType.AddComments, toDoId, ct);
         return await _commentsService.Create(toDoId, await GetApplicationUser(), model, ct);
     }
     

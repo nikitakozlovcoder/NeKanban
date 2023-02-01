@@ -1,8 +1,12 @@
-﻿using NeKanban.Common.Entities;
+﻿using JetBrains.Annotations;
+using NeKanban.Common.Attributes;
+using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Logic.EntityProtectors;
 
+[UsedImplicitly]
+[Injectable<IEntityProtector<Comment>>]
 public class CommentEntityProtector : BaseEntityProtector<Comment>
 {
     private readonly IRepository<Comment> _commentsRepository;
