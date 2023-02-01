@@ -69,7 +69,6 @@ public class DesksService : BaseService, IDesksService
         var deskVm = _mapper.Map<DeskVm, DeskDto>(desk);
         deskVm.InviteLink = canViewInviteLink ? desk.InviteLink : null;
         return deskVm;
-
     }
 
     public async Task<DeskVm> UpdateDesk(DeskUpdateModel deskUpdateModel, int id, ApplicationUser user, CancellationToken ct)
@@ -100,6 +99,7 @@ public class DesksService : BaseService, IDesksService
         {
             await _deskUserService.RemoveFromDesk(userId, id, ct);
         }
+        
         return await GetDesk(id, user, ct);
     }
 

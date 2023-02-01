@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using NeKanban.Common.Extensions;
 using NeKanban.Common.Interfaces;
 using NeKanban.Common.Models.DeskModels;
 
@@ -13,9 +14,11 @@ public class Desk : IHasPk<int>, IMapFrom<DeskCreateModel, Desk>, IMapFrom<DeskU
     public virtual ICollection<Column> Columns { get; set; } = new List<Column>();
     public static void ConfigureMap(IMappingExpression<DeskCreateModel, Desk> cfg)
     {
+        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name));
     }
 
     public static void ConfigureMap(IMappingExpression<DeskUpdateModel, Desk> cfg)
     {
+        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name));
     }
 }

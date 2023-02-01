@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using NeKanban.Common.Constants;
+using NeKanban.Common.Extensions;
 using NeKanban.Common.Interfaces;
 using NeKanban.Common.Models.ColumnModels;
 
@@ -16,9 +17,13 @@ public class Column : IHasPk<int>, IMapFrom<ColumnCreateModel, Column>,  IMapFro
     public virtual ICollection<ToDo> ToDos { get; set; } = new List<ToDo>();
     public static void ConfigureMap(IMappingExpression<ColumnCreateModel, Column> cfg)
     {
+        cfg.IgnoreAllMembers()
+            .ForMember(x => x.Name, _ => _.MapFrom(x => x.Name));
     }
 
     public static void ConfigureMap(IMappingExpression<ColumnUpdateModel, Column> cfg)
     {
+        cfg.IgnoreAllMembers()
+            .ForMember(x => x.Name, _ => _.MapFrom(x => x.Name));
     }
 }

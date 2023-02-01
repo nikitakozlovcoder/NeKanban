@@ -11,6 +11,7 @@ using NeKanban.Logic.Configuration;
 using NeKanban.Logic.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
@@ -70,6 +71,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddAppIdentity();
 
 var app = builder.Build();
+app.Services.ValidateAutomapperConfiguration();
 var shouldMigrate = app.Configuration.GetValue<bool>("MigrateOnStart");
 if (shouldMigrate)
 {

@@ -8,6 +8,11 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        PopulateConfiguration();
+    }
+
+    private void PopulateConfiguration()
+    {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         foreach (var assembly in assemblies)
         {

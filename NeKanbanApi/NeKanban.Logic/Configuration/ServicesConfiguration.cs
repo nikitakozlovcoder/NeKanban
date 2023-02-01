@@ -8,7 +8,7 @@ public static class ServicesConfiguration
 {
     public static void AddServices(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(MappingProfile));
+        services.AddMapper();
         AddAutoServices(services);
     }
 

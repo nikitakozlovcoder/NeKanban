@@ -15,10 +15,12 @@ public class ApplicationUserVm : BaseIdVm, IMapFrom<ApplicationUser, Application
     public static void ConfigureMap(IMappingExpression<ApplicationUser, ApplicationUserVm> cfg)
     {
         cfg.ForMember(x => x.Name, _ => _.MapFrom(x => x.Name ?? string.Empty))
-            .ForMember(x => x.Surname, _ => _.MapFrom(x => x.Surname ?? string.Empty));
+            .ForMember(x => x.Surname, _ => _.MapFrom(x => x.Surname ?? string.Empty))
+            .ForMember(x => x.Token, _ => _.Ignore());
     }
 
     public static void ConfigureMap(IMappingExpression<ApplicationUserDto, ApplicationUserVm> cfg)
     {
+        cfg.ForMember(x => x.Token, _ => _.Ignore());
     }
 }
