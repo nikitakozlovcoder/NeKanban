@@ -14,4 +14,5 @@ public interface IDeskUserService
     Task<List<DeskLiteVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId, CancellationToken ct);
     Task<List<DeskUserVm>> ChangeRole(DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct);
     Task<int> GetDeskUserUserId(int deskUserId, CancellationToken ct);
+    Task<int> GetDeskUserId(int deskId, ApplicationUser user, CancellationToken ct);
 }

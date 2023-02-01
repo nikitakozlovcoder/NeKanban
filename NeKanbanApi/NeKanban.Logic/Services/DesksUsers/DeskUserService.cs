@@ -106,7 +106,12 @@ public class DeskUserService : BaseService, IDeskUserService
         var deskUser = await _deskUserRepository.Single(x => x.Id == deskUserId ,ct);
         return deskUser.UserId;
     }
-    
+
+    public Task<int> GetDeskUserId(int deskId, ApplicationUser user, CancellationToken ct)
+    {
+        return _deskUserRepository.Single(x => x.UserId == user.Id && x.DeskId == deskId, x => x.Id, ct: ct);
+    }
+
     private async Task ResetPreferences(PreferenceType type, int preserveId, CancellationToken ct)
     {
         var deskUsers = await _deskUserRepository.ToList(x => x.Preference == type && x.Id != preserveId, ct);

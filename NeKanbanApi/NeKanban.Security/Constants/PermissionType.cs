@@ -16,4 +16,8 @@ public enum PermissionType
     AccessDesk,
     RemoveUsers,
     ChangeUserRole,
+    AddComments,
+    UpdateOwnComments,
+    DeleteOwnComments,
+    DeleteAnyComments
 }

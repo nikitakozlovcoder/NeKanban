@@ -38,4 +38,5 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
     public DbSet<Column>? Column { get; set; }
     public DbSet<ToDoUser>? ToDoUser { get; set; }
     public DbSet<ToDo>? ToDo { get; set; }
+    public DbSet<Comment>? Comments { get; set; }
 }
