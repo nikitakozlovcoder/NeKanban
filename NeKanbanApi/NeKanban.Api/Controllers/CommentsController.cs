@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.Comments;
 using NeKanban.Common.Entities;
-using NeKanban.Common.Models.ColumnModels;
 using NeKanban.Common.Models.CommentModels;
-using NeKanban.Common.ViewModels;
 using NeKanban.Controllers.Auth;
 using NeKanban.Logic.Services.Comments;
-using NeKanban.Logic.Services.DesksUsers;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Controllers;
