@@ -12,5 +12,5 @@ public class DeskUser : IHasPk<int>
     public virtual Desk? Desk { get; set; }
     public RoleType Role { get; set; }
     public PreferenceType Preference { get; set; } = PreferenceType.Normal;
-
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }

@@ -14,6 +14,7 @@ public class ToDo: IHasPk<int>, IMapFrom<ToDoCreateModel, ToDo>, IMapFrom<ToDoUp
     public string? Body { get; set; }
     public int ColumnId { get; set; }
     public virtual Column? Column { get; set; }
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     
     [ForeignKey("ToDoId")]
     public virtual ICollection<ToDoUser> ToDoUsers { get; set; } = new List<ToDoUser>();
