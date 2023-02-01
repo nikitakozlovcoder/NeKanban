@@ -1,16 +1,18 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
 import {UntypedFormControl, Validators} from "@angular/forms";
 import {Desk} from "../../../models/desk";
 import {User} from "../../../models/user";
 import {Comment} from "../../../models/comment";
-import {MatSelect, MatSelectChange} from "@angular/material/select";
+import {MatSelect} from "@angular/material/select";
 import {TodoService} from "../../../services/todo.service";
 import {RolesService} from "../../../services/roles.service";
-import {DeskUsers} from "../../../models/deskusers";
+import {DeskUser} from "../../../models/deskUser";
 import {DataGeneratorService} from "../../../services/dataGenerator.service";
-import {Column} from "../../../models/column";
+import {CommentsService} from "../../../services/comments.service";
+import LoadingStateTypes from "../../../constants/LoadingStateTypes";
+import {ViewStateTypes} from "../../../constants/ViewStateTypes";
 
 @Component({
   selector: 'app-task-creation',
@@ -19,9 +21,13 @@ import {Column} from "../../../models/column";
 })
 export class TodoShowComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUsers}, private toDoService: TodoService, private rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUser}, private toDoService: TodoService, public rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService,
+              private commentsService: CommentsService) {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
+
+  readonly LoadingStateTypes = LoadingStateTypes;
+  readonly ViewStateTypes = ViewStateTypes;
 
 
   usersSelected : number[] = this.getIdsOfSelectedUsers();
@@ -29,13 +35,18 @@ export class TodoShowComponent implements OnInit {
   users = new UntypedFormControl(this.usersSelected);
   user = new UntypedFormControl(this.userSelected);
   isLoaded = true;
+  commentsUpdatingStates : ViewStateTypes[] = [];
+  commentsState: LoadingStateTypes = LoadingStateTypes.Loading;
+  commentSendingState: LoadingStateTypes = LoadingStateTypes.Loaded;
+
   isSortDescending = true;
-  comments: Comment[] = this.sortComments(this.dataGeneratorService.generateComments());
+  comments: Comment[] = [];
 
-  commentInput = new UntypedFormControl('', [Validators.required, Validators.minLength(5)]);
+  commentInput = new UntypedFormControl('', [Validators.required, Validators.minLength(10)]);
 
-
+  commentUpdatingFields: UntypedFormControl[] = [];
   ngOnInit(): void {
+    this.getComments();
   }
 
   closeDialog() {
@@ -127,7 +138,7 @@ export class TodoShowComponent implements OnInit {
     })
     this.usersSelected  = newIds;
   }
-  checkUserPermission(deskUser: DeskUsers, permissionName: string) {
+  checkUserPermission(deskUser: DeskUser, permissionName: string) {
     return this.rolesService.userHasPermission(deskUser, permissionName);
   }
   changeSingleUser(select:MatSelect) {
@@ -169,20 +180,20 @@ export class TodoShowComponent implements OnInit {
   sortComments(comments: Comment[]): Comment[] {
     if (this.isSortDescending) {
       return comments.sort(function (a: Comment, b: Comment) {
-        if (a.datetime > b.datetime) {
+        if (a.createdAtUtc > b.createdAtUtc) {
           return -1;
         }
-        if (a.datetime < b.datetime) {
+        if (a.createdAtUtc < b.createdAtUtc) {
           return 1;
         }
         return 0;
       });
     }
     return comments.sort(function (a: Comment, b: Comment) {
-      if (a.datetime > b.datetime) {
+      if (a.createdAtUtc > b.createdAtUtc) {
         return 1;
       }
-      if (a.datetime < b.datetime) {
+      if (a.createdAtUtc < b.createdAtUtc) {
         return -1;
       }
       return 0;
@@ -192,4 +203,64 @@ export class TodoShowComponent implements OnInit {
     this.isSortDescending = !this.isSortDescending;
     this.comments = this.sortComments(this.comments);
   }
+  getComments() {
+    this.commentsService.getComments(this.data.todo.id).subscribe(
+      {
+        next: data => {
+          this.commentsState = LoadingStateTypes.Loaded;
+          this.comments = this.SortAndMapComments(data);
+          this.comments.forEach(el => {
+            this.commentUpdatingFields.push(new UntypedFormControl(el.body, [Validators.required, Validators.minLength(10)]));
+          });
+        },
+        error: _ => {
+        },
+        complete: () => this.InitUpdatingStates()
+      }
+    )
+
+  }
+  createComment() {
+    this.commentSendingState = LoadingStateTypes.Loading;
+    this.commentsService.createComment(this.data.todo.id, this.commentInput.value).subscribe({
+      next: data => {
+        this.commentSendingState = LoadingStateTypes.Loaded;
+        this.comments = this.SortAndMapComments(data);
+        this.commentInput.setValue("");
+        this.commentInput.markAsUntouched();
+      },
+      error: _ => {
+      },
+      complete: () => this.InitUpdatingStates()
+    })
+  }
+  updateComment(id: number, body: string, index: number) {
+    this.commentsService.updateComment(id, body).subscribe({
+      next: data => {
+        this.comments = this.SortAndMapComments(data);
+        this.commentsUpdatingStates[index] = ViewStateTypes.Show;
+      },
+      error: _ => {
+      },
+      complete: () => this.InitUpdatingStates()
+    })
+  }
+  hideUpdatingField(index: number) {
+    this.commentsUpdatingStates[index] = ViewStateTypes.Show;
+  }
+  private SortAndMapComments(comments: Comment[]) {
+    return this.sortComments(comments.map(el => {
+      return new Comment(el.id, el.body, el.deskUser, new Date(el.createdAtUtc));
+    }));
+  }
+  private InitUpdatingStates() {
+    this.commentsUpdatingStates = [];
+    this.comments.forEach(() => {
+      this.commentsUpdatingStates.push(ViewStateTypes.Show);
+    })
+  }
+  showCommentUpdateForm(index: number) {
+    this.commentsUpdatingStates[index] = ViewStateTypes.Update;
+  }
+
 }

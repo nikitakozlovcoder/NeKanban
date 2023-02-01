@@ -29,6 +29,7 @@ import { RolesService } from "./services/roles.service";
 import { DeskUserService } from "./services/deskUser.service";
 import {DataGeneratorService} from "./services/dataGenerator.service";
 import {NgScrollbarModule} from "ngx-scrollbar";
+import {CommentsService} from "./services/comments.service";
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -72,7 +73,8 @@ const appRoutes: Routes =[
     TodoService,
   RolesService,
   DeskUserService,
-  DataGeneratorService],
+  DataGeneratorService,
+    CommentsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

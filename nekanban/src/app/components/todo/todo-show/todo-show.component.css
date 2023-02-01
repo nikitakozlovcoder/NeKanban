@@ -46,6 +46,9 @@
   margin-bottom: 1.34375em;
   margin-left: 10px;
 }
+.comments-card mat-spinner {
+  margin-bottom: 1.34375em;
+}
 .comment-field-group {
   margin-top: 20px;
   display: flex;
@@ -91,4 +94,18 @@
 .todo-wrap {
   max-height: 100vh;
   overflow: auto;
+}
+.comments-spinner {
+  display: flex;
+  justify-content: center;
+}
+.comment-updating-group {
+  display: flex;
+  align-items: center;
+}
+.comment-updating-field ::ng-deep .mat-form-field-wrapper{
+  margin-bottom: -1.25em;
+}
+.comment-updating-group button {
+  margin-bottom: 0;
 }

@@ -1,7 +1,7 @@
 ﻿import {User} from "./user";
 import {Desk} from "./desk";
 
-export class DeskUsers {
+export class DeskUser {
   id: number;
   user: User;
   role: number;

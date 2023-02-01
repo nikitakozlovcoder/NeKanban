@@ -2,7 +2,7 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {BaseHttpService} from "./baseHttp.service";
 import {DeskRole} from "../models/deskrole";
-import {DeskUsers} from "../models/deskusers";
+import {DeskUser} from "../models/deskUser";
 
 @Injectable()
 export class RolesService {
@@ -22,7 +22,7 @@ export class RolesService {
     })
   }
 
-  userHasPermission(deskUser : DeskUsers, permissionName: string) : boolean {
+  userHasPermission(deskUser : DeskUser, permissionName: string) : boolean {
     return !!this.rolesAndPermissions.find(el => el.role === deskUser.role && el.permissions.find(perm => perm.permissionName === permissionName) != undefined);
 
   }

@@ -18,6 +18,7 @@ public class ApplicationUser : IdentityUser<int>, IHasPk<int>, IMapFrom<UserRegi
     public static void ConfigureMap(IMappingExpression<UserRegisterModel, ApplicationUser> cfg)
     {
         cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name))
-            .ForMember(x => x.Surname, _ => _.MapFrom(x => x.Surname));
+            .ForMember(x => x.Surname, _ => _.MapFrom(x => x.Surname))
+            .ForMember(x => x.Email, _ => _.MapFrom(x => x.Email));
     }
 }

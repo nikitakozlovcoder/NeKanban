@@ -16,6 +16,7 @@ public class ApplicationUserVm : BaseIdVm, IMapFrom<ApplicationUser, Application
     {
         cfg.ForMember(x => x.Name, _ => _.MapFrom(x => x.Name ?? string.Empty))
             .ForMember(x => x.Surname, _ => _.MapFrom(x => x.Surname ?? string.Empty))
+            .ForMember(x => x.Email, _ => _.MapFrom(x => x.Email))
             .ForMember(x => x.Token, _ => _.Ignore());
     }
 

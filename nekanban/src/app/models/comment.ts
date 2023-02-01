@@ -1,17 +1,14 @@
-﻿import {Todo} from "./todo";
-import {User} from "./user";
+﻿import {DeskUser} from "./deskUser";
 
 export class Comment {
   id: number;
-  text: string;
-  user: User;
-  //todo: Todo;
-  datetime: Date;
-  constructor(id: number, text: string, user: User, datetime: Date) {
+  body: string;
+  deskUser: DeskUser;
+  createdAtUtc: Date;
+  constructor(id: number, body: string, user: DeskUser, createdAtUtc: Date) {
     this.id = id;
-    this.text = text;
-    this.user = user;
-    //this.todo = todo;
-    this.datetime = datetime;
+    this.body = body;
+    this.deskUser = user;
+    this.createdAtUtc = createdAtUtc;
   }
 }

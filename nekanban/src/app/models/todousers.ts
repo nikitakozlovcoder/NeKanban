@@ -1,11 +1,11 @@
-﻿import {DeskUsers} from "./deskusers";
+﻿import {DeskUser} from "./deskUser";
 
 export class ToDoUsers {
   id: number;
-  deskUser: DeskUsers;
+  deskUser: DeskUser;
   toDoUserType: number;
   toDoUserTypeName: string;
-  constructor(deskUser: DeskUsers, toDoUserType: number, toDoUserTypeName: string, id: number) {
+  constructor(deskUser: DeskUser, toDoUserType: number, toDoUserTypeName: string, id: number) {
     this.deskUser = deskUser;
     this.toDoUserType = toDoUserType;
     this.toDoUserTypeName = toDoUserTypeName;

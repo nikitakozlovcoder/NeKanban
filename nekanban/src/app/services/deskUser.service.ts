@@ -2,7 +2,7 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {BaseHttpService} from "./baseHttp.service";
 
-import {DeskUsers} from "../models/deskusers";
+import {DeskUser} from "../models/deskUser";
 
 @Injectable()
 export class DeskUserService {
@@ -17,6 +17,6 @@ export class DeskUserService {
       })
     }
     const body = {role: role};
-    return this.http.put<DeskUsers[]>(this.httpService.baseUrl + "DesksUsers/ChangeRole/" + deskUserId, body, httpOptions);
+    return this.http.put<DeskUser[]>(this.httpService.baseUrl + "DesksUsers/ChangeRole/" + deskUserId, body, httpOptions);
   }
 }

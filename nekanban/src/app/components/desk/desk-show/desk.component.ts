@@ -18,7 +18,7 @@ import {TodoEditingComponent} from "../../todo/todo-editing/todo-editing.compone
 import {ColumnUpdatingComponent} from "../../column/column-updating/column-updating.component";
 import {MatSelectChange} from "@angular/material/select";
 import {RolesService} from "../../../services/roles.service";
-import {DeskUsers} from "../../../models/deskusers";
+import {DeskUser} from "../../../models/deskUser";
 import {DeskRole} from "../../../models/deskrole";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
@@ -563,8 +563,8 @@ export class DeskComponent implements OnInit {
 
   changeUserRole(event: MatSelectChange, deskUserId: number) {
     this.deskUserService.changeRole(deskUserId, event.value).subscribe({
-      next: (data: DeskUsers[]) => {
-        this.desk!.deskUsers = data.sort(function (a: DeskUsers, b: DeskUsers) {
+      next: (data: DeskUser[]) => {
+        this.desk!.deskUsers = data.sort(function (a: DeskUser, b: DeskUser) {
           if (a.id > b.id) {
             return 1;
           }
@@ -578,7 +578,7 @@ export class DeskComponent implements OnInit {
       }
     });
   }
-  checkUserPermission(deskUser: DeskUsers, permissionName: string) {
+  checkUserPermission(deskUser: DeskUser, permissionName: string) {
     return this.rolesService.userHasPermission(deskUser, permissionName);
   }
   isUserAssigned(todo: Todo) {
