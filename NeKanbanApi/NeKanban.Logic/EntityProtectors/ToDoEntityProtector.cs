@@ -19,8 +19,8 @@ public class ToDoEntityProtector : BaseEntityProtector<ToDo>
 
     protected override async Task<int?> GetDeskId(int entityId, CancellationToken ct)
     {
-        var todo = await _toDoRepository.QueryableSelect().Include(x => x.Column)
-            .FirstOrDefaultAsync(x => x.Id == entityId, ct);
-        return todo?.Column?.DeskId;
+        var deskId = await _toDoRepository.FirstOrDefault(x => x.Id == entityId,
+            x => x.Column == null ? null : (int?) x.Column.DeskId, ct: ct);
+        return deskId;
     }
 }

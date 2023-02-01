@@ -6,7 +6,7 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.ViewModels;
 
-public class ColumnVm : BaseIdVm, IMapFrom<ColumnDto, ColumnVm>
+public class ColumnVm : BaseIdVm, IMapFrom<ColumnDto, ColumnVm>, IMapFrom<Column, ColumnVm>
 {
     public string? Name { get; set; }
     public ColumnType Type { get; set; }

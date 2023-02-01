@@ -30,8 +30,12 @@ public abstract class BaseEntityProtector<TEntity> : IEntityProtector<TEntity> w
     
     private async Task<bool> CheckRoleByDeskId(int deskId, int currentUserId, PermissionType type, CancellationToken ct)
     {
-        var deskUser = await _deskUserRepository.QueryableSelect()
-            .FirstOrDefaultAsync(x => x.DeskId == deskId && x.UserId == currentUserId, ct);
+        var deskUser = await _deskUserRepository.FirstOrDefault(x => x.DeskId == deskId && x.UserId == currentUserId,
+            x => new
+            {
+                x.Role
+            }, ct: ct);
+        
         return deskUser != null && PermissionChecker.CheckPermission(deskUser.Role, type);
     }
 }

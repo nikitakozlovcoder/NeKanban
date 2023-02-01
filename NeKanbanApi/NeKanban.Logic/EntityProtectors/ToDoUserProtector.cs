@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
@@ -18,8 +17,7 @@ public class ToDoUserProtector : BaseEntityProtector<ToDoUser>
 
     protected override async Task<int?> GetDeskId(int entityId, CancellationToken ct)
     {
-        var todoUser = await _toDoUserRepository.QueryableSelect().Include(x => x.DeskUser)
-            .FirstOrDefaultAsync(x => x.Id == entityId, ct);
-        return todoUser?.DeskUser?.DeskId;
+        var deskId = await _toDoUserRepository.FirstOrDefault(x => x.Id == entityId, x => x.DeskUser == null ? null : (int?)x.DeskUser.DeskId, ct: ct);
+        return deskId;
     }
 }

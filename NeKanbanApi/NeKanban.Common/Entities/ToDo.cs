@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using AutoMapper;
+using NeKanban.Common.Extensions;
 using NeKanban.Common.Interfaces;
 using NeKanban.Common.Models.ToDoModels;
 
@@ -18,9 +19,13 @@ public class ToDo: IHasPk<int>, IMapFrom<ToDoCreateModel, ToDo>, IMapFrom<ToDoUp
     public virtual ICollection<ToDoUser> ToDoUsers { get; set; } = new List<ToDoUser>();
     public static void ConfigureMap(IMappingExpression<ToDoCreateModel, ToDo> cfg)
     {
+        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name))
+            .ForMember(x => x.Body, _ => _.MapFrom(x => x.Body));
     }
 
     public static void ConfigureMap(IMappingExpression<ToDoUpdateModel, ToDo> cfg)
     {
+        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name))
+            .ForMember(x => x.Body, _ => _.MapFrom(x => x.Body));
     }
 }

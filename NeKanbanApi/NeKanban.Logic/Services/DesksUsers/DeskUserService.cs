@@ -42,6 +42,7 @@ public class DeskUserService : BaseService, IDeskUserService
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.UserAlreadyAddedToDesk);
         }
+        
         await _deskUserRepository.Create(new DeskUser
         {
             DeskId = deskId,
