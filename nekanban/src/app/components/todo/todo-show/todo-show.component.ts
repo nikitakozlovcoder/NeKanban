@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
 import {UntypedFormControl, Validators} from "@angular/forms";
 import {Desk} from "../../../models/desk";
@@ -13,6 +13,8 @@ import {DataGeneratorService} from "../../../services/dataGenerator.service";
 import {CommentsService} from "../../../services/comments.service";
 import LoadingStateTypes from "../../../constants/LoadingStateTypes";
 import {ViewStateTypes} from "../../../constants/ViewStateTypes";
+import {TodoDeletionDialogComponent} from "../todo-deletion-dialog/todo-deletion-dialog.component";
+import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 
 @Component({
   selector: 'app-task-creation',
@@ -22,7 +24,7 @@ import {ViewStateTypes} from "../../../constants/ViewStateTypes";
 export class TodoShowComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUser}, private toDoService: TodoService, public rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService,
-              private commentsService: CommentsService) {
+              private commentsService: CommentsService, public dialog: MatDialog) {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
 
@@ -253,6 +255,17 @@ export class TodoShowComponent implements OnInit {
     }
   }
   deleteComment(id: number) {
+    const dialogRef = this.dialog.open(TodoDeletionDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == DialogActionTypes.Reject) {
+        return;
+      }
+      this.makeDeletion(id);
+    });
+
+  }
+  private makeDeletion(id: number) {
     if (id == this.data.deskUser.user.id) {
       this.commentsService.deleteOwnComment(id).subscribe({
         next: data => {

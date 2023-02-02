@@ -30,6 +30,7 @@ import { DeskUserService } from "./services/deskUser.service";
 import {DataGeneratorService} from "./services/dataGenerator.service";
 import {NgScrollbarModule} from "ngx-scrollbar";
 import {CommentsService} from "./services/comments.service";
+import { TodoDeletionDialogComponent } from './components/todo/todo-deletion-dialog/todo-deletion-dialog.component';
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -52,6 +53,7 @@ const appRoutes: Routes =[
     TodoCreationComponent,
     TodoEditingComponent,
     ColumnUpdatingComponent,
+    TodoDeletionDialogComponent,
   ],
     imports: [
         BrowserAnimationsModule,
