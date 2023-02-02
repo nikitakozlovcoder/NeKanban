@@ -103,11 +103,11 @@ mat-form-field
   float: left;
   margin-right: 15px;
   margin-bottom: 10px;
+  margin-left: 1px;
 }
 
 .example-list {
   margin-top: 10px;
-  border: solid 1px #ccc;
   min-height: 60px;
   background: white;
   border-radius: 4px;
@@ -306,4 +306,20 @@ mat-toolbar ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
 mat-card-title mat-spinner {
   margin-top: 7px;
   padding-right: 5px;
+}
+.todos-list {
+  margin-top: 10px;
+  border: solid 1px #ccc;
+  min-height: 60px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+}
+.invite-link-title {
+  display: flex;
+  align-items: center;
+}
+.invite-link-title mat-icon {
+  margin-bottom: 9px;
 }

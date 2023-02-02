@@ -42,14 +42,16 @@
   width: 100%;
 }
 .comments-card button {
-  height: 40px;
   margin-bottom: 1.34375em;
   margin-left: 10px;
+  border-radius: 50%;
+  min-width: 48px;
+  height: 48px;
 }
 .comment-field-group {
   margin-top: 20px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 }
 .comment-properties-group {
   display: flex;
@@ -69,7 +71,7 @@
   max-height: 200px;
 }
 .single-comment-card {
-  margin: 10px;
+  margin: 10px 10px 10px 1px;
 }
 .user-select {
   margin-top: 10px;
@@ -82,7 +84,7 @@
   display: flex;
 }
 .comments-card-title mat-icon {
-  margin-left: 30px;
+  margin-left: 15px;
   cursor: pointer;
 }
 .comment-text {
@@ -91,4 +93,22 @@
 .todo-wrap {
   max-height: 100vh;
   overflow: auto;
+  padding: 24px;
+  position: relative;
 }
+::ng-deep.mat-dialog-container {
+  padding: 0;
+}
+.todo-close-icon {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  cursor: pointer;
+}
+.todo-creator-subtitle, .todo-creator-subtitle p {
+  margin: 0;
+}
+.assignees-title {
+  margin: 0;
+}
+

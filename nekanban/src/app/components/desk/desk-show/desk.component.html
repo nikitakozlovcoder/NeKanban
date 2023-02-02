@@ -125,7 +125,7 @@
                       <div
                         cdkDropList
                         [cdkDropListData]="column.todos"
-                        class="example-list"
+                        class="todos-list"
                         (cdkDropListDropped)="drop($event, column.id)">
                         <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? false : true" >
                           <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
@@ -137,7 +137,7 @@
                     <!--<mat-expansion-panel (opened)="panelOpenState = true"
                                          (closed)="panelOpenState = false">
                       <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-TITLE>
                           Пользователи
                         </mat-panel-title>
                         <mat-panel-description>
@@ -180,7 +180,7 @@
 
             </mat-card-content>
             <mat-card-subtitle *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ViewInviteLink')" class="invite-link">
-              <p><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
+              <p class="invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
               <p *ngIf="hasInviteLink()" class="p-link">{{ getInviteLink() }}</p>
               <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageInviteLink') && !hasInviteLink() && isLinkLoaded" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
               <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLinkLoaded"></mat-spinner>
