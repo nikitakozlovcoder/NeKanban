@@ -7,9 +7,9 @@ namespace NeKanban.Common.ViewModels;
 
 public class ToDoUserVm : IMapFrom<ToDoUser,ToDoUserVm>
 {
-    public int Id { get; set; }
-    public DeskUserLiteVm? DeskUser { get; set; }
-    public ToDoUserType ToDoUserType { get; set; }
+    public required int Id { get; set; }
+    public required DeskUserLiteVm? DeskUser { get; set; }
+    public required ToDoUserType ToDoUserType { get; set; }
     public string ToDoUserTypeName => ToDoUserType.ToString();
     public static void ConfigureMap(IMappingExpression<ToDoUser, ToDoUserVm> cfg)
     {

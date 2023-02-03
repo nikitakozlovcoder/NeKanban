@@ -5,5 +5,5 @@ namespace NeKanban.Common.Models.ToDoModels;
 public class AssignUserModel
 {
     [Required]
-    public int DescUserId { get; set; }
+    public required int DescUserId { get; set; }
 }

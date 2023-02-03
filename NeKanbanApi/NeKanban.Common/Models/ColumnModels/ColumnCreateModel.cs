@@ -5,5 +5,5 @@ namespace NeKanban.Common.Models.ColumnModels;
 public class ColumnCreateModel
 {
     [MinLength(3)] 
-    public string Name { get; set; } = "";
+    public required string Name { get; set; }
 }

@@ -8,8 +8,8 @@ namespace NeKanban.Common.ViewModels;
 
 public class DeskUserLiteVm: BaseIdVm, IMapFrom<DeskUser, DeskUserLiteVm>, IMapFrom<DeskUserLiteDto, DeskUserLiteVm>
 {
-    public ApplicationUserVm? User { get; set; }
-    public RoleType Role { get; set; }
+    public required ApplicationUserVm? User { get; set; }
+    public required RoleType Role { get; set; }
     public string RoleName => Role.ToString();
     public static void ConfigureMap(IMappingExpression<DeskUser, DeskUserLiteVm> cfg)
     {

@@ -2,5 +2,5 @@
 
 public class BaseEntityDto<T>
 {
-    public T Id { get; set; } = default!;
+    public required T Id { get; set; }
 }

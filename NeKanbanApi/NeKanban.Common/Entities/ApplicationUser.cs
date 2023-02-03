@@ -8,8 +8,8 @@ namespace NeKanban.Common.Entities;
 
 public class ApplicationUser : IdentityUser<int>, IHasPk<int>, IMapFrom<UserRegisterModel, ApplicationUser>
 {
-    public string? Name { get; set; }
-    public string? Surname { get; set; }
+    public required string? Name { get; set; }
+    public required string? Surname { get; set; }
     public ApplicationUser()
     {
         base.UserName = Guid.NewGuid().ToString();
