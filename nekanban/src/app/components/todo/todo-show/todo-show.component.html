@@ -1,4 +1,5 @@
 <div class="todo-wrap">
+  <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
   <mat-card class = "column-card">
     <div>
       <mat-card-title>
@@ -19,8 +20,8 @@
       </mat-card-title>
 
       <mat-card-content>
-        <mat-card-subtitle>
-          <p>Создано:</p>
+        <mat-card-subtitle class="todo-creator-subtitle">
+          <p>Создатель:</p>
         </mat-card-subtitle>
         <ng-container *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</ng-container>
         <ng-container *ngIf="getToDoCreator() === undefined">---</ng-container>
@@ -56,6 +57,7 @@
             </button>-->
           </div>
           <mat-spinner class="spinner-centered" *ngIf="!isLoaded" diameter="30"></mat-spinner>
+          <h3 class="assignees-title">Назначенные исполнители:</h3>
           <mat-nav-list class ="employees-list">
             <mat-list-item *ngFor="let user of getToDoUsers()">
               <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
@@ -84,7 +86,7 @@
         <mat-error *ngIf="commentInput.errors?.['required']">Поле не должно быть пустым!</mat-error>
         <mat-error *ngIf="commentInput.errors?.['minlength']">Длина комментария должна быть не менее 5 символов!</mat-error>
       </mat-form-field>
-      <button mat-raised-button color="primary"><mat-icon>send</mat-icon></button>
+      <button class="comment-send-button" mat-raised-button color="primary"><mat-icon>send</mat-icon></button>
     </div>
 
     <ng-scrollbar [autoHeightDisabled]="false" class="comments-section">
