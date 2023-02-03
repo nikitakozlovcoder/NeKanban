@@ -9,10 +9,10 @@ namespace NeKanban.Common.Entities;
 public class ToDo: IHasPk<int>, IMapFrom<ToDoCreateModel, ToDo>, IMapFrom<ToDoUpdateModel, ToDo>
 {
     public int Id { get; set; }
-    public int Order { get; set; }
-    public string Name { get; set; } = "";
-    public string? Body { get; set; }
-    public int ColumnId { get; set; }
+    public required int Order { get; set; }
+    public required string Name { get; set; }
+    public required string? Body { get; set; }
+    public required int ColumnId { get; set; }
     public virtual Column? Column { get; set; }
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     
