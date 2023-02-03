@@ -104,6 +104,7 @@ mat-form-field
   margin-right: 15px;
   margin-bottom: 10px;
   margin-left: 1px;
+  margin-top: 1px;
 }
 
 .example-list {
@@ -159,9 +160,7 @@ mat-form-field
 }
 
 .column-cards {
-  flex: 1;
   display: flex;
-  overflow: auto
 }
 
 .box-column-cards {
@@ -222,11 +221,11 @@ mat-form-field
 }
 
 .single-user div {
-  height: 70px !important;
 }
 
 .desk-cards-inside {
   display: flex;
+  align-items: flex-start;
 }
 .desk-cards-inside-margin {
   margin-top: 40px;
@@ -242,7 +241,6 @@ mat-form-field
 }
 
 .role-name {
-  padding-top: 35px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -322,4 +320,80 @@ mat-card-title mat-spinner {
 }
 .invite-link-title mat-icon {
   margin-bottom: 9px;
+}
+.cards-list {
+  margin-top: 10px;
+  min-height: 60px;
+  background: white;
+  border-radius: 4px;
+  overflow: auto;
+  display: flex;
+}
+.desk-user-name {
+  width: 150px;
+  margin: 0;
+}
+.single-user ::ng-deep.mat-list-item-content {
+  justify-content: space-between;
+}
+
+
+
+
+
+
+/* SELECT */
+.select {
+  position: relative;
+  min-width: 120px;
+}
+.select svg {
+  position: absolute;
+  right: 12px;
+  top: calc(50% - 3px);
+  width: 10px;
+  height: 6px;
+  stroke-width: 2px;
+  stroke: #9098a9;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.select select {
+  -webkit-appearance: none;
+  padding: 7px 40px 7px 12px;
+  width: 100%;
+  border: 1px solid #e8eaed;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 1px 3px -2px #9098a9;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  transition: all 150ms ease;
+}
+.select select:required:invalid {
+  color: #5a667f;
+}
+.select select option {
+  color: #223254;
+}
+.select select option[value=""][disabled] {
+  display: none;
+}
+.select select:focus {
+  outline: none;
+  border-color: #07f;
+  box-shadow: 0 0 0 2px rgba(0,119,255,0.2);
+}
+.select select:hover + svg {
+  stroke: #07f;
+}
+.sprites {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  user-select: none;
 }

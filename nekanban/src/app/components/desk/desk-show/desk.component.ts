@@ -561,8 +561,8 @@ export class DeskComponent implements OnInit {
     })
   }
 
-  changeUserRole(event: MatSelectChange, deskUserId: number) {
-    this.deskUserService.changeRole(deskUserId, event.value).subscribe({
+  changeUserRole(event: Event, deskUserId: number) {
+    this.deskUserService.changeRole(deskUserId, parseInt((event.target as HTMLInputElement).value)).subscribe({
       next: (data: DeskUsers[]) => {
         this.desk!.deskUsers = data.sort(function (a: DeskUsers, b: DeskUsers) {
           if (a.id > b.id) {
