@@ -4,7 +4,7 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Data.Infrastructure;
 
-public interface IRepository<TEntity> where TEntity: class, IHasPk<int>, new()
+public interface IRepository<TEntity> where TEntity: class, IHasPk<int>
 {
     Task Create(TEntity item, CancellationToken ct);
     Task Remove(TEntity item, CancellationToken ct);
@@ -22,26 +22,26 @@ public interface IRepository<TEntity> where TEntity: class, IHasPk<int>, new()
     Task<T> Single<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct);
     Task<T?> SingleOrDefault<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct);
     
-    Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : IMapFrom<TEntity, T>, new();
+    Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IMapFrom<TEntity, T>;
     Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate,
         IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct)
-        where T : IMapFrom<TEntity, T>, new();
+        where T : class, IMapFrom<TEntity, T>;
     
     Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
-        where T : IMapFrom<TEntity, T>, new();
+        where T : class, IMapFrom<TEntity, T>;
     Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate,
         IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct)
-        where T : IMapFrom<TEntity, T>, new();
+        where T : class, IMapFrom<TEntity, T>;
     Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
-        where T : IMapFrom<TEntity, T>, new();
+        where T : class, IMapFrom<TEntity, T>;
     Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate,
         IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct)
-        where T : IMapFrom<TEntity, T>, new();
+        where T : class, IMapFrom<TEntity, T>;
     Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
-        where T : IMapFrom<TEntity, T>, new();
+        where T : class, IMapFrom<TEntity, T>;
     Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate,
         IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct)
-        where T : IMapFrom<TEntity, T>, new();
+        where T : class, IMapFrom<TEntity, T>;
     
     Task AnyOrThrow(Expression<Func<TEntity, bool>> predicate, CancellationToken ct);
     

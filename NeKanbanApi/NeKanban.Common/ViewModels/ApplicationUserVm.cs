@@ -7,10 +7,10 @@ namespace NeKanban.Common.ViewModels;
 
 public class ApplicationUserVm : BaseIdVm, IMapFrom<ApplicationUser, ApplicationUserVm>, IMapFrom<ApplicationUserDto, ApplicationUserVm>
 {
-    public string Name { get; set; } = "";
-    public string Surname { get; set; } = "";
-    public Token? Token { get; set; }
-    public string Email { get; set; } = "";
+    public required string Name { get; set; }
+    public required string Surname { get; set; }
+    public required Token? Token { get; set; }
+    public required string Email { get; set; }
     
     public static void ConfigureMap(IMappingExpression<ApplicationUser, ApplicationUserVm> cfg)
     {

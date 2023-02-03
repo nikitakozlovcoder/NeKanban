@@ -22,6 +22,7 @@ import {DeskUser} from "../../../models/deskUser";
 import {DeskRole} from "../../../models/deskrole";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-desk',
@@ -128,7 +129,7 @@ export class DeskComponent implements OnInit {
   }
 
   constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService,
-              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService) {
+              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService, public snackBar: MatSnackBar) {
     this.opened = false;
   }
 
@@ -561,8 +562,8 @@ export class DeskComponent implements OnInit {
     })
   }
 
-  changeUserRole(event: MatSelectChange, deskUserId: number) {
-    this.deskUserService.changeRole(deskUserId, event.value).subscribe({
+  changeUserRole(event: Event, deskUserId: number) {
+    this.deskUserService.changeRole(deskUserId, parseInt((event.target as HTMLInputElement).value)).subscribe({
       next: (data: DeskUser[]) => {
         this.desk!.deskUsers = data.sort(function (a: DeskUser, b: DeskUser) {
           if (a.id > b.id) {

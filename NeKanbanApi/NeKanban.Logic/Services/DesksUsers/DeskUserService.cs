@@ -46,7 +46,7 @@ public class DeskUserService : BaseService, IDeskUserService
         {
             DeskId = deskId,
             UserId = userId,
-            Role = role
+            Role = role,
         }, ct);
     }
 

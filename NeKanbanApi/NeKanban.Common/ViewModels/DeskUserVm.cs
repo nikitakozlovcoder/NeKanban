@@ -8,9 +8,9 @@ namespace NeKanban.Common.ViewModels;
 
 public class DeskUserVm : BaseIdVm, IMapFrom<DeskUser, DeskUserVm>
 {
-    public ApplicationUserVm? User { get; set; }
-    public RoleType Role { get; set; }
-    public PreferenceType Preference { get; set; }
+    public required ApplicationUserVm? User { get; set; }
+    public required RoleType Role { get; set; }
+    public required PreferenceType Preference { get; set; }
     public string RoleName => Role.ToString();
     public string PreferenceName => Preference.ToString();
     public static void ConfigureMap(IMappingExpression<DeskUser, DeskUserVm> cfg)

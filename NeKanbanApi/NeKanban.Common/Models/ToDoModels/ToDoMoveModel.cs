@@ -2,6 +2,6 @@
 
 public class ToDoMoveModel
 {
-    public int ColumnId { get; set; }
-    public int Order { get; set; }
+    public required int ColumnId { get; set; }
+    public required int Order { get; set; }
 }

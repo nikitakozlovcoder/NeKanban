@@ -3,7 +3,7 @@
 ### Стeк проекта
 
 - Angular v14
-- .Net6 + preview features
+- .Net7
 - PostgreSql
 - EF Core
   
@@ -25,6 +25,7 @@
 
 [Проект в github](https://github.com/nikitakozlovcoder/NeKanban)
 - После начала работы над задачей создается feature ветка из dev ветки, пример наименования ```NK-5```;
+- Пример именования коммита ```NK-5 add task modal window```
 - Пример именования коммита ```NK-5 add task modal window```
 - Задача переносится в колонку ```Разработка```
 - После заверешения работы над задачей dev ветка вливается в feature ветку и открывается merge request в dev ветку

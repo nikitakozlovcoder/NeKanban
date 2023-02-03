@@ -4,5 +4,5 @@ namespace NeKanban.Common.Models.DeskModels;
 
 public class DeskUserUpdatePreferenceType
 {
-    public PreferenceType Preference { get; set; }
+    public required PreferenceType Preference { get; set; }
 }

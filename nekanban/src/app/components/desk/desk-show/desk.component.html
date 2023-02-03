@@ -87,79 +87,51 @@
 
         <!--<div cdkDropListGroup>-->
         <div class="desk-cards-inside" [ngClass]="{'desk-cards-inside-margin' : checkUserPermission(getCurrentDesk()!.deskUser, 'CreateColumns')}">
-          <div cdkDropList
-               [cdkDropListData]="columns"
-               class="example-list"
-               (cdkDropListDropped)="drop_column($event)"
-               cdkDropListOrientation="horizontal"
-          >
-            <!--<div *ngFor="let column of columns">
-              <div cdkDrag>
-                {{column.name}}
-              </div>
-            </div>--
-            class="column-cards"-->
-            <div cdkDropListGroup class="column-cards">
+          <ng-scrollbar class="my-scrollbar" track="horizontal" [autoWidthDisabled]="false" [autoHeightDisabled]="false">
+            <div cdkDropList
+                 [cdkDropListData]="columns"
+                 class="cards-list"
+                 (cdkDropListDropped)="drop_column($event)"
+                 cdkDropListOrientation="horizontal"
+                 cdkDropListGroup
+            >
+              <div *ngFor="let column of columns; index as i">
+                <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(column.type === 0 && checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')) ? false : true">
+                  <mat-card-title class="column-card-title">
+                    <mat-spinner *ngIf="!isColumnDeleteLoaded[i]" diameter="20"></mat-spinner>
+                    <p #columnName [matTooltip]="column.name" [matTooltipDisabled]="!(columnName.offsetWidth < columnName.scrollWidth)">{{column.name}}</p>
+                    <button mat-button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')" [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="openColumnUpdatingDialog(column)"><mat-icon>edit</mat-icon>Редактировать</button>
+                      <button mat-menu-item *ngIf="getToDosForColumn(column.id).length === 0 && column.type === 0" (click)="removeColumn(column.id)"><mat-icon>delete</mat-icon>Удалить</button>
+                    </mat-menu>
 
-              <div class="box-column-cards">
-                <div *ngFor="let column of columns; index as i">
-                  <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(column.type === 0 && checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')) ? false : true">
-                    <mat-card-title class="column-card-title">
-                      <mat-spinner *ngIf="!isColumnDeleteLoaded[i]" diameter="20"></mat-spinner>
-                      <p #columnName [matTooltip]="column.name" [matTooltipDisabled]="!(columnName.offsetWidth < columnName.scrollWidth)">{{column.name}}</p>
-                        <button mat-button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')" [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
-                        <mat-menu #menu="matMenu">
-                          <button mat-menu-item (click)="openColumnUpdatingDialog(column)"><mat-icon>edit</mat-icon>Редактировать</button>
-                          <button mat-menu-item *ngIf="getToDosForColumn(column.id).length === 0 && column.type === 0" (click)="removeColumn(column.id)"><mat-icon>delete</mat-icon>Удалить</button>
-                        </mat-menu>
+                  </mat-card-title>
 
-                    </mat-card-title>
-
-                    <mat-card-content>
-                      <mat-card-subtitle>
-                        <p>Задачи:</p>
-                        <button *ngIf="column.order == -1 && checkUserPermission(getCurrentDesk()!.deskUser, 'CreateTasks')" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" (click)="openToDoCreationDialog()" >
-                          <mat-icon>add</mat-icon>
-                        </button>
-                      </mat-card-subtitle>
-                      <div
-                        cdkDropList
-                        [cdkDropListData]="column.todos"
-                        class="example-list"
-                        (cdkDropListDropped)="drop($event, column.id)">
-                        <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? false : true" >
-                          <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
-                          <p (click)="openTaskCreationDialog(toDo)" class="todo-name">{{toDo.name}}</p>
-                          <mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon>
-                        </div>
+                  <mat-card-content>
+                    <mat-card-subtitle>
+                      <p>Задачи:</p>
+                      <button *ngIf="column.order == -1 && checkUserPermission(getCurrentDesk()!.deskUser, 'CreateTasks')" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" (click)="openToDoCreationDialog()" >
+                        <mat-icon>add</mat-icon>
+                      </button>
+                    </mat-card-subtitle>
+                    <div
+                      cdkDropList
+                      [cdkDropListData]="column.todos"
+                      class="todos-list"
+                      (cdkDropListDropped)="drop($event, column.id)">
+                      <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? false : true" >
+                        <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
+                        <p (click)="openTaskCreationDialog(toDo)" class="todo-name">{{toDo.name}}</p>
+                        <mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon>
                       </div>
-                    </mat-card-content>
-                    <!--<mat-expansion-panel (opened)="panelOpenState = true"
-                                         (closed)="panelOpenState = false">
-                      <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          Пользователи
-                        </mat-panel-title>
-                        <mat-panel-description>
-
-                        </mat-panel-description>
-                      </mat-expansion-panel-header>
-                      <mat-nav-list class ="users-list">
-                        <mat-list-item *ngFor="let user of desk!.deskUsers; index as i">
-                          <a matLine>{{user.user.name}} </a><mat-divider></mat-divider>
-                        </mat-list-item>
-
-                        <a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>
-
-                      </mat-nav-list>
-                    </mat-expansion-panel>-->
-
-                  </mat-card>
-                </div>
-
+                    </div>
+                  </mat-card-content>
+                </mat-card>
               </div>
             </div>
-          </div>
+          </ng-scrollbar>
+
 
 
 
@@ -180,8 +152,8 @@
 
             </mat-card-content>
             <mat-card-subtitle *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ViewInviteLink')" class="invite-link">
-              <p><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
-              <p *ngIf="hasInviteLink()" class="p-link">{{ getInviteLink() }}</p>
+              <p class="invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
+              <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, {duration: 2000, panelClass: ['snackbar']})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>
               <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageInviteLink') && !hasInviteLink() && isLinkLoaded" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
               <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLinkLoaded"></mat-spinner>
             </mat-card-subtitle>
@@ -195,35 +167,52 @@
 
                 </mat-panel-description>
               </mat-expansion-panel-header>
-              <mat-nav-list class ="users-list">
-                <mat-spinner class="spinner-centered" *ngIf="!isUserRemoveLoaded" diameter="20"></mat-spinner>
-                <mat-list-item class="single-user" *ngFor="let user of desk!.deskUsers; index as i">
-                  <p>{{user.user.name}} {{user.user.surname}}</p>
-                    <mat-form-field *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2" class = "role-selector" appearance="fill">
+              <mat-nav-list>
+                <ng-scrollbar class ="users-list" [autoHeightDisabled]="false">
+                  <mat-spinner class="spinner-centered" *ngIf="!isUserRemoveLoaded" diameter="20"></mat-spinner>
+                  <mat-list-item class="single-user" *ngFor="let user of desk!.deskUsers; index as i">
+                    <p class="desk-user-name">{{user.user.name}} {{user.user.surname}}</p>
+                    <!--<mat-form-field *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2" class = "role-selector" appearance="fill">
                       <mat-label>Роль</mat-label>
                       <mat-select (selectionChange)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role">
                         <mat-option *ngFor="let role of roles" [value]="role.role">
                           {{role.roleName}}
                         </mat-option>
-                        <!--<mat-option [selected] = "desk!.deskUsers[i].role === 0 ? '' : null">Участник</mat-option>
-                        <mat-option [selected] = "desk!.deskUsers[i].role === 1 ? '' : null">Менеджер</mat-option>-->
-                        <!--<mat-option [value]="zero">Участник</mat-option>
-                        <mat-option [value]="one">Менеджер</mat-option>
-                        <mat-option [value]="two">Создатель</mat-option>-->
                       </mat-select>
 
-                    </mat-form-field>
+                    </mat-form-field>-->
+                    <div class="select" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2">
+                      <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role">
+                        <option *ngFor="let role of roles" [value]="role.role">
+                          {{role.roleName}}
+                        </option>
+                      </select>
+                      <svg *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2">
+                        <use xlink:href="#select-arrow-down"></use>
+                      </svg>
+                    </div>
+                    <svg class="sprites">
+                      <symbol id="select-arrow-down" viewbox="0 0 10 6">
+                        <polyline points="1 1 5 5 9 1"></polyline>
+                      </symbol>
+                    </svg>
+
                     <div class="role-name" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role === 2">
                       {{roleNames[desk!.deskUsers[i].role]}}
                     </div>
                     <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole')">
                       {{roleNames[desk!.deskUsers[i].role]}}
                     </div>
-                    <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && desk!.deskUsers[i].role !== 2" (click)="removeUser([user.user.id])">cancel</mat-icon>
+                    <div>
+                      <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && desk!.deskUsers[i].role !== 2" (click)="removeUser([user.user.id])">cancel</mat-icon>
+                    </div>
 
 
-                  <mat-divider></mat-divider>
-                </mat-list-item>
+
+                    <mat-divider></mat-divider>
+                  </mat-list-item>
+                </ng-scrollbar>
+
 
                 <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
 

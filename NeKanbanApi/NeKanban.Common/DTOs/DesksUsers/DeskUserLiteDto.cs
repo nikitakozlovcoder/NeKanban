@@ -8,9 +8,9 @@ namespace NeKanban.Common.DTOs.DesksUsers;
 
 public class DeskUserLiteDto : BaseEntityDto<int>, IMapFrom<DeskUser, DeskUserLiteDto>
 {
-    public int UserId { get; set; }
-    public ApplicationUserDto User { get; set; } = null!;
-    public RoleType Role { get; set; }
+    public required int UserId { get; set; }
+    public required ApplicationUserDto User { get; set; }
+    public required RoleType Role { get; set; }
     public static void ConfigureMap(IMappingExpression<DeskUser, DeskUserLiteDto> cfg)
     {
     }
