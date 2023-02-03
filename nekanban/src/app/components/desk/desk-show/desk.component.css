@@ -72,8 +72,7 @@ mat-form-field
 }
 
 .users-list {
-  max-height: 400px;
-  overflow: auto;
+  max-height: 210px;
 }
 
 .mat-button {
@@ -336,9 +335,10 @@ mat-card-title mat-spinner {
 .single-user ::ng-deep.mat-list-item-content {
   justify-content: space-between;
 }
-
-
-
+.my-scrollbar {
+  --scrollbar-padding: -6px;
+  --scrollbar-size: 8px;
+}
 
 
 
