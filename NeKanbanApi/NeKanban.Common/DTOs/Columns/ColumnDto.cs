@@ -7,9 +7,9 @@ namespace NeKanban.Common.DTOs.Columns;
 
 public class ColumnDto : BaseEntityDto<int>, IMapFrom<Column, ColumnDto>
 {
-    public string? Name { get; set; }
-    public ColumnType Type { get; set; }
-    public int Order { get; set; }
+    public required string? Name { get; set; }
+    public required ColumnType Type { get; set; }
+    public required int Order { get; set; }
     public static void ConfigureMap(IMappingExpression<Column, ColumnDto> cfg)
     {
     }

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {Desk} from "../../../models/desk";
 import {DeskService} from "../../../services/desk.service";
 import {UserService} from "../../../services/user.service";
@@ -22,11 +22,13 @@ import {DeskUsers} from "../../../models/deskusers";
 import {DeskRole} from "../../../models/deskrole";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-desk',
   templateUrl: './desk.component.html',
-  styleUrls: ['./desk.component.css']
+  styleUrls: ['./desk.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DeskComponent implements OnInit {
   events: string[] = [];
@@ -128,7 +130,7 @@ export class DeskComponent implements OnInit {
   }
 
   constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService,
-              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService) {
+              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService, public snackBar: MatSnackBar) {
     this.opened = false;
   }
 

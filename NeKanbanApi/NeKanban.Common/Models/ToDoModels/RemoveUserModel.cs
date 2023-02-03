@@ -5,5 +5,5 @@ namespace NeKanban.Common.Models.ToDoModels;
 public class RemoveUserModel
 {
     [Required]
-    public int ToDoUserId { get; set; }
+    public required int ToDoUserId { get; set; }
 }

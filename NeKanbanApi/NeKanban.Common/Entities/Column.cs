@@ -9,10 +9,10 @@ namespace NeKanban.Common.Entities;
 public class Column : IHasPk<int>, IMapFrom<ColumnCreateModel, Column>,  IMapFrom<ColumnUpdateModel, Column>
 {
     public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public ColumnType Type { get; set; }
-    public int Order { get; set; }
-    public int DeskId { get; set; }
+    public required string Name { get; set; } = "";
+    public required ColumnType Type { get; set; }
+    public required int Order { get; set; }
+    public required int DeskId { get; set; }
     public virtual Desk? Desk { get; set; }
     public virtual ICollection<ToDo> ToDos { get; set; } = new List<ToDo>();
     public static void ConfigureMap(IMappingExpression<ColumnCreateModel, Column> cfg)

@@ -2,8 +2,8 @@
 
 ### Стeк проекта
 
-- Angular v13
-- .Net6 + preview features
+- Angular v14
+- .Net7
 - PostgreSql
 - EF Core
   

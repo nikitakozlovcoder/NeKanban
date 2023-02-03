@@ -7,9 +7,9 @@ namespace NeKanban.Common.DTOs.Comments;
 
 public class CommentDto : BaseEntityDto<int>, IMapFrom<Comment, CommentDto>
 {
-    public string Body { get; set; } = null!;
-    public DateTime CreatedAtUtc { get; set; }
-    public virtual DeskUserLiteDto? DeskUser { get; set; }
+    public required string Body { get; set; } = null!;
+    public required DateTime CreatedAtUtc { get; set; }
+    public required DeskUserLiteDto? DeskUser { get; set; }
     public static void ConfigureMap(IMappingExpression<Comment, CommentDto> cfg)
     {
     }

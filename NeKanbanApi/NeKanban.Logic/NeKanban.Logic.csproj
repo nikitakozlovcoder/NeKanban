@@ -2,11 +2,11 @@
 
     <PropertyGroup>
         <EnablePreviewFeatures>true</EnablePreviewFeatures>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>NeKanban.Logic</RootNamespace>
-        <LangVersion>preview</LangVersion>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,6 +21,6 @@
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
       <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
       <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.26.0" />
     </ItemGroup>
 </Project>

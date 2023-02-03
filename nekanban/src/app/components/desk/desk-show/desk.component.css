@@ -397,3 +397,10 @@ mat-card-title mat-spinner {
   pointer-events: none;
   user-select: none;
 }
+.p-link {
+ cursor: pointer;
+}
+.snackbar {
+  width: 180px !important;
+  min-width: 50px !important;
+}
