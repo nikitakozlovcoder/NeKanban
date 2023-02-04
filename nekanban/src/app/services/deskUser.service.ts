@@ -1,22 +1,15 @@
 ﻿import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {BaseHttpService} from "./baseHttp.service";
+import {AppHttpService} from "./app-http.service";
 
-import {DeskUsers} from "../models/deskusers";
+import {DeskUser} from "../models/deskUser";
 
 @Injectable()
 export class DeskUserService {
 
-  constructor(private http: HttpClient, private httpService: BaseHttpService) {
+  constructor(private httpService: AppHttpService) {
   }
   changeRole(deskUserId: number, role: number) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    const body = {role: role};
-    return this.http.put<DeskUsers[]>(this.httpService.baseUrl + "DesksUsers/ChangeRole/" + deskUserId, body, httpOptions);
+    return this.httpService.put<DeskUser[]>("DesksUsers/ChangeRole/" + deskUserId, {role});
   }
 }

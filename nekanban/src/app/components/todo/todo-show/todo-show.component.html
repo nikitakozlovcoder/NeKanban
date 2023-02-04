@@ -77,36 +77,62 @@
       <mat-icon (click)="toggleCommentsOrder()" *ngIf="!isSortDescending" matTooltip="От старых к новым">arrow_upward</mat-icon>
     </mat-card-title>
 
-    <div class="comment-field-group">
+    <div class="comment-field-group" *ngIf="rolesService.userHasPermission(data.deskUser, 'AddComments')">
       <mat-form-field appearance="fill">
         <mat-label>Оставьте свой комментарий!</mat-label>
         <textarea cdkTextareaAutosize
                   cdkAutosizeMinRows="1"
                   cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentInput" matInput placeholder="Текст комментария" required></textarea>
         <mat-error *ngIf="commentInput.errors?.['required']">Поле не должно быть пустым!</mat-error>
-        <mat-error *ngIf="commentInput.errors?.['minlength']">Длина комментария должна быть не менее 5 символов!</mat-error>
+        <mat-error *ngIf="commentInput.errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
       </mat-form-field>
-      <button class="comment-send-button" mat-raised-button color="primary"><mat-icon>send</mat-icon></button>
+      <button *ngIf="commentSendingState == LoadingStateTypes.Loaded" mat-raised-button color="primary" (click)="createComment()"><mat-icon>send</mat-icon></button>
+      <mat-spinner diameter="24" *ngIf="commentSendingState == LoadingStateTypes.Loading"></mat-spinner>
     </div>
 
-    <ng-scrollbar [autoHeightDisabled]="false" class="comments-section">
-      <mat-card class="single-comment-card" *ngFor="let comment of comments">
-        <div class="comment-properties-group">
-          <div class="comment-upper-group">
-            <div class="comment-author-name">
-              <b>{{comment.user.name}}</b><span> оставил(а) комментарий {{comment.datetime.toLocaleDateString('ru')}} в {{comment.datetime.toLocaleTimeString('ru')}}</span>
-            </div>
-            <div class="comment-controls">
-              <mat-icon class="clickable-icon">edit</mat-icon>
-              <mat-icon class="clickable-icon">delete</mat-icon>
+    <ng-scrollbar *ngIf="commentsState === LoadingStateTypes.Loaded" [autoHeightDisabled]="false" class="comments-section">
+      <mat-card class="single-comment-card" *ngFor="let comment of comments; index as i">
+        <ng-container *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Show">
+          <div class="comment-properties-group">
+            <div class="comment-upper-group">
+              <div class="comment-author-name">
+                <b *ngIf="comment.deskUser != null">{{comment.deskUser.user.name}}</b>
+                <b *ngIf="comment.deskUser === null">Пользователь удален</b><span> оставил(а) комментарий
+                {{comment.createdAtUtc.toLocaleDateString('ru')}} в {{comment.createdAtUtc.toLocaleTimeString('ru')}}</span>
+              </div>
+              <div class="comment-controls">
+                <mat-icon *ngIf="rolesService.userHasPermission(data.deskUser, 'UpdateOwnComments') &&
+                comment.deskUser.user.id == data.deskUser.user.id"
+                          class="clickable-icon" (click)="showCommentUpdateForm(i)">edit</mat-icon>
+                <mat-icon *ngIf="rolesService.userHasPermission(data.deskUser, 'DeleteOwnComments') &&
+                comment.deskUser.user.id == data.deskUser.user.id ||
+                rolesService.userHasPermission(data.deskUser, 'DeleteAnyComments')" class="clickable-icon"
+                          (click)="deleteComment(comment.id)">delete</mat-icon>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="comment-text">
-          {{comment.text}}
+          <div class="comment-text">
+            {{comment.body}}
+          </div>
+        </ng-container>
+        <div class="comment-updating-group" *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Update">
+          <mat-form-field class="comment-updating-field" appearance="fill">
+            <mat-label>Редактирование комментария</mat-label>
+            <textarea cdkTextareaAutosize
+                      cdkAutosizeMinRows="1"
+                      cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentUpdatingFields[i]" matInput placeholder="Текст комментария" required></textarea>
+            <mat-error *ngIf="commentUpdatingFields[i].errors?.['required']">Поле не должно быть пустым!</mat-error>
+            <mat-error *ngIf="commentUpdatingFields[i].errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
+          </mat-form-field>
+          <mat-icon class="comment-update-icon clickable-icon" (click)="updateComment(comment.id, i)">done</mat-icon>
+          <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField(i)">close</mat-icon>
+
         </div>
       </mat-card>
     </ng-scrollbar>
+    <div class="comments-spinner">
+      <mat-spinner diameter="24" *ngIf="commentsState == LoadingStateTypes.Loading"></mat-spinner>
+    </div>
 
   </mat-card>
   <!--<button class = "register_button" mat-raised-button color="primary" (click)="createDesk()">Создать доску</button>-->

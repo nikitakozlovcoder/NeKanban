@@ -49,8 +49,9 @@ public class CommentsService : ICommentsService
     {
         var comment = await _commentsRepository
             .Single(x => x.Id == commentId && x.DeskUser != null && x.DeskUser.UserId == user.Id, ct);
-
+        
         _appMapper.Map(model, comment);
+        await _commentsRepository.Update(comment, ct);
         return await GetComments(comment.ToDoId, ct);
     }
 

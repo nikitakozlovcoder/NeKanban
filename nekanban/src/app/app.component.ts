@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {RolesService} from "./services/roles.service";
 
 
 @Component({
@@ -6,8 +7,12 @@ import { Component } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'nekanban';
-  constructor() {
+  constructor(private readonly rolesService: RolesService) {
+  }
+
+  ngOnInit(): void {
+    this.rolesService.initRoles();
   }
 }

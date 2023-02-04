@@ -339,6 +339,15 @@ mat-card-title mat-spinner {
   --scrollbar-padding: -6px;
   --scrollbar-size: 8px;
 }
+.p-link {
+  cursor: pointer;
+}
+::ng-deep.mat-snack-bar-container {
+  width: 180px !important;
+  min-width: 50px !important;
+}
+
+
 
 
 
@@ -396,11 +405,4 @@ mat-card-title mat-spinner {
   height: 0;
   pointer-events: none;
   user-select: none;
-}
-.p-link {
- cursor: pointer;
-}
-.snackbar {
-  width: 180px !important;
-  min-width: 50px !important;
 }

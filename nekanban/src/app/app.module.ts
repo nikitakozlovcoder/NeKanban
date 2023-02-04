@@ -14,7 +14,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { DialogComponent } from './dialog/dialog.component';
 import { DeskComponent } from './components/desk/desk-show/desk.component';
 import { DeskService } from "./services/desk.service";
-import { BaseHttpService } from "./services/baseHttp.service";
+import { AppHttpService } from "./services/app-http.service";
 import { DeskGuard } from "./guards/desk.guard";
 import { DeskCreationComponent } from './components/desk/desk-creation/desk-creation.component';
 import { TodoShowComponent } from './components/todo/todo-show/todo-show.component';
@@ -29,6 +29,9 @@ import { RolesService } from "./services/roles.service";
 import { DeskUserService } from "./services/deskUser.service";
 import {DataGeneratorService} from "./services/dataGenerator.service";
 import {NgScrollbarModule} from "ngx-scrollbar";
+import {CommentsService} from "./services/comments.service";
+import { TodoDeletionDialogComponent } from './components/todo/todo-deletion-dialog/todo-deletion-dialog.component';
+import {UserStorageService} from "./services/userStorage.service";
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -51,6 +54,7 @@ const appRoutes: Routes =[
     TodoCreationComponent,
     TodoEditingComponent,
     ColumnUpdatingComponent,
+    TodoDeletionDialogComponent,
   ],
     imports: [
         BrowserAnimationsModule,
@@ -64,15 +68,17 @@ const appRoutes: Routes =[
         NgScrollbarModule
     ],
   providers: [UserService,
-  DeskService,
-  BaseHttpService,
-  DeskGuard,
+    DeskService,
+    AppHttpService,
+    DeskGuard,
     DeskComponent,
-  ColumnService,
+    ColumnService,
     TodoService,
-  RolesService,
-  DeskUserService,
-  DataGeneratorService],
+    RolesService,
+    DeskUserService,
+    DataGeneratorService,
+    CommentsService,
+    UserStorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

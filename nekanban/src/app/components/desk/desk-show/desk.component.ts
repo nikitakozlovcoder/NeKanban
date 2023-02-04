@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Desk} from "../../../models/desk";
 import {DeskService} from "../../../services/desk.service";
 import {UserService} from "../../../services/user.service";
@@ -18,7 +18,7 @@ import {TodoEditingComponent} from "../../todo/todo-editing/todo-editing.compone
 import {ColumnUpdatingComponent} from "../../column/column-updating/column-updating.component";
 import {MatSelectChange} from "@angular/material/select";
 import {RolesService} from "../../../services/roles.service";
-import {DeskUsers} from "../../../models/deskusers";
+import {DeskUser} from "../../../models/deskUser";
 import {DeskRole} from "../../../models/deskrole";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
@@ -27,8 +27,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 @Component({
   selector: 'app-desk',
   templateUrl: './desk.component.html',
-  styleUrls: ['./desk.component.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./desk.component.css']
 })
 export class DeskComponent implements OnInit {
   events: string[] = [];
@@ -136,7 +135,6 @@ export class DeskComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDesks();
-    this.rolesService.initRoles();
     this.clientBaseHref = window.location.href;
   }
   /*ngAfterViewInit() {
@@ -215,7 +213,8 @@ export class DeskComponent implements OnInit {
   }
   openTaskCreationDialog(todo: Todo): void {
     const dialogRefView = this.dialog.open(TodoShowComponent, {
-      data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser}
+      data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser},
+      panelClass: 'todo-show-wrap'
     });
     dialogRefView.afterClosed().subscribe( result => {
       let idx = this.toDos.findIndex(el => el.id === todo.id);
@@ -565,8 +564,8 @@ export class DeskComponent implements OnInit {
 
   changeUserRole(event: Event, deskUserId: number) {
     this.deskUserService.changeRole(deskUserId, parseInt((event.target as HTMLInputElement).value)).subscribe({
-      next: (data: DeskUsers[]) => {
-        this.desk!.deskUsers = data.sort(function (a: DeskUsers, b: DeskUsers) {
+      next: (data: DeskUser[]) => {
+        this.desk!.deskUsers = data.sort(function (a: DeskUser, b: DeskUser) {
           if (a.id > b.id) {
             return 1;
           }
@@ -580,7 +579,7 @@ export class DeskComponent implements OnInit {
       }
     });
   }
-  checkUserPermission(deskUser: DeskUsers, permissionName: string) {
+  checkUserPermission(deskUser: DeskUser, permissionName: string) {
     return this.rolesService.userHasPermission(deskUser, permissionName);
   }
   isUserAssigned(todo: Todo) {

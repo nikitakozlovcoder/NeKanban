@@ -1,119 +1,50 @@
 ﻿import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {BaseHttpService} from "./baseHttp.service";
+import {AppHttpService} from "./app-http.service";
 
 import {Desk} from "../models/desk";
+import {InviteLinkAction} from "../constants/InviteLinkAction";
 
 @Injectable()
 export class DeskService {
 
-  constructor(private http: HttpClient, private httpService: BaseHttpService) {
+  constructor(private httpService: AppHttpService) {
   }
 
   getDesks() {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-
-    return this.http.get<Desk[]>(this.httpService.baseUrl + "Desks/GetForUser", httpOptions);
+    return this.httpService.get<Desk[]>("Desks/GetForUser");
   }
 
   addDesk(name: string) {
-    const body = {name: name};
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    return this.http.post<Desk>(this.httpService.baseUrl + "Desks/CreateDesk", body, httpOptions);
+    return this.httpService.post<Desk>("Desks/CreateDesk", {name});
   }
 
   addPreference(id: number, preference: number) {
-    const body = {preference: preference};
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    return this.http.put<Desk[]>(this.httpService.baseUrl + "DesksUsers/SetPreferenceType/" + id, body, httpOptions);
+    return this.httpService.put<Desk[]>("DesksUsers/SetPreferenceType/" + id, {preference});
   }
 
   updateDesk(id: number, name: string) {
-    const body = {name: name};
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    /*this.http.put(this.httpService.base_url + "Desks/UpdateDesk/" + id, body, httpOptions).subscribe({
-      next: data => {
-
-      },
-      error: error => {
-        console.error('There was an error!', error.message);
-      }
-    })*/
-    return this.http.put<Desk>(this.httpService.baseUrl + "Desks/UpdateDesk/" + id, body, httpOptions);
+    return this.httpService.put<Desk>("Desks/UpdateDesk/" + id, {name});
   }
 
   getDesk(id: number) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    return this.http.get<Desk>(this.httpService.baseUrl + "Desks/GetDesk/" + id, httpOptions);
+    return this.httpService.get<Desk>("Desks/GetDesk/" + id);
   }
 
   setLink(deskId: number) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    const body = {action: 1};
-    return this.http.put<Desk>(this.httpService.baseUrl + "Desks/InviteLink/" + deskId, body, httpOptions);
+    return this.httpService.put<Desk>("Desks/InviteLink/" + deskId, {action: InviteLinkAction.Generate});
   }
 
   inviteByLink(guid: number) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    const body = {uid: guid};
-    return this.http.put<Desk>(this.httpService.baseUrl + "DesksUsers/AddUserByLink/", body, httpOptions);
+    return this.httpService.put<Desk>("DesksUsers/AddUserByLink/", {uid: guid});
   }
 
   removeUserFromDesk(usersId: number[], deskId: number) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    const body = {usersToRemove: usersId};
-    return this.http.put<Desk>(this.httpService.baseUrl + "DesksUsers/RemoveUsers/" + deskId, body, httpOptions);
+    return this.httpService.put<Desk>("DesksUsers/RemoveUsers/" + deskId, {usersToRemove: usersId});
   }
 
   removeDesk(deskId: number) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    return this.http.delete(this.httpService.baseUrl + "Desks/Delete?id=" + deskId, httpOptions);
+    return this.httpService.delete("Desks/Delete?id=" + deskId);
   }
-
 }
 

@@ -48,6 +48,9 @@
   min-width: 48px;
   height: 48px;
 }
+.comments-card mat-spinner {
+  margin-bottom: 1.34375em;
+}
 .comment-field-group {
   margin-top: 20px;
   display: flex;
@@ -93,20 +96,41 @@
 .todo-wrap {
   max-height: 100vh;
   overflow: auto;
-  padding: 24px;
+  padding: 32px;
   position: relative;
 }
-::ng-deep.mat-dialog-container {
+mat-dialog-container {
   padding: 0;
 }
 .todo-close-icon {
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 5px;
+  right: 5px;
   cursor: pointer;
 }
 .todo-creator-subtitle, .todo-creator-subtitle p {
   margin: 0;
+}
+.comments-spinner {
+  display: flex;
+  justify-content: center;
+}
+.comment-updating-group {
+  display: flex;
+  align-items: center;
+}
+.comment-updating-field ::ng-deep .mat-form-field-wrapper{
+  margin-bottom: -1.25em;
+}
+.comment-updating-group button {
+  margin-bottom: 0;
+}
+.comment-update-icon {
+  width: 30px;
+}
+.comment-update-icon {
+  margin-left: 15px;
+  font-weight: bold;
 }
 .assignees-title {
   margin: 0;
