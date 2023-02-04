@@ -56,10 +56,10 @@ public class ToDosController : BaseAuthController
     [HttpPut("{toDoId:int}")]
     public async Task<ToDoVm> AssignUser(int toDoId, [FromBody]AssignUserModel model, CancellationToken ct)
     {
-        var userId= await _deskUserService.GetDeskUserUserId(model.DescUserId, ct);
+        var userId= await _deskUserService.GetDeskUserUserId(model.DeskUserId, ct);
         var currentUser = await GetApplicationUser();
         await EnsureAbleTo<ToDo>(userId == currentUser.Id ? PermissionType.AssignTasksThemself : PermissionType.ManageAssigners, toDoId, ct);
-        return await _toDoUserService.AssignUser(toDoId, model.DescUserId, ct);
+        return await _toDoUserService.AssignUser(toDoId, model.DeskUserId, ct);
     }
     
     [HttpDelete]

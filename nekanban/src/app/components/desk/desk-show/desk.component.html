@@ -153,7 +153,7 @@
             </mat-card-content>
             <mat-card-subtitle *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ViewInviteLink')" class="invite-link">
               <p class="invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
-              <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, { panelClass: ['snackbar']})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>
+              <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, {duration:2000})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>
               <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageInviteLink') && !hasInviteLink() && isLinkLoaded" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
               <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLinkLoaded"></mat-spinner>
             </mat-card-subtitle>

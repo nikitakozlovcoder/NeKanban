@@ -1,58 +1,28 @@
 ﻿import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {BaseHttpService} from "./baseHttp.service";
+import {AppHttpService} from "./app-http.service";
 import {Column} from "../models/column";
 
 @Injectable()
 export class ColumnService {
-  constructor(private http: HttpClient, private httpService: BaseHttpService) { }
-  getColumns(deskId: number) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    return this.http.get<Column[]>(this.httpService.baseUrl + "Columns/GetColumns/" + deskId, httpOptions);
-  }
-  addColumn(deskId: number, name: string) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    const body = {name: name};
-    return this.http.post<Column[]>(this.httpService.baseUrl + "Columns/CreateColumn/" + deskId, body, httpOptions);
-  }
-  removeColumn(columnId: number) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    return this.http.delete<Column[]>(this.httpService.baseUrl + "Columns/DeleteColumn/" + columnId, httpOptions);
-  }
-  moveColumn(columnId: number, position: number) {
+  constructor(private httpService: AppHttpService) { }
 
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    const body = {position: position};
-    return this.http.put<Column[]>(this.httpService.baseUrl + "Columns/MoveColumn/" + columnId, body, httpOptions);
+  getColumns(deskId: number) {
+    return this.httpService.get<Column[]>("Columns/GetColumns/" + deskId);
   }
+
+  addColumn(deskId: number, name: string) {
+    return this.httpService.post<Column[]>("Columns/CreateColumn/" + deskId, {name});
+  }
+
+  removeColumn(columnId: number) {
+    return this.httpService.delete<Column[]>("Columns/DeleteColumn/" + columnId);
+  }
+
+  moveColumn(columnId: number, position: number) {
+    return this.httpService.put<Column[]>("Columns/MoveColumn/" + columnId, {position});
+  }
+
   updateColumn(columnId: number, name: string) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    }
-    const body = {name: name};
-    return this.http.put<Column[]>(this.httpService.baseUrl + "Columns/UpdateColumn/" + columnId, body, httpOptions);
+    return this.httpService.put<Column[]>("Columns/UpdateColumn/" + columnId, {name});
   }
 }

@@ -1,41 +1,30 @@
 ﻿import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {BaseHttpService} from "./baseHttp.service";
+import {AppHttpService} from "./app-http.service";
 import {Comment} from "../models/comment";
 import {Column} from "../models/column";
 
 @Injectable()
 export class CommentsService {
-  constructor(private http: HttpClient, private httpService: BaseHttpService) { }
+  constructor(private httpService: AppHttpService) { }
 
   getComments(toDoId: number) {
-    let httpOptions = this.getHttpHeaders();
-    return this.http.get<Comment[]>(this.httpService.baseUrl + "Comments/GetComments/" + toDoId, httpOptions);
+    return this.httpService.get<Comment[]>("Comments/GetComments/" + toDoId);
   }
+
   createComment(toDoId: number, body: string) {
-    let httpOptions = this.getHttpHeaders();
-    const requestBody = {body: body};
-    return this.http.post<Comment[]>(this.httpService.baseUrl + "Comments/Create/" + toDoId, requestBody, httpOptions);
+    return this.httpService.post<Comment[]>("Comments/Create/" + toDoId, {body});
   }
+
   updateComment(commentId: number, body: string) {
-    let httpOptions = this.getHttpHeaders();
-    const requestBody = {body: body};
-    return this.http.put<Comment[]>(this.httpService.baseUrl + "Comments/Update/" + commentId, requestBody, httpOptions);
+    return this.httpService.put<Comment[]>( "Comments/Update/" + commentId, {body});
   }
+
   deleteOwnComment(commentId: number) {
-    let httpOptions = this.getHttpHeaders();
-    return this.http.delete<Comment[]>(this.httpService.baseUrl + "Comments/DeleteOwn/" + commentId, httpOptions);
+    return this.httpService.delete<Comment[]>("Comments/DeleteOwn/" + commentId);
   }
+
   deleteComment(commentId: number) {
-    let httpOptions = this.getHttpHeaders();
-    return this.http.delete<Comment[]>(this.httpService.baseUrl + "Comments/Delete/" + commentId, httpOptions);
-  }
-  private getHttpHeaders() {
-    return {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      })
-    };
+    return this.httpService.delete<Comment[]>("Comments/Delete/" + commentId);
   }
 }

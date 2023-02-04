@@ -96,16 +96,16 @@
 .todo-wrap {
   max-height: 100vh;
   overflow: auto;
-  padding: 24px;
+  padding: 32px;
   position: relative;
 }
-::ng-deep#mat-dialog-1 {
+mat-dialog-container {
   padding: 0;
 }
 .todo-close-icon {
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 5px;
+  right: 5px;
   cursor: pointer;
 }
 .todo-creator-subtitle, .todo-creator-subtitle p {

@@ -3,10 +3,13 @@ import {Injectable} from "@angular/core";
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogComponent} from "../dialog/dialog.component";
-import {BaseHttpService} from "./baseHttp.service";
+import {AppHttpService} from "./app-http.service";
 import {catchError, tap, throwError} from "rxjs";
 import ErrorTypes from "../constants/ErrorTypes";
 import {ErrorCodes} from "../constants/ErrorCodes";
+import {UserStorageService} from "./userStorage.service";
+import {UserWithToken} from "../models/user-with-token";
+import {User} from "../models/user";
 
 @Injectable()
 export class UserService {
@@ -28,14 +31,15 @@ export class UserService {
     });
   }
 
-  constructor(private http: HttpClient, private router: Router, public dialog: MatDialog,
-              private httpService: BaseHttpService) { }
+  constructor(private router: Router,
+              public dialog: MatDialog,
+              private httpService: AppHttpService,
+              private userStorageService: UserStorageService) { }
 
     addUser(name: string, surname: string, email: string, password: string) {
       const body = {"email": email, "password": password, "name": name, "surname": surname};
-      return this.http.post<any>(this.httpService.baseUrl + "Users/Register", body).pipe(tap(x => {
-        localStorage.setItem("currentUser", JSON.stringify(x));
-        localStorage.setItem("token", x.token.tokenValue);
+      return this.httpService.post<UserWithToken>("Users/Register", body).pipe(tap(x => {
+        this.userStorageService.addUserToStorage(x);
         this.router.navigate(['']).then();
       }), catchError((err : HttpErrorResponse) => {
         this.openDialog(err.error)
@@ -45,9 +49,8 @@ export class UserService {
 
     loginUser(email: string, password: string) {
       const body = {email: email, password: password};
-      return this.http.post<any>(this.httpService.baseUrl + "Users/Login", body).pipe(tap(x => {
-        localStorage.setItem("currentUser", JSON.stringify(x));
-        localStorage.setItem("token", x.token.tokenValue);
+      return this.httpService.post<UserWithToken>("Users/Login", body).pipe(tap(x => {
+        this.userStorageService.addUserToStorage(x);
         this.router.navigate(['']).then();
       }), catchError((err : HttpErrorResponse) => {
         this.openDialog(ErrorCodes.ValidationError)
@@ -56,7 +59,6 @@ export class UserService {
     }
 
     logoutUser() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("currentUser");
+      this.userStorageService.removeUserFromStorage();
     }
 }

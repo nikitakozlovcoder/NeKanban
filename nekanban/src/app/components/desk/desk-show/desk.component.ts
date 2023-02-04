@@ -135,7 +135,6 @@ export class DeskComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDesks();
-    this.rolesService.initRoles();
     this.clientBaseHref = window.location.href;
   }
   /*ngAfterViewInit() {
@@ -214,7 +213,8 @@ export class DeskComponent implements OnInit {
   }
   openTaskCreationDialog(todo: Todo): void {
     const dialogRefView = this.dialog.open(TodoShowComponent, {
-      data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser}
+      data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser},
+      panelClass: 'todo-show-wrap'
     });
     dialogRefView.afterClosed().subscribe( result => {
       let idx = this.toDos.findIndex(el => el.id === todo.id);
