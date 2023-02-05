@@ -12,6 +12,7 @@ using NeKanban.Common.Models.DeskUserModels;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.MyDesks;
+using NeKanban.Logic.Services.Roles;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.DesksUsers;
@@ -23,17 +24,20 @@ public class DeskUserService : BaseService, IDeskUserService
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IMyDesksService _myDesksService;
     private readonly IAppMapper _mapper;
+    private readonly IRolesService _rolesService;
 
     public DeskUserService(IRepository<DeskUser> deskUserRepository,
         IMyDesksService myDesksService,
-        IAppMapper mapper)
+        IAppMapper mapper,
+        IRolesService rolesService)
     {
         _deskUserRepository = deskUserRepository;
         _myDesksService = myDesksService;
         _mapper = mapper;
+        _rolesService = rolesService;
     }
 
-    public async Task CreateDeskUser(int deskId, int userId, RoleType role, CancellationToken ct)
+    public async Task CreateDeskUser(int deskId, int userId, bool isOwner, CancellationToken ct)
     {
         var exists = await _deskUserRepository.QueryableSelect()
             .AnyAsync(x => x.UserId == userId && x.DeskId == deskId, ct);
@@ -41,13 +45,21 @@ public class DeskUserService : BaseService, IDeskUserService
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.UserAlreadyAddedToDesk);
         }
-        
-        await _deskUserRepository.Create(new DeskUser
+
+        var deskUser = new DeskUser
         {
             DeskId = deskId,
             UserId = userId,
-            Role = role,
-        }, ct);
+            IsOwner = isOwner,
+            RoleId = null
+        };
+
+        if (!isOwner)
+        {
+            deskUser.RoleId = await _rolesService.GetDefaultRoleId(deskId, ct);
+        }
+        
+        await _deskUserRepository.Create(deskUser, ct);
     }
 
     public async Task<DeskUserVm> GetDeskUser(int id, CancellationToken ct)
@@ -65,7 +77,7 @@ public class DeskUserService : BaseService, IDeskUserService
     {
         var deskUser = await _deskUserRepository
             .Single(x=> x.UserId == userId && x.DeskId == id, ct);
-        if (deskUser.Role == RoleType.Owner)
+        if (deskUser.IsOwner)
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantRemoveOwnerFromDesk);
         }
@@ -90,12 +102,12 @@ public class DeskUserService : BaseService, IDeskUserService
     public async Task<List<DeskUserVm>> ChangeRole(DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct)
     {
         var deskUser = await _deskUserRepository.Single(x => x.Id == deskUserId, ct);
-        if (model.Role == RoleType.Owner)
+        if (deskUser.IsOwner)
         {
             throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
         }
 
-        deskUser.Role = model.Role;
+        deskUser.RoleId = model.RoleId;
         await _deskUserRepository.Update(deskUser, ct);
         return await GetDeskUsers(deskUser.DeskId, ct);
     }

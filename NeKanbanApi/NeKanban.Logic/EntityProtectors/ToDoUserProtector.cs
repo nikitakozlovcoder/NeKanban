@@ -2,6 +2,7 @@
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
+using NeKanban.Logic.Services.Security;
 
 namespace NeKanban.Logic.EntityProtectors;
 
@@ -10,7 +11,8 @@ namespace NeKanban.Logic.EntityProtectors;
 public class ToDoUserProtector : BaseEntityProtector<ToDoUser>
 {
     private readonly IRepository<ToDoUser> _toDoUserRepository;
-    public ToDoUserProtector(IRepository<DeskUser> deskUserRepository, IRepository<ToDoUser> toDoUserRepository) : base(deskUserRepository)
+    public ToDoUserProtector(IPermissionCheckerService permissionCheckerService,
+        IRepository<ToDoUser> toDoUserRepository) : base(permissionCheckerService)
     {
         _toDoUserRepository = toDoUserRepository;
     }

@@ -29,11 +29,28 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         _context.Entry(item).State = EntityState.Added;
         return _context.SaveChangesAsync(ct);
     }
-    
+
+    public Task Create(IEnumerable<TEntity> items, CancellationToken ct)
+    {
+        foreach (var item in items)
+        {
+            _context.Entry(item).State = EntityState.Added;
+        }
+        
+        return _context.SaveChangesAsync(ct);
+    }
+
     public Task Remove(TEntity item, CancellationToken ct)
     {
         EntityDbSet.Remove(item);
         return _context.SaveChangesAsync(ct);
+    }
+    
+    public async Task<TEntity> Remove(int id, CancellationToken ct)
+    {
+        var item = await Single(x => x.Id == id, ct);
+        await Remove(item, ct);
+        return item;
     }
 
     public Task Update(TEntity item, CancellationToken ct)
@@ -139,15 +156,22 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
     }
     #endregion
 
+    #region Any
     public async Task AnyOrThrow(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
-        var exists = await EntityDbSet.AnyAsync(predicate, ct);
+        var exists = await Any(predicate, ct);
         if (!exists)
         {
             throw new EntityDoesNotExists<TEntity>();
         }
     }
 
+    public Task<bool> Any(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    {
+        return EntityDbSet.AnyAsync(predicate, ct);
+    }
+    #endregion
+    
     public IQueryable<TEntity> QueryableSelect()
     {
         return EntityDbSet;
@@ -165,7 +189,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         return query;
     }
     
-
     private static T ThrowOnNull<T>(T? entity)
     {
         if (entity == null)

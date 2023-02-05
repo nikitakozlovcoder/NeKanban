@@ -2,8 +2,8 @@
 
 namespace NeKanban.Common.ViewModels;
 
-public class PermissionVm
+public class ApplicationPermissionVm
 {
-    public required PermissionType Permission { get; set; }
+    public required PermissionType Permission;
     public string PermissionName => Permission.ToString();
 }

@@ -1,8 +1,6 @@
-﻿using NeKanban.Security.Constants;
-
-namespace NeKanban.Common.Models.DeskUserModels;
+﻿namespace NeKanban.Common.Models.DeskUserModels;
 
 public class DeskUserRoleChangeModel
 {
-    public required RoleType Role { get; set; }
+    public required int RoleId { get; set; }
 }

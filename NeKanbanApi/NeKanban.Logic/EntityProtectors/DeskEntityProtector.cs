@@ -2,6 +2,7 @@
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
+using NeKanban.Logic.Services.Security;
 
 namespace NeKanban.Logic.EntityProtectors;
 
@@ -9,7 +10,7 @@ namespace NeKanban.Logic.EntityProtectors;
 [Injectable<IEntityProtector<Desk>>]
 public class DeskEntityProtector : BaseEntityProtector<Desk>
 {
-    public DeskEntityProtector(IRepository<DeskUser> deskUserRepository) : base(deskUserRepository)
+    public DeskEntityProtector(IPermissionCheckerService permissionCheckerService) : base(permissionCheckerService)
     {
     }
     

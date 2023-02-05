@@ -7,7 +7,9 @@ namespace NeKanban.Data.Infrastructure;
 public interface IRepository<TEntity> where TEntity: class, IHasPk<int>
 {
     Task Create(TEntity item, CancellationToken ct);
+    Task Create(IEnumerable<TEntity> items, CancellationToken ct);
     Task Remove(TEntity item, CancellationToken ct);
+    Task<TEntity> Remove(int id, CancellationToken ct);
     Task Update(TEntity item, CancellationToken ct);
     
     Task<List<TEntity>> ToList(Expression<Func<TEntity, bool>> predicate, CancellationToken ct);
@@ -44,6 +46,7 @@ public interface IRepository<TEntity> where TEntity: class, IHasPk<int>
         where T : class, IMapFrom<TEntity, T>;
     
     Task AnyOrThrow(Expression<Func<TEntity, bool>> predicate, CancellationToken ct);
+    Task<bool> Any(Expression<Func<TEntity, bool>> predicate, CancellationToken ct);
     
     IQueryable<TEntity> QueryableSelect();
 }
