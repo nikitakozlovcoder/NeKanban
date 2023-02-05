@@ -1,18 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NeKanban.Common.Entities;
+﻿using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.SecurityProfile.Helpers;
+using NeKanban.Logic.Services.Security;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.EntityProtectors;
 
 public abstract class BaseEntityProtector<TEntity> : IEntityProtector<TEntity> where TEntity : IHasPk<int>
 {
-    private readonly IRepository<DeskUser> _deskUserRepository;
-
-    protected BaseEntityProtector(IRepository<DeskUser> deskUserRepository)
+    private readonly IPermissionCheckerService _permissionCheckerService;
+    protected BaseEntityProtector (IPermissionCheckerService permissionCheckerService)
     {
-        _deskUserRepository = deskUserRepository;
+        _permissionCheckerService = permissionCheckerService;
     }
 
     public async Task<bool> HasPermission(ApplicationUser? currentUser, PermissionType type, int entityId, CancellationToken ct)
@@ -30,12 +28,6 @@ public abstract class BaseEntityProtector<TEntity> : IEntityProtector<TEntity> w
     
     private async Task<bool> CheckRoleByDeskId(int deskId, int currentUserId, PermissionType type, CancellationToken ct)
     {
-        var deskUser = await _deskUserRepository.FirstOrDefault(x => x.DeskId == deskId && x.UserId == currentUserId,
-            x => new
-            {
-                x.Role
-            }, ct: ct);
-        
-        return deskUser != null && PermissionChecker.CheckPermission(deskUser.Role, type);
+        return await _permissionCheckerService.HasPermission(deskId, currentUserId, type, ct);
     }
 }

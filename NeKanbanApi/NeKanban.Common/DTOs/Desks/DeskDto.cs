@@ -5,7 +5,7 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.DTOs.Desks;
 
-public class DeskDto : BaseEntityDto<int>,  IMapFrom<Desk, DeskDto>
+public class DeskDto : BaseEntityModel<int>,  IMapFrom<Desk, DeskDto>
 {
     public required string Name { get; set; }
     public required string? InviteLink { get; set; }

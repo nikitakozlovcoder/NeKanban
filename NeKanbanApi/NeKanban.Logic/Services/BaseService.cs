@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Microsoft.AspNetCore.Identity;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 
 namespace NeKanban.Logic.Services;

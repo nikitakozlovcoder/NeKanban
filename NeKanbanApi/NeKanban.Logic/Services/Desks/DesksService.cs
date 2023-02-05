@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.Desks;
-using NeKanban.Common.DTOs.DesksUsers;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ColumnModels;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
-using NeKanban.Logic.SecurityProfile.Helpers;
 using NeKanban.Logic.Services.Columns;
 using NeKanban.Logic.Services.DesksUsers;
+using NeKanban.Logic.Services.Roles;
+using NeKanban.Logic.Services.Security;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.Desks;
@@ -26,22 +25,29 @@ public class DesksService : BaseService, IDesksService
     private readonly IDeskUserService _deskUserService;
     private readonly IColumnsService _columnsService;
     private readonly IAppMapper _mapper;
+    private readonly IPermissionCheckerService _permissionCheckerService;
+    private readonly IRolesService _rolesService;
     public DesksService(IRepository<Desk> deskRepository, 
         IDeskUserService deskUserService, 
         IColumnsService columnsService, 
-        IAppMapper mapper) 
+        IAppMapper mapper,
+        IPermissionCheckerService permissionCheckerService,
+        IRolesService rolesService) 
     {
         _deskRepository = deskRepository;
         _deskUserService = deskUserService;
         _columnsService = columnsService;
         _mapper = mapper;
+        _permissionCheckerService = permissionCheckerService;
+        _rolesService = rolesService;
     }
     
     public async Task<DeskVm> CreateDesk(DeskCreateModel deskCreateModel, ApplicationUser user, CancellationToken ct)
     {
         var desk = _mapper.Map<Desk, DeskCreateModel>(deskCreateModel);
         await _deskRepository.Create(desk, ct);
-        await _deskUserService.CreateDeskUser(desk.Id, user.Id, RoleType.Owner, ct);
+        await _rolesService.CreateDefaultRoles(desk.Id, ct);
+        await _deskUserService.CreateDeskUser(desk.Id, user.Id, true, ct);
         await _columnsService.CreateColumn(desk.Id, new ColumnCreateModel
         {
             Name = ColumnNames.ToDo
@@ -64,8 +70,7 @@ public class DesksService : BaseService, IDesksService
     public async Task<DeskVm> GetDesk(int id, ApplicationUser user, CancellationToken ct)
     {
         var desk = await _deskRepository.ProjectToSingle<DeskDto>(x => x.Id == id, ct);
-        var role = desk.DeskUsers.FirstOrDefault(x => x.UserId == user.Id)?.Role;
-        var canViewInviteLink = role.HasValue && PermissionChecker.CheckPermission(role.Value, PermissionType.ViewInviteLink);
+        var canViewInviteLink = await _permissionCheckerService.HasPermission(id, user.Id, PermissionType.ViewInviteLink, ct);
         var deskVm = _mapper.Map<DeskVm, DeskDto>(desk);
         deskVm.InviteLink = canViewInviteLink ? desk.InviteLink : null;
         return deskVm;
@@ -86,7 +91,7 @@ public class DesksService : BaseService, IDesksService
         {
             InviteLinkAction.Remove => null,
             InviteLinkAction.Generate => Guid.NewGuid().ToString(),
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(inviteLinkModel))
         };
         
         await _deskRepository.Update(desk, ct);
@@ -106,7 +111,7 @@ public class DesksService : BaseService, IDesksService
     public async Task<DeskVm> AddUserToDesk(DeskAddUserByLinkModel model, ApplicationUser user, CancellationToken ct)
     {
         var desk = await _deskRepository.First(x => x.InviteLink == model.Uid, ct);
-        await _deskUserService.CreateDeskUser(desk.Id, user.Id, RoleType.User, ct);
+        await _deskUserService.CreateDeskUser(desk.Id, user.Id, false, ct);
         return await GetDesk(desk.Id, user, ct);
     }
 }

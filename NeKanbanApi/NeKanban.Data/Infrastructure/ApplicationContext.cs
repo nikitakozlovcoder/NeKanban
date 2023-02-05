@@ -22,6 +22,11 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
 
         modelBuilder.Entity<DeskUser>().HasMany(x => x.Comments)
             .WithOne(x => x.DeskUser).OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<DeskUser>().HasOne(x => x.Role)
+            .WithMany().OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<RolePermission>().HasIndex(x => new {x.RoleId, x.Permission}).IsUnique();
     }
 
     public void Migrate()
@@ -42,4 +47,6 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
     public DbSet<ToDoUser>? ToDoUser { get; set; }
     public DbSet<ToDo>? ToDo { get; set; }
     public DbSet<Comment>? Comments { get; set; }
+    public DbSet<Role>? Roles  { get; set; }
+    public DbSet<RolePermission>? RolePermissions  { get; set; }
 }

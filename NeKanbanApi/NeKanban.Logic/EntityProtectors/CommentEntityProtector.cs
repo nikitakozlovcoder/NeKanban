@@ -2,6 +2,7 @@
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
+using NeKanban.Logic.Services.Security;
 
 namespace NeKanban.Logic.EntityProtectors;
 
@@ -10,8 +11,8 @@ namespace NeKanban.Logic.EntityProtectors;
 public class CommentEntityProtector : BaseEntityProtector<Comment>
 {
     private readonly IRepository<Comment> _commentsRepository;
-    public CommentEntityProtector(IRepository<DeskUser> deskUserRepository,
-        IRepository<Comment> commentsRepository) : base(deskUserRepository)
+    public CommentEntityProtector(IPermissionCheckerService permissionCheckerService,
+        IRepository<Comment> commentsRepository) : base(permissionCheckerService)
     {
         _commentsRepository = commentsRepository;
     }

@@ -5,7 +5,7 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.DTOs.Columns;
 
-public class ColumnDto : BaseEntityDto<int>, IMapFrom<Column, ColumnDto>
+public class ColumnDto : BaseEntityModel<int>, IMapFrom<Column, ColumnDto>
 {
     public required string? Name { get; set; }
     public required ColumnType Type { get; set; }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
+using NeKanban.Logic.Services.Security;
 
 namespace NeKanban.Logic.EntityProtectors;
 
@@ -12,8 +13,8 @@ namespace NeKanban.Logic.EntityProtectors;
 public class ColumnEntityProtector : BaseEntityProtector<Column>
 {
     private readonly IRepository<Column> _columnRepository;
-    public ColumnEntityProtector(IRepository<DeskUser> deskUserRepository,
-        IRepository<Column> columnRepository) : base(deskUserRepository)
+    public ColumnEntityProtector(IPermissionCheckerService permissionCheckerService,
+        IRepository<Column> columnRepository) : base(permissionCheckerService)
     {
         _columnRepository = columnRepository;
     }

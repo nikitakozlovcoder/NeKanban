@@ -8,7 +8,7 @@ namespace NeKanban.Logic.Services.DesksUsers;
 
 public interface IDeskUserService
 {
-    Task CreateDeskUser(int deskId, int userId, RoleType role, CancellationToken ct);
+    Task CreateDeskUser(int deskId, int userId, bool isOwner, CancellationToken ct);
     Task<DeskUserVm> GetDeskUser(int id, CancellationToken ct);
     Task RemoveFromDesk(int userId, int id, CancellationToken ct);
     Task<List<DeskLiteVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId, CancellationToken ct);
