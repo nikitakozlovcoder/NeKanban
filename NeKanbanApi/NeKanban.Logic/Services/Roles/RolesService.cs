@@ -121,6 +121,11 @@ public class RolesService : IRolesService
         await CreateDefaultRole(deskId, DefaultRoleNames.Manager, false, _defaultPermissionProvider.GetManagerPermissions(), ct);
     }
 
+    public Task<RoleDto> GetRole(int roleId, CancellationToken ct)
+    {
+        return _rolesRepository.ProjectToSingle<RoleDto>(x => x.Id == roleId, ct);
+    }
+
     private async Task CreateDefaultRole(int deskId, string roleName, bool isDefault, List<PermissionType> permissionTypes, CancellationToken ct)
     {
         var role = new Role

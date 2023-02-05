@@ -107,6 +107,12 @@ public class DeskUserService : BaseService, IDeskUserService
             throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
         }
 
+        var role = await _rolesService.GetRole(model.RoleId, ct);
+        if (role.DeskId != deskUser.DeskId)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
+        }
+        
         deskUser.RoleId = model.RoleId;
         await _deskUserRepository.Update(deskUser, ct);
         return await GetDeskUsers(deskUser.DeskId, ct);

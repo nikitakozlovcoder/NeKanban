@@ -14,4 +14,5 @@ public interface IRolesService
     Task RevokePermission(int roleId, PermissionType permission, CancellationToken ct);
     Task<int?> GetDefaultRoleId(int deskId, CancellationToken ct);
     Task CreateDefaultRoles(int deskId, CancellationToken ct);
+    Task<RoleDto> GetRole(int roleId, CancellationToken ct);
 }
