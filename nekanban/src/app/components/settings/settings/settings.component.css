@@ -1,0 +1,22 @@
+.my-sidenav {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.my-sidenav h2 {
+  margin: 10px;
+}
+
+.menu-bottom-button {
+  flex: 1;
+  float: left;
+  width: 100%;
+}
+mat-sidenav-content {
+  min-height: 100vh;
+}
+.mat-tab-group-wrap {
+  margin: 10px;
+}

@@ -128,8 +128,15 @@ export class DeskComponent implements OnInit {
     }
   }
 
-  constructor(private deskService: DeskService, private userService: UserService, private router: Router, public dialog: MatDialog, private columnService: ColumnService,
-              private todoService: TodoService, private rolesService: RolesService, private deskUserService: DeskUserService, public snackBar: MatSnackBar) {
+  constructor(private deskService: DeskService,
+              private userService: UserService,
+              private router: Router,
+              public dialog: MatDialog,
+              private columnService: ColumnService,
+              private todoService: TodoService,
+              private rolesService: RolesService,
+              private deskUserService: DeskUserService,
+              public snackBar: MatSnackBar) {
     this.opened = false;
   }
 
@@ -190,6 +197,7 @@ export class DeskComponent implements OnInit {
       }
     });
   }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(DeskCreationComponent, {
       width: '400px',
@@ -273,6 +281,7 @@ export class DeskComponent implements OnInit {
     this.currentId = id;
     this.opened = false;
     this.isLoaded = false;
+    this.desk = undefined;
     this.deskService.getDesk(id).subscribe({
       next: (data: Desk) => {
         this.desk = data;

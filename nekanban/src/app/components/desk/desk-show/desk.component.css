@@ -67,9 +67,7 @@ mat-form-field
   margin-top: 20px !important;
 }
 
-.invite-link .p-link {
-  text-decoration: underline;
-}
+
 
 .users-list {
   max-height: 210px;
@@ -197,11 +195,6 @@ mat-form-field
 
 .users-list .mat-list-item a mat-icon {
   margin-left: auto;
-}
-
-.desk-remove-button {
-  width: 100%;
-  margin-top: auto;
 }
 
 .test-list {
@@ -339,15 +332,17 @@ mat-card-title mat-spinner {
   --scrollbar-padding: -6px;
   --scrollbar-size: 8px;
 }
-.p-link {
-  cursor: pointer;
-}
-::ng-deep.mat-snack-bar-container {
-  width: 180px !important;
-  min-width: 50px !important;
-}
 
 
+.settings-button {
+  height: min-content;
+}
+.settings-button mat-icon {
+  margin-left: 8px;
+}
+mat-card-title-group {
+  align-items: center;
+}
 
 
 

@@ -32,11 +32,15 @@ import {NgScrollbarModule} from "ngx-scrollbar";
 import {CommentsService} from "./services/comments.service";
 import { TodoDeletionDialogComponent } from './components/todo/todo-deletion-dialog/todo-deletion-dialog.component';
 import {UserStorageService} from "./services/userStorage.service";
+import { SettingsComponent } from './components/settings/settings/settings.component';
+import { HeaderComponent } from './components/partials/header/header.component';
+import { GeneralSettingsComponent } from './components/settings/general-settings/general-settings.component';
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
   { path: '', component: DeskComponent, canActivate: [DeskGuard]},
-  { path: 'invite', component: InviteComponent}
+  { path: 'invite', component: InviteComponent},
+  { path: 'desks/:id/settings', component: SettingsComponent, canActivate: [DeskGuard]}
 ];
 
 @NgModule({
@@ -55,6 +59,9 @@ const appRoutes: Routes =[
     TodoEditingComponent,
     ColumnUpdatingComponent,
     TodoDeletionDialogComponent,
+    SettingsComponent,
+    HeaderComponent,
+    GeneralSettingsComponent,
   ],
     imports: [
         BrowserAnimationsModule,

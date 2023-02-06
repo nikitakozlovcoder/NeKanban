@@ -23,7 +23,8 @@
 
     <mat-sidenav-content>
       <p>
-        <mat-toolbar color="primary">
+        <app-header [currentUser]="getCurrentUser()!"  [sidenav]="sidenav" [(desks)]="desks" [currentDeskId]="getCurrentDesk()!.id"></app-header>
+        <!--<mat-toolbar color="primary">
           <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="sidenav.toggle()">
             <mat-icon>menu</mat-icon>
           </button>
@@ -39,13 +40,10 @@
           </button>
           <mat-spinner class="spinner-centered spinner-white" diameter="24" *ngIf="!isFavouriteLoaded"></mat-spinner>
 
-          <!--<button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-            <mat-icon>share</mat-icon>
-          </button>-->
           <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" (click)="logout()">
             <mat-icon>logout</mat-icon>
           </button>
-        </mat-toolbar>
+        </mat-toolbar>-->
       </p>
 
 
@@ -57,7 +55,9 @@
           <mat-card-subtitle>
             <p>Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
           </mat-card-subtitle>
+          <button class="settings-button" [routerLink]="['/desks', desk.id, 'settings']" mat-raised-button color="primary">Настройки<mat-icon>settings</mat-icon></button>
         </mat-card-title-group>
+
       </mat-card>
 
       <!--<mat-card>
@@ -182,7 +182,7 @@
 
                     </mat-form-field>-->
                     <div class="select" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
-                      <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role">
+                      <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role.id">
                         <option *ngFor="let role of roles" [value]="role.id">
                           {{role.name}}
                         </option>

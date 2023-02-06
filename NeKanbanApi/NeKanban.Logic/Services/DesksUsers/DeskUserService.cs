@@ -143,6 +143,7 @@ public class DeskUserService : BaseService, IDeskUserService
     {
         var deskUsers = await _deskUserRepository.QueryableSelect()
             .Include(x=> x.User)
+            .Include(x => x.Role)
             .Where(x => x.DeskId == deskId).ToListAsync(ct);
         return _mapper.Map<DeskUserVm, DeskUser>(deskUsers);
     }

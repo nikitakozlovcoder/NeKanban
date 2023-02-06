@@ -9,7 +9,7 @@ export class DeskUserService {
 
   constructor(private httpService: AppHttpService) {
   }
-  changeRole(deskUserId: number, role: number) {
-    return this.httpService.put<DeskUser[]>("DesksUsers/ChangeRole/" + deskUserId, {role});
+  changeRole(deskUserId: number, roleId: number) {
+    return this.httpService.put<DeskUser[]>("DesksUsers/ChangeRole/" + deskUserId, {roleId});
   }
 }

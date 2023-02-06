@@ -1,0 +1,49 @@
+<div *ngIf="isLoaded && areRolesLoaded && desks.length > 0 && desk != undefined">
+  <mat-sidenav-container class="example-container" >
+    <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
+                 (closed)="events.push('close!')">
+      <h2 class="mat-h2">Мои доски</h2>
+      <div class="sidenav-container">
+        <mat-nav-list>
+          <mat-list-item *ngFor="let desk of desks; index as i">
+            <!--<a *ngIf="isCurrentDesk(i)" matLine (click) = "changeDesk(i)"><mat-icon>check_box</mat-icon>{{ desk.name }} {{desk.id}}<mat-divider></mat-divider></a>-->
+            <a matLine (click) = "changeDesk(desk.id)">{{ desk.name }}<mat-divider></mat-divider></a>
+          </mat-list-item>
+
+        </mat-nav-list>
+        <!--<div class = "menu-bottom-button">
+          <button class = "register_button create-desk-button" mat-raised-button color="primary" (click)="showDeskCreation()">Создать доску</button>
+        </div>-->
+      </div>
+
+
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <p>
+        <app-header [currentUser]="getCurrentUser()" [sidenav]="sidenav" [(desks)]="desks" [currentDeskId]="getCurrentDesk()!.id"></app-header>
+      </p>
+
+      <mat-card>
+        <mat-card-title-group>
+          <mat-card-title>
+            <p class="desk-name">{{desk?.name}}</p>
+          </mat-card-title>
+          <mat-card-subtitle>
+            <p>Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
+          </mat-card-subtitle>
+        </mat-card-title-group>
+
+      </mat-card>
+
+      <mat-tab-group class="mat-tab-group-wrap" animationDuration="0ms">
+        <mat-tab label="Общие">
+          <app-general-settings [(desk)]="desk" [(desks)]="desks" [roles]="roles"></app-general-settings>
+        </mat-tab>
+        <mat-tab label="Пользователи">Пользователи</mat-tab>
+        <mat-tab label="Роли">Роли</mat-tab>
+      </mat-tab-group>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+</div>
