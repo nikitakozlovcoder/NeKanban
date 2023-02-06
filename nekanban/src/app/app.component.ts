@@ -13,6 +13,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.rolesService.initRoles();
+    this.rolesService.initPermissions();
   }
 }

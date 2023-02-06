@@ -15,6 +15,7 @@ import LoadingStateTypes from "../../../constants/LoadingStateTypes";
 import {ViewStateTypes} from "../../../constants/ViewStateTypes";
 import {TodoDeletionDialogComponent} from "../todo-deletion-dialog/todo-deletion-dialog.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
+import {Role} from "../../../models/Role";
 
 @Component({
   selector: 'app-task-creation',
@@ -23,7 +24,7 @@ import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 })
 export class TodoShowComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUser}, private toDoService: TodoService, public rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUser, roles: Role[]}, private toDoService: TodoService, public rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService,
               private commentsService: CommentsService, public dialog: MatDialog) {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
@@ -141,7 +142,7 @@ export class TodoShowComponent implements OnInit {
     this.usersSelected  = newIds;
   }
   checkUserPermission(deskUser: DeskUser, permissionName: string) {
-    return this.rolesService.userHasPermission(deskUser, permissionName);
+    return this.rolesService.userHasPermission(this.data.roles, deskUser, permissionName);
   }
   changeSingleUser(select:MatSelect) {
     let newIds : number[] = select.value;
@@ -276,7 +277,7 @@ export class TodoShowComponent implements OnInit {
         complete: () => this.RefreshUpdatingStatesAndFormControls()
       })
     }
-    else if (this.rolesService.userHasPermission(this.data.deskUser, 'DeleteAnyComments')) {
+    else if (this.checkUserPermission(this.data.deskUser, 'DeleteAnyComments')) {
       this.commentsService.deleteComment(id).subscribe({
         next: data => {
           this.comments = this.SortAndMapComments(data);

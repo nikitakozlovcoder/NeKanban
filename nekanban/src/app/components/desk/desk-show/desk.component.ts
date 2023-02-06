@@ -47,8 +47,8 @@ export class DeskComponent implements OnInit {
   isRemoveDeskLoaded = true;
   isUserRemoveLoaded = true;
   isFavouriteLoaded = true;
-  roles : Role[] = [new Role(0, "Участник"), new Role(1, "Менеджер")];
-  roleNames: string[] = ["Участник", "Менеджер", "Руководитель"];
+  areRolesLoaded = false;
+  roles : Role[] = [];
 
   drop(event: CdkDragDrop<Todo[]>, columnId: number) {
     if (event.previousContainer === event.container) {
@@ -164,6 +164,7 @@ export class DeskComponent implements OnInit {
               this.getColumns();
               this.getToDos(this.desk.id);
               this.name = new UntypedFormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
+              this.initRolesForDesk();
             },
             error: () => {
             }
@@ -178,6 +179,7 @@ export class DeskComponent implements OnInit {
               this.getColumns();
               this.getToDos(this.desk.id);
               this.name = new UntypedFormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
+              this.initRolesForDesk();
             },
             error: () => {
             }
@@ -211,9 +213,9 @@ export class DeskComponent implements OnInit {
     });
 
   }
-  openTaskCreationDialog(todo: Todo): void {
+  openTaskShowingDialog(todo: Todo): void {
     const dialogRefView = this.dialog.open(TodoShowComponent, {
-      data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser},
+      data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser, roles: this.roles},
       panelClass: 'todo-show-wrap'
     });
     dialogRefView.afterClosed().subscribe( result => {
@@ -372,7 +374,7 @@ export class DeskComponent implements OnInit {
   }
 
   getDeskOwner() {
-    return this.desk?.deskUsers.find(el => el.role === 2);
+    return this.desk?.deskUsers.find(el => el.isOwner);
   }
 
   getCurrentDesk() {
@@ -579,11 +581,20 @@ export class DeskComponent implements OnInit {
       }
     });
   }
+
   checkUserPermission(deskUser: DeskUser, permissionName: string) {
-    return this.rolesService.userHasPermission(deskUser, permissionName);
+    return this.rolesService.userHasPermission(this.roles, deskUser, permissionName);
   }
+
   isUserAssigned(todo: Todo) {
     return !!todo.toDoUsers.find(el => el.deskUser.user.id === this.getCurrentUser().id && el.toDoUserType === 1);
+  }
+
+  private initRolesForDesk() {
+    this.rolesService.getRoles(this.desk!.id).subscribe(result => {
+      this.roles = result;
+      this.areRolesLoaded = true;
+    });
   }
 
 }

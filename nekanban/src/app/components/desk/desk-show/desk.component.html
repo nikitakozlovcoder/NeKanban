@@ -1,4 +1,4 @@
-<div *ngIf="isLoaded && desks.length > 0 && desk != undefined">
+<div *ngIf="isLoaded && areRolesLoaded && desks.length > 0 && desk != undefined">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
                  (closed)="events.push('close!')">
@@ -122,7 +122,7 @@
                       (cdkDropListDropped)="drop($event, column.id)">
                       <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? false : true" >
                         <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
-                        <p (click)="openTaskCreationDialog(toDo)" class="todo-name">{{toDo.name}}</p>
+                        <p (click)="openTaskShowingDialog(toDo)" class="todo-name">{{toDo.name}}</p>
                         <mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon>
                       </div>
                     </div>
@@ -181,13 +181,13 @@
                       </mat-select>
 
                     </mat-form-field>-->
-                    <div class="select" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2">
+                    <div class="select" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
                       <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role">
-                        <option *ngFor="let role of roles" [value]="role.role">
-                          {{role.roleName}}
+                        <option *ngFor="let role of roles" [value]="role.id">
+                          {{role.name}}
                         </option>
                       </select>
-                      <svg *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2">
+                      <svg *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
                         <use xlink:href="#select-arrow-down"></use>
                       </svg>
                     </div>
@@ -197,14 +197,14 @@
                       </symbol>
                     </svg>
 
-                    <div class="role-name" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role === 2">
-                      {{roleNames[desk!.deskUsers[i].role]}}
+                    <div class="role-name" *ngIf="desk!.deskUsers[i].isOwner">
+                      Владелец
                     </div>
-                    <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole')">
-                      {{roleNames[desk!.deskUsers[i].role]}}
+                    <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
+                      {{desk!.deskUsers[i].role.name}}
                     </div>
                     <div>
-                      <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && desk!.deskUsers[i].role !== 2" (click)="removeUser([user.user.id])">cancel</mat-icon>
+                      <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && !desk!.deskUsers[i].isOwner" (click)="removeUser([user.user.id])">cancel</mat-icon>
                     </div>
 
 
