@@ -63,6 +63,6 @@ public class RolesController : BaseAuthController
     public async Task RevokePermission(int roleId, [FromBody]RevokePermissionModel model, CancellationToken ct)
     {
         await EnsureAbleTo<Role>(PermissionType.ManageRoles, roleId, ct);
-        await _rolesService.GrantPermission(roleId, model.Permission, ct);
+        await _rolesService.RevokePermission(roleId, model.Permission, ct);
     }
 }

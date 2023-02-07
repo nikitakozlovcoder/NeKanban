@@ -28,7 +28,6 @@ export class GeneralSettingsComponent implements OnInit {
   private sub: any;
   isNameUpdateLoaded = true;
   isLinkLoaded = true;
-  panelOpenState = false;
   name = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
   constructor(private readonly rolesService: RolesService,
               private readonly deskUserService: DeskUserService,
@@ -49,23 +48,7 @@ export class GeneralSettingsComponent implements OnInit {
     return this.desks.find(el => el.id === this.desk!.id);
   }
 
-  changeUserRole(event: Event, deskUserId: number) {
-    this.deskUserService.changeRole(deskUserId, parseInt((event.target as HTMLInputElement).value)).subscribe({
-      next: (data: DeskUser[]) => {
-        this.desk!.deskUsers = data.sort(function (a: DeskUser, b: DeskUser) {
-          if (a.id > b.id) {
-            return 1;
-          }
-          if (a.id < b.id) {
-            return -1;
-          }
-          return 0;
-        });
-      },
-      error: () => {
-      }
-    });
-  }
+
 
   updateDesk() {
     if (this.name.invalid) {
@@ -109,17 +92,7 @@ export class GeneralSettingsComponent implements OnInit {
     })
   }
 
-  removeUser(usersId: number[]) {
-    this.isUserRemoveLoaded = false;
-    this.deskService.removeUserFromDesk(usersId, this.desk!.id).subscribe({
-      next: data => {
-        this.isUserRemoveLoaded = true;
-        this.desk = data;
-      },
-      error: () => {
-      }
-    })
-  }
+
 
   removeDesk(deskId: number) {
     this.isRemoveDeskLoaded = false;

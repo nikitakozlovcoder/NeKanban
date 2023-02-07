@@ -13,9 +13,9 @@ import {DataGeneratorService} from "../../../services/dataGenerator.service";
 import {CommentsService} from "../../../services/comments.service";
 import LoadingStateTypes from "../../../constants/LoadingStateTypes";
 import {ViewStateTypes} from "../../../constants/ViewStateTypes";
-import {TodoDeletionDialogComponent} from "../todo-deletion-dialog/todo-deletion-dialog.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {Role} from "../../../models/Role";
+import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 
 @Component({
   selector: 'app-task-creation',
@@ -256,7 +256,7 @@ export class TodoShowComponent implements OnInit {
     }
   }
   deleteComment(id: number) {
-    const dialogRef = this.dialog.open(TodoDeletionDialogComponent);
+    const dialogRef = this.dialog.open(ConfirmationComponent);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == DialogActionTypes.Reject) {

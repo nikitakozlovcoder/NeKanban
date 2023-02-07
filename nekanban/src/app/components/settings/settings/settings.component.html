@@ -40,8 +40,12 @@
         <mat-tab label="Общие">
           <app-general-settings [(desk)]="desk" [(desks)]="desks" [roles]="roles"></app-general-settings>
         </mat-tab>
-        <mat-tab label="Пользователи">Пользователи</mat-tab>
-        <mat-tab label="Роли">Роли</mat-tab>
+        <mat-tab label="Пользователи">
+          <app-users-settings [(desk)]="desk" [desks]="desks" [roles]="roles"></app-users-settings>
+        </mat-tab>
+        <mat-tab label="Роли">
+          <app-roles-settings [(roles)]="roles" [(desk)]="desk"></app-roles-settings>
+        </mat-tab>
       </mat-tab-group>
     </mat-sidenav-content>
   </mat-sidenav-container>

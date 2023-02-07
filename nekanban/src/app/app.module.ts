@@ -30,11 +30,16 @@ import { DeskUserService } from "./services/deskUser.service";
 import {DataGeneratorService} from "./services/dataGenerator.service";
 import {NgScrollbarModule} from "ngx-scrollbar";
 import {CommentsService} from "./services/comments.service";
-import { TodoDeletionDialogComponent } from './components/todo/todo-deletion-dialog/todo-deletion-dialog.component';
 import {UserStorageService} from "./services/userStorage.service";
 import { SettingsComponent } from './components/settings/settings/settings.component';
 import { HeaderComponent } from './components/partials/header/header.component';
 import { GeneralSettingsComponent } from './components/settings/general-settings/general-settings.component';
+import { UsersSettingsComponent } from './components/settings/users-settings/users-settings.component';
+import { RolesSettingsComponent } from './components/settings/roles-settings/roles-settings.component';
+import {MatListModule} from "@angular/material/list";
+import { RoleCreationComponent } from './components/settings/dialogs/role-creation/role-creation.component';
+import { RoleUpdatingComponent } from './components/settings/dialogs/role-updating/role-updating.component';
+import { ConfirmationComponent } from './components/dialogs/confirmation/confirmation.component';
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -58,10 +63,14 @@ const appRoutes: Routes =[
     TodoCreationComponent,
     TodoEditingComponent,
     ColumnUpdatingComponent,
-    TodoDeletionDialogComponent,
     SettingsComponent,
     HeaderComponent,
     GeneralSettingsComponent,
+    UsersSettingsComponent,
+    RolesSettingsComponent,
+    RoleCreationComponent,
+    RoleUpdatingComponent,
+    ConfirmationComponent,
   ],
     imports: [
         BrowserAnimationsModule,
@@ -72,7 +81,8 @@ const appRoutes: Routes =[
         MaterialExampleModule,
         ReactiveFormsModule,
         RouterModule.forRoot(appRoutes),
-        NgScrollbarModule
+        NgScrollbarModule,
+      MatListModule
     ],
   providers: [UserService,
     DeskService,

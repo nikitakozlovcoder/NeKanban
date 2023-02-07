@@ -35,4 +35,24 @@ export class RolesService {
   getAllPermissions() {
     return this.httpService.get<Permission[]>("ApplicationPermissions/GetPermissions/");
   }
+
+  createRole(deskId: number, name: string) {
+    return this.httpService.post<Role[]>(`Roles/CreateRole/${deskId}`, {name});
+  }
+
+  updateRole(roleId: number, name: string) {
+    return this.httpService.put<Role[]>(`Roles/UpdateRole/${roleId}`, {name});
+  }
+
+  deleteRole(roleId: number) {
+    return this.httpService.delete<Role[]>(`Roles/DeleteRole/${roleId}`);
+  }
+
+  grantPermission(roleId: number, permission: number) {
+    return this.httpService.post<Role[]>(`Roles/GrantPermission/${roleId}`, {permission});
+  }
+
+  revokePermission(roleId: number, permission: number) {
+    return this.httpService.post<Role[]>(`Roles/RevokePermission/${roleId}`, {permission});
+  }
 }

@@ -1,0 +1,37 @@
+<div class ="users-list">
+  <mat-spinner class="spinner-centered" *ngIf="!isUserRemoveLoaded" diameter="20"></mat-spinner>
+  <div class="single-user-title">
+    <h2>Имя пользователя</h2>
+    <h2>Роль</h2>
+  </div>
+  <div class="single-user-container" *ngFor="let user of desk!.deskUsers; index as i">
+    <div class="single-user">
+      <p class="desk-user-name">{{user.user.name}} {{user.user.surname}}</p>
+      <div class="select" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
+        <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role.id">
+          <option *ngFor="let role of roles" [value]="role.id">
+            {{role.name}}
+          </option>
+        </select>
+        <svg *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
+          <use xlink:href="#select-arrow-down"></use>
+        </svg>
+      </div>
+      <svg class="sprites">
+        <symbol id="select-arrow-down" viewbox="0 0 10 6">
+          <polyline points="1 1 5 5 9 1"></polyline>
+        </symbol>
+      </svg>
+
+      <div class="role-name" *ngIf="desk!.deskUsers[i].isOwner">
+        Владелец
+      </div>
+      <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
+        {{desk!.deskUsers[i].role.name}}
+      </div>
+      <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && !desk!.deskUsers[i].isOwner" (click)="removeUser([user.user.id])" matTooltip="Удалить пользователя">cancel</mat-icon>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
+
+</div>
