@@ -29,6 +29,6 @@ public class MyDesksService : IMyDesksService
             .Include(x => x.DeskUsers.Where(du => du.UserId == userId)).ThenInclude(x=> x.User)
             .Where(x=> x.DeskUsers.Any(du => du.UserId == userId))
             .ToListAsync(ct);
-        return _mapper.Map<DeskLiteDto, Desk>(desks);
+        return _mapper.AutoMap<DeskLiteDto, Desk>(desks);
     }
 }

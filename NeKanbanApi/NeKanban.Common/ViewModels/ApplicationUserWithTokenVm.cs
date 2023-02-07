@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using NeKanban.Common.DTOs.ApplicationUsers;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Interfaces;
 

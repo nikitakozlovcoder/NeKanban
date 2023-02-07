@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
+using NeKanban.Common.DTOs.ApplicationUsers;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.UserModel;
 using NeKanban.Common.ViewModels;
@@ -40,10 +41,10 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         {
             throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
         }
-       
+        
         var principal = await _signInManager.CreateUserPrincipalAsync(user);
         var token = _tokenProviderService.GenerateJwtToken(principal);
-        var userVm = _mapper.Map<ApplicationUserWithTokenVm, ApplicationUser>(user);
+        var userVm = _mapper.AutoMap<ApplicationUserWithTokenVm, ApplicationUser>(user);
         userVm.Token = token;
         return userVm;
     }
@@ -57,12 +58,12 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
     public async Task<ApplicationUserWithTokenVm> GetById(int id,  CancellationToken ct)
     {
         var user = await _userRepository.Single(x => x.Id == id, ct);
-        return _mapper.Map<ApplicationUserWithTokenVm, ApplicationUser>(user);
+        return _mapper.AutoMap<ApplicationUserWithTokenVm, ApplicationUser>(user);
     }
 
     public async Task<ApplicationUser> Create(UserRegisterModel userRegister, CancellationToken ct)
     {
-        var user = _mapper.Map<ApplicationUser, UserRegisterModel>(userRegister);
+        var user = _mapper.AutoMap<ApplicationUser, UserRegisterModel>(userRegister);
         var identityResult = await _signInManager.UserManager.CreateAsync(user, userRegister.Password);
         if (!identityResult.Succeeded)
         {

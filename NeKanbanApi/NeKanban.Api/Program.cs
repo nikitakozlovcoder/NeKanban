@@ -71,7 +71,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddAppIdentity();
 
 var app = builder.Build();
-app.Services.ValidateAutomapperConfiguration();
+app.Services.ValidateMapperConfiguration();
 var shouldMigrate = app.Configuration.GetValue<bool>("MigrateOnStart");
 if (shouldMigrate)
 {

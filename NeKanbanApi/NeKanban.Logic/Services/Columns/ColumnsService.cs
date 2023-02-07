@@ -54,7 +54,7 @@ public class ColumnsService : BaseService, IColumnsService
     public async Task<List<ColumnDto>> CreateColumn(int deskId, ColumnCreateModel model, ColumnType columnType, CancellationToken ct)
     {
         await _deskRepository.AnyOrThrow(x => x.Id == deskId, ct);
-        var column = _mapper.Map<Column, ColumnCreateModel>(model);
+        var column = _mapper.AutoMap<Column, ColumnCreateModel>(model);
         column.Order = GetColumnOrder(columnType);
         column.DeskId = deskId;
         column.Type = columnType;
@@ -73,7 +73,7 @@ public class ColumnsService : BaseService, IColumnsService
     public async Task<List<ColumnDto>> UpdateColumn(int columnId, ColumnUpdateModel model, CancellationToken ct)
     {
         var column = await _columnRepository.Single(x => x.Id == columnId, ct);
-        _mapper.Map(model, column);
+        _mapper.AutoMap(model, column);
         await _columnRepository.Update(column, ct);
         return await GetColumns(column.DeskId, ct);
     }

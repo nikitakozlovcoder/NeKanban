@@ -37,7 +37,7 @@ public class CommentsService : ICommentsService
     {
         var deskId = await _toDosRepository.Single(x => x.Id == toDoId, x => x.Column!.DeskId, ct: ct);
         var deskUserId = await _deskUserService.GetDeskUserId(deskId, user, ct);
-        var comment = _appMapper.Map<Comment, CommentCreateModel>(model);
+        var comment = _appMapper.AutoMap<Comment, CommentCreateModel>(model);
         comment.DeskUserId = deskUserId;
         comment.ToDoId = toDoId;
         comment.CreatedAtUtc = DateTime.UtcNow;
@@ -50,7 +50,7 @@ public class CommentsService : ICommentsService
         var comment = await _commentsRepository
             .Single(x => x.Id == commentId && x.DeskUser != null && x.DeskUser.UserId == user.Id, ct);
         
-        _appMapper.Map(model, comment);
+        _appMapper.AutoMap(model, comment);
         await _commentsRepository.Update(comment, ct);
         return await GetComments(comment.ToDoId, ct);
     }

@@ -44,7 +44,7 @@ public class RolesService : IRolesService
 
     public async Task<List<RoleWithPermissionsDto>> CreateRole(int deskId, CreateRoleModel model, CancellationToken ct)
     {
-        var role = _mapper.Map<Role, CreateRoleModel>(model);
+        var role = _mapper.AutoMap<Role, CreateRoleModel>(model);
         role.DeskId = deskId;
         await _rolesRepository.Create(role, ct);
         return await GetRoles(deskId, ct);
@@ -53,7 +53,7 @@ public class RolesService : IRolesService
     public async Task<List<RoleWithPermissionsDto>> UpdateRole(int roleId, UpdateRoleModel model, CancellationToken ct)
     {
         var role = await _rolesRepository.Single(x => x.Id == roleId, ct);
-        _mapper.Map(model, role);
+        _mapper.AutoMap(model, role);
         if (role.IsDefault)
         {
             var currentDefaultRole =

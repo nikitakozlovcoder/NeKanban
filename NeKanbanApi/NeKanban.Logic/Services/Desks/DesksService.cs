@@ -44,7 +44,7 @@ public class DesksService : BaseService, IDesksService
     
     public async Task<DeskDto> CreateDesk(DeskCreateModel deskCreateModel, ApplicationUser user, CancellationToken ct)
     {
-        var desk = _mapper.Map<Desk, DeskCreateModel>(deskCreateModel);
+        var desk = _mapper.AutoMap<Desk, DeskCreateModel>(deskCreateModel);
         await _deskRepository.Create(desk, ct);
         await _rolesService.CreateDefaultRoles(desk.Id, ct);
         await _deskUserService.CreateDeskUser(desk.Id, user.Id, true, ct);
@@ -78,7 +78,7 @@ public class DesksService : BaseService, IDesksService
     public async Task<DeskDto> UpdateDesk(DeskUpdateModel deskUpdateModel, int id, ApplicationUser user, CancellationToken ct)
     {
         var desk = await _deskRepository.Single(x => x.Id == id, ct);
-        _mapper.Map(deskUpdateModel, desk);
+        _mapper.AutoMap(deskUpdateModel, desk);
         await _deskRepository.Update(desk!, ct);
         return await GetDesk(desk!.Id, user, ct);
     }

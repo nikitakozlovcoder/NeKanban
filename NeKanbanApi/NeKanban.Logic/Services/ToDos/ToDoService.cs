@@ -55,7 +55,7 @@ public class ToDoService : BaseService, IToDoService
     {
         var deskUser = await _deskUserRepository.FirstOrDefault(x => x.UserId == user.Id && x.DeskId == deskId, ct); 
         EnsureEntityExists(deskUser);
-        var todo = _mapper.Map<ToDo, ToDoCreateModel>(model);
+        var todo = _mapper.AutoMap<ToDo, ToDoCreateModel>(model);
         var columns = await _columnsService.GetColumns(deskId, ct);
         todo.ColumnId = columns.Single(x => x.Type == ColumnType.Start).Id;
         todo.Order = await GetCreateOrderInColum(todo.ColumnId, ct);
@@ -117,9 +117,9 @@ public class ToDoService : BaseService, IToDoService
     public async Task<ToDoDto> UpdateToDo(int toDoId, ToDoUpdateModel model, CancellationToken ct)
     {
         var todo = await _toDoRepository.Single(x => x.Id == toDoId, ct);
-        _mapper.Map(model, todo);
+        _mapper.AutoMap(model, todo);
         await _toDoRepository.Update(todo, ct);
-        return _mapper.Map<ToDoDto, ToDo>(todo!);
+        return _mapper.AutoMap<ToDoDto, ToDo>(todo!);
     }
 
     public Task<ToDoDto> GetToDo(int toDoId, CancellationToken ct)
