@@ -5,7 +5,7 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.DTOs.DesksUsers;
 
-public class DeskUserPermissionsChallengeDto : BaseEntityModel<int>, IMapFrom<DeskUser, DeskUserPermissionsChallengeDto>
+public class DeskUserPermissionsChallengeDto : BaseEntityModel<int>, IAutoMapFrom<DeskUser, DeskUserPermissionsChallengeDto>
 {
     public required bool IsOwner { get; set; }
     public required List<RolePermissionDto>? Permissions { get; set; }

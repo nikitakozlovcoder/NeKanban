@@ -5,7 +5,7 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.DTOs.Comments;
 
-public class CommentDto : BaseEntityModel<int>, IMapFrom<Comment, CommentDto>
+public class CommentDto : BaseEntityModel<int>, IAutoMapFrom<Comment, CommentDto>
 {
     public required string Body { get; set; } = null!;
     public required DateTime CreatedAtUtc { get; set; }

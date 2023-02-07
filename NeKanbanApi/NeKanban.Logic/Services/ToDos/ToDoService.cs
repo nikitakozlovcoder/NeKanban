@@ -5,6 +5,7 @@ using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
+using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
 using NeKanban.Common.ViewModels;
@@ -43,21 +44,14 @@ public class ToDoService : BaseService, IToDoService
         _mapper = mapper;
     }
 
-    public async Task<List<ToDoVm>> GetToDos(int deskId, CancellationToken ct)
+    public async Task<List<ToDoDto>> GetToDos(int deskId, CancellationToken ct)
     {
-        var desk = await _deskRepository.FirstOrDefault(x=> x.Id == deskId, ct);
-        EnsureEntityExists(desk);
-        var todos = await _toDoRepository.QueryableSelect()
-                .Include(x=> x.ToDoUsers)
-                .ThenInclude(x=> x.DeskUser)
-                .ThenInclude(x=> x!.User)
-                .Include(x=> x.Column)
-                .Where(x => x.Column!.DeskId == deskId).ToListAsync(ct);
-        
-        return _mapper.Map<ToDoVm, ToDo>(todos);
+        await _deskRepository.AnyOrThrow(x=> x.Id == deskId, ct);
+        var todos = await _toDoRepository.ProjectTo<ToDoDto>(x => x.Column!.DeskId == deskId, ct);
+        return todos;
     }
 
-    public async Task<List<ToDoVm>> CreateToDo(int deskId, ApplicationUser user, ToDoCreateModel model, CancellationToken ct)
+    public async Task<List<ToDoDto>> CreateToDo(int deskId, ApplicationUser user, ToDoCreateModel model, CancellationToken ct)
     {
         var deskUser = await _deskUserRepository.FirstOrDefault(x => x.UserId == user.Id && x.DeskId == deskId, ct); 
         EnsureEntityExists(deskUser);
@@ -85,7 +79,7 @@ public class ToDoService : BaseService, IToDoService
     }
 
 
-    public async Task<List<ToDoVm>> MoveToDo(int toDoId, ToDoMoveModel model, CancellationToken ct)
+    public async Task<List<ToDoDto>> MoveToDo(int toDoId, ToDoMoveModel model, CancellationToken ct)
     {
         var toDo = await _toDoRepository.QueryableSelect().Include(x=> x.Column)
             .FirstOrDefaultAsync(x => x.Id == toDoId, ct);
@@ -120,21 +114,16 @@ public class ToDoService : BaseService, IToDoService
         return await GetToDos(toDo.Column!.DeskId, ct);
     }
 
-    public async Task<ToDoVm> UpdateToDo(int toDoId, ToDoUpdateModel model, CancellationToken ct)
+    public async Task<ToDoDto> UpdateToDo(int toDoId, ToDoUpdateModel model, CancellationToken ct)
     {
-        var todo = await GetToDo(toDoId, ct);
-        EnsureEntityExists(todo);
-        _mapper.Map(model, todo!);
-        await _toDoRepository.Update(todo!, ct);
-        return _mapper.Map<ToDoVm, ToDo>(todo!);
+        var todo = await _toDoRepository.Single(x => x.Id == toDoId, ct);
+        _mapper.Map(model, todo);
+        await _toDoRepository.Update(todo, ct);
+        return _mapper.Map<ToDoDto, ToDo>(todo!);
     }
 
-    public Task<ToDo?> GetToDo(int toDoId, CancellationToken ct)
+    public Task<ToDoDto> GetToDo(int toDoId, CancellationToken ct)
     {
-        return _toDoRepository.QueryableSelect().Include(x => x.ToDoUsers)
-            .ThenInclude(x => x.DeskUser)
-            .ThenInclude(x => x!.User)
-            .Include(x => x.Column)
-            .FirstOrDefaultAsync(x => x.Id == toDoId, ct);
+        return _toDoRepository.ProjectToSingle<ToDoDto>(x => x.Id == toDoId, ct);
     }
 }

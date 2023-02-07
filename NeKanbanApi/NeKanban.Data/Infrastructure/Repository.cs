@@ -115,42 +115,42 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
     #endregion
 
     #region ProjectTo
-    public Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IMapFrom<TEntity, T>
+    public Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return Query(predicate, null).ProjectTo<T>(_mapper.ConfigurationProvider).ToListAsync(ct);
     }
     
-    public Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IMapFrom<TEntity, T>
+    public Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return Query(predicate, orders).ProjectTo<T>(_mapper.ConfigurationProvider).ToListAsync(ct);
     }
     
-    public async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IMapFrom<TEntity, T>
+    public async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return ThrowOnNull(await Query(predicate, null).ProjectTo<T>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(ct));
     }
     
-    public async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IMapFrom<TEntity, T>
+    public async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return ThrowOnNull(await Query(predicate, orders).ProjectTo<T>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(ct));
     }
     
-    public Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IMapFrom<TEntity, T>
+    public Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return Query(predicate, null).ProjectTo<T>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(ct);
     }
     
-    public Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IMapFrom<TEntity, T>
+    public Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return Query(predicate, orders).ProjectTo<T>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(ct);
     }
     
-    public async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IMapFrom<TEntity, T>
+    public async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return ThrowOnNull(await ProjectToFirstOrDefault<T>(predicate, ct));
     }
     
-    public async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IMapFrom<TEntity, T>
+    public async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return ThrowOnNull(await ProjectToFirstOrDefault<T>(predicate, orders, ct));
     }

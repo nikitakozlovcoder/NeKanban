@@ -5,7 +5,7 @@ using NeKanban.Common.Models.CommentModels;
 
 namespace NeKanban.Common.Entities;
 
-public class Comment : IHasPk<int>, IMapFrom<CommentCreateModel, Comment>, IMapFrom<CommentUpdateModel, Comment>
+public class Comment : IHasPk<int>, IAutoMapFrom<CommentCreateModel, Comment>, IAutoMapFrom<CommentUpdateModel, Comment>
 {
     public int Id { get; set; }
     public required int? DeskUserId { get; set; }

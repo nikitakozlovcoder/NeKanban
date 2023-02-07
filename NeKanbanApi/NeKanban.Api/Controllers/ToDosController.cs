@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
 using NeKanban.Common.ViewModels;
@@ -32,14 +33,14 @@ public class ToDosController : BaseAuthController
     }
     
     [HttpGet("{deskId:int}")]
-    public async Task<List<ToDoVm>> GetTodos(int deskId, CancellationToken ct)
+    public async Task<List<ToDoDto>> GetTodos(int deskId, CancellationToken ct)
     {
         await EnsureAbleTo<Desk>(PermissionType.AccessDesk, deskId, ct);
         return await _toDoService.GetToDos(deskId, ct);
     }
     
     [HttpPost("{deskId:int}")]
-    public async Task<List<ToDoVm>> CreateToDo(int deskId, [FromBody]ToDoCreateModel model, CancellationToken ct)
+    public async Task<List<ToDoDto>> CreateToDo(int deskId, [FromBody]ToDoCreateModel model, CancellationToken ct)
     {
         await EnsureAbleTo<Desk>(PermissionType.CreateTasks, deskId, ct);
         var user = await GetApplicationUser();
@@ -47,14 +48,14 @@ public class ToDosController : BaseAuthController
     }
     
     [HttpPut("{toDoId:int}")]
-    public async Task<ToDoVm> UpdateToDo(int toDoId, [FromBody]ToDoUpdateModel model, CancellationToken ct)
+    public async Task<ToDoDto> UpdateToDo(int toDoId, [FromBody]ToDoUpdateModel model, CancellationToken ct)
     {
         await EnsureAbleTo<ToDo>(PermissionType.UpdateTask, toDoId, ct);
         return await _toDoService.UpdateToDo(toDoId, model, ct);
     }
     
     [HttpPut("{toDoId:int}")]
-    public async Task<ToDoVm> AssignUser(int toDoId, [FromBody]AssignUserModel model, CancellationToken ct)
+    public async Task<ToDoDto> AssignUser(int toDoId, [FromBody]AssignUserModel model, CancellationToken ct)
     {
         var userId= await _deskUserService.GetDeskUserUserId(model.DeskUserId, ct);
         var currentUser = await GetApplicationUser();
@@ -63,7 +64,7 @@ public class ToDosController : BaseAuthController
     }
     
     [HttpDelete]
-    public async Task<ToDoVm> RemoveUser([FromBody]RemoveUserModel model, CancellationToken ct)
+    public async Task<ToDoDto> RemoveUser([FromBody]RemoveUserModel model, CancellationToken ct)
     {
         var userId= await _toDoUserService.GetToDoUserUserId(model.ToDoUserId, ct);
         var currentUser = await GetApplicationUser();
@@ -72,7 +73,7 @@ public class ToDosController : BaseAuthController
     }
     
     [HttpPut("{toDoId:int}")]
-    public async Task<List<ToDoVm>> MoveToDo(int toDoId, [FromBody]ToDoMoveModel model, CancellationToken ct)
+    public async Task<List<ToDoDto>> MoveToDo(int toDoId, [FromBody]ToDoMoveModel model, CancellationToken ct)
     {
         await EnsureAbleTo<ToDo>(PermissionType.MoveTasks, toDoId, ct);
         return await _toDoService.MoveToDo(toDoId, model, ct);

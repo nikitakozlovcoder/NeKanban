@@ -5,7 +5,7 @@ using NeKanban.Security.Constants;
 
 namespace NeKanban.Common.DTOs.Permissions;
 
-public class RolePermissionDto : BaseEntityModel<int>, IMapFrom<RolePermission, RolePermissionDto>
+public class RolePermissionDto : BaseEntityModel<int>, IAutoMapFrom<RolePermission, RolePermissionDto>
 {
     public required PermissionType Permission { get; set; }
     public string PermissionName => Permission.ToString();

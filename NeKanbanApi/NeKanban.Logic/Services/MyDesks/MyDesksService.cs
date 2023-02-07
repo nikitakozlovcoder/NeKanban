@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
+using NeKanban.Common.DTOs.Desks;
 using NeKanban.Common.Entities;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
@@ -22,12 +23,12 @@ public class MyDesksService : IMyDesksService
         _mapper = mapper;
     }
 
-    public async Task<List<DeskLiteVm>> GetForUser(int userId, CancellationToken ct)
+    public async Task<List<DeskLiteDto>> GetForUser(int userId, CancellationToken ct)
     {
         var desks = await _deskRepository.QueryableSelect()
             .Include(x => x.DeskUsers.Where(du => du.UserId == userId)).ThenInclude(x=> x.User)
             .Where(x=> x.DeskUsers.Any(du => du.UserId == userId))
             .ToListAsync(ct);
-        return _mapper.Map<DeskLiteVm, Desk>(desks);
+        return _mapper.Map<DeskLiteDto, Desk>(desks);
     }
 }

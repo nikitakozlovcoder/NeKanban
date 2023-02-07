@@ -5,7 +5,7 @@ using NeKanban.Common.Models.RoleModels;
 
 namespace NeKanban.Common.Entities;
 
-public class Role : IHasPk<int>, IMapFrom<CreateRoleModel, Role>, IMapFrom<UpdateRoleModel, Role>
+public class Role : IHasPk<int>, IAutoMapFrom<CreateRoleModel, Role>, IAutoMapFrom<UpdateRoleModel, Role>
 {
     public int Id { get; set; }
     public required string Name { get; set; }

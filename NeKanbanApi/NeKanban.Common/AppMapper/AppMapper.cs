@@ -16,17 +16,17 @@ public class AppMapper : IAppMapper
         _mapper = mapper;
     }
 
-    public TDest Map<TDest, TSource>(TSource source) where TDest : class, IMapFrom<TSource, TDest> where TSource : class
+    public TDest Map<TDest, TSource>(TSource source) where TDest : class, IAutoMapFrom<TSource, TDest> where TSource : class
     {
         return _mapper.Map<TDest>(source);
     }
 
-    public TDest Map<TSource, TDest>(TSource source, TDest dest) where TDest : class, IMapFrom<TSource, TDest> where TSource : class
+    public TDest Map<TSource, TDest>(TSource source, TDest dest) where TDest : class, IAutoMapFrom<TSource, TDest> where TSource : class
     {
         return _mapper.Map(source, dest);
     }
 
-    public List<TDest> Map<TDest, TSource>(List<TSource> source) where TDest : class, IMapFrom<TSource, TDest> where TSource : class
+    public List<TDest> Map<TDest, TSource>(List<TSource> source) where TDest : class, IAutoMapFrom<TSource, TDest> where TSource : class
     {
         return _mapper.Map<List<TDest>>(source);
     }
