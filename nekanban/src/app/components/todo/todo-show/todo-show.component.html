@@ -111,9 +111,7 @@
               </div>
             </div>
           </div>
-          <div class="comment-text">
-            {{comment.body}}
-          </div>
+          <div class="comment-text">{{comment.body}}</div>
         </ng-container>
         <div class="comment-updating-group" *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Update">
           <mat-form-field class="comment-updating-field" appearance="fill">

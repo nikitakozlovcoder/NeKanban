@@ -40,12 +40,16 @@ import {MatListModule} from "@angular/material/list";
 import { RoleCreationComponent } from './components/settings/dialogs/role-creation/role-creation.component';
 import { RoleUpdatingComponent } from './components/settings/dialogs/role-updating/role-updating.component';
 import { ConfirmationComponent } from './components/dialogs/confirmation/confirmation.component';
+import { PageNotFoundComponent } from './components/routing/page-not-found/page-not-found.component';
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
   { path: '', component: DeskComponent, canActivate: [DeskGuard]},
   { path: 'invite', component: InviteComponent},
-  { path: 'desks/:id/settings', component: SettingsComponent, canActivate: [DeskGuard]}
+  { path: 'desks/:id', component: DeskComponent, canActivate: [DeskGuard]},
+  { path: 'desks/:id/settings', component: SettingsComponent, canActivate: [DeskGuard]},
+  { path: 'desks', redirectTo: ''},
+  { path: '**', component: PageNotFoundComponent}
 ];
 
 @NgModule({
@@ -71,6 +75,7 @@ const appRoutes: Routes =[
     RoleCreationComponent,
     RoleUpdatingComponent,
     ConfirmationComponent,
+    PageNotFoundComponent,
   ],
     imports: [
         BrowserAnimationsModule,

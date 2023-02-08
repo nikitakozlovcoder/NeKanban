@@ -98,6 +98,7 @@ export class GeneralSettingsComponent implements OnInit {
     this.isRemoveDeskLoaded = false;
     this.deskService.removeDesk(deskId).subscribe({
       next: () => {
+        this.isRemoveDeskLoaded = true;
         this.router.navigate(['']);
       },
       error: () => {

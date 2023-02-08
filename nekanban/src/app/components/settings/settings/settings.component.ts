@@ -4,8 +4,10 @@ import {UntypedFormControl, Validators} from "@angular/forms";
 import {DeskService} from "../../../services/desk.service";
 import {RolesService} from "../../../services/roles.service";
 import {Role} from "../../../models/Role";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {DeskUser} from "../../../models/deskUser";
+import {DeskCreationComponent} from "../../desk/desk-creation/desk-creation.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-settings',
@@ -27,12 +29,31 @@ export class SettingsComponent implements OnInit {
 
   constructor(private readonly deskService: DeskService,
               private rolesService: RolesService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private readonly router: Router,
+              private readonly dialog: MatDialog) {
     this.opened = false;
   }
 
   ngOnInit(): void {
     this.loadDesks();
+  }
+
+  changeDesk(id: number) {
+    /*this.currentId = id;
+    this.opened = false;
+    this.isLoaded = false;
+    this.deskService.getDesk(id).subscribe({
+      next: (data: Desk) => {
+        this.desk = data;
+      },
+      error: () => {
+      }
+    })*/
+    this.router.navigate(['/desks', id]);
+  }
+
+  loadCurrentDesk() {
     this.sub = this.route.params.subscribe(params => {
       this.deskService.getDesk(params['id']).subscribe(result => {
         this.desk = result;
@@ -42,35 +63,22 @@ export class SettingsComponent implements OnInit {
     })
   }
 
-  changeDesk(id: number) {
-    this.currentId = id;
-    this.opened = false;
-    this.isLoaded = false;
-    this.deskService.getDesk(id).subscribe({
-      next: (data: Desk) => {
-        this.desk = data;
-      },
-      error: () => {
-      }
-    })
-  }
-
   loadDesks() {
     this.isLoaded = false;
     this.deskService.getDesks().subscribe({
       next: (data: Desk[]) => {
 
         this.desks = data;
-        this.isLoaded = true;
       },
       error: () => {
-      }
+      },
+      complete: () => this.loadCurrentDesk()
     });
   }
   private initRolesForDesk() {
     this.rolesService.getRoles(this.desk!.id).subscribe(result => {
       this.roles = result;
-      this.areRolesLoaded = true;
+      this.isLoaded = true;
     });
   }
 
@@ -88,5 +96,24 @@ export class SettingsComponent implements OnInit {
 
   checkUserPermission(deskUser: DeskUser, permissionName: string) {
     return this.rolesService.userHasPermission(this.roles, deskUser, permissionName);
+  }
+
+  showDeskCreation() {
+    const dialogRef = this.dialog.open(DeskCreationComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe( result => {
+      if (result != undefined) {
+        this.router.navigate(['/desks', result.id]);
+      }
+    });
+    this.opened = false;
+  }
+
+  hasAnyPermissionsForGeneralSettings() {
+    return this.checkUserPermission(this.getCurrentDesk()!.deskUser, "UpdateGeneralDesk") ||
+      this.checkUserPermission(this.getCurrentDesk()!.deskUser, "ViewInviteLink") ||
+      this.checkUserPermission(this.getCurrentDesk()!.deskUser, "ManageInviteLink") ||
+      this.checkUserPermission(this.getCurrentDesk()!.deskUser, "DeleteDesk");
   }
 }

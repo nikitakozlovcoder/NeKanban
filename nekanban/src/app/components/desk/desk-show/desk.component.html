@@ -7,7 +7,7 @@
         <mat-nav-list>
           <mat-list-item *ngFor="let desk of desks; index as i">
             <!--<a *ngIf="isCurrentDesk(i)" matLine (click) = "changeDesk(i)"><mat-icon>check_box</mat-icon>{{ desk.name }} {{desk.id}}<mat-divider></mat-divider></a>-->
-            <a matLine (click) = "changeDesk(desk.id)">{{ desk.name }}<mat-divider></mat-divider></a>
+            <a matLine [routerLink]="['/desks', desk.id]" (click)="closeSidenav()">{{ desk.name }}<mat-divider></mat-divider></a>
           </mat-list-item>
 
           <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
@@ -135,7 +135,7 @@
 
 
 
-          <mat-card class = "settings-card">
+          <!--<mat-card class = "settings-card">
             <mat-card-title>
               <p>Настройки доски<mat-icon>settings</mat-icon></p>
             </mat-card-title>
@@ -172,15 +172,6 @@
                   <mat-spinner class="spinner-centered" *ngIf="!isUserRemoveLoaded" diameter="20"></mat-spinner>
                   <mat-list-item class="single-user" *ngFor="let user of desk!.deskUsers; index as i">
                     <p class="desk-user-name">{{user.user.name}} {{user.user.surname}}</p>
-                    <!--<mat-form-field *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2" class = "role-selector" appearance="fill">
-                      <mat-label>Роль</mat-label>
-                      <mat-select (selectionChange)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role">
-                        <mat-option *ngFor="let role of roles" [value]="role.role">
-                          {{role.roleName}}
-                        </mat-option>
-                      </mat-select>
-
-                    </mat-form-field>-->
                     <div class="select" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
                       <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role.id">
                         <option *ngFor="let role of roles" [value]="role.id">
@@ -214,14 +205,14 @@
                 </ng-scrollbar>
 
 
-                <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
+
 
               </mat-nav-list>
             </mat-expansion-panel>
             <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'DeleteDesk') && isRemoveDeskLoaded" class = "desk-remove-button" mat-raised-button color="warn" (click)="removeDesk(desk!.id)"><mat-icon>delete</mat-icon>Удалить доску</button>
             <mat-spinner class="spinner-centered" color="warn" diameter="36" *ngIf="!isRemoveDeskLoaded"></mat-spinner>
 
-          </mat-card>
+          </mat-card>-->
         </div>
 
 
@@ -284,7 +275,7 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
-<div *ngIf="!isLoaded">
+<div *ngIf="!isLoaded || !areRolesLoaded">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
                  (closed)="events.push('close!')">

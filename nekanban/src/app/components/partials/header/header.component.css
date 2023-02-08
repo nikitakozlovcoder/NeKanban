@@ -42,3 +42,6 @@ mat-toolbar ::ng-deep .mat-progress-spinner circle {
   stroke: white !important;
   margin-right: 10px;
 }
+.project-name {
+  cursor: pointer;
+}

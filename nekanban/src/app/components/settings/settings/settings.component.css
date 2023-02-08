@@ -20,3 +20,18 @@ mat-sidenav-content {
 .mat-tab-group-wrap {
   margin: 10px;
 }
+.spinner {
+  margin: 20% auto auto;
+}
+.settings-desk-name {
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 13px;
+  align-items: center;
+}
+.settings-desk-name mat-icon {
+  cursor: pointer;
+}
+.desk-name {
+  margin-bottom: 0;
+}
