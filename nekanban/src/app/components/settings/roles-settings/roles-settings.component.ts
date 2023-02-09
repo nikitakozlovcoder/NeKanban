@@ -83,7 +83,7 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
         }
         ,error: (error: HttpErrorResponse) => {
           if (error.error === "CantDeleteRoleWhenAnyUserHasThisRole") {
-            this.snackBar.open('Невозможно удалить роль, на которую назначен хотя бы один пользователь!', undefined, {duration:0, panelClass: ['big-sidenav']})
+            this.snackBar.open('Невозможно удалить роль, на которую назначен хотя бы один пользователь!', undefined, {duration:2000, panelClass: ['big-sidenav']})
           }
         }
       });
