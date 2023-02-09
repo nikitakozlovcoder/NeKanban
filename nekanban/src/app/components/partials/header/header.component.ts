@@ -14,13 +14,21 @@ import {DeskService} from "../../../services/desk.service";
 export class HeaderComponent implements OnInit {
 
   @Input() currentUser: User | undefined;
+
   desk: Desk | undefined;
   @Input() currentDeskId: number | undefined;
+
   //@Output() deskChange = new EventEmitter<Desk>;
   isFavouriteLoaded = true;
+
   @Input() sidenav : MatSidenav | undefined;
+
   @Input() desks: Desk[] = [];
   @Output() desksChange = new EventEmitter<Desk[]>;
+
+  @Input() opened = false;
+  @Output() openedChange = new EventEmitter<boolean>();
+
   constructor(private readonly userService: UserService,
               private router: Router,
               private readonly deskService: DeskService) { }
@@ -77,5 +85,10 @@ export class HeaderComponent implements OnInit {
 
   setCurrentDesk() {
     this.desk = this.desks.find(el => el.id === this.currentDeskId);
+  }
+
+  toggleSidenav() {
+    this.opened = !this.opened;
+    this.openedChange.emit(this.opened);
   }
 }

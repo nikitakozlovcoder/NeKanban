@@ -11,6 +11,8 @@ import {RoleUpdatingComponent} from "../dialogs/role-updating/role-updating.comp
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {RolesService} from "../../../services/roles.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-roles-settings',
@@ -29,7 +31,8 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   isActive = true;
   currentRole: Role | undefined;
   constructor(public dialog: MatDialog,
-              private readonly rolesService: RolesService) { }
+              private readonly rolesService: RolesService,
+              public snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
   }
@@ -73,9 +76,16 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
       if (result == DialogActionTypes.Reject) {
         return;
       }
-      this.rolesService.deleteRole(role.id).subscribe(result => {
-        this.roles = result;
-        this.rolesChange.emit(this.roles);
+      this.rolesService.deleteRole(role.id).subscribe({
+        next: (data: Role[]) => {
+          this.roles = data;
+          this.rolesChange.emit(this.roles);
+        }
+        ,error: (error: HttpErrorResponse) => {
+          if (error.error === "CantDeleteRoleWhenAnyUserHasThisRole") {
+            this.snackBar.open('Невозможно удалить роль, на которую назначен хотя бы один пользователь!', undefined, {duration:0, panelClass: ['big-sidenav']})
+          }
+        }
       });
     });
   }

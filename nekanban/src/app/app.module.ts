@@ -41,6 +41,7 @@ import { RoleCreationComponent } from './components/settings/dialogs/role-creati
 import { RoleUpdatingComponent } from './components/settings/dialogs/role-updating/role-updating.component';
 import { ConfirmationComponent } from './components/dialogs/confirmation/confirmation.component';
 import { PageNotFoundComponent } from './components/routing/page-not-found/page-not-found.component';
+import { SidenavComponent } from './components/partials/sidenav/sidenav.component';
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -76,6 +77,7 @@ const appRoutes: Routes =[
     RoleUpdatingComponent,
     ConfirmationComponent,
     PageNotFoundComponent,
+    SidenavComponent,
   ],
     imports: [
         BrowserAnimationsModule,

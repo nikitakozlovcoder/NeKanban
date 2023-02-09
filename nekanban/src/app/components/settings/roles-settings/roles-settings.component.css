@@ -24,3 +24,6 @@
 .role-delete-icon {
   margin-left: 15px;
 }
+::ng-deep.big-sidenav {
+  width: 300px !important;
+}

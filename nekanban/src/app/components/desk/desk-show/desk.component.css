@@ -261,12 +261,7 @@ mat-toolbar ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
   stroke: white;
 }
 
-.create-desk-button {
-  width: 280px;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-}
+
 
 mat-card-title mat-spinner {
   margin-top: 7px;
