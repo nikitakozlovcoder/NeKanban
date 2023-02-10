@@ -45,7 +45,7 @@ public class RolesController : BaseAuthController
         return await _rolesService.UpdateRole(roleId, model, ct);
     }
     
-    [HttpPut("{roleId:int}/default")]
+    [HttpPut("{roleId:int}")]
     public async Task<List<RoleWithPermissionsDto>> SetAsDefault(int roleId, CancellationToken ct)
     {
         await EnsureAbleTo<Role>(PermissionType.ManageRoles, roleId, ct);
