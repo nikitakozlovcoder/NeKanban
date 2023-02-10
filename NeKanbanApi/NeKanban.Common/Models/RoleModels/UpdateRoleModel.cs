@@ -2,5 +2,4 @@
 
 public class UpdateRoleModel : CreateRoleModel
 {
-    public required bool IsDefault { get; set; }
 }

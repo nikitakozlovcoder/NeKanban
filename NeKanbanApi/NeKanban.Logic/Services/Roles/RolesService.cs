@@ -54,18 +54,22 @@ public class RolesService : IRolesService
     {
         var role = await _rolesRepository.Single(x => x.Id == roleId, ct);
         _mapper.AutoMap(model, role);
-        if (role.IsDefault)
-        {
-            var currentDefaultRole =
-                await _rolesRepository.FirstOrDefault(x => x.DeskId == role.DeskId && x.IsDefault, ct);
+        await _rolesRepository.Update(role, ct);
+        return await GetRoles(role.DeskId, ct);
+    }
 
-            if (currentDefaultRole != null)
-            {
-                currentDefaultRole.IsDefault = false;
-                await _rolesRepository.Update(currentDefaultRole, ct);
-            }
+    public async Task<List<RoleWithPermissionsDto>> SetAsDefault(int roleId, CancellationToken ct)
+    {
+        var role = await _rolesRepository.Single(x => x.Id == roleId, ct);
+        role.IsDefault = true;
+        var currentDefaultRole =
+            await _rolesRepository.ToList(x => x.DeskId == role.DeskId && x.IsDefault, ct);
+        foreach (var defaultRole in currentDefaultRole)
+        {
+            defaultRole.IsDefault = false;
         }
         
+        await _rolesRepository.Update(currentDefaultRole, ct);
         await _rolesRepository.Update(role, ct);
         return await GetRoles(role.DeskId, ct);
     }

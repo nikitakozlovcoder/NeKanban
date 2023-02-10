@@ -11,6 +11,7 @@ public interface IRepository<TEntity> where TEntity: class, IHasPk<int>
     Task Remove(TEntity item, CancellationToken ct);
     Task<TEntity> Remove(int id, CancellationToken ct);
     Task Update(TEntity item, CancellationToken ct);
+    Task Update(IEnumerable<TEntity> items, CancellationToken ct);
     
     Task<List<TEntity>> ToList(Expression<Func<TEntity, bool>> predicate, CancellationToken ct);
     Task<List<T>> ToList<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, IEnumerable<Expression<Func<TEntity, object>>>? orders = null, CancellationToken ct = default);

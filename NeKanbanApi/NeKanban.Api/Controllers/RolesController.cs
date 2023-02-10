@@ -45,6 +45,13 @@ public class RolesController : BaseAuthController
         return await _rolesService.UpdateRole(roleId, model, ct);
     }
     
+    [HttpPut("{roleId:int}/default")]
+    public async Task<List<RoleWithPermissionsDto>> SetAsDefault(int roleId, CancellationToken ct)
+    {
+        await EnsureAbleTo<Role>(PermissionType.ManageRoles, roleId, ct);
+        return await _rolesService.SetAsDefault(roleId, ct);
+    }
+    
     [HttpDelete("{roleId:int}")]
     public async Task<List<RoleWithPermissionsDto>> DeleteRole(int roleId, CancellationToken ct)
     {
@@ -63,6 +70,6 @@ public class RolesController : BaseAuthController
     public async Task RevokePermission(int roleId, [FromBody]RevokePermissionModel model, CancellationToken ct)
     {
         await EnsureAbleTo<Role>(PermissionType.ManageRoles, roleId, ct);
-        await _rolesService.GrantPermission(roleId, model.Permission, ct);
+        await _rolesService.RevokePermission(roleId, model.Permission, ct);
     }
 }

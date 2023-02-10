@@ -21,7 +21,6 @@ public class Role : IHasPk<int>, IAutoMapFrom<CreateRoleModel, Role>, IAutoMapFr
     public static void ConfigureMap(IMappingExpression<UpdateRoleModel, Role> cfg)
     {
         cfg.IgnoreAllMembers()
-            .ForMember(x => x.Name, _ => _.MapFrom(x => x.Name))
-            .ForMember(x => x.IsDefault, _ => _.MapFrom(x => x.IsDefault));
+            .ForMember(x => x.Name, _ => _.MapFrom(x => x.Name));
     }
 }

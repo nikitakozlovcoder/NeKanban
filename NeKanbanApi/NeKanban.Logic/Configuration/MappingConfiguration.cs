@@ -4,7 +4,6 @@ using AutoMapper;
 using AutoMapper.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using NeKanban.Common.Interfaces;
-using NeKanban.Logic.Mappings;
 
 namespace NeKanban.Logic.Configuration;
 

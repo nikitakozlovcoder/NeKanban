@@ -58,6 +58,17 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         _context.Entry(item).State = EntityState.Modified;
         return _context.SaveChangesAsync(ct);
     }
+
+    public Task Update(IEnumerable<TEntity> items, CancellationToken ct)
+    {
+        foreach (var item in items)
+        {
+            _context.Entry(item).State = EntityState.Modified;
+        }
+
+        return _context.SaveChangesAsync(ct);
+    }
+
     #endregion
 
     #region ToList
