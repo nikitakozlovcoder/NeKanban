@@ -22,9 +22,7 @@ export class SettingsComponent implements OnInit {
   desk: Desk | undefined;
   isLoaded = true;
   areRolesLoaded = true;
-  currentId: number = -1;
   roles : Role[] = [];
-  private sub: any;
   name = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
 
   constructor(private readonly deskService: DeskService,
@@ -36,43 +34,36 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadDesks();
-  }
-
-  changeDesk(id: number) {
-    /*this.currentId = id;
-    this.opened = false;
-    this.isLoaded = false;
-    this.deskService.getDesk(id).subscribe({
-      next: (data: Desk) => {
-        this.desk = data;
-      },
-      error: () => {
-      }
-    })*/
-    this.router.navigate(['/desks', id]);
-  }
-
-  loadCurrentDesk() {
-    this.sub = this.route.params.subscribe(params => {
-      this.deskService.getDesk(params['id']).subscribe(result => {
-        this.desk = result;
-        this.name.setValue(this.desk.name);
-        this.initRolesForDesk();
-      });
+    this.route.params.subscribe(params => {
+      this.loadDesks(parseInt(params['id']));
     })
   }
 
-  loadDesks() {
+  changeDesk(id: number) {
+    this.router.navigate(['/desks', id]);
+  }
+
+  loadCurrentDesk(deskId: number) {
+    this.deskService.getDesk(deskId).subscribe(result => {
+      this.desk = result;
+      this.name.setValue(this.desk.name);
+      this.initRolesForDesk();
+    });
+  }
+
+  loadDesks(deskId: number) {
     this.isLoaded = false;
     this.deskService.getDesks().subscribe({
       next: (data: Desk[]) => {
-
         this.desks = data;
+        if (!this.desks.some(el => el.id === deskId)) {
+          this.router.navigate(['/**'], { skipLocationChange: true });
+          return;
+        }
       },
       error: () => {
       },
-      complete: () => this.loadCurrentDesk()
+      complete: () => this.loadCurrentDesk(deskId)
     });
   }
   private initRolesForDesk() {
