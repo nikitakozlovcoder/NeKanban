@@ -29,7 +29,7 @@ button {
   font-size: 14px;
 
 }
-::ng-deep button .mat-button-wrapper {
+::ng-deep .not-found-home-button .mat-button-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
