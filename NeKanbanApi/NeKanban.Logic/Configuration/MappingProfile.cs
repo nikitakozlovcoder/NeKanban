@@ -22,7 +22,7 @@ public class MappingProfile : Profile
                 var interfaces = type.GetInterfaces();
                 foreach (var typeInterface in interfaces)
                 {
-                    if (!(typeInterface.IsGenericType && typeInterface.GetGenericTypeDefinition() == typeof(IMapFrom<,>)))
+                    if (!(typeInterface.IsGenericType && typeInterface.GetGenericTypeDefinition() == typeof(IAutoMapFrom<,>)))
                     {
                         continue;
                     }

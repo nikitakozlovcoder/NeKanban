@@ -6,6 +6,7 @@ using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
+using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
@@ -29,11 +30,12 @@ public class ToDoUserService : BaseService, IToDoUserService
         _mapper = mapper;
     }
 
-    public async Task<ToDoVm> AssignUser(int todoId, int deskUserId, CancellationToken ct)
+    public async Task<ToDoDto> AssignUser(int todoId, int deskUserId, CancellationToken ct)
     {
-        var exists = await _toDoUserRepository.QueryableSelect()
-            .AnyAsync(x => x.ToDoId == todoId && x.DeskUserId == deskUserId && x.ToDoUserType != ToDoUserType.Creator, ct);
-        
+        var exists = await _toDoUserRepository
+            .Any(x => x.ToDoId == todoId
+                      && x.DeskUserId == deskUserId 
+                      && x.ToDoUserType != ToDoUserType.Creator, ct);
         if (exists)
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, "User already assigned");
@@ -47,10 +49,10 @@ public class ToDoUserService : BaseService, IToDoUserService
         };
         await _toDoUserRepository.Create(toDoUser, ct);
         var todo = await _toDoService.GetToDo(todoId, ct);
-        return _mapper.Map<ToDoVm, ToDo>(todo!);
+        return todo;
     }
 
-    public async Task<ToDoVm> RemoveUser(int toDoUserId, CancellationToken ct)
+    public async Task<ToDoDto> RemoveUser(int toDoUserId, CancellationToken ct)
     {
         var toDoUser = await _toDoUserRepository.Single(x => x.Id == toDoUserId, ct);
         if (toDoUser.ToDoUserType == ToDoUserType.Creator)
@@ -60,7 +62,7 @@ public class ToDoUserService : BaseService, IToDoUserService
 
         await _toDoUserRepository.Remove(toDoUser, ct);
         var todo = await _toDoService.GetToDo(toDoUser.ToDoId, ct);
-        return _mapper.Map<ToDoVm, ToDo>(todo!);
+        return todo;
     }
 
     public async Task<int> GetToDoUserUserId(int toDoUserId, CancellationToken ct)

@@ -6,7 +6,7 @@ using NeKanban.Common.Models.ColumnModels;
 
 namespace NeKanban.Common.Entities;
 
-public class Column : IHasPk<int>, IMapFrom<ColumnCreateModel, Column>,  IMapFrom<ColumnUpdateModel, Column>
+public class Column : IHasPk<int>, IAutoMapFrom<ColumnCreateModel, Column>,  IAutoMapFrom<ColumnUpdateModel, Column>
 {
     public int Id { get; set; }
     public required string Name { get; set; } = "";

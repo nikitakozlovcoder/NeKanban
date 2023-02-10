@@ -6,8 +6,8 @@ namespace NeKanban.Logic.Services.Users;
 
 public interface IApplicationUsersService
 {
-    Task<ApplicationUserVm> Login(UserLoginModel userLoginModel, CancellationToken ct);
-    Task<ApplicationUserVm> Register(UserRegisterModel userRegister, CancellationToken ct);
-    Task<ApplicationUserVm> GetById(int id, CancellationToken ct);
+    Task<ApplicationUserWithTokenVm> Login(UserLoginModel userLoginModel, CancellationToken ct);
+    Task<ApplicationUserWithTokenVm> Register(UserRegisterModel userRegister, CancellationToken ct);
+    Task<ApplicationUserWithTokenVm> GetById(int id, CancellationToken ct);
     Task<ApplicationUser> Create(UserRegisterModel userRegisterModel, CancellationToken ct);
 }

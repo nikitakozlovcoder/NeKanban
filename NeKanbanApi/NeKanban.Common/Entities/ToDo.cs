@@ -6,7 +6,7 @@ using NeKanban.Common.Models.ToDoModels;
 
 namespace NeKanban.Common.Entities;
 
-public class ToDo: IHasPk<int>, IMapFrom<ToDoCreateModel, ToDo>, IMapFrom<ToDoUpdateModel, ToDo>
+public class ToDo: IHasPk<int>, IAutoMapFrom<ToDoCreateModel, ToDo>, IAutoMapFrom<ToDoUpdateModel, ToDo>
 {
     public int Id { get; set; }
     public required int Order { get; set; }

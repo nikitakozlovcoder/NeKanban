@@ -5,15 +5,15 @@ using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
 using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
+using NeKanban.Common.DTOs.Desks;
+using NeKanban.Common.DTOs.DesksUsers;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.Models.DeskUserModels;
-using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.MyDesks;
 using NeKanban.Logic.Services.Roles;
-using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.DesksUsers;
 
@@ -62,15 +62,10 @@ public class DeskUserService : BaseService, IDeskUserService
         await _deskUserRepository.Create(deskUser, ct);
     }
 
-    public async Task<DeskUserVm> GetDeskUser(int id, CancellationToken ct)
+    public async Task<DeskUserDto> GetDeskUser(int id, CancellationToken ct)
     {
-        var deskUser = await _deskUserRepository.FirstOrDefault(x => x.Id == id, ct);
-        if (deskUser == null)
-        {
-            throw new HttpStatusCodeException(HttpStatusCode.NotFound, nameof(deskUser));
-        }
-        
-        return _mapper.Map<DeskUserVm, DeskUser>(deskUser);
+        var deskUser = await _deskUserRepository.ProjectToSingle<DeskUserDto>(x => x.Id == id, ct);
+        return deskUser;
     }
 
     public async Task RemoveFromDesk(int userId, int id, CancellationToken ct)
@@ -85,7 +80,7 @@ public class DeskUserService : BaseService, IDeskUserService
         await _deskUserRepository.Remove(deskUser, ct);
     }
 
-    public async Task<List<DeskLiteVm>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId,
+    public async Task<List<DeskLiteDto>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId,
         CancellationToken ct)
     {
         var deskUser = await _deskUserRepository.First(x => x.UserId == applicationUser.Id && x.DeskId == deskId, ct);
@@ -99,7 +94,7 @@ public class DeskUserService : BaseService, IDeskUserService
         return await _myDesksService.GetForUser(applicationUser.Id, ct);
     }
 
-    public async Task<List<DeskUserVm>> ChangeRole(DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct)
+    public async Task<List<DeskUserDto>> ChangeRole(DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct)
     {
         var deskUser = await _deskUserRepository.Single(x => x.Id == deskUserId, ct);
         if (deskUser.IsOwner)
@@ -139,11 +134,9 @@ public class DeskUserService : BaseService, IDeskUserService
         }
     }
 
-    private async Task<List<DeskUserVm>> GetDeskUsers(int deskId, CancellationToken ct)
+    private async Task<List<DeskUserDto>> GetDeskUsers(int deskId, CancellationToken ct)
     {
-        var deskUsers = await _deskUserRepository.QueryableSelect()
-            .Include(x=> x.User)
-            .Where(x => x.DeskId == deskId).ToListAsync(ct);
-        return _mapper.Map<DeskUserVm, DeskUser>(deskUsers);
+        var deskUsers = await _deskUserRepository.ProjectTo<DeskUserDto>(x => x.DeskId == deskId, ct);
+        return deskUsers;
     }
 }

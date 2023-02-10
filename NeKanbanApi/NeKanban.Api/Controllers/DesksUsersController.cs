@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NeKanban.Common.DTOs.Desks;
+using NeKanban.Common.DTOs.DesksUsers;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.Models.DeskUserModels;
@@ -31,28 +33,28 @@ public class DesksUsersController : BaseAuthController
     }
 
     [HttpPut("{deskId:int}")]
-    public async Task<DeskVm> RemoveUsers([FromBody]DeskRemoveUsersModel deskRemoveUsersModel, int deskId, CancellationToken ct = default)
+    public async Task<DeskDto> RemoveUsers([FromBody]DeskRemoveUsersModel deskRemoveUsersModel, int deskId, CancellationToken ct = default)
     {
         await EnsureAbleTo<Desk>(PermissionType.RemoveUsers, deskId, ct);
         return await _desksService.UpdateDesk(deskRemoveUsersModel, deskId, await GetApplicationUser(), ct);
     }
     
     [HttpPut("{deskId:int}")]
-    public async Task<List<DeskLiteVm>> SetPreferenceType([FromBody]DeskUserUpdatePreferenceType preferenceType, int deskId, CancellationToken ct = default)
+    public async Task<List<DeskLiteDto>> SetPreferenceType([FromBody]DeskUserUpdatePreferenceType preferenceType, int deskId, CancellationToken ct = default)
     {
         var user = await GetApplicationUser();
         return await _deskUserService.SetPreference(preferenceType, user, deskId, ct);
     }
     
     [HttpPut]
-    public async Task<DeskVm> AddUserByLink([FromBody]DeskAddUserByLinkModel model, CancellationToken ct = default)
+    public async Task<DeskDto> AddUserByLink([FromBody]DeskAddUserByLinkModel model, CancellationToken ct = default)
     {
         var user = await GetApplicationUser();
         return await _desksService.AddUserToDesk(model, user, ct);
     }
     
     [HttpPut("{deskUserId:int}")]
-    public async Task<List<DeskUserVm>> ChangeRole([FromBody]DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct = default)
+    public async Task<List<DeskUserDto>> ChangeRole([FromBody]DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct = default)
     {
         await EnsureAbleTo<DeskUser>(PermissionType.ChangeUserRole, deskUserId, ct);
         return await _deskUserService.ChangeRole(model, deskUserId, ct);

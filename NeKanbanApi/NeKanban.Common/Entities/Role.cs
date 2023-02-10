@@ -5,7 +5,7 @@ using NeKanban.Common.Models.RoleModels;
 
 namespace NeKanban.Common.Entities;
 
-public class Role : IHasPk<int>, IMapFrom<CreateRoleModel, Role>, IMapFrom<UpdateRoleModel, Role>
+public class Role : IHasPk<int>, IAutoMapFrom<CreateRoleModel, Role>, IAutoMapFrom<UpdateRoleModel, Role>
 {
     public int Id { get; set; }
     public required string Name { get; set; }
@@ -21,7 +21,6 @@ public class Role : IHasPk<int>, IMapFrom<CreateRoleModel, Role>, IMapFrom<Updat
     public static void ConfigureMap(IMappingExpression<UpdateRoleModel, Role> cfg)
     {
         cfg.IgnoreAllMembers()
-            .ForMember(x => x.Name, _ => _.MapFrom(x => x.Name))
-            .ForMember(x => x.IsDefault, _ => _.MapFrom(x => x.IsDefault));
+            .ForMember(x => x.Name, _ => _.MapFrom(x => x.Name));
     }
 }

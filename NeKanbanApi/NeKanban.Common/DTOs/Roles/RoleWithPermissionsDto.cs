@@ -5,7 +5,7 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.DTOs.Roles;
 
-public class RoleWithPermissionsDto : BaseEntityModel<int>, IMapFrom<Role, RoleWithPermissionsDto>
+public class RoleWithPermissionsDto : BaseEntityModel<int>, IAutoMapFrom<Role, RoleWithPermissionsDto>
 { 
     public required string Name { get; set; }
     public required bool IsDefault { get; set; }

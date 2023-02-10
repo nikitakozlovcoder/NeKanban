@@ -5,11 +5,11 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.DTOs.Desks;
 
-public class DeskDto : BaseEntityModel<int>,  IMapFrom<Desk, DeskDto>
+public class DeskDto : BaseEntityModel<int>,  IAutoMapFrom<Desk, DeskDto>
 {
     public required string Name { get; set; }
     public required string? InviteLink { get; set; }
-    public required List<DeskUserLiteDto> DeskUsers { get; set; } = new();
+    public required List<DeskUserLiteDto> DeskUsers { get; set; }
     public static void ConfigureMap(IMappingExpression<Desk, DeskDto> cfg)
     {
     }

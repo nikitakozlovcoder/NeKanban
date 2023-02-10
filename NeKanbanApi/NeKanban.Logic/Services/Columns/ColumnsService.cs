@@ -32,13 +32,13 @@ public class ColumnsService : BaseService, IColumnsService
         _mapper = mapper;
     }
 
-    public async Task<List<ColumnVm>> GetColumns(int deskId, CancellationToken ct)
+    public async Task<List<ColumnDto>> GetColumns(int deskId, CancellationToken ct)
     {
         var columns = await _columnRepository.ProjectTo<ColumnDto>(x => x.DeskId == deskId, ct);
-        return _mapper.Map<ColumnVm, ColumnDto>(columns);
+        return columns;
     }
 
-    public async Task<List<ColumnVm>> DeleteColumn(int columnId, CancellationToken ct)
+    public async Task<List<ColumnDto>> DeleteColumn(int columnId, CancellationToken ct)
     {
         var column = await _columnRepository.First(x => x.Id == columnId, ct);
         if (column.Type is ColumnType.End or ColumnType.Start)
@@ -51,10 +51,10 @@ public class ColumnsService : BaseService, IColumnsService
         return await GetColumns(deskId, ct);
     }
 
-    public async Task<List<ColumnVm>> CreateColumn(int deskId, ColumnCreateModel model, ColumnType columnType, CancellationToken ct)
+    public async Task<List<ColumnDto>> CreateColumn(int deskId, ColumnCreateModel model, ColumnType columnType, CancellationToken ct)
     {
         await _deskRepository.AnyOrThrow(x => x.Id == deskId, ct);
-        var column = _mapper.Map<Column, ColumnCreateModel>(model);
+        var column = _mapper.AutoMap<Column, ColumnCreateModel>(model);
         column.Order = GetColumnOrder(columnType);
         column.DeskId = deskId;
         column.Type = columnType;
@@ -70,22 +70,22 @@ public class ColumnsService : BaseService, IColumnsService
         }, ct);
     }
 
-    public async Task<List<ColumnVm>> UpdateColumn(int columnId, ColumnUpdateModel model, CancellationToken ct)
+    public async Task<List<ColumnDto>> UpdateColumn(int columnId, ColumnUpdateModel model, CancellationToken ct)
     {
         var column = await _columnRepository.Single(x => x.Id == columnId, ct);
-        _mapper.Map(model, column);
+        _mapper.AutoMap(model, column);
         await _columnRepository.Update(column, ct);
         return await GetColumns(column.DeskId, ct);
     }
 
-    public async Task<List<ColumnVm>> MoveColumn(int columnId, ColumnMoveModel model, CancellationToken ct)
+    public async Task<List<ColumnDto>> MoveColumn(int columnId, ColumnMoveModel model, CancellationToken ct)
     {
         var column = await _columnRepository.First(x=> x.Id == columnId, ct);
         var columns = await _columnRepository.ToList(x => x.DeskId == column!.DeskId, ct);
         var positionToMove = model.Position;
         foreach (var columnItem in columns.OrderBy(x=> x.Order))
         {
-            if (columnItem.Id == column!.Id)
+            if (columnItem.Id == column.Id)
             {
                 if (columnItem.Order == model.Position) continue;
                 columnItem.Order = model.Position;
@@ -98,7 +98,7 @@ public class ColumnsService : BaseService, IColumnsService
             }
         }
 
-        return await GetColumns(column!.DeskId, ct);
+        return await GetColumns(column.DeskId, ct);
     }
 
     private static int GetColumnOrder(ColumnType columnType)
