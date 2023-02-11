@@ -35,7 +35,7 @@ public class ToDosController : BaseAuthController
     [HttpGet("{deskId:int}")]
     public async Task<List<ToDoDto>> GetTodos(int deskId, CancellationToken ct)
     {
-        await EnsureAbleTo<Desk>(PermissionType.AccessDesk, deskId, ct);
+        await EnsureAbleTo<Desk>(deskId, ct);
         return await _toDoService.GetToDos(deskId, ct);
     }
     

@@ -50,7 +50,7 @@ public class DesksController : BaseAuthController
     [HttpGet("{id:int}")]
     public async Task<DeskDto> GetDesk(int id, CancellationToken ct = default)
     {
-        await EnsureAbleTo<Desk>(PermissionType.AccessDesk, id, ct);
+        await EnsureAbleTo<Desk>(id, ct);
         return await _desksService.GetDesk(id, await GetApplicationUser(), ct);
     }
 

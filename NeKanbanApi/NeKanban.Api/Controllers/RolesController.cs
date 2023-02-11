@@ -27,7 +27,7 @@ public class RolesController : BaseAuthController
     [HttpGet("{deskId:int}")]
     public async Task<List<RoleWithPermissionsDto>> GetRoles(int deskId, CancellationToken ct)
     {
-        await EnsureAbleTo<Desk>(PermissionType.AccessDesk, deskId, ct);
+        await EnsureAbleTo<Desk>(deskId, ct);
         return await _rolesService.GetRoles(deskId, ct);
     }
     

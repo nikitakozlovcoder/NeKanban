@@ -32,4 +32,14 @@ public class BaseAuthController : ControllerBase
             throw new HttpStatusCodeException(HttpStatusCode.Forbidden);   
         }
     }
+    
+    protected async Task EnsureAbleTo<TProtectedEntity>(int entityId, CancellationToken ct)
+    {
+        var protector = _serviceProvider.GetRequiredService<IEntityProtector<TProtectedEntity>>();
+        var user = await GetApplicationUser();
+        if (!await protector.HasPermission(user, entityId, ct))
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.Forbidden);   
+        }
+    }
 }

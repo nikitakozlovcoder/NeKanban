@@ -13,7 +13,6 @@ public enum PermissionType
     CreateTasks,
     UpdateTask,
     MoveTasks,
-    AccessDesk,
     RemoveUsers,
     ChangeUserRole,
     AddComments,
