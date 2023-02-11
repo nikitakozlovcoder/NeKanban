@@ -14,7 +14,6 @@ public class DefaultPermissionsProvider : IDefaultPermissionProvider
     {
         _userPermissions = new List<PermissionType>
         {
-          PermissionType.AccessDesk, 
           PermissionType.AssignTasksThemself,
           PermissionType.MoveTasks,
           PermissionType.AddComments,

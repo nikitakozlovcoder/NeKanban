@@ -29,7 +29,7 @@ public class ColumnsController : BaseAuthController
     [HttpGet("{deskId:int}")]
     public async Task<List<ColumnDto>> GetColumns(int deskId, CancellationToken ct)
     {
-        await EnsureAbleTo<Desk>(PermissionType.AccessDesk, deskId, ct);
+        await EnsureAbleTo<Desk>(deskId, ct);
         return await _columnsService.GetColumns(deskId, ct);
     }
     

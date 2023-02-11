@@ -26,7 +26,7 @@ public class CommentsController : BaseAuthController
     [HttpGet("{toDoId:int}")]
     public async Task<List<CommentDto>> GetComments(int toDoId, CancellationToken ct)
     {
-        await EnsureAbleTo<ToDo>(PermissionType.AccessDesk, toDoId, ct);
+        await EnsureAbleTo<ToDo>(toDoId, ct);
         return await _commentsService.GetComments(toDoId, ct);
     }
     

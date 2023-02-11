@@ -38,7 +38,7 @@ public class AppMapper : IAppMapper
     {
         var profileType = typeof(IMappingProfile<,>).MakeGenericType(typeof(TSource), typeof(TDest));
         var profile = _provider.GetRequiredService(profileType);
-        var createMap = profileType.GetMethods().Single(x => x is {Name: "MapCollection"} && x.GetParameters().Length == 2
+        var createMap = profileType.GetMethods().Single(x => x is {Name: "Map"} && x.GetParameters().Length == 2
             && x.GetParameters().First().ParameterType == typeof(List<>).MakeGenericType(typeof(TSource))
             && x.ReturnType == typeof(Task<>).MakeGenericType(typeof(List<>).MakeGenericType(typeof(TDest))));
         var task = (Task)createMap.Invoke(profile, new object[]{source, ct})!;
