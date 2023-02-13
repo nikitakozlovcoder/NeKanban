@@ -27,3 +27,12 @@
 ::ng-deep.big-sidenav {
   width: 300px !important;
 }
+.permissions-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.permissions-title h2 {
+  margin-right: 15px;
+  margin-bottom: 0;
+}

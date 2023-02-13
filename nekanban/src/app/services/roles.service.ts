@@ -44,6 +44,10 @@ export class RolesService {
     return this.httpService.put<Role[]>(`Roles/UpdateRole/${roleId}`, {name});
   }
 
+  setAsDefault(roleId: number) {
+    return this.httpService.put<Role[]>(`Roles/SetAsDefault/${roleId}`, {});
+  }
+
   deleteRole(roleId: number) {
     return this.httpService.delete<Role[]>(`Roles/DeleteRole/${roleId}`);
   }

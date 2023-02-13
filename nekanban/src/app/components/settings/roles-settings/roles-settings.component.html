@@ -17,7 +17,13 @@
   </div>
   <div class="permissions-list">
     <mat-card>
-      <h2>Разрешения</h2>
+      <div class="permissions-title">
+        <h2>Разрешения</h2>
+        <div>
+          <mat-checkbox *ngIf="!currentRole!.isDefault" (click)="setRoleAsDefault()" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
+          <mat-checkbox *ngIf="currentRole!.isDefault" disabled [checked]="true" matTooltip="Эта роль уже назначена в качестве роли по умолчанию!">Роль по умолчанию</mat-checkbox>
+        </div>
+      </div>
       <div *ngFor="let permission of allPermissions">
         <mat-checkbox *ngIf="currentRoleHasPermission(permission)" [checked]="true" (click)="revokePermissionFromRole(permission)">{{permission.permissionName}}</mat-checkbox>
         <mat-checkbox *ngIf="!currentRoleHasPermission(permission)" (click)="grantPermissionToRole(permission)">{{permission.permissionName}}</mat-checkbox>

@@ -28,7 +28,6 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   @Input() desks: Desk[] = [];
   permissions: Permission[] = [];
   allPermissions: Permission[] = [];
-  isActive = true;
   currentRole: Role | undefined;
   constructor(public dialog: MatDialog,
               private readonly rolesService: RolesService,
@@ -36,8 +35,9 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
   }
+
   ngOnChanges() {
-    this.currentRole = this.roles[0];
+    this.currentRole ||= this.roles[0];
     this.allPermissions = this.rolesService.permissions;
   }
 
@@ -65,6 +65,7 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
       if (result != undefined) {
         this.roles = result;
         this.rolesChange.emit(this.roles);
+        this.updateCurrentRole();
       }
     });
   }
@@ -106,6 +107,18 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
         return el.permission != permission.permission;
       });
     })
+  }
+
+  setRoleAsDefault() {
+    this.rolesService.setAsDefault(this.currentRole!.id).subscribe(result => {
+      this.roles = result;
+      this.rolesChange.emit(this.roles);
+      this.updateCurrentRole();
+    })
+  }
+
+  private updateCurrentRole() {
+    this.currentRole = this.roles.find(el => el.id === this.currentRole!.id);
   }
 
 }
