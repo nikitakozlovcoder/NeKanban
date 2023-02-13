@@ -23,7 +23,18 @@ public abstract class BaseEntityProtector<TEntity> : IEntityProtector<TEntity> w
         var id = await GetDeskId(entityId, ct);
         return id.HasValue && await CheckRoleByDeskId(id.Value, currentUser.Id, type, ct);
     }
-    
+
+    public async Task<bool> HasPermission(ApplicationUser? currentUser, int entityId, CancellationToken ct)
+    {
+        if (currentUser == null)
+        {
+            return false;
+        }
+
+        var id = await GetDeskId(entityId, ct);
+        return id.HasValue;
+    }
+
     protected abstract Task<int?> GetDeskId(int entityId, CancellationToken ct);
     
     private async Task<bool> CheckRoleByDeskId(int deskId, int currentUserId, PermissionType type, CancellationToken ct)

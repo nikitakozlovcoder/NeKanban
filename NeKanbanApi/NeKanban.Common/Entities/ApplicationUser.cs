@@ -6,7 +6,7 @@ using NeKanban.Common.Models.UserModel;
 
 namespace NeKanban.Common.Entities;
 
-public class ApplicationUser : IdentityUser<int>, IHasPk<int>, IMapFrom<UserRegisterModel, ApplicationUser>
+public class ApplicationUser : IdentityUser<int>, IHasPk<int>, IAutoMapFrom<UserRegisterModel, ApplicationUser>
 {
     public required string? Name { get; set; }
     public required string? Surname { get; set; }

@@ -6,7 +6,7 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.DTOs.DesksUsers;
 
-public class DeskUserLiteDto : BaseEntityModel<int>, IMapFrom<DeskUser, DeskUserLiteDto>
+public class DeskUserLiteDto : BaseEntityModel<int>, IAutoMapFrom<DeskUser, DeskUserLiteDto>
 {
     public required int UserId { get; set; }
     public required ApplicationUserDto User { get; set; }

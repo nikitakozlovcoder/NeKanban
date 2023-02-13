@@ -27,7 +27,7 @@ public class RolesController : BaseAuthController
     [HttpGet("{deskId:int}")]
     public async Task<List<RoleWithPermissionsDto>> GetRoles(int deskId, CancellationToken ct)
     {
-        await EnsureAbleTo<Desk>(PermissionType.AccessDesk, deskId, ct);
+        await EnsureAbleTo<Desk>(deskId, ct);
         return await _rolesService.GetRoles(deskId, ct);
     }
     
@@ -43,6 +43,13 @@ public class RolesController : BaseAuthController
     {
         await EnsureAbleTo<Role>(PermissionType.ManageRoles, roleId, ct);
         return await _rolesService.UpdateRole(roleId, model, ct);
+    }
+    
+    [HttpPut("{roleId:int}")]
+    public async Task<List<RoleWithPermissionsDto>> SetAsDefault(int roleId, CancellationToken ct)
+    {
+        await EnsureAbleTo<Role>(PermissionType.ManageRoles, roleId, ct);
+        return await _rolesService.SetAsDefault(roleId, ct);
     }
     
     [HttpDelete("{roleId:int}")]

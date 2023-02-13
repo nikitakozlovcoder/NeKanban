@@ -25,13 +25,13 @@ public class UsersController : BaseAuthController
     }
     
     [HttpPost]
-    public  Task<ApplicationUserVm> LogIn([FromBody]UserLoginModel userLoginModel, CancellationToken ct = default)
+    public  Task<ApplicationUserWithTokenVm> LogIn([FromBody]UserLoginModel userLoginModel, CancellationToken ct = default)
     {
         return _applicationUsersService.Login(userLoginModel, ct);
     }
     
     [HttpPost]
-    public Task<ApplicationUserVm> Register([FromBody]UserRegisterModel userRegisterModel, CancellationToken ct = default)
+    public Task<ApplicationUserWithTokenVm> Register([FromBody]UserRegisterModel userRegisterModel, CancellationToken ct = default)
     {
         return _applicationUsersService.Register(userRegisterModel, ct);
     }

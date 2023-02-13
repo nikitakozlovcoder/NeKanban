@@ -4,7 +4,7 @@ using NeKanban.Common.Interfaces;
 
 namespace NeKanban.Common.DTOs.ApplicationUsers;
 
-public class ApplicationUserDto : BaseEntityModel<int>, IMapFrom<ApplicationUser, ApplicationUserDto>
+public class ApplicationUserDto : BaseEntityModel<int>, IAutoMapFrom<ApplicationUser, ApplicationUserDto>
 {
     public required string Name { get; set; }
     public required string Surname { get; set; }

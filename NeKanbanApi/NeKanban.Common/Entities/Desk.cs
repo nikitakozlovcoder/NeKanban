@@ -5,7 +5,7 @@ using NeKanban.Common.Models.DeskModels;
 
 namespace NeKanban.Common.Entities;
 
-public class Desk : IHasPk<int>, IMapFrom<DeskCreateModel, Desk>, IMapFrom<DeskUpdateModel, Desk>
+public class Desk : IHasPk<int>, IAutoMapFrom<DeskCreateModel, Desk>, IAutoMapFrom<DeskUpdateModel, Desk>
 {
     public int Id { get; set; }
     public required string Name { get; set; } = "";

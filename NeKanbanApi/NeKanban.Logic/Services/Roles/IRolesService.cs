@@ -9,6 +9,7 @@ public interface IRolesService
     Task<List<RoleWithPermissionsDto>> GetRoles(int deskId, CancellationToken ct);
     Task<List<RoleWithPermissionsDto>> CreateRole(int deskId, CreateRoleModel model, CancellationToken ct);
     Task<List<RoleWithPermissionsDto>> UpdateRole(int roleId, UpdateRoleModel model, CancellationToken ct);
+    Task<List<RoleWithPermissionsDto>> SetAsDefault(int roleId, CancellationToken ct);
     Task<List<RoleWithPermissionsDto>> DeleteRole(int roleId, CancellationToken ct);
     Task GrantPermission(int roleId, PermissionType permission, CancellationToken ct);
     Task RevokePermission(int roleId, PermissionType permission, CancellationToken ct);
