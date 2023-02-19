@@ -1,13 +1,12 @@
-﻿using AutoMapper;
+﻿using Batteries.Injection.Attributes;
+using Batteries.Mapper.AppMapper;
+using Batteries.Repository;
 using JetBrains.Annotations;
-using NeKanban.Common.AppMapper;
-using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.Desks;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ColumnModels;
 using NeKanban.Common.Models.DeskModels;
-using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Columns;
 using NeKanban.Logic.Services.DesksUsers;

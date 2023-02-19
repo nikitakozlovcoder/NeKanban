@@ -1,5 +1,6 @@
-﻿using JetBrains.Annotations;
-using NeKanban.Common.Attributes;
+﻿using Batteries.Injection.Attributes;
+using Batteries.Repository;
+using JetBrains.Annotations;
 using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Security;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Batteries.Repository;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,11 +14,5 @@ public static class DataBaseConfigExtensions
     {
         serviceCollection.AddDbContext<ApplicationContext>(x =>
                 x.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-    }
-
-    public static void AddDataAccess(this IServiceCollection serviceCollection)
-    {
-        serviceCollection.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-        serviceCollection.AddScoped<IdentityDbContext<ApplicationUser, ApplicationRole, int>, ApplicationContext>();
     }
 }

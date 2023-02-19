@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using AutoMapper;
+using Batteries.Mapper.Interfaces;
+using Batteries.Repository;
 using NeKanban.Common.Extensions;
-using NeKanban.Common.Interfaces;
 using NeKanban.Common.Models.ToDoModels;
 
 namespace NeKanban.Common.Entities;

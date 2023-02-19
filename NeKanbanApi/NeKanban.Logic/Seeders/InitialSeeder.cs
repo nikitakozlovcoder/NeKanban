@@ -1,12 +1,13 @@
-﻿using NeKanban.Common.Attributes;
+﻿using Batteries.Injection.Attributes;
+using JetBrains.Annotations;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.Models.UserModel;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Desks;
 using NeKanban.Logic.Services.Users;
 
 namespace NeKanban.Logic.Seeders;
 
+[UsedImplicitly]
 [Injectable<ISeeder>]
 public class InitialSeeder : ISeeder
 {

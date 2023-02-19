@@ -1,10 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Batteries.Injection.Attributes;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using NeKanban.Common.Attributes;
 using NeKanban.Common.ViewModels;
 using NeKanban.Logic.Options;
 

@@ -30,4 +30,10 @@
       <ProjectReference Include="..\NeKanban.Security\NeKanban.Security.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="wwwroot\storage\.keep">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

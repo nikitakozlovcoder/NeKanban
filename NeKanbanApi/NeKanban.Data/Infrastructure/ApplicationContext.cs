@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Batteries.Injection.Attributes;
+using JetBrains.Annotations;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Entities;
 
 namespace NeKanban.Data.Infrastructure;
 
+[UsedImplicitly]
+[Injectable<DbContext>]
 public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
 {
     public ApplicationContext(DbContextOptions<ApplicationContext> options)

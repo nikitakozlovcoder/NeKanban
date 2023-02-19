@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
+using Batteries.Exceptions;
 
 namespace NeKanban.Logic.Services;
 

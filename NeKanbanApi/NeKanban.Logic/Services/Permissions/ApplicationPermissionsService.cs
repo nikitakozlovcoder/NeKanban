@@ -1,5 +1,5 @@
-﻿using JetBrains.Annotations;
-using NeKanban.Common.Attributes;
+﻿using Batteries.Injection.Attributes;
+using JetBrains.Annotations;
 using NeKanban.Common.ViewModels;
 using NeKanban.Security.Constants;
 

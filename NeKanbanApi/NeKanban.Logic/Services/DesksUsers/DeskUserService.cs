@@ -1,9 +1,10 @@
 ﻿using System.Net;
+using Batteries.Exceptions;
+using Batteries.Injection.Attributes;
+using Batteries.Mapper.AppMapper;
+using Batteries.Repository;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
-using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
-using NeKanban.Common.AppMapper;
-using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.Desks;
 using NeKanban.Common.DTOs.DesksUsers;

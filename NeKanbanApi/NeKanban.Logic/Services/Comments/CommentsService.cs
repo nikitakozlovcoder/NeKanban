@@ -1,6 +1,7 @@
-﻿using JetBrains.Annotations;
-using NeKanban.Common.AppMapper;
-using NeKanban.Common.Attributes;
+﻿using Batteries.Injection.Attributes;
+using Batteries.Mapper.AppMapper;
+using Batteries.Repository;
+using JetBrains.Annotations;
 using NeKanban.Common.DTOs.Comments;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.CommentModels;

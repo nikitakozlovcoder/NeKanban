@@ -1,7 +1,6 @@
-﻿using JetBrains.Annotations;
-using NeKanban.Common.Attributes;
+﻿using Batteries.Injection.Attributes;
+using JetBrains.Annotations;
 using NeKanban.Common.Entities;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Security;
 
 namespace NeKanban.Logic.EntityProtectors;

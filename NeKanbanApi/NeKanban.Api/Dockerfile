@@ -8,6 +8,7 @@ WORKDIR /src
 COPY ["NeKanban.Api/NeKanban.Api.csproj", "NeKanban.Api/"]
 COPY ["NeKanban.Logic/NeKanban.Logic.csproj", "NeKanban.Logic/"]
 COPY ["NeKanban.Common/NeKanban.Common.csproj", "NeKanban.Common/"]
+COPY ["Batteries/Batteries.csproj", "Batteries/"]
 COPY ["NeKanban.Security/NeKanban.Security.csproj", "NeKanban.Security/"]
 COPY ["NeKanban.Data/NeKanban.Data.csproj", "NeKanban.Data/"]
 COPY ["NeKanban.FrameworkExceptions/NeKanban.FrameworkExceptions.csproj", "NeKanban.FrameworkExceptions/"]

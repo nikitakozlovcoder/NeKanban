@@ -1,21 +1,25 @@
-using System.Net;
 using System.Text;
+using Batteries.Exceptions;
+using Batteries.FileStorage.FileStorageProviders;
+using Batteries.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
-using NeKanban.Common.Exceptions;
 using NeKanban.Data.Extensions;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Configuration;
 using NeKanban.Logic.Options;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddControllers();
 builder.Services.AddServices();
+builder.Services.AddWwwRootStorage(new WebRootStorageConfig
+{
+    Root = builder.Environment.WebRootPath,
+    Folder = "storage",
+    HostingUrl = builder.Configuration.GetValue<string>("HostingUrl")!
+});
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-builder.Services.AddDataAccess();
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>
@@ -87,6 +91,8 @@ else
 }
 
 app.UseCors(x=> x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseStaticFiles();
+app.UseAppExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -97,23 +103,4 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-app.Use(async (context, next) =>
-{
-    try
-    {
-        await next(context);
-    }
-    catch (EntityDoesNotExists e)
-    {
-        context.Response.StatusCode = (int) HttpStatusCode.NotFound;
-        await context.Response.WriteAsJsonAsync(e.Message);
-    }
-    catch (HttpStatusCodeException e)
-    {
-        context.Response.StatusCode = (int) e.Status;
-        await context.Response.WriteAsJsonAsync(e.Message);
-    }
-});
-
 app.Run();

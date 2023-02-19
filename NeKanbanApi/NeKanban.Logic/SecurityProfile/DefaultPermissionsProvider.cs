@@ -1,11 +1,11 @@
-﻿using JetBrains.Annotations;
-using NeKanban.Common.Attributes;
+﻿using Batteries.Injection.Attributes;
+using JetBrains.Annotations;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.SecurityProfile;
 
-[Injectable<IDefaultPermissionProvider>]
 [UsedImplicitly]
+[Injectable<IDefaultPermissionProvider>]
 public class DefaultPermissionsProvider : IDefaultPermissionProvider
 {
     private readonly List<PermissionType> _userPermissions;

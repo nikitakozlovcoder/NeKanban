@@ -1,5 +1,5 @@
-﻿using NeKanban.Common.DTOs.ApplicationUsers;
-using NeKanban.Common.Interfaces;
+﻿using Batteries.Mapper.Interfaces;
+using NeKanban.Common.DTOs.ApplicationUsers;
 
 namespace NeKanban.Common.ViewModels;
 
