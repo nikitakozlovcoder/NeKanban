@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace NeKanban.Migrations
+namespace NeKanban.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
     partial class ApplicationContextModelSnapshot : ModelSnapshot
@@ -339,6 +339,23 @@ namespace NeKanban.Migrations
                     b.ToTable("DeskUser");
                 });
 
+            modelBuilder.Entity("NeKanban.Common.Entities.FileEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileEntity");
+                });
+
             modelBuilder.Entity("NeKanban.Common.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -412,6 +429,29 @@ namespace NeKanban.Migrations
                     b.HasIndex("ColumnId");
 
                     b.ToTable("ToDo");
+                });
+
+            modelBuilder.Entity("NeKanban.Common.Entities.ToDoFileAdapter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("ToDoFileAdapter");
                 });
 
             modelBuilder.Entity("NeKanban.Common.Entities.ToDoUser", b =>
@@ -577,6 +617,23 @@ namespace NeKanban.Migrations
                     b.Navigation("Column");
                 });
 
+            modelBuilder.Entity("NeKanban.Common.Entities.ToDoFileAdapter", b =>
+                {
+                    b.HasOne("NeKanban.Common.Entities.FileEntity", "File")
+                        .WithMany()
+                        .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NeKanban.Common.Entities.ToDo", "Parent")
+                        .WithMany("Files")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("File");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("NeKanban.Common.Entities.ToDoUser", b =>
                 {
                     b.HasOne("NeKanban.Common.Entities.DeskUser", "DeskUser")
@@ -621,6 +678,8 @@ namespace NeKanban.Migrations
             modelBuilder.Entity("NeKanban.Common.Entities.ToDo", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Files");
 
                     b.Navigation("ToDoUsers");
                 });
