@@ -35,7 +35,6 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
 
     public void Migrate()
     {
-        Database.EnsureCreated();
         Database.Migrate();
     }
 

@@ -13,7 +13,7 @@ public class WwwRootFileStorageProvider : IFileStorageProvider
 
     public Task<string> GetAbsoluteUrl(string name, CancellationToken ct)
     {
-        return Task.FromResult(Url.Combine(_storageConfig.StorageUrl, name));
+        return Task.FromResult(Url.Combine(_storageConfig.HostingUrl, _storageConfig.Folder, name));
     }
 
     public async Task Store(Stream stream, string name, CancellationToken ct)
@@ -24,7 +24,7 @@ public class WwwRootFileStorageProvider : IFileStorageProvider
 
     public async Task<string> Store(IFormFile file, CancellationToken ct)
     {
-        var name = $"{Guid.NewGuid()}.{Path.GetExtension(file.FileName)}";
+        var name = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
         await Store(file.OpenReadStream(), name, ct);
         return name;
     }

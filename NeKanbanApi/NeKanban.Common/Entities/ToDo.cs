@@ -16,6 +16,7 @@ public class ToDo: IHasPk<int>, IAutoMapFrom<ToDoCreateModel, ToDo>, IAutoMapFro
     public required int ColumnId { get; set; }
     public virtual Column? Column { get; set; }
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+    public virtual ICollection<ToDoFileAdapter> Files { get; set; } = new List<ToDoFileAdapter>();
     
     [ForeignKey("ToDoId")]
     public virtual ICollection<ToDoUser> ToDoUsers { get; set; } = new List<ToDoUser>();

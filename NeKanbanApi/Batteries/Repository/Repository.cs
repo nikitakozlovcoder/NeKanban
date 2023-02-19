@@ -42,6 +42,12 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         return _context.SaveChangesAsync(ct);
     }
 
+    public Task CreateRecursive(TEntity entity, CancellationToken ct)
+    {
+        EntityDbSet.Add(entity);
+        return _context.SaveChangesAsync(ct);
+    }
+
     public Task Remove(TEntity item, CancellationToken ct)
     {
         EntityDbSet.Remove(item);

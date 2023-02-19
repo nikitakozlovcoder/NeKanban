@@ -1,4 +1,6 @@
-﻿using NeKanban.Common.DTOs.ToDos;
+﻿using Batteries.FileStorage.Models;
+using Microsoft.AspNetCore.Http;
+using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
 
@@ -11,4 +13,5 @@ public interface IToDoService
     public Task<List<ToDoDto>> MoveToDo(int toDoId, ToDoMoveModel model,  CancellationToken ct);
     public Task<ToDoDto> UpdateToDo(int toDoId, ToDoUpdateModel model,  CancellationToken ct);
     public Task<ToDoDto> GetToDo(int toDoId, CancellationToken ct);
+    Task<FileStoreUrlDto> AttachFile(int toDoId, IFormFile file, CancellationToken ct);
 }

@@ -12,14 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NeKanban.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230201160219_CommentBehaviourOnDeskUserDelete")]
-    partial class CommentBehaviourOnDeskUserDelete
+    [Migration("20230219131538_AddFileEntity")]
+    partial class AddFileEntity
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -318,10 +319,13 @@ namespace NeKanban.Data.Migrations
                     b.Property<int>("DeskId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsOwner")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Preference")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Role")
+                    b.Property<int?>("RoleId")
                         .HasColumnType("integer");
 
                     b.Property<int>("UserId")
@@ -331,9 +335,75 @@ namespace NeKanban.Data.Migrations
 
                     b.HasIndex("DeskId");
 
+                    b.HasIndex("RoleId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("DeskUser");
+                });
+
+            modelBuilder.Entity("NeKanban.Common.Entities.FileEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileEntity");
+                });
+
+            modelBuilder.Entity("NeKanban.Common.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DeskId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeskId");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("NeKanban.Common.Entities.RolePermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Permission")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId", "Permission")
+                        .IsUnique();
+
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("NeKanban.Common.Entities.ToDo", b =>
@@ -362,6 +432,29 @@ namespace NeKanban.Data.Migrations
                     b.HasIndex("ColumnId");
 
                     b.ToTable("ToDo");
+                });
+
+            modelBuilder.Entity("NeKanban.Common.Entities.ToDoFileAdapter", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FileId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("ToDoFileAdapter");
                 });
 
             modelBuilder.Entity("NeKanban.Common.Entities.ToDoUser", b =>
@@ -478,6 +571,11 @@ namespace NeKanban.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("NeKanban.Common.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("NeKanban.Common.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -486,7 +584,29 @@ namespace NeKanban.Data.Migrations
 
                     b.Navigation("Desk");
 
+                    b.Navigation("Role");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("NeKanban.Common.Entities.Role", b =>
+                {
+                    b.HasOne("NeKanban.Common.Entities.Desk", "Desk")
+                        .WithMany()
+                        .HasForeignKey("DeskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Desk");
+                });
+
+            modelBuilder.Entity("NeKanban.Common.Entities.RolePermission", b =>
+                {
+                    b.HasOne("NeKanban.Common.Entities.Role", null)
+                        .WithMany("Permissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("NeKanban.Common.Entities.ToDo", b =>
@@ -498,6 +618,23 @@ namespace NeKanban.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Column");
+                });
+
+            modelBuilder.Entity("NeKanban.Common.Entities.ToDoFileAdapter", b =>
+                {
+                    b.HasOne("NeKanban.Common.Entities.FileEntity", "File")
+                        .WithMany()
+                        .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NeKanban.Common.Entities.ToDo", "Parent")
+                        .WithMany("Files")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("File");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("NeKanban.Common.Entities.ToDoUser", b =>
@@ -536,9 +673,16 @@ namespace NeKanban.Data.Migrations
                     b.Navigation("Comments");
                 });
 
+            modelBuilder.Entity("NeKanban.Common.Entities.Role", b =>
+                {
+                    b.Navigation("Permissions");
+                });
+
             modelBuilder.Entity("NeKanban.Common.Entities.ToDo", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Files");
 
                     b.Navigation("ToDoUsers");
                 });

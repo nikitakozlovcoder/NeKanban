@@ -7,6 +7,8 @@ public interface IRepository<TEntity> where TEntity: class, IHasPk<int>
 {
     Task Create(TEntity item, CancellationToken ct);
     Task Create(IEnumerable<TEntity> items, CancellationToken ct);
+    Task CreateRecursive(TEntity entity, CancellationToken ct);
+
     Task Remove(TEntity item, CancellationToken ct);
     Task Remove(IEnumerable<TEntity> items, CancellationToken ct);
     Task<TEntity> Remove(int id, CancellationToken ct);
