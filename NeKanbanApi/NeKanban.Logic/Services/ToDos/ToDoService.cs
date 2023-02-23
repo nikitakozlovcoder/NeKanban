@@ -28,7 +28,7 @@ public class ToDoService : BaseService, IToDoService
     private readonly IRepository<ToDoUser> _toDoUserRepository;
     private readonly IRepository<Column> _columnRepository;
     private readonly IAppMapper _mapper;
-    private readonly IFileStorageAdapter<ToDoFileAdapter, ToDo, FileEntity> _toDoFileStorageAdapter;
+    private readonly IFileStorageAdapter<ToDoFileAdapter, ToDo> _toDoFileStorageAdapter;
 
     public ToDoService(
         IRepository<Desk> deskRepository, 
@@ -38,7 +38,7 @@ public class ToDoService : BaseService, IToDoService
         IRepository<ToDoUser> toDoUserRepository,
         IRepository<Column> columnRepository,
         IAppMapper mapper,
-        IFileStorageAdapter<ToDoFileAdapter, ToDo, FileEntity> toDoFileStorageAdapter)
+        IFileStorageAdapter<ToDoFileAdapter, ToDo> toDoFileStorageAdapter)
     {
         _deskRepository = deskRepository;
         _columnsService = columnsService;

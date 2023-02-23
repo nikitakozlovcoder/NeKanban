@@ -1,4 +1,5 @@
-﻿using Batteries.FileStorage.FileStorageAdapters;
+﻿using Batteries.FileStorage.Entities;
+using Batteries.FileStorage.FileStorageAdapters;
 using Batteries.FileStorage.FileStorageProviders;
 using Batteries.Injection.Attributes;
 using Batteries.Repository;
@@ -8,10 +9,12 @@ using NeKanban.Common.Entities;
 namespace NeKanban.Logic.Services.FileStorageAdapters;
 
 [UsedImplicitly]
-[Injectable<IFileStorageAdapter<ToDoFileAdapter, ToDo, FileEntity>>]
-public class ToDoFileStorageAdapterService : BaseFileStorageAdapter<ToDoFileAdapter, ToDo, FileEntity>
+[Injectable<IFileStorageAdapter<ToDoFileAdapter, ToDo>>]
+public class ToDoFileStorageAdapterService : BaseFileStorageAdapter<ToDoFileAdapter, ToDo>
 {
-    public ToDoFileStorageAdapterService(IFileStorageProvider provider, IRepository<ToDoFileAdapter> storeAdapterRepository, IRepository<FileEntity> fileRepository) : base(provider, storeAdapterRepository, fileRepository)
+    public ToDoFileStorageAdapterService(IFileStorageProvider provider,
+        IRepository<ToDoFileAdapter> storeAdapterRepository,
+        IRepository<FileStorageEntity> fileRepository) : base(provider, storeAdapterRepository, fileRepository)
     {
     }
 }
