@@ -68,6 +68,7 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
         var files = await _storeAdapterRepository.ToList(predicate, ent => new
             {
                ent.Id,
+               ent.FileId,
                ent.File.Name
             }, ct: ct);
 
@@ -78,6 +79,7 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
             result.Add(new FileStoreUrlDto
             {
                 Id = file.Id,
+                FileId = file.FileId,
                 Url = absoluteUrl
             });
         }

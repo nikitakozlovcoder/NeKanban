@@ -21,7 +21,10 @@ builder.Services.AddWwwRootStorage(new WebRootStorageConfig
     HostingUrl = builder.Configuration.GetValue<string>("HostingUrl")!
 });
 
-builder.Services.AddFileStorageProxy();
+builder.Services.AddFileStorageProxy(new FileStorageProxyConfig
+{
+    ProxyEndpoint = "FileStorage/Proxy"
+});
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();

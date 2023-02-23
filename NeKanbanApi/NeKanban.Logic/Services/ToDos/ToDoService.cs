@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Batteries.Exceptions;
 using Batteries.FileStorage.FileStorageAdapters;
+using Batteries.FileStorage.FileStorageProxies;
 using Batteries.FileStorage.Models;
 using Batteries.Injection.Attributes;
 using Batteries.Mapper.AppMapper;
@@ -29,6 +30,7 @@ public class ToDoService : BaseService, IToDoService
     private readonly IRepository<Column> _columnRepository;
     private readonly IAppMapper _mapper;
     private readonly IFileStorageAdapter<ToDoFileAdapter, ToDo> _toDoFileStorageAdapter;
+    private readonly IFileStorageProxy _fileStorageProxy;
 
     public ToDoService(
         IRepository<Desk> deskRepository, 
@@ -38,7 +40,8 @@ public class ToDoService : BaseService, IToDoService
         IRepository<ToDoUser> toDoUserRepository,
         IRepository<Column> columnRepository,
         IAppMapper mapper,
-        IFileStorageAdapter<ToDoFileAdapter, ToDo> toDoFileStorageAdapter)
+        IFileStorageAdapter<ToDoFileAdapter, ToDo> toDoFileStorageAdapter,
+        IFileStorageProxy fileStorageProxy)
     {
         _deskRepository = deskRepository;
         _columnsService = columnsService;
@@ -48,6 +51,7 @@ public class ToDoService : BaseService, IToDoService
         _columnRepository = columnRepository;
         _mapper = mapper;
         _toDoFileStorageAdapter = toDoFileStorageAdapter;
+        _fileStorageProxy = fileStorageProxy;
     }
 
     public async Task<List<ToDoDto>> GetToDos(int deskId, CancellationToken ct)
@@ -133,9 +137,9 @@ public class ToDoService : BaseService, IToDoService
         return _toDoRepository.ProjectToSingle<ToDoDto>(x => x.Id == toDoId, ct);
     }
 
-    public async Task<FileStoreUrlDto> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
+    public async Task<string> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
     {
         var entity = await _toDoFileStorageAdapter.Store(toDoId, file, ct);
-        return await _toDoFileStorageAdapter.GetUrl(entity.Id, ct);
+        return await _fileStorageProxy.GetProxyUrl(entity.Id, ct);
     }
 }

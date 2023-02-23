@@ -1,4 +1,5 @@
-﻿using Batteries.FileStorage.Models;
+﻿using Batteries.FileStorage.FileStorageProxies;
+using Batteries.FileStorage.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -80,7 +81,7 @@ public class ToDosController : BaseAuthController
     }
     
     [HttpPut("{toDoId:int}")]
-    public async Task<FileStoreUrlDto> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
+    public async Task<string> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
     {
         await EnsureAbleTo<ToDo>(PermissionType.UpdateTask, toDoId, ct);
         return await _toDoService.AttachFile(toDoId, file, ct);

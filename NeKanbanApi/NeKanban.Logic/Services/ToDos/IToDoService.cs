@@ -13,5 +13,5 @@ public interface IToDoService
     public Task<List<ToDoDto>> MoveToDo(int toDoId, ToDoMoveModel model,  CancellationToken ct);
     public Task<ToDoDto> UpdateToDo(int toDoId, ToDoUpdateModel model,  CancellationToken ct);
     public Task<ToDoDto> GetToDo(int toDoId, CancellationToken ct);
-    Task<FileStoreUrlDto> AttachFile(int toDoId, IFormFile file, CancellationToken ct);
+    Task<string> AttachFile(int toDoId, IFormFile file, CancellationToken ct);
 }
