@@ -1,6 +1,4 @@
-﻿using Batteries.FileStorage.FileStorageProxies;
-using Batteries.FileStorage.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NeKanban.Common.DTOs.ToDos;
