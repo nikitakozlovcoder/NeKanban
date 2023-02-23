@@ -22,6 +22,23 @@ namespace NeKanban.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Batteries.FileStorage.Entities.FileStorageEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileStorageEntity");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -339,23 +356,6 @@ namespace NeKanban.Data.Migrations
                     b.ToTable("DeskUser");
                 });
 
-            modelBuilder.Entity("NeKanban.Common.Entities.FileEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FileEntity");
-                });
-
             modelBuilder.Entity("NeKanban.Common.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -619,7 +619,7 @@ namespace NeKanban.Data.Migrations
 
             modelBuilder.Entity("NeKanban.Common.Entities.ToDoFileAdapter", b =>
                 {
-                    b.HasOne("NeKanban.Common.Entities.FileEntity", "File")
+                    b.HasOne("Batteries.FileStorage.Entities.FileStorageEntity", "File")
                         .WithMany()
                         .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade)

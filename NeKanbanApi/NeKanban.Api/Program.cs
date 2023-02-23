@@ -1,6 +1,7 @@
 using System.Text;
 using Batteries.Exceptions;
 using Batteries.FileStorage.FileStorageProviders;
+using Batteries.FileStorage.FileStorageProxies;
 using Batteries.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -19,6 +20,8 @@ builder.Services.AddWwwRootStorage(new WebRootStorageConfig
     Folder = "storage",
     HostingUrl = builder.Configuration.GetValue<string>("HostingUrl")!
 });
+
+builder.Services.AddFileStorageProxy();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
