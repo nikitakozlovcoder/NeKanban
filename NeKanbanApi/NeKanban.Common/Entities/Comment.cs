@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Batteries.Mapper.AppMapper.Extensions;
 using Batteries.Mapper.Interfaces;
 using Batteries.Repository;
-using NeKanban.Common.Extensions;
 using NeKanban.Common.Models.CommentModels;
 
 namespace NeKanban.Common.Entities;

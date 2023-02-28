@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace NeKanban.Common.Extensions;
+namespace Batteries.Mapper.AppMapper.Extensions;
 
 public static class MapperExtensions
 {

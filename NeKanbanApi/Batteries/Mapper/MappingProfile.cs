@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Batteries.Mapper.AppMapper.Extensions;
 using Batteries.Mapper.Interfaces;
 
 namespace Batteries.Mapper;
@@ -19,7 +20,8 @@ public class MappingProfile : Profile
             foreach (var type in types)
             {
                 var interfaces = type.GetInterfaces();
-                foreach (var typeInterface in interfaces)
+                var baseTypes = type.GetParents();
+                foreach (var typeInterface in interfaces.Where(x => !baseTypes.Any(x.IsAssignableFrom)))
                 {
                     if (!(typeInterface.IsGenericType && typeInterface.GetGenericTypeDefinition() == typeof(IAutoMapFrom<,>)))
                     {

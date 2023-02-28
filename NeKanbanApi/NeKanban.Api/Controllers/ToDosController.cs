@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
+using NeKanban.Common.ViewModels.ToDos;
 using NeKanban.Controllers.Auth;
 using NeKanban.Logic.Services.DesksUsers;
 using NeKanban.Logic.Services.ToDos;
@@ -36,6 +37,13 @@ public class ToDosController : BaseAuthController
     {
         await EnsureAbleTo<Desk>(deskId, ct);
         return await _toDoService.GetToDos(deskId, ct);
+    }
+    
+    [HttpGet("{todoId:int}")]
+    public async Task<ToDoFullVm> GetTodo(int todoId, CancellationToken ct)
+    {
+        await EnsureAbleTo<ToDo>(todoId, ct);
+        return await _toDoService.GetToDoFull(todoId, ct);
     }
     
     [HttpPost("{deskId:int}")]

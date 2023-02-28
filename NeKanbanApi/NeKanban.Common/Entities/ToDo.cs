@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using AutoMapper;
+using Batteries.Mapper.AppMapper.Extensions;
 using Batteries.Mapper.Interfaces;
 using Batteries.Repository;
-using NeKanban.Common.Extensions;
 using NeKanban.Common.Models.ToDoModels;
 
 namespace NeKanban.Common.Entities;
@@ -22,13 +22,11 @@ public class ToDo: IHasPk<int>, IAutoMapFrom<ToDoCreateModel, ToDo>, IAutoMapFro
     public virtual ICollection<ToDoUser> ToDoUsers { get; set; } = new List<ToDoUser>();
     public static void ConfigureMap(IMappingExpression<ToDoCreateModel, ToDo> cfg)
     {
-        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name))
-            .ForMember(x => x.Body, _ => _.MapFrom(x => x.Body));
+        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name));
     }
 
     public static void ConfigureMap(IMappingExpression<ToDoUpdateModel, ToDo> cfg)
     {
-        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name))
-            .ForMember(x => x.Body, _ => _.MapFrom(x => x.Body));
+        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name));
     }
 }

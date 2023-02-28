@@ -2,7 +2,7 @@
 using Batteries.Mapper.Interfaces;
 using NeKanban.Common.Entities;
 
-namespace NeKanban.Common.DTOs.Roles;
+namespace NeKanban.Common.ViewModels.Roles;
 
 public class RoleDto : BaseEntityModel<int>, IAutoMapFrom<Role, RoleDto>
 {

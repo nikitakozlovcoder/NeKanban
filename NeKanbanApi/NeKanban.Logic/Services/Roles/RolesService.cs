@@ -9,6 +9,7 @@ using NeKanban.Common.DTOs.Roles;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.RoleModels;
+using NeKanban.Common.ViewModels.Roles;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.SecurityProfile;
 using NeKanban.Security.Constants;

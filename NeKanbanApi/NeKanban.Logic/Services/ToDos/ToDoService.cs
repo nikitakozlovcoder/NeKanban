@@ -2,7 +2,6 @@
 using Batteries.Exceptions;
 using Batteries.FileStorage.FileStorageAdapters;
 using Batteries.FileStorage.FileStorageProxies;
-using Batteries.FileStorage.Models;
 using Batteries.Injection.Attributes;
 using Batteries.Mapper.AppMapper;
 using Batteries.Repository;
@@ -13,7 +12,7 @@ using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
-using NeKanban.Data.Infrastructure;
+using NeKanban.Common.ViewModels.ToDos;
 using NeKanban.Logic.Services.Columns;
 
 namespace NeKanban.Logic.Services.ToDos;
@@ -59,6 +58,13 @@ public class ToDoService : BaseService, IToDoService
         await _deskRepository.AnyOrThrow(x=> x.Id == deskId, ct);
         var todos = await _toDoRepository.ProjectTo<ToDoDto>(x => x.Column!.DeskId == deskId, ct);
         return todos;
+    }
+
+    public async Task<ToDoFullVm> GetToDoFull(int todoId, CancellationToken ct)
+    {
+        var dto = await _toDoRepository.ProjectToSingle<ToDoFullDto>(x => x.Id == todoId, ct);
+        var todoVm = await _mapper.Map<ToDoFullVm, ToDoFullDto>(dto, ct);
+        return todoVm;
     }
 
     public async Task<List<ToDoDto>> CreateToDo(int deskId, ApplicationUser user, ToDoCreateModel model, CancellationToken ct)

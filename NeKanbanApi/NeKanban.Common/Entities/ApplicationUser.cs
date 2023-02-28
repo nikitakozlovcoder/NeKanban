@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Batteries.Mapper.AppMapper.Extensions;
 using Batteries.Mapper.Interfaces;
 using Batteries.Repository;
 using Microsoft.AspNetCore.Identity;
-using NeKanban.Common.Extensions;
 using NeKanban.Common.Models.UserModel;
 
 namespace NeKanban.Common.Entities;

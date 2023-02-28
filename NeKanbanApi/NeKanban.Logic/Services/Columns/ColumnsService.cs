@@ -9,6 +9,7 @@ using NeKanban.Common.DTOs.Columns;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.ColumnModels;
+using NeKanban.Common.ViewModels.Columns;
 using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Logic.Services.Columns;
