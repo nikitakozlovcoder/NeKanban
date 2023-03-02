@@ -31,8 +31,8 @@ public class BaseFileStorageProxy<TFileEntity> : IFileStorageProxy<TFileEntity>
         return await GetAbsoluteUrl(name, ct);
     }
 
-    public virtual Task<string> GetProxyUrl(int id, CancellationToken ct)
+    public virtual string GetProxyUrl(int id)
     {
-        return Task.FromResult(Url.Combine(_config.ProxyEndpoint, id.ToString()));
+        return Url.Combine(_config.ProxyEndpoint, id.ToString());
     }
 }

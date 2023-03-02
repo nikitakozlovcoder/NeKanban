@@ -18,7 +18,7 @@ using NeKanban.Logic.Services.Columns;
 namespace NeKanban.Logic.Services.ToDos;
 
 [UsedImplicitly]
-[Injectable(typeof(IToDoService))]
+[Injectable<IToDoService>]
 public class ToDoService : BaseService, IToDoService
 {
     private readonly IRepository<Desk> _deskRepository;
@@ -146,6 +146,6 @@ public class ToDoService : BaseService, IToDoService
     public async Task<string> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
     {
         var entity = await _toDoFileStorageAdapter.Store(toDoId, file, ct);
-        return await _fileStorageProxy.GetProxyUrl(entity.Id, ct);
+        return _fileStorageProxy.GetProxyUrl(entity.Id);
     }
 }

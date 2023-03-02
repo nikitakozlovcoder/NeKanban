@@ -63,6 +63,11 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
         return GetAllUrls(x => x.ParentId == parentId, ct);
     }
 
+    public Task<List<FileStoreDto>> GetAll(int parentId, CancellationToken ct)
+    {
+        return GetAll(x => x.ParentId == parentId, ct);
+    }
+
     public virtual async Task<List<FileStoreUrlDto>> GetAllUrls(Expression<Func<TFileAdapterEntity, bool>> predicate, CancellationToken ct)
     {
         var files = await _storeAdapterRepository.ToList(predicate, ent => new
@@ -85,6 +90,17 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
         }
 
         return result;
+    }
+
+    public async Task<List<FileStoreDto>> GetAll(Expression<Func<TFileAdapterEntity, bool>> predicate, CancellationToken ct)
+    {
+        var files = await _storeAdapterRepository.ToList(predicate, ent => new FileStoreDto()
+        {
+            Id = ent.Id,
+            FileId = ent.FileId,
+        }, ct: ct);
+
+        return files;
     }
 
     public async Task<FileStoreUrlDto> GetUrl(int entityId, CancellationToken ct)
