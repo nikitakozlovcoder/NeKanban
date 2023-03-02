@@ -9,7 +9,9 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent> : Base
     where TFileAdapterEntity : class, IFileAdapterEntity<TParent>, new()
     where TParent : IHasPk<int>
 {
-    protected BaseFileStorageAdapter(IFileStorageProvider provider, IRepository<TFileAdapterEntity> storeAdapterRepository, IRepository<FileStorageEntity> fileRepository) : base(provider, storeAdapterRepository, fileRepository)
+    protected BaseFileStorageAdapter(IFileStorageProvider provider,
+        IRepository<TFileAdapterEntity> storeAdapterRepository,
+        IRepository<FileStorageEntity> fileRepository) : base(provider, storeAdapterRepository, fileRepository)
     {
     }
 }

@@ -25,7 +25,7 @@ public class DefaultPermissionsProvider : IDefaultPermissionProvider
         {
             PermissionType.ViewInviteLink,
             PermissionType.ManageColumns,
-            PermissionType.CreateTasks,
+            PermissionType.CreateOrUpdateTasks,
             PermissionType.DeleteAnyComments,
         };
         

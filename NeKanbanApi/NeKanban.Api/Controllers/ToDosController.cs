@@ -49,7 +49,7 @@ public class ToDosController : BaseAuthController
     [HttpPost("{deskId:int}")]
     public async Task<List<ToDoDto>> CreateToDo(int deskId, [FromBody]ToDoCreateModel model, CancellationToken ct)
     {
-        await EnsureAbleTo<Desk>(PermissionType.CreateTasks, deskId, ct);
+        await EnsureAbleTo<Desk>(PermissionType.CreateOrUpdateTasks, deskId, ct);
         var user = await GetApplicationUser();
         return await _toDoService.CreateToDo(deskId, user, model, ct);
     }
@@ -57,7 +57,7 @@ public class ToDosController : BaseAuthController
     [HttpPut("{toDoId:int}")]
     public async Task<ToDoDto> UpdateToDo(int toDoId, [FromBody]ToDoUpdateModel model, CancellationToken ct)
     {
-        await EnsureAbleTo<ToDo>(PermissionType.UpdateTask, toDoId, ct);
+        await EnsureAbleTo<ToDo>(PermissionType.CreateOrUpdateTasks, toDoId, ct);
         return await _toDoService.UpdateToDo(toDoId, model, ct);
     }
     
@@ -89,7 +89,7 @@ public class ToDosController : BaseAuthController
     [HttpPut("{toDoId:int}")]
     public async Task<string> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
     {
-        await EnsureAbleTo<ToDo>(PermissionType.UpdateTask, toDoId, ct);
+        await EnsureAbleTo<ToDo>(PermissionType.CreateOrUpdateTasks, toDoId, ct);
         return await _toDoService.AttachFile(toDoId, file, ct);
     }
 }
