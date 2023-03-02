@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialExampleModule } from '../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
-import { HttpClientModule } from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
@@ -42,6 +42,8 @@ import { RoleUpdatingComponent } from './components/settings/dialogs/role-updati
 import { ConfirmationComponent } from './components/dialogs/confirmation/confirmation.component';
 import { PageNotFoundComponent } from './components/routing/page-not-found/page-not-found.component';
 import { SidenavComponent } from './components/partials/sidenav/sidenav.component';
+import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
@@ -52,6 +54,10 @@ const appRoutes: Routes =[
   { path: 'desks', redirectTo: ''},
   { path: '**', component: PageNotFoundComponent}
 ];
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -89,7 +95,15 @@ const appRoutes: Routes =[
         ReactiveFormsModule,
         RouterModule.forRoot(appRoutes),
         NgScrollbarModule,
-      MatListModule
+      MatListModule,
+      TranslateModule.forRoot({
+        defaultLanguage: 'ru',
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+        }
+      })
     ],
   providers: [UserService,
     DeskService,
@@ -102,7 +116,8 @@ const appRoutes: Routes =[
     DeskUserService,
     DataGeneratorService,
     CommentsService,
-    UserStorageService],
+    UserStorageService,
+  TranslateService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
