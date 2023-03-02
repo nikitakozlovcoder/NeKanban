@@ -14,8 +14,7 @@ public enum PermissionType
     MoveTasks,
     RemoveUsers,
     ChangeUserRole,
-    AddComments,
-    UpdateOwnComments,
+    AddOrUpdateOwnComments,
     DeleteOwnComments,
     DeleteAnyComments,
     ManageRoles

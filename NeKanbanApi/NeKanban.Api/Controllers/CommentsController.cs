@@ -33,14 +33,14 @@ public class CommentsController : BaseAuthController
     [HttpPost("{toDoId:int}")]
     public async Task<List<CommentDto>> Create(int toDoId, [FromBody]CommentCreateModel model, CancellationToken ct)
     {
-        await EnsureAbleTo<ToDo>(PermissionType.AddComments, toDoId, ct);
+        await EnsureAbleTo<ToDo>(PermissionType.AddOrUpdateOwnComments, toDoId, ct);
         return await _commentsService.Create(toDoId, await GetApplicationUser(), model, ct);
     }
     
     [HttpPut("{commentId:int}")]
     public async Task<List<CommentDto>> Update(int commentId, [FromBody]CommentUpdateModel model, CancellationToken ct)
     {
-        await EnsureAbleTo<Comment>(PermissionType.UpdateOwnComments, commentId, ct);
+        await EnsureAbleTo<Comment>(PermissionType.AddOrUpdateOwnComments, commentId, ct);
         return await _commentsService.Update(commentId, await GetApplicationUser(), model, ct);
     }
     
