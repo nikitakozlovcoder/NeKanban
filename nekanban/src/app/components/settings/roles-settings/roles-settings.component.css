@@ -1,0 +1,38 @@
+.roles-wrapper {
+  display: flex;
+  width: 100%;
+}
+.roles-list {
+  padding: 10px;
+  width: 40%;
+}
+.permissions-list {
+  padding: 10px;
+  width: 60%;
+}
+.chosen-role {
+  background-color: #F0F0F0;
+}
+.add-role-button {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+::ng-deep.single-role .mat-list-item-content {
+  display: flex;
+  justify-content: space-between;
+}
+.role-delete-icon {
+  margin-left: 15px;
+}
+::ng-deep.big-sidenav {
+  width: 300px !important;
+}
+.permissions-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.permissions-title h2 {
+  margin-right: 15px;
+  margin-bottom: 0;
+}

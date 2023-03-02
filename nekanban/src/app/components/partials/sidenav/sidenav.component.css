@@ -1,0 +1,29 @@
+.my-sidenav {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+::ng-deep.my-sidenav h2 {
+  text-align: center;
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+.menu-bottom-button {
+  flex: 1;
+  float: left;
+  width: 100%;
+}
+
+.register_button
+{
+  width: 100%;
+}
+.create-desk-button {
+  width: 280px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}

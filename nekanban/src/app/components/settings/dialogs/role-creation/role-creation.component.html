@@ -1,0 +1,8 @@
+<mat-form-field appearance="fill">
+  <mat-label>Название роли</mat-label>
+  <input matInput placeholder="Новая роль" [formControl]="name" required>
+  <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
+  <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 5 символов!</mat-error>
+</mat-form-field>
+<button *ngIf="isLoaded" class = "register_button" mat-raised-button color="primary" (click)="createRole()">Создать роль</button>
+<mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLoaded"></mat-spinner>

@@ -1,0 +1,37 @@
+.my-sidenav {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.my-sidenav h2 {
+  margin: 10px;
+}
+
+.menu-bottom-button {
+  flex: 1;
+  float: left;
+  width: 100%;
+}
+mat-sidenav-content {
+  min-height: 100vh;
+}
+.mat-tab-group-wrap {
+  margin: 10px;
+}
+.spinner {
+  margin: 20% auto auto;
+}
+.settings-desk-name {
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 13px;
+  align-items: center;
+}
+.settings-desk-name mat-icon {
+  cursor: pointer;
+}
+.desk-name {
+  margin-bottom: 0;
+}
