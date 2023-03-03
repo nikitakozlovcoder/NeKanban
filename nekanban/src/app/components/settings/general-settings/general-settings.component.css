@@ -1,0 +1,39 @@
+.desk-name-update-field {
+  width: 400px;
+  margin-right: 20px;
+}
+.desk-name-update-field ::ng-deep.mat-form-field-wrapper {
+  padding: 0;
+}
+.desk-name-update-field ::ng-deep.mat-form-field-underline {
+  bottom: 0;
+}
+.invite-link-title {
+  display: flex;
+  align-items: center;
+  color: rgba(0,0,0,.87);
+}
+.invite-link-title mat-icon {
+  margin-bottom: 2px;
+}
+.invite-link .p-link {
+  text-decoration: underline;
+  width: min-content;
+  white-space: nowrap;
+}
+.p-link {
+  cursor: pointer;
+}
+::ng-deep.mat-snack-bar-container {
+  width: 180px !important;
+  min-width: 50px !important;
+}
+.desk-name-update-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.desk-remove-button ::ng-deep.mat-button-wrapper {
+  display: flex;
+  align-items: center;
+}

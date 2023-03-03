@@ -77,7 +77,7 @@
       <mat-icon (click)="toggleCommentsOrder()" *ngIf="!isSortDescending" matTooltip="От старых к новым">arrow_upward</mat-icon>
     </mat-card-title>
 
-    <div class="comment-field-group" *ngIf="rolesService.userHasPermission(data.deskUser, 'AddComments')">
+    <div class="comment-field-group" *ngIf="checkUserPermission(data.deskUser, 'AddComments')">
       <mat-form-field appearance="fill">
         <mat-label>Оставьте свой комментарий!</mat-label>
         <textarea cdkTextareaAutosize
@@ -101,19 +101,17 @@
                 {{comment.createdAtUtc.toLocaleDateString('ru')}} в {{comment.createdAtUtc.toLocaleTimeString('ru')}}</span>
               </div>
               <div class="comment-controls">
-                <mat-icon *ngIf="rolesService.userHasPermission(data.deskUser, 'UpdateOwnComments') &&
+                <mat-icon *ngIf="checkUserPermission(data.deskUser, 'UpdateOwnComments') &&
                 comment.deskUser.user.id == data.deskUser.user.id"
                           class="clickable-icon" (click)="showCommentUpdateForm(i)">edit</mat-icon>
-                <mat-icon *ngIf="rolesService.userHasPermission(data.deskUser, 'DeleteOwnComments') &&
+                <mat-icon *ngIf="checkUserPermission(data.deskUser, 'DeleteOwnComments') &&
                 comment.deskUser.user.id == data.deskUser.user.id ||
-                rolesService.userHasPermission(data.deskUser, 'DeleteAnyComments')" class="clickable-icon"
+                checkUserPermission(data.deskUser, 'DeleteAnyComments')" class="clickable-icon"
                           (click)="deleteComment(comment.id)">delete</mat-icon>
               </div>
             </div>
           </div>
-          <div class="comment-text">
-            {{comment.body}}
-          </div>
+          <div class="comment-text">{{comment.body}}</div>
         </ng-container>
         <div class="comment-updating-group" *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Update">
           <mat-form-field class="comment-updating-field" appearance="fill">
