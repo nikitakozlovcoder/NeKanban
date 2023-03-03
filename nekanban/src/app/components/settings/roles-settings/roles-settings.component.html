@@ -25,8 +25,8 @@
         </div>
       </div>
       <div *ngFor="let permission of allPermissions">
-        <mat-checkbox *ngIf="currentRoleHasPermission(permission)" [checked]="true" (click)="revokePermissionFromRole(permission)">{{permission.permissionName}}</mat-checkbox>
-        <mat-checkbox *ngIf="!currentRoleHasPermission(permission)" (click)="grantPermissionToRole(permission)">{{permission.permissionName}}</mat-checkbox>
+        <mat-checkbox *ngIf="currentRoleHasPermission(permission)" [checked]="true" (click)="revokePermissionFromRole(permission)">{{'Permissions.' + permission.permissionName | translate}}</mat-checkbox>
+        <mat-checkbox *ngIf="!currentRoleHasPermission(permission)" (click)="grantPermissionToRole(permission)">{{'Permissions.' + permission.permissionName | translate}}</mat-checkbox>
       </div>
     </mat-card>
   </div>

@@ -13,6 +13,7 @@ import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {RolesService} from "../../../services/roles.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-roles-settings',
@@ -31,7 +32,8 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   currentRole: Role | undefined;
   constructor(public dialog: MatDialog,
               private readonly rolesService: RolesService,
-              public snackBar: MatSnackBar) { }
+              public snackBar: MatSnackBar,
+              public translate: TranslateService) { }
 
   ngOnInit(): void {
   }
