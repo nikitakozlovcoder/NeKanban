@@ -36,8 +36,8 @@ export class UserService {
               private httpService: AppHttpService,
               private userStorageService: UserStorageService) { }
 
-    addUser(name: string, surname: string, email: string, password: string) {
-      const body = {"email": email, "password": password, "name": name, "surname": surname};
+    addUser(name: string, surname: string, email: string, password: string, personalDataAgreement: boolean) {
+      const body = {email, password, name, surname, personalDataAgreement};
       return this.httpService.post<UserWithToken>("Users/Register", body).pipe(tap(x => {
         this.userStorageService.addUserToStorage(x);
         this.router.navigate(['']).then();
@@ -48,7 +48,7 @@ export class UserService {
     }
 
     loginUser(email: string, password: string) {
-      const body = {email: email, password: password};
+      const body = { email, password};
       return this.httpService.post<UserWithToken>("Users/Login", body).pipe(tap(x => {
         this.userStorageService.addUserToStorage(x);
         this.router.navigate(['']).then();

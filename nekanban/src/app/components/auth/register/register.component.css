@@ -11,3 +11,17 @@ mat-form-field
 {
     width: 100%;
 }
+::ng-deep .checkbox-wrap .mat-checkbox-label {
+  white-space: normal;
+}
+::ng-deep .checkbox-wrap .mat-checkbox-layout {
+  display: flex;
+  align-items: flex-start;
+  vertical-align: unset;
+}
+::ng-deep .checkbox-wrap .mat-checkbox-inner-container {
+  margin-top: 3px;
+}
+.user-agreement-error {
+  font-size: 10.5px;
+}
