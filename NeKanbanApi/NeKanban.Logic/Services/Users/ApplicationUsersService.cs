@@ -7,6 +7,7 @@ using NeKanban.Common.AppMapper;
 using NeKanban.Common.Attributes;
 using NeKanban.Common.DTOs.ApplicationUsers;
 using NeKanban.Common.Entities;
+using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.UserModel;
 using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
@@ -63,6 +64,11 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
 
     public async Task<ApplicationUser> Create(UserRegisterModel userRegister, CancellationToken ct)
     {
+        if (!userRegister.PersonalDataAgreement)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.PersonalDataAgreementNotAccepted);
+        }
+        
         var user = _mapper.AutoMap<ApplicationUser, UserRegisterModel>(userRegister);
         var identityResult = await _signInManager.UserManager.CreateAsync(user, userRegister.Password);
         if (!identityResult.Succeeded)
