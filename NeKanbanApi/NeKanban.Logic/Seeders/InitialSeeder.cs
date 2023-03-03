@@ -28,6 +28,7 @@ public class InitialSeeder : ISeeder
             Surname = "Test",
             Email = "test@test.test",
             Password = "password",
+            PersonalDataAgreement = true
         }, ct);
         
         await _desksService.CreateDesk(new DeskCreateModel
