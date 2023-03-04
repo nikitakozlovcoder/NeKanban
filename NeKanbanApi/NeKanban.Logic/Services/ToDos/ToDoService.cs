@@ -146,6 +146,6 @@ public class ToDoService : BaseService, IToDoService
     public async Task<string> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
     {
         var entity = await _toDoFileStorageAdapter.Store(toDoId, file, ct);
-        return _fileStorageProxy.GetProxyUrl(entity.Id);
+        return _fileStorageProxy.GetProxyUrl(entity.FileId);
     }
 }

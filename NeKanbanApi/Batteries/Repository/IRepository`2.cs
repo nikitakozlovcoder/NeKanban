@@ -3,7 +3,9 @@ using Batteries.Mapper.Interfaces;
 
 namespace Batteries.Repository;
 
-public interface IRepository<TEntity> where TEntity: class, IHasPk<int>
+public interface IRepository<TEntity, in TPrimaryKey>
+    where TEntity: class, IHasPk<TPrimaryKey>
+    where TPrimaryKey: IComparable<TPrimaryKey>
 {
     Task Create(TEntity item, CancellationToken ct);
     Task Create(IEnumerable<TEntity> items, CancellationToken ct);
@@ -11,7 +13,7 @@ public interface IRepository<TEntity> where TEntity: class, IHasPk<int>
 
     Task Remove(TEntity item, CancellationToken ct);
     Task Remove(IEnumerable<TEntity> items, CancellationToken ct);
-    Task<TEntity> Remove(int id, CancellationToken ct);
+    Task<TEntity> Remove(TPrimaryKey id, CancellationToken ct);
     Task Update(TEntity item, CancellationToken ct);
     Task Update(IEnumerable<TEntity> items, CancellationToken ct);
     

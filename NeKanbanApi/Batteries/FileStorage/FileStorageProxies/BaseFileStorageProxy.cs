@@ -6,7 +6,7 @@ namespace Batteries.FileStorage.FileStorageProxies;
 
 public class BaseFileStorageProxy : BaseFileStorageProxy<FileStorageEntity>
 {
-    public BaseFileStorageProxy(IRepository<FileStorageEntity> fileRepository,
+    public BaseFileStorageProxy(IGuidRepository<FileStorageEntity> fileRepository,
         IFileStorageProvider provider,
         FileStorageProxyConfig config) : base(fileRepository, provider, config)
     {

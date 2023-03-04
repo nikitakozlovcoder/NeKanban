@@ -16,8 +16,8 @@ public class FileStorageController : Controller
         _proxy = proxy;
     }
 
-    [HttpGet("{fileId:int}")]
-    public async Task<ActionResult> Proxy(int fileId, CancellationToken ct)
+    [HttpGet("{fileId:guid}")]
+    public async Task<ActionResult> Proxy(Guid fileId, CancellationToken ct)
     {
         var url = await _proxy.GetAbsoluteUrl(fileId, ct);
         return Redirect(url);

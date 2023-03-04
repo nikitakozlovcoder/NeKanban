@@ -15,9 +15,11 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
 {
     private readonly IFileStorageProvider _provider;
     private readonly IRepository<TFileAdapterEntity> _storeAdapterRepository;
-    private readonly IRepository<TFileEntity> _fileRepository;
+    private readonly IGuidRepository<TFileEntity> _fileRepository;
 
-    protected BaseFileStorageAdapter(IFileStorageProvider provider, IRepository<TFileAdapterEntity> storeAdapterRepository, IRepository<TFileEntity> fileRepository)
+    protected BaseFileStorageAdapter(IFileStorageProvider provider,
+        IRepository<TFileAdapterEntity> storeAdapterRepository,
+        IGuidRepository<TFileEntity> fileRepository)
     {
         _provider = provider;
         _storeAdapterRepository = storeAdapterRepository;
@@ -36,14 +38,14 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
         return await CreateEntity(name, parentId, ct);
     }
 
-    public async Task Delete(int fileId, CancellationToken ct)
+    public async Task Delete(int adapterId, CancellationToken ct)
     {
-        await Delete(new[] {fileId}, ct);
+        await Delete(new[] {adapterId}, ct);
     }
 
-    public virtual async Task Delete(IEnumerable<int> fileIds, CancellationToken ct)
+    public virtual async Task Delete(IEnumerable<int> adapterIds, CancellationToken ct)
     {
-        var files = await _storeAdapterRepository.ToList(x => fileIds.Contains(x.Id), 
+        var files = await _storeAdapterRepository.ToList(x => adapterIds.Contains(x.Id), 
             x => new TFileEntity
             {
                 Id = x.File.Id,
@@ -56,6 +58,22 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
         }
       
         await _fileRepository.Remove(files, ct);
+    }
+
+    public async Task<FileStoreDto> Attach(int parentId, Guid fileId, CancellationToken ct)
+    {
+        var adapter = new TFileAdapterEntity
+        {
+            FileId = fileId,
+            ParentId = parentId
+        };
+
+        await _storeAdapterRepository.Create(adapter, ct);
+        return new FileStoreDto
+        {
+            Id = adapter.Id,
+            FileId = adapter.FileId
+        };
     }
 
     public Task<List<FileStoreUrlDto>> GetAllUrls(int parentId, CancellationToken ct)

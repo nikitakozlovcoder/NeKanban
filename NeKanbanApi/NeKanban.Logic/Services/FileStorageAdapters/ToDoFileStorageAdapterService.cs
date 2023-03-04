@@ -14,7 +14,7 @@ public class ToDoFileStorageAdapterService : BaseFileStorageAdapter<ToDoFileAdap
 {
     public ToDoFileStorageAdapterService(IFileStorageProvider provider,
         IRepository<ToDoFileAdapter> storeAdapterRepository,
-        IRepository<FileStorageEntity> fileRepository) : base(provider, storeAdapterRepository, fileRepository)
+        IGuidRepository<FileStorageEntity> fileRepository) : base(provider, storeAdapterRepository, fileRepository)
     {
     }
 }

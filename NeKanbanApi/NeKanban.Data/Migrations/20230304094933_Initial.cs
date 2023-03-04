@@ -70,6 +70,18 @@ namespace NeKanban.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FileStorageEntity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileStorageEntity", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -296,19 +308,25 @@ namespace NeKanban.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ToDoFile",
+                name: "ToDoFileAdapter",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    FileId = table.Column<Guid>(type: "uuid", nullable: false),
                     ParentId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ToDoFile", x => x.Id);
+                    table.PrimaryKey("PK_ToDoFileAdapter", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ToDoFile_ToDo_ParentId",
+                        name: "FK_ToDoFileAdapter_FileStorageEntity_FileId",
+                        column: x => x.FileId,
+                        principalTable: "FileStorageEntity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ToDoFileAdapter_ToDo_ParentId",
                         column: x => x.ParentId,
                         principalTable: "ToDo",
                         principalColumn: "Id");
@@ -453,8 +471,13 @@ namespace NeKanban.Data.Migrations
                 column: "ColumnId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ToDoFile_ParentId",
-                table: "ToDoFile",
+                name: "IX_ToDoFileAdapter_FileId",
+                table: "ToDoFileAdapter",
+                column: "FileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ToDoFileAdapter_ParentId",
+                table: "ToDoFileAdapter",
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
@@ -493,13 +516,16 @@ namespace NeKanban.Data.Migrations
                 name: "RolePermissions");
 
             migrationBuilder.DropTable(
-                name: "ToDoFile");
+                name: "ToDoFileAdapter");
 
             migrationBuilder.DropTable(
                 name: "ToDoUser");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "FileStorageEntity");
 
             migrationBuilder.DropTable(
                 name: "DeskUser");

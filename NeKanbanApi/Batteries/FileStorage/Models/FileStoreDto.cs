@@ -3,5 +3,5 @@
 public class FileStoreDto
 {
     public required int Id { get; set; }
-    public required int FileId { get; set; }
+    public required Guid FileId { get; set; }
 }

@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.Models.UserModel;
+using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Desks;
 using NeKanban.Logic.Services.Users;
 
@@ -13,12 +14,14 @@ public class InitialSeeder : ISeeder
 {
     private readonly IApplicationUsersService _applicationUsersService;
     private readonly IDesksService _desksService;
+    private readonly ApplicationContext _context;
 
     public InitialSeeder(IApplicationUsersService applicationUsersService,
-        IDesksService desksService)
+        IDesksService desksService, ApplicationContext context)
     {
         _applicationUsersService = applicationUsersService;
         _desksService = desksService;
+        _context = context;
     }
 
     public async Task Run(CancellationToken ct)

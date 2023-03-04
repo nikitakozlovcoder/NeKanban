@@ -11,7 +11,7 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent> : Base
 {
     protected BaseFileStorageAdapter(IFileStorageProvider provider,
         IRepository<TFileAdapterEntity> storeAdapterRepository,
-        IRepository<FileStorageEntity> fileRepository) : base(provider, storeAdapterRepository, fileRepository)
+        IGuidRepository<FileStorageEntity> fileRepository) : base(provider, storeAdapterRepository, fileRepository)
     {
     }
 }

@@ -8,10 +8,10 @@ namespace Batteries.FileStorage.FileStorageProxies;
 public class BaseFileStorageProxy<TFileEntity> : IFileStorageProxy<TFileEntity>
     where TFileEntity : class, IFileEntity
 {
-    private readonly IRepository<TFileEntity> _fileRepository;
+    private readonly IGuidRepository<TFileEntity> _fileRepository;
     private readonly IFileStorageProvider _provider;
     private readonly FileStorageProxyConfig _config;
-    public BaseFileStorageProxy(IRepository<TFileEntity> fileRepository,
+    public BaseFileStorageProxy(IGuidRepository<TFileEntity> fileRepository,
         IFileStorageProvider provider,
         FileStorageProxyConfig config)
     {
@@ -25,13 +25,13 @@ public class BaseFileStorageProxy<TFileEntity> : IFileStorageProxy<TFileEntity>
         return _provider.GetAbsoluteUrl(name, ct);
     }
     
-    public virtual async Task<string> GetAbsoluteUrl(int id, CancellationToken ct)
+    public virtual async Task<string> GetAbsoluteUrl(Guid id, CancellationToken ct)
     {
         var name = await _fileRepository.Single(x => x.Id == id, x => x.Name, ct);
         return await GetAbsoluteUrl(name, ct);
     }
 
-    public virtual string GetProxyUrl(int id)
+    public virtual string GetProxyUrl(Guid id)
     {
         return Url.Combine(_config.ProxyEndpoint, id.ToString());
     }

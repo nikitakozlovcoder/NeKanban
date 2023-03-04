@@ -24,11 +24,9 @@ namespace NeKanban.Data.Migrations
 
             modelBuilder.Entity("Batteries.FileStorage.Entities.FileStorageEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -439,8 +437,8 @@ namespace NeKanban.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("FileId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("FileId")
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("ParentId")
                         .HasColumnType("integer");

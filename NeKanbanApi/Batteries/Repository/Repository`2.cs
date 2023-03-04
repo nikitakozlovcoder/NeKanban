@@ -1,17 +1,15 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper.QueryableExtensions;
 using Batteries.Exceptions;
-using Batteries.Injection.Attributes;
 using Batteries.Mapper.AppMapper;
 using Batteries.Mapper.Interfaces;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Batteries.Repository;
 
-[UsedImplicitly]
-[Injectable(typeof(IRepository<>))]
-public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IHasPk<int>
+public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey>
+    where TEntity : class, IHasPk<TPrimaryKey>
+    where TPrimaryKey : IComparable<TPrimaryKey>
 {
     private readonly DbContext _context;
     protected readonly DbSet<TEntity> EntityDbSet;
@@ -60,9 +58,16 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, I
         return _context.SaveChangesAsync(ct);
     }
 
+    public async Task<TEntity> Remove(TPrimaryKey id, CancellationToken ct)
+    {
+        var item = await Single(x => x.Id.Equals(id), ct);
+        await Remove(item, ct);
+        return item;
+    }
+
     public async Task<TEntity> Remove(int id, CancellationToken ct)
     {
-        var item = await Single(x => x.Id == id, ct);
+        var item = await Single(x => x.Id.Equals(id), ct);
         await Remove(item, ct);
         return item;
     }

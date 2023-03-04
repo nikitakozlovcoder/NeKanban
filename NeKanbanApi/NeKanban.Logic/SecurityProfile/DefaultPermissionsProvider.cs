@@ -17,7 +17,6 @@ public class DefaultPermissionsProvider : IDefaultPermissionProvider
           PermissionType.AssignTasksThemself,
           PermissionType.MoveTasks,
           PermissionType.AddOrUpdateOwnComments,
-          PermissionType.AddOrUpdateOwnComments,
           PermissionType.DeleteOwnComments,
         };
         
