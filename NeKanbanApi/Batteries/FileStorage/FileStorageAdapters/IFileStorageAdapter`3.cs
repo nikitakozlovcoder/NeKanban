@@ -18,6 +18,7 @@ public interface IFileStorageAdapter<TFileAdapterEntity, TParent, TFileEntity>
     Task Delete(IEnumerable<int> adapterIds, CancellationToken ct);
 
     Task<FileStoreDto> Attach(int parentId, Guid fileId, CancellationToken ct);
+    Task<List<FileStoreDto>> Attach(int parentId, IEnumerable<Guid> fileId, CancellationToken ct);
     
     Task<List<FileStoreDto>> GetAll(int parentId, CancellationToken ct);
     Task<List<FileStoreDto>> GetAll(Expression<Func<TFileAdapterEntity, bool>> predicate, CancellationToken ct);

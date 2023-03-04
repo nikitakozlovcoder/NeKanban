@@ -62,18 +62,25 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
 
     public async Task<FileStoreDto> Attach(int parentId, Guid fileId, CancellationToken ct)
     {
-        var adapter = new TFileAdapterEntity
+
+        return (await Attach(parentId, new[] {fileId}, ct)).Single();
+       
+    }
+
+    public async Task<List<FileStoreDto>> Attach(int parentId, IEnumerable<Guid> fileIds, CancellationToken ct)
+    {
+        var adapters = fileIds.Select(fileId => new TFileAdapterEntity
         {
             FileId = fileId,
             ParentId = parentId
-        };
+        }).ToList();
 
-        await _storeAdapterRepository.Create(adapter, ct);
-        return new FileStoreDto
+        await _storeAdapterRepository.Create(adapters, ct);
+        return adapters.Select(x => new FileStoreDto
         {
-            Id = adapter.Id,
-            FileId = adapter.FileId
-        };
+            Id = x.Id,
+            FileId = x.FileId
+        }).ToList();
     }
 
     public Task<List<FileStoreUrlDto>> GetAllUrls(int parentId, CancellationToken ct)
