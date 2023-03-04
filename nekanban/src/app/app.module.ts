@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialExampleModule } from '../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
-import { HttpClientModule } from '@angular/common/http';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
@@ -30,14 +30,34 @@ import { DeskUserService } from "./services/deskUser.service";
 import {DataGeneratorService} from "./services/dataGenerator.service";
 import {NgScrollbarModule} from "ngx-scrollbar";
 import {CommentsService} from "./services/comments.service";
-import { TodoDeletionDialogComponent } from './components/todo/todo-deletion-dialog/todo-deletion-dialog.component';
 import {UserStorageService} from "./services/userStorage.service";
+import { SettingsComponent } from './components/settings/settings/settings.component';
+import { HeaderComponent } from './components/partials/header/header.component';
+import { GeneralSettingsComponent } from './components/settings/general-settings/general-settings.component';
+import { UsersSettingsComponent } from './components/settings/users-settings/users-settings.component';
+import { RolesSettingsComponent } from './components/settings/roles-settings/roles-settings.component';
+import {MatListModule} from "@angular/material/list";
+import { RoleCreationComponent } from './components/settings/dialogs/role-creation/role-creation.component';
+import { RoleUpdatingComponent } from './components/settings/dialogs/role-updating/role-updating.component';
+import { ConfirmationComponent } from './components/dialogs/confirmation/confirmation.component';
+import { PageNotFoundComponent } from './components/routing/page-not-found/page-not-found.component';
+import { SidenavComponent } from './components/partials/sidenav/sidenav.component';
+import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 
 const appRoutes: Routes =[
   { path: 'authorization', component: AuthorizationComponent},
   { path: '', component: DeskComponent, canActivate: [DeskGuard]},
-  { path: 'invite', component: InviteComponent}
+  { path: 'invite', component: InviteComponent},
+  { path: 'desks/:id', component: DeskComponent, canActivate: [DeskGuard]},
+  { path: 'desks/:id/settings', component: SettingsComponent, canActivate: [DeskGuard]},
+  { path: 'desks', redirectTo: ''},
+  { path: '**', component: PageNotFoundComponent}
 ];
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -54,7 +74,16 @@ const appRoutes: Routes =[
     TodoCreationComponent,
     TodoEditingComponent,
     ColumnUpdatingComponent,
-    TodoDeletionDialogComponent,
+    SettingsComponent,
+    HeaderComponent,
+    GeneralSettingsComponent,
+    UsersSettingsComponent,
+    RolesSettingsComponent,
+    RoleCreationComponent,
+    RoleUpdatingComponent,
+    ConfirmationComponent,
+    PageNotFoundComponent,
+    SidenavComponent,
   ],
     imports: [
         BrowserAnimationsModule,
@@ -65,7 +94,16 @@ const appRoutes: Routes =[
         MaterialExampleModule,
         ReactiveFormsModule,
         RouterModule.forRoot(appRoutes),
-        NgScrollbarModule
+        NgScrollbarModule,
+      MatListModule,
+      TranslateModule.forRoot({
+        defaultLanguage: 'ru',
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+        }
+      })
     ],
   providers: [UserService,
     DeskService,
@@ -78,7 +116,8 @@ const appRoutes: Routes =[
     DeskUserService,
     DataGeneratorService,
     CommentsService,
-    UserStorageService],
+    UserStorageService,
+  TranslateService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

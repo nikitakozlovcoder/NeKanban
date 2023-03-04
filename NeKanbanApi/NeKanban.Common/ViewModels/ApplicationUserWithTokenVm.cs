@@ -8,7 +8,7 @@ public class ApplicationUserWithTokenVm : BaseEntityModel<int>, IAutoMapFrom<App
 {
     public required string Name { get; set; }
     public required string Surname { get; set; }
-    public required Token? Token { get; set; }
+    public required JwtTokenPair? Token { get; set; }
     public required string Email { get; set; }
     
     public static void ConfigureMap(IMappingExpression<ApplicationUser, ApplicationUserWithTokenVm> cfg)

@@ -67,9 +67,7 @@ mat-form-field
   margin-top: 20px !important;
 }
 
-.invite-link .p-link {
-  text-decoration: underline;
-}
+
 
 .users-list {
   max-height: 210px;
@@ -195,29 +193,7 @@ mat-form-field
   text-transform: capitalize;
 }
 
-.users-list .mat-list-item a mat-icon {
-  margin-left: auto;
-}
 
-.desk-remove-button {
-  width: 100%;
-  margin-top: auto;
-}
-
-.test-list {
-  display: flex;
-}
-
-.role-selector {
-  width: 150px;
-  margin-top: 10px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.single-user {
-  height: 70px !important;
-}
 
 .single-user div {
 }
@@ -235,14 +211,6 @@ mat-form-field
   margin-bottom: auto;
 }
 
-.cancel-icon {
-  margin-left: auto;
-}
-
-.role-name {
-  margin-left: auto;
-  margin-right: auto;
-}
 
 .column-card-title {
   display: flex;
@@ -293,12 +261,7 @@ mat-toolbar ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
   stroke: white;
 }
 
-.create-desk-button {
-  width: 280px;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-}
+
 
 mat-card-title mat-spinner {
   margin-top: 7px;
@@ -328,10 +291,7 @@ mat-card-title mat-spinner {
   overflow: auto;
   display: flex;
 }
-.desk-user-name {
-  width: 150px;
-  margin: 0;
-}
+
 .single-user ::ng-deep.mat-list-item-content {
   justify-content: space-between;
 }
@@ -339,70 +299,14 @@ mat-card-title mat-spinner {
   --scrollbar-padding: -6px;
   --scrollbar-size: 8px;
 }
-.p-link {
-  cursor: pointer;
-}
-::ng-deep.mat-snack-bar-container {
-  width: 180px !important;
-  min-width: 50px !important;
-}
 
 
-
-
-
-/* SELECT */
-.select {
-  position: relative;
-  min-width: 120px;
+.settings-button {
+  height: min-content;
 }
-.select svg {
-  position: absolute;
-  right: 12px;
-  top: calc(50% - 3px);
-  width: 10px;
-  height: 6px;
-  stroke-width: 2px;
-  stroke: #9098a9;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  pointer-events: none;
+.settings-button mat-icon {
+  margin-left: 8px;
 }
-.select select {
-  -webkit-appearance: none;
-  padding: 7px 40px 7px 12px;
-  width: 100%;
-  border: 1px solid #e8eaed;
-  border-radius: 5px;
-  background: #fff;
-  box-shadow: 0 1px 3px -2px #9098a9;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 16px;
-  transition: all 150ms ease;
-}
-.select select:required:invalid {
-  color: #5a667f;
-}
-.select select option {
-  color: #223254;
-}
-.select select option[value=""][disabled] {
-  display: none;
-}
-.select select:focus {
-  outline: none;
-  border-color: #07f;
-  box-shadow: 0 0 0 2px rgba(0,119,255,0.2);
-}
-.select select:hover + svg {
-  stroke: #07f;
-}
-.sprites {
-  position: absolute;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-  user-select: none;
+mat-card-title-group {
+  align-items: center;
 }

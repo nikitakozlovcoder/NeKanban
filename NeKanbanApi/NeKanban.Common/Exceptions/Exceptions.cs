@@ -7,4 +7,5 @@ public static class Exceptions
     public static string CantDeleteColumnWithThisType { get; set; } = nameof(CantDeleteColumnWithThisType);
     public static string CantDeleteRoleWhenAnyUserHasThisRole { get; set; } = nameof(CantDeleteRoleWhenAnyUserHasThisRole);
     public static string CantDeleteDefaultRole { get; set; } = nameof(CantDeleteDefaultRole);
+    public static string PersonalDataAgreementNotAccepted { get; set; } = nameof(PersonalDataAgreementNotAccepted);
 }

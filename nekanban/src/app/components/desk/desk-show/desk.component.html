@@ -1,54 +1,11 @@
 <div *ngIf="isLoaded && desks.length > 0 && desk != undefined">
   <mat-sidenav-container class="example-container" >
-    <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
-                 (closed)="events.push('close!')">
-      <h2 class="mat-h2">Мои доски</h2>
-      <div class="sidenav-container">
-        <mat-nav-list>
-          <mat-list-item *ngFor="let desk of desks; index as i">
-            <!--<a *ngIf="isCurrentDesk(i)" matLine (click) = "changeDesk(i)"><mat-icon>check_box</mat-icon>{{ desk.name }} {{desk.id}}<mat-divider></mat-divider></a>-->
-            <a matLine (click) = "changeDesk(desk.id)">{{ desk.name }}<mat-divider></mat-divider></a>
-          </mat-list-item>
-
-          <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
-
-        </mat-nav-list>
-        <div class = "menu-bottom-button">
-          <button class = "register_button create-desk-button" mat-raised-button color="primary" (click)="showDeskCreation()">Создать доску</button>
-        </div>
-      </div>
-
-
+    <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened" >
+      <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <p>
-        <mat-toolbar color="primary">
-          <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="sidenav.toggle()">
-            <mat-icon>menu</mat-icon>
-          </button>
-          <span>NeKanban</span>
-          <span class="example-spacer"></span>
-          <mat-icon>account_circle</mat-icon>
-          <span class="user-name">{{ getCurrentUser().name}}</span>
-          <button *ngIf="getCurrentDesk()!.deskUser.preference && isFavouriteLoaded" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(desk?.id)">
-            <mat-icon>favorite</mat-icon>
-          </button>
-          <button *ngIf="!getCurrentDesk()!.deskUser.preference && isFavouriteLoaded" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "addToFavourite(desk?.id)">
-            <mat-icon>favorite_border</mat-icon>
-          </button>
-          <mat-spinner class="spinner-centered spinner-white" diameter="24" *ngIf="!isFavouriteLoaded"></mat-spinner>
-
-          <!--<button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-            <mat-icon>share</mat-icon>
-          </button>-->
-          <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" (click)="logout()">
-            <mat-icon>logout</mat-icon>
-          </button>
-        </mat-toolbar>
-      </p>
-
-
+      <app-header [currentUser]="getCurrentUser()!"  [(opened)]="opened" [(desks)]="desks" [currentDeskId]="getCurrentDesk()!.id"></app-header>
       <mat-card>
         <mat-card-title-group>
           <mat-card-title>
@@ -57,27 +14,10 @@
           <mat-card-subtitle>
             <p>Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
           </mat-card-subtitle>
+          <button class="settings-button" [routerLink]="['/desks', desk.id, 'settings']" mat-raised-button color="primary">Настройки<mat-icon>settings</mat-icon></button>
         </mat-card-title-group>
       </mat-card>
 
-      <!--<mat-card>
-        <div cdkDropList
-             [cdkDropListData]="columns"
-             class="example-list test-list"
-             (cdkDropListDropped)="drop_column($event)"
-             cdkDropListOrientation="horizontal"
-        >
-          <div *ngFor="let column of columns">
-            <mat-card cdkDrag>
-              <mat-card-title>
-                {{column.name}}
-              </mat-card-title>
-            </mat-card>
-          </div>
-        </div>
-
-
-      </mat-card>-->
       <mat-card class = "desk-cards">
         <mat-card-title>
           <div class = "menu-bottom-button">
@@ -122,159 +62,29 @@
                       (cdkDropListDropped)="drop($event, column.id)">
                       <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? false : true" >
                         <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
-                        <p (click)="openTaskCreationDialog(toDo)" class="todo-name">{{toDo.name}}</p>
+                        <p (click)="openTaskShowingDialog(toDo)" class="todo-name">{{toDo.name}}</p>
                         <mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon>
                       </div>
                     </div>
                   </mat-card-content>
+
                 </mat-card>
               </div>
             </div>
           </ng-scrollbar>
-
-
-
-
-          <mat-card class = "settings-card">
-            <mat-card-title>
-              <p>Настройки доски<mat-icon>settings</mat-icon></p>
-            </mat-card-title>
-
-            <mat-card-content *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateGeneralDesk')">
-              <mat-form-field  appearance="fill">
-                <mat-label>Название доски</mat-label>
-                <input matInput placeholder="Новая доска" [formControl]="name" required>
-                <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
-                <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 6 символов!</mat-error>
-              </mat-form-field>
-              <button *ngIf="isNameUpdateLoaded" class = "register_button" mat-raised-button color="primary" (click)="updateDesk(desk!.id)">Обновить название</button>
-              <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isNameUpdateLoaded"></mat-spinner>
-
-            </mat-card-content>
-            <mat-card-subtitle *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ViewInviteLink')" class="invite-link">
-              <p class="invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
-              <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, {duration:2000})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>
-              <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageInviteLink') && !hasInviteLink() && isLinkLoaded" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
-              <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLinkLoaded"></mat-spinner>
-            </mat-card-subtitle>
-            <mat-expansion-panel (opened)="panelOpenState = true"
-                                 (closed)="panelOpenState = false">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  Пользователи
-                </mat-panel-title>
-                <mat-panel-description>
-
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <mat-nav-list>
-                <ng-scrollbar class ="users-list" [autoHeightDisabled]="false">
-                  <mat-spinner class="spinner-centered" *ngIf="!isUserRemoveLoaded" diameter="20"></mat-spinner>
-                  <mat-list-item class="single-user" *ngFor="let user of desk!.deskUsers; index as i">
-                    <p class="desk-user-name">{{user.user.name}} {{user.user.surname}}</p>
-                    <!--<mat-form-field *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2" class = "role-selector" appearance="fill">
-                      <mat-label>Роль</mat-label>
-                      <mat-select (selectionChange)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role">
-                        <mat-option *ngFor="let role of roles" [value]="role.role">
-                          {{role.roleName}}
-                        </mat-option>
-                      </mat-select>
-
-                    </mat-form-field>-->
-                    <div class="select" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2">
-                      <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role">
-                        <option *ngFor="let role of roles" [value]="role.role">
-                          {{role.roleName}}
-                        </option>
-                      </select>
-                      <svg *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role !== 2">
-                        <use xlink:href="#select-arrow-down"></use>
-                      </svg>
-                    </div>
-                    <svg class="sprites">
-                      <symbol id="select-arrow-down" viewbox="0 0 10 6">
-                        <polyline points="1 1 5 5 9 1"></polyline>
-                      </symbol>
-                    </svg>
-
-                    <div class="role-name" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && desk!.deskUsers[i].role === 2">
-                      {{roleNames[desk!.deskUsers[i].role]}}
-                    </div>
-                    <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole')">
-                      {{roleNames[desk!.deskUsers[i].role]}}
-                    </div>
-                    <div>
-                      <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && desk!.deskUsers[i].role !== 2" (click)="removeUser([user.user.id])">cancel</mat-icon>
-                    </div>
-
-
-
-                    <mat-divider></mat-divider>
-                  </mat-list-item>
-                </ng-scrollbar>
-
-
-                <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
-
-              </mat-nav-list>
-            </mat-expansion-panel>
-            <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'DeleteDesk') && isRemoveDeskLoaded" class = "desk-remove-button" mat-raised-button color="warn" (click)="removeDesk(desk!.id)"><mat-icon>delete</mat-icon>Удалить доску</button>
-            <mat-spinner class="spinner-centered" color="warn" diameter="36" *ngIf="!isRemoveDeskLoaded"></mat-spinner>
-
-          </mat-card>
         </div>
-
-
       </mat-card>
-      <!--<div cdkDropList class="example-list" (cdkDropListDropped)="drop_movie($event)">
-        <div class="example-box" *ngFor="let movie of movies" cdkDrag>{{movie}}</div>
-      </div>-->
-
-
     </mat-sidenav-content>
   </mat-sidenav-container>
-
 </div>
 <div *ngIf="isLoaded && (desks.length === 0 || desk === undefined)">
   <mat-sidenav-container class="example-container" >
-    <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
-                 (closed)="events.push('close!')">
-      <h2 class="mat-h2">Мои доски</h2>
-      <div class="sidenav-container">
-        <mat-nav-list>
-
-
-          <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
-
-        </mat-nav-list>
-        <div class = "menu-bottom-button">
-          <button class = "register_button" mat-raised-button color="primary" (click)="showDeskCreation()">Создать доску</button>
-        </div>
-      </div>
-
-
+    <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened">
+      <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <mat-toolbar color="primary">
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="sidenav.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <span>NeKanban</span>
-        <span class="example-spacer"></span>
-        <mat-icon>account_circle</mat-icon>
-        <span class="user-name">{{ getCurrentUser().name}}</span>
-        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-          <mat-icon>favorite_border</mat-icon>
-        </button>
-
-        <!--<button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-          <mat-icon>share</mat-icon>
-        </button>-->
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" (click)="logout()">
-          <mat-icon>logout</mat-icon>
-        </button>
-      </mat-toolbar>
+      <app-header [currentUser]="getCurrentUser()!"  [(opened)]="opened"></app-header>
 
       <mat-card>
         <mat-card-title>
@@ -286,46 +96,12 @@
 </div>
 <div *ngIf="!isLoaded">
   <mat-sidenav-container class="example-container" >
-    <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
-                 (closed)="events.push('close!')">
-      <h2 class="mat-h2">Мои доски</h2>
-      <div class="sidenav-container">
-        <mat-nav-list>
-
-
-          <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
-
-        </mat-nav-list>
-        <div class = "menu-bottom-button">
-          <button class = "register_button" mat-raised-button color="primary" (click)="showDeskCreation()">Создать доску</button>
-        </div>
-      </div>
-
-
+    <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened">
+      <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
     </mat-sidenav>
 
     <mat-sidenav-content class="full-height-content">
-      <mat-toolbar color="primary">
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="sidenav.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <span>NeKanban</span>
-        <span class="example-spacer"></span>
-        <mat-icon>account_circle</mat-icon>
-        <span class="user-name">{{ getCurrentUser().name}}</span>
-        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-          <mat-icon>favorite_border</mat-icon>
-        </button>
-
-        <!--<button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-          <mat-icon>share</mat-icon>
-        </button>-->
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" (click)="logout()">
-          <mat-icon>logout</mat-icon>
-        </button>
-      </mat-toolbar>
-
-
+      <app-header [currentUser]="getCurrentUser()!"  [(opened)]="opened"></app-header>
       <mat-spinner class="spinner" diameter="50"></mat-spinner>
     </mat-sidenav-content>
   </mat-sidenav-container>

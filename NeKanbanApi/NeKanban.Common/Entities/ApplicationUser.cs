@@ -11,6 +11,7 @@ public class ApplicationUser : IdentityUser<int>, IHasPk<int>, IAutoMapFrom<User
 {
     public required string? Name { get; set; }
     public required string? Surname { get; set; }
+    public virtual ICollection<UserRefreshToken> RefreshTokens { get; set; } = new List<UserRefreshToken>();
     public ApplicationUser()
     {
         base.UserName = Guid.NewGuid().ToString();

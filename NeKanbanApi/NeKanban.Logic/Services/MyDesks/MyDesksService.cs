@@ -25,7 +25,8 @@ public class MyDesksService : IMyDesksService
     public async Task<List<DeskLiteDto>> GetForUser(int userId, CancellationToken ct)
     {
         var desks = await _deskRepository.QueryableSelect()
-            .Include(x => x.DeskUsers.Where(du => du.UserId == userId)).ThenInclude(x=> x.User)
+            .Include(x => x.DeskUsers.Where(du => du.UserId == userId)).ThenInclude(x => x.Role)
+            .Include(x => x.DeskUsers.Where(du => du.UserId == userId)).ThenInclude(x => x.User)
             .Where(x=> x.DeskUsers.Any(du => du.UserId == userId))
             .ToListAsync(ct);
         return _mapper.AutoMap<DeskLiteDto, Desk>(desks);

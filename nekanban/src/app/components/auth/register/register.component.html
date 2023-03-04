@@ -33,6 +33,10 @@
     <mat-error *ngIf="password_confirmation.errors?.['required']">Поле не должно быть пустым!</mat-error>
     <mat-error *ngIf="password_confirmation.errors?.['passwordMismatch']">Значения паролей должны совпадать!</mat-error>
 </mat-form-field>
+<div class="checkbox-wrap">
+  <mat-checkbox [formControl]="userAgreement">Я даю согласие на обработку указанных персональных данных</mat-checkbox>
+  <mat-error class="user-agreement-error" *ngIf="userAgreement.touched && userAgreement.errors?.['required']">Вы должны дать согласие на обработку персональных данных!</mat-error>
+</div>
 
 <button *ngIf="!(this.busy | async)" class = "register_button" mat-raised-button color="primary" (click)="registerUser()">Зарегистрироваться</button>
 <div *ngIf="(this.busy | async)" class="spinner__container spinner__container-centered">

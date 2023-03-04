@@ -1,0 +1,22 @@
+﻿{
+  "Permissions": {
+    "UpdateGeneralDesk": "Обновлять доску",
+    "ViewInviteLink": "Просматривать ссылку для приглашения",
+    "ManageInviteLink": "Генерировать ссылку для приглашения",
+    "DeleteDesk": "Удалять доску",
+    "CreateColumns": "Создавать колонки",
+    "ManageColumns": "Управлять колонками",
+    "ManageAssigners": "Назначать других пользователей на задачу",
+    "AssignTasksThemself": "Назначать самого себя на задачу",
+    "CreateTasks": "Создавать задачи",
+    "UpdateTask": "Обновлять задачи",
+    "MoveTasks": "Перемещать задачи",
+    "RemoveUsers": "Удалять пользователей с доски",
+    "ChangeUserRole": "Изменять роль пользователя",
+    "AddComments": "Добавлять комментарии",
+    "UpdateOwnComments": "Обновлять свои комментарии",
+    "DeleteOwnComments": "Удалять свои комментарии",
+    "DeleteAnyComments": "Удалять любые комментарии",
+    "ManageRoles": "Управление ролями"
+  }
+}

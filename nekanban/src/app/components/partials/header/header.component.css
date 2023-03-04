@@ -1,0 +1,47 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.example-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.example-events {
+  width: 300px;
+  height: 200px;
+  overflow: auto;
+  border: 1px solid #555;
+}
+.my-sidenav {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.my-sidenav h2 {
+  margin: 10px;
+}
+
+.menu-bottom-button {
+  flex: 1;
+  float: left;
+  width: 100%;
+}
+.user-name {
+  margin-right: 40px;
+  padding-left: 10px;
+  text-transform: capitalize;
+}
+mat-toolbar ::ng-deep .mat-progress-spinner circle {
+  color: white;
+  stroke: white !important;
+  margin-right: 10px;
+}
+.project-name {
+  cursor: pointer;
+}

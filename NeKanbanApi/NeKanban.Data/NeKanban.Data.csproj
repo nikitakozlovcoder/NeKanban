@@ -36,4 +36,8 @@
       <Folder Include="Migrations" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\ApplicationContextModelSnapshot.cs" />
+    </ItemGroup>
+
 </Project>
