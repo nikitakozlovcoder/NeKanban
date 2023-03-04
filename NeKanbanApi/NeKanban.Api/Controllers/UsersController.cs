@@ -25,7 +25,7 @@ public class UsersController : BaseAuthController
     }
     
     [HttpPost]
-    public  Task<ApplicationUserWithTokenVm> LogIn([FromBody]UserLoginModel userLoginModel, CancellationToken ct = default)
+    public Task<ApplicationUserWithTokenVm> LogIn([FromBody]UserLoginModel userLoginModel, CancellationToken ct = default)
     {
         return _applicationUsersService.Login(userLoginModel, ct);
     }
@@ -34,5 +34,11 @@ public class UsersController : BaseAuthController
     public Task<ApplicationUserWithTokenVm> Register([FromBody]UserRegisterModel userRegisterModel, CancellationToken ct = default)
     {
         return _applicationUsersService.Register(userRegisterModel, ct);
+    }
+    
+    [HttpPost]
+    public Task<JwtTokenPair> Refresh([FromBody]UserRefreshTokenModel userRefreshTokenModel, CancellationToken ct = default)
+    {
+        return _applicationUsersService.RefreshToken(userRefreshTokenModel, ct);
     }
 }

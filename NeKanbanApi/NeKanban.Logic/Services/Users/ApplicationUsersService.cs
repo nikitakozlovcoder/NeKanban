@@ -22,17 +22,20 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly ITokenProviderService _tokenProviderService;
+    private readonly IRepository<UserRefreshToken> _tokenRepository;
     private readonly IAppMapper _mapper;
     public ApplicationUsersService(
         SignInManager<ApplicationUser> signInManager, 
         IRepository<ApplicationUser> userRepository,
         ITokenProviderService tokenProviderService,
-        IAppMapper mapper)
+        IAppMapper mapper,
+        IRepository<UserRefreshToken> tokenRepository)
     {
         _signInManager = signInManager;
         _userRepository = userRepository;
         _tokenProviderService = tokenProviderService;
         _mapper = mapper;
+        _tokenRepository = tokenRepository;
     }
 
     public async Task<ApplicationUserWithTokenVm> Login(UserLoginModel userLoginModel, CancellationToken ct) 
@@ -44,9 +47,16 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         }
         
         var principal = await _signInManager.CreateUserPrincipalAsync(user);
-        var token = _tokenProviderService.GenerateJwtToken(principal);
+        var token = _tokenProviderService.GenerateJwtAccessToken(principal);
+        var refreshToken = _tokenProviderService.GenerateJwtRefreshToken(principal);
+        await _tokenProviderService.SaveRefreshToken(user.Id, refreshToken.UniqId, refreshToken.ExpiresAt, ct);
         var userVm = _mapper.AutoMap<ApplicationUserWithTokenVm, ApplicationUser>(user);
-        userVm.Token = token;
+        userVm.Token = new JwtTokenPair
+        {
+            AccessToken = token,
+            RefreshToken = refreshToken.Token
+        };
+        
         return userVm;
     }
 
@@ -54,6 +64,29 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
     {
         await Create(userRegister, ct);
         return await Login(userRegister, ct);
+    }
+
+    public async Task<JwtTokenPair> RefreshToken(UserRefreshTokenModel refreshTokenModel, CancellationToken ct)
+    {
+        var tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken);
+        var user = await _userRepository.Single(x => x.UserName == tokenData.UserUniqueName.ToString(), ct);
+        var isValid = await _tokenProviderService.ValidateRefreshToken(user.Id, tokenData.UniqId, ct);
+        if (!isValid)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
+        }
+        
+        var principal = await _signInManager.CreateUserPrincipalAsync(user);
+        var accessToken = _tokenProviderService.GenerateJwtAccessToken(principal);
+        var refreshToken = _tokenProviderService.GenerateJwtRefreshToken(principal);
+        await _tokenProviderService.SaveRefreshToken(user.Id, refreshToken.UniqId, refreshToken.ExpiresAt, ct);
+
+        return new JwtTokenPair
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken.Token,
+        };
+
     }
 
     public async Task<ApplicationUserWithTokenVm> GetById(int id,  CancellationToken ct)
