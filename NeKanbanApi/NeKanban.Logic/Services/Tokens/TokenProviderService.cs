@@ -66,11 +66,11 @@ public class TokenProviderService : ITokenProviderService
         };
     }
 
-    public RefreshTokenReadDto ReadJwtRefreshToken(string refreshToken)
+    public RefreshTokenReadDto ReadJwtRefreshToken(string refreshToken, bool validateLifespan)
     {
         var validationParams = new TokenValidationParameters
         {
-            ValidateLifetime = true,
+            ValidateLifetime = validateLifespan,
             ValidateAudience = false,
             ValidateIssuer = false,
             ClockSkew = TimeSpan.FromMinutes(_jwtSettings.ClockSkewMinutes),
@@ -110,5 +110,15 @@ public class TokenProviderService : ITokenProviderService
 
         await _tokenRepository.Remove(token, ct);
         return true;
+    }
+
+    public async Task DeleteRefreshToken(int userId, Guid uniqId, CancellationToken ct)
+    {
+        var token = await _tokenRepository.FirstOrDefault(x => x.ApplicationUserId == userId
+                                                               && x.Token == uniqId, ct);
+        if (token != null)
+        {
+            await _tokenRepository.Remove(token, ct);
+        }
     }
 }

@@ -22,20 +22,17 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IRepository<ApplicationUser> _userRepository;
     private readonly ITokenProviderService _tokenProviderService;
-    private readonly IRepository<UserRefreshToken> _tokenRepository;
     private readonly IAppMapper _mapper;
     public ApplicationUsersService(
         SignInManager<ApplicationUser> signInManager, 
         IRepository<ApplicationUser> userRepository,
         ITokenProviderService tokenProviderService,
-        IAppMapper mapper,
-        IRepository<UserRefreshToken> tokenRepository)
+        IAppMapper mapper)
     {
         _signInManager = signInManager;
         _userRepository = userRepository;
         _tokenProviderService = tokenProviderService;
         _mapper = mapper;
-        _tokenRepository = tokenRepository;
     }
 
     public async Task<ApplicationUserWithTokenVm> Login(UserLoginModel userLoginModel, CancellationToken ct) 
@@ -60,6 +57,18 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         return userVm;
     }
 
+    public async Task Logout(int currentUserId, UserRefreshTokenModel refreshTokenModel, CancellationToken ct)
+    {
+        var tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken, false);
+        var user = await _userRepository.Single(x => x.UserName == tokenData.UserUniqueName.ToString(), ct);
+        if (currentUserId != user.Id)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
+        }
+        
+        await _tokenProviderService.DeleteRefreshToken(user.Id, tokenData.UniqId, ct);
+    }
+
     public async Task<ApplicationUserWithTokenVm> Register(UserRegisterModel userRegister, CancellationToken ct)
     {
         await Create(userRegister, ct);
@@ -68,7 +77,7 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
 
     public async Task<JwtTokenPair> RefreshToken(UserRefreshTokenModel refreshTokenModel, CancellationToken ct)
     {
-        var tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken);
+        var tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken, true);
         var user = await _userRepository.Single(x => x.UserName == tokenData.UserUniqueName.ToString(), ct);
         var isValid = await _tokenProviderService.ValidateRefreshToken(user.Id, tokenData.UniqId, ct);
         if (!isValid)

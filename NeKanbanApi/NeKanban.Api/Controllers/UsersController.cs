@@ -41,4 +41,12 @@ public class UsersController : BaseAuthController
     {
         return _applicationUsersService.RefreshToken(userRefreshTokenModel, ct);
     }
+    
+    [HttpPost]
+    [Authorize]
+    public async Task Logout([FromBody]UserRefreshTokenModel userRefreshTokenModel, CancellationToken ct = default)
+    {
+        var currentUser = await GetApplicationUser();
+        await _applicationUsersService.Logout(currentUser.Id, userRefreshTokenModel, ct);
+    }
 }
