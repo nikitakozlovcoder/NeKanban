@@ -27,6 +27,7 @@ public class TokenProviderService : ITokenProviderService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Issuer = _jwtSettings.Issuer,
+            Audience = _jwtSettings.Audience,
             Subject = new ClaimsIdentity(principal.Identity),
             Expires = DateTime.UtcNow.AddDays(365),
             SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)

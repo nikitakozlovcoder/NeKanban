@@ -63,7 +63,7 @@ builder.Services.AddSwaggerGen(x =>
     });
 });
 
-var jwt = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+var jwt = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
 builder.Services.AddCors();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -73,9 +73,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidAudience = jwt!.Audience,
+            ValidAudience = jwt.Audience,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwt!.Issuer,
+            ValidIssuer = jwt.Issuer,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwt.Secret!)),
         };
     });
