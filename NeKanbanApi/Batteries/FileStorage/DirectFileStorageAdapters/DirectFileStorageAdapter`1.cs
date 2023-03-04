@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Batteries.FileStorage.DirectFileStorageAdapters;
 
-public class DirectFileStorageAdapter<TFileEntity> : IDirectFileStorageAdapter<TFileEntity>, IDirectFileStorageAdapter where TFileEntity : class, IFileEntity, new()
+public class DirectFileStorageAdapter<TFileEntity> : IDirectFileStorageAdapter<TFileEntity> where TFileEntity : class, IFileEntity, new()
 {
     private readonly IFileStorageProvider _provider;
     private readonly IGuidRepository<TFileEntity> _fileRepository;
