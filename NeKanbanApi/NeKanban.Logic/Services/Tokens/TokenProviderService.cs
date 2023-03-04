@@ -97,10 +97,18 @@ public class TokenProviderService : ITokenProviderService
         }, ct);
     }
 
-    public Task<bool> ValidateRefreshToken(int userId, Guid uniqId, CancellationToken ct)
+    public async Task<bool> ValidateRefreshToken(int userId, Guid uniqId, CancellationToken ct)
     {
-        return _tokenRepository.Any(x => x.ApplicationUserId == userId
+        var token = await _tokenRepository.FirstOrDefault(x => x.ApplicationUserId == userId
                                          && x.Token == uniqId &&
                                          x.ExpiresAt >= DateTime.UtcNow.AddMinutes(-_jwtSettings.ClockSkewMinutes), ct);
+
+        if (token == null)
+        {
+            return false;
+        }
+
+        await _tokenRepository.Remove(token, ct);
+        return true;
     }
 }
