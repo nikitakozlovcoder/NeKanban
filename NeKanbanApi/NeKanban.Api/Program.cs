@@ -51,7 +51,7 @@ builder.Services.AddSwaggerGen(x =>
     });
 });
 
-var jwt = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+var jwt = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()!;
 builder.Services.AddCors();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -60,10 +60,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateAudience = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwt.Issuer,
+            ValidAudience = jwt.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwt.Secret!)),
+            ClockSkew = TimeSpan.FromMinutes(jwt.ClockSkewMinutes)
         };
     });
 

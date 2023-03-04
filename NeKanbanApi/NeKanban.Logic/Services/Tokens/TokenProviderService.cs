@@ -5,7 +5,9 @@ using JetBrains.Annotations;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NeKanban.Common.Attributes;
-using NeKanban.Common.ViewModels;
+using NeKanban.Common.DTOs.RefreshTokens;
+using NeKanban.Common.Entities;
+using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Options;
 
 namespace NeKanban.Logic.Services.Tokens;
@@ -15,27 +17,108 @@ namespace NeKanban.Logic.Services.Tokens;
 public class TokenProviderService : ITokenProviderService
 {
     private readonly JwtSettings _jwtSettings;
-    public TokenProviderService(IOptions<JwtSettings> jwtSettings)
+    private readonly IRepository<UserRefreshToken> _tokenRepository;
+    public TokenProviderService(IOptions<JwtSettings> jwtSettings, IRepository<UserRefreshToken> tokenRepository)
     {
+        _tokenRepository = tokenRepository;
         _jwtSettings = jwtSettings.Value;
     }
 
-    public Token GenerateJwtToken(ClaimsPrincipal principal)
+    public string GenerateJwtAccessToken(ClaimsPrincipal principal)
     {
         var handler = new JwtSecurityTokenHandler();
-        var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret!));
+        var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Issuer = _jwtSettings.Issuer,
+            Audience = _jwtSettings.Audience,
             Subject = new ClaimsIdentity(principal.Identity),
-            Expires = DateTime.UtcNow.AddDays(365),
-            SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.Minutes),
+            SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
         };
         
         var token = handler.CreateToken(tokenDescriptor);
-        return new Token
+        return handler.WriteToken(token);
+    }
+
+    public RefreshTokenDto GenerateJwtRefreshToken(ClaimsPrincipal principal)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.RefreshSecret));
+        var uniqId = Guid.NewGuid();
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
-            TokenValue = handler.WriteToken(token)
+            Claims = new Dictionary<string, object>
+            {
+                {"uniqId", uniqId}
+            },
+            Subject = new ClaimsIdentity(principal.Identity),
+            Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.RefreshMinutes),
+            SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
         };
+        
+        var token = handler.CreateToken(tokenDescriptor);
+        return new RefreshTokenDto
+        {
+            Token = handler.WriteToken(token),
+            UniqId = uniqId,
+            ExpiresAt = tokenDescriptor.Expires.Value
+        };
+    }
+
+    public RefreshTokenReadDto ReadJwtRefreshToken(string refreshToken, bool validateLifespan)
+    {
+        var validationParams = new TokenValidationParameters
+        {
+            ValidateLifetime = validateLifespan,
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            ClockSkew = TimeSpan.FromMinutes(_jwtSettings.ClockSkewMinutes),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.RefreshSecret))
+        };
+
+        var handler = new JwtSecurityTokenHandler();
+        var principal = handler.ValidateToken(refreshToken, validationParams, out _);
+        return new RefreshTokenReadDto
+        {
+            UniqId = Guid.Parse(principal.Claims.Single(x => x.Type == "uniqId").Value),
+            UserUniqueName = Guid.Parse(principal.Claims.Single(x => x.Type == ClaimTypes.Name).Value)
+        };
+    }
+    
+    public Task SaveRefreshToken(int userId, Guid uniqId, DateTime expiresAt, CancellationToken ct)
+    {
+        return _tokenRepository.Create(new UserRefreshToken
+        {
+            Token = uniqId,
+            ExpiresAt = expiresAt,
+            CreatedAt = DateTime.UtcNow,
+            ApplicationUserId = userId
+        }, ct);
+    }
+
+    public async Task<bool> ValidateRefreshToken(int userId, Guid uniqId, CancellationToken ct)
+    {
+        var token = await _tokenRepository.FirstOrDefault(x => x.ApplicationUserId == userId
+                                         && x.Token == uniqId &&
+                                         x.ExpiresAt >= DateTime.UtcNow.AddMinutes(-_jwtSettings.ClockSkewMinutes), ct);
+
+        if (token == null)
+        {
+            return false;
+        }
+
+        await _tokenRepository.Remove(token, ct);
+        return true;
+    }
+
+    public async Task DeleteRefreshToken(int userId, Guid uniqId, CancellationToken ct)
+    {
+        var token = await _tokenRepository.FirstOrDefault(x => x.ApplicationUserId == userId
+                                                               && x.Token == uniqId, ct);
+        if (token != null)
+        {
+            await _tokenRepository.Remove(token, ct);
+        }
     }
 }

@@ -44,16 +44,58 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         }
         
         var principal = await _signInManager.CreateUserPrincipalAsync(user);
-        var token = _tokenProviderService.GenerateJwtToken(principal);
+        var token = _tokenProviderService.GenerateJwtAccessToken(principal);
+        var refreshToken = _tokenProviderService.GenerateJwtRefreshToken(principal);
+        await _tokenProviderService.SaveRefreshToken(user.Id, refreshToken.UniqId, refreshToken.ExpiresAt, ct);
         var userVm = _mapper.AutoMap<ApplicationUserWithTokenVm, ApplicationUser>(user);
-        userVm.Token = token;
+        userVm.Token = new JwtTokenPair
+        {
+            AccessToken = token,
+            RefreshToken = refreshToken.Token
+        };
+        
         return userVm;
+    }
+
+    public async Task Logout(int currentUserId, UserRefreshTokenModel refreshTokenModel, CancellationToken ct)
+    {
+        var tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken, false);
+        var user = await _userRepository.Single(x => x.UserName == tokenData.UserUniqueName.ToString(), ct);
+        if (currentUserId != user.Id)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
+        }
+        
+        await _tokenProviderService.DeleteRefreshToken(user.Id, tokenData.UniqId, ct);
     }
 
     public async Task<ApplicationUserWithTokenVm> Register(UserRegisterModel userRegister, CancellationToken ct)
     {
         await Create(userRegister, ct);
         return await Login(userRegister, ct);
+    }
+
+    public async Task<JwtTokenPair> RefreshToken(UserRefreshTokenModel refreshTokenModel, CancellationToken ct)
+    {
+        var tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken, true);
+        var user = await _userRepository.Single(x => x.UserName == tokenData.UserUniqueName.ToString(), ct);
+        var isValid = await _tokenProviderService.ValidateRefreshToken(user.Id, tokenData.UniqId, ct);
+        if (!isValid)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
+        }
+        
+        var principal = await _signInManager.CreateUserPrincipalAsync(user);
+        var accessToken = _tokenProviderService.GenerateJwtAccessToken(principal);
+        var refreshToken = _tokenProviderService.GenerateJwtRefreshToken(principal);
+        await _tokenProviderService.SaveRefreshToken(user.Id, refreshToken.UniqId, refreshToken.ExpiresAt, ct);
+
+        return new JwtTokenPair
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken.Token,
+        };
+
     }
 
     public async Task<ApplicationUserWithTokenVm> GetById(int id,  CancellationToken ct)
