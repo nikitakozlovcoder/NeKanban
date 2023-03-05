@@ -57,15 +57,10 @@ public class ApplicationUsersService : BaseService, IApplicationUsersService
         return userVm;
     }
 
-    public async Task Logout(int currentUserId, UserRefreshTokenModel refreshTokenModel, CancellationToken ct)
+    public async Task Logout(UserRefreshTokenModel refreshTokenModel, CancellationToken ct)
     {
         var tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken, false);
         var user = await _userRepository.Single(x => x.UserName == tokenData.UserUniqueName.ToString(), ct);
-        if (currentUserId != user.Id)
-        {
-            throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
-        }
-        
         await _tokenProviderService.DeleteRefreshToken(user.Id, tokenData.UniqId, ct);
     }
 
