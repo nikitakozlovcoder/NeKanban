@@ -1,5 +1,9 @@
-﻿namespace NeKanban.Common.Models.CommentModels;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class CommentUpdateModel : CommentCreateModel
+namespace NeKanban.Common.Models.CommentModels;
+
+public class CommentUpdateModel
 {
+    [MinLength(10)]
+    public required string Body { get; set; }
 }

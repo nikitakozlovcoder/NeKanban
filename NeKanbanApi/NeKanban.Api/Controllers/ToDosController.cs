@@ -55,7 +55,7 @@ public class ToDosController : BaseAuthController
     }
     
     [HttpPut("{todoId:int}")]
-    public async Task<ToDoFullVm> UpdateDraftToDo(int todoId, [FromBody]ToDoUpdateModel model, CancellationToken ct)
+    public async Task<ToDoFullVm> UpdateDraft(int todoId, [FromBody]ToDoUpdateModel model, CancellationToken ct)
     {
         await EnsureAbleTo<ToDo>(PermissionType.CreateOrUpdateTasks, todoId, ct);
         var user = await GetApplicationUser();
@@ -63,7 +63,7 @@ public class ToDosController : BaseAuthController
     }
     
     [HttpPut("{todoId:int}")]
-    public async Task<ToDoFullVm> ApplyDraftToDo(int todoId, CancellationToken ct)
+    public async Task<ToDoFullVm> ApplyDraft(int todoId, CancellationToken ct)
     {
         await EnsureAbleTo<ToDo>(PermissionType.CreateOrUpdateTasks, todoId, ct);
         var user = await GetApplicationUser();

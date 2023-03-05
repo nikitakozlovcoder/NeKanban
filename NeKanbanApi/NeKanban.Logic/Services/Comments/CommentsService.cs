@@ -18,15 +18,18 @@ public class CommentsService : ICommentsService
     private readonly IRepository<ToDo> _toDosRepository;
     private readonly IAppMapper _appMapper;
     private readonly IDeskUserService _deskUserService;
+    private readonly QueryFilterSettings _filterSettings;
     public CommentsService(IRepository<Comment> commentsRepository,
         IRepository<ToDo> toDosRepository,
         IAppMapper appMapper,
-        IDeskUserService deskUserService)
+        IDeskUserService deskUserService,
+        QueryFilterSettings filterSettings)
     {
         _commentsRepository = commentsRepository;
         _toDosRepository = toDosRepository;
         _appMapper = appMapper;
         _deskUserService = deskUserService;
+        _filterSettings = filterSettings;
     }
 
     public Task<List<CommentDto>> GetComments(int toDoId, CancellationToken ct)
@@ -34,22 +37,51 @@ public class CommentsService : ICommentsService
         return _commentsRepository.ProjectTo<CommentDto>(x => x.ToDoId == toDoId, ct);
     }
 
-    public async Task<List<CommentDto>> Create(int toDoId, ApplicationUser user, CommentCreateModel model, CancellationToken ct)
+    public async Task<int> CreateDraft(int toDoId, ApplicationUser user, CancellationToken ct)
     {
         var deskId = await _toDosRepository.Single(x => x.Id == toDoId, x => x.Column!.DeskId, ct: ct);
         var deskUserId = await _deskUserService.GetDeskUserId(deskId, user, ct);
-        var comment = _appMapper.AutoMap<Comment, CommentCreateModel>(model);
-        comment.DeskUserId = deskUserId;
-        comment.ToDoId = toDoId;
-        comment.CreatedAtUtc = DateTime.UtcNow;
+        var comment = new Comment
+        {
+            DeskUserId = deskUserId,
+            ToDoId = toDoId,
+            Body = string.Empty,
+            CreatedAtUtc = default,
+            IsDraft = true
+        };
+
         await _commentsRepository.Create(comment, ct);
-        return await GetComments(toDoId, ct);
+        return comment.Id;
     }
 
-    public async Task<List<CommentDto>> Update(int commentId, ApplicationUser user, CommentUpdateModel model, CancellationToken ct)
+    public async Task<List<CommentDto>> ApplyDraft(int commentId, ApplicationUser user, CancellationToken ct)
     {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            CommentDraftFilter = false
+        });
+        
+        var comment = await _commentsRepository.Single(x => x.IsDraft && x.DeskUser != null
+                                                                && x.DeskUser.UserId == user.Id, ct);
+
+        comment.CreatedAtUtc = DateTime.UtcNow;
+        comment.IsDraft = false;
+        await _commentsRepository.Update(comment, ct);
+        return await GetComments(comment.ToDoId, ct);
+    }
+
+    public async Task<List<CommentDto>> Update(bool isDraft, int commentId, ApplicationUser user, CommentUpdateModel model, CancellationToken ct)
+    {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            CommentDraftFilter = false
+        });
+
         var comment = await _commentsRepository
-            .Single(x => x.Id == commentId && x.DeskUser != null && x.DeskUser.UserId == user.Id, ct);
+            .Single(x => x.Id == commentId
+                         && x.DeskUser != null
+                         && x.DeskUser.UserId == user.Id
+                         && x.IsDraft == isDraft, ct);
         
         _appMapper.AutoMap(model, comment);
         await _commentsRepository.Update(comment, ct);

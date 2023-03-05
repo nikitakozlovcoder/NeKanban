@@ -288,6 +288,9 @@ namespace NeKanban.Data.Migrations
                     b.Property<int?>("DeskUserId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("ToDoId")
                         .HasColumnType("integer");
 
@@ -376,7 +379,7 @@ namespace NeKanban.Data.Migrations
 
                     b.HasIndex("DeskId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("AppRoles");
                 });
 
             modelBuilder.Entity("NeKanban.Common.Entities.RolePermission", b =>

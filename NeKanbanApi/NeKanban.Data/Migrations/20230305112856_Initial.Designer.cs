@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NeKanban.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230305095056_Initial")]
+    [Migration("20230305112856_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -291,6 +291,9 @@ namespace NeKanban.Data.Migrations
                     b.Property<int?>("DeskUserId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("ToDoId")
                         .HasColumnType("integer");
 
@@ -379,7 +382,7 @@ namespace NeKanban.Data.Migrations
 
                     b.HasIndex("DeskId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("AppRoles");
                 });
 
             modelBuilder.Entity("NeKanban.Common.Entities.RolePermission", b =>

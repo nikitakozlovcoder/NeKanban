@@ -31,17 +31,31 @@ public class CommentsController : BaseAuthController
     }
     
     [HttpPost("{toDoId:int}")]
-    public async Task<List<CommentDto>> Create(int toDoId, [FromBody]CommentCreateModel model, CancellationToken ct)
+    public async Task<int> CreateDraft(int toDoId, CancellationToken ct)
     {
         await EnsureAbleTo<ToDo>(PermissionType.AddOrUpdateOwnComments, toDoId, ct);
-        return await _commentsService.Create(toDoId, await GetApplicationUser(), model, ct);
+        return await _commentsService.CreateDraft(toDoId, await GetApplicationUser(), ct);
+    }
+    
+    [HttpPut("{commentId:int}")]
+    public async Task<List<CommentDto>> ApplyDraft(int commentId, CancellationToken ct)
+    {
+        await EnsureAbleTo<Comment>(PermissionType.AddOrUpdateOwnComments, commentId, ct);
+        return await _commentsService.ApplyDraft(commentId, await GetApplicationUser(), ct);
+    }
+    
+    [HttpPut("{commentId:int}")]
+    public async Task<List<CommentDto>> UpdateDraft(int commentId, [FromBody]CommentUpdateModel model, CancellationToken ct)
+    {
+        await EnsureAbleTo<Comment>(PermissionType.AddOrUpdateOwnComments, commentId, ct);
+        return await _commentsService.Update(true, commentId, await GetApplicationUser(), model, ct);
     }
     
     [HttpPut("{commentId:int}")]
     public async Task<List<CommentDto>> Update(int commentId, [FromBody]CommentUpdateModel model, CancellationToken ct)
     {
         await EnsureAbleTo<Comment>(PermissionType.AddOrUpdateOwnComments, commentId, ct);
-        return await _commentsService.Update(commentId, await GetApplicationUser(), model, ct);
+        return await _commentsService.Update(false, commentId, await GetApplicationUser(), model, ct);
     }
     
     [HttpDelete("{commentId:int}")]
