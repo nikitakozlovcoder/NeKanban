@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NeKanban.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230304142031_Initial")]
+    [Migration("20230305095056_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -417,6 +417,9 @@ namespace NeKanban.Data.Migrations
 
                     b.Property<int>("ColumnId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -12,14 +12,21 @@ namespace NeKanban.Logic.EntityProtectors;
 public class ToDoEntityProtector : BaseEntityProtector<ToDo>
 {
     private readonly IRepository<ToDo> _toDoRepository;
+    private readonly QueryFilterSettings _filterSettings;
     public ToDoEntityProtector(IPermissionCheckerService permissionCheckerService,
-        IRepository<ToDo> toDoRepository) : base(permissionCheckerService)
+        IRepository<ToDo> toDoRepository, QueryFilterSettings filterSettings) : base(permissionCheckerService)
     {
         _toDoRepository = toDoRepository;
+        _filterSettings = filterSettings;
     }
 
     protected override async Task<int?> GetDeskId(int entityId, CancellationToken ct)
     {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            ToDoDraftFilter = false
+        });
+        
         var deskId = await _toDoRepository.FirstOrDefault(x => x.Id == entityId,
             x => x.Column == null ? null : (int?) x.Column.DeskId, ct: ct);
         return deskId;

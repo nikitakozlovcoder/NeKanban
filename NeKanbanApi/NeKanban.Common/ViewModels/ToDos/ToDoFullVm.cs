@@ -3,6 +3,7 @@ using Batteries.FileStorage.Models;
 using Batteries.Mapper.Interfaces;
 using NeKanban.Common.DTOs.Columns;
 using NeKanban.Common.DTOs.ToDos;
+using NeKanban.Common.ViewModels.Columns;
 using NeKanban.Common.ViewModels.ToDoUsers;
 
 namespace NeKanban.Common.ViewModels.ToDos;

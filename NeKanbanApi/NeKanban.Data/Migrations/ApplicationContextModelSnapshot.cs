@@ -415,6 +415,9 @@ namespace NeKanban.Data.Migrations
                     b.Property<int>("ColumnId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");

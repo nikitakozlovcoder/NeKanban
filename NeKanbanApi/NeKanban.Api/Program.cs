@@ -1,6 +1,5 @@
 using System.Text;
 using Batteries.Exceptions;
-using Batteries.FileStorage.DirectFileStorageAdapters;
 using Batteries.FileStorage.FileStorageProviders;
 using Batteries.FileStorage.FileStorageProxies;
 using Batteries.Mapper;
@@ -15,7 +14,6 @@ using NeKanban.Logic.Options;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddServices();
-builder.Services.AddDirectFileStorageAdapter();
 builder.Services.AddWwwRootStorage(new WebRootStorageConfig
 {
     Root = builder.Environment.WebRootPath,
@@ -77,7 +75,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwt.Issuer,
             ValidAudience = jwt.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwt.Secret!)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwt.Secret)),
             ClockSkew = TimeSpan.FromMinutes(jwt.ClockSkewMinutes)
         };
     });

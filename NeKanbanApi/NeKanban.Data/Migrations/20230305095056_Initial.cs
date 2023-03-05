@@ -261,7 +261,8 @@ namespace NeKanban.Data.Migrations
                     Order = table.Column<int>(type: "integer", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Body = table.Column<string>(type: "text", nullable: true),
-                    ColumnId = table.Column<int>(type: "integer", nullable: false)
+                    ColumnId = table.Column<int>(type: "integer", nullable: false),
+                    IsDraft = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

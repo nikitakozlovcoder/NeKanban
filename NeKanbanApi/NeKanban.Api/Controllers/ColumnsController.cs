@@ -5,8 +5,6 @@ using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.Columns;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ColumnModels;
-using NeKanban.Common.ViewModels;
-using NeKanban.Common.ViewModels.Columns;
 using NeKanban.Controllers.Auth;
 using NeKanban.Logic.Services.Columns;
 using NeKanban.Security.Constants;

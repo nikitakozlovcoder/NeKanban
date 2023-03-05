@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Batteries.Mapper.Interfaces;
+using NeKanban.Common.DTOs.Columns;
 using NeKanban.Common.DTOs.ToDoUsers;
 using NeKanban.Common.Entities;
-using NeKanban.Common.ViewModels.Columns;
 
 namespace NeKanban.Common.DTOs.ToDos;
 

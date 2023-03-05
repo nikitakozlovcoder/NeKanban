@@ -10,15 +10,17 @@ namespace NeKanban.Data.Infrastructure;
 [Injectable<DbContext>]
 public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
 {
-    public ApplicationContext(DbContextOptions<ApplicationContext> options)
+    private readonly QueryFilterSettings _filterSettings;
+    public ApplicationContext(DbContextOptions<ApplicationContext> options, QueryFilterSettings filterSettings)
         : base(options)
     {
-       
+        _filterSettings = filterSettings;
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<ToDo>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.ToDoDraftFilter || !x.IsDraft);
         modelBuilder.Entity<ToDoUser>()
             .HasOne(x => x.ToDo)
             .WithMany(x => x.ToDoUsers)
