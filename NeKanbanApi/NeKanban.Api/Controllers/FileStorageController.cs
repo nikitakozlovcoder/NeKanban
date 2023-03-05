@@ -16,10 +16,10 @@ public class FileStorageController : Controller
         _proxy = proxy;
     }
 
-    [HttpGet("{fileId:guid}")]
-    public async Task<ActionResult> Proxy(Guid fileId, CancellationToken ct)
+    [HttpGet("{fileName}")]
+    public async Task<ActionResult> Proxy(string fileName, CancellationToken ct)
     {
-        var url = await _proxy.GetAbsoluteUrl(fileId, ct);
+        var url = await _proxy.GetAbsoluteUrl(fileName, ct);
         return Redirect(url);
     }
 }

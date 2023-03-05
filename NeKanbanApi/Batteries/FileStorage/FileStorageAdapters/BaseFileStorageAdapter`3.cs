@@ -26,16 +26,24 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
         _fileRepository = fileRepository;
     }
 
-    public virtual async Task<TFileAdapterEntity> Store(int parentId, IFormFile file, CancellationToken ct)
+    public virtual async Task<FileStoreCreationResult<TFileAdapterEntity>> Store(int parentId, IFormFile file, CancellationToken ct)
     {
         var name = await _provider.Store(file, ct);
-        return await CreateEntity(name, parentId, ct);
+        return new FileStoreCreationResult<TFileAdapterEntity>
+        {
+            FileAdapter = await CreateEntity(name, parentId, ct),
+            FileName = name
+        };
     }
 
-    public virtual async Task<TFileAdapterEntity> Store(int parentId, Stream stream, string name, CancellationToken ct)
+    public virtual async Task<FileStoreCreationResult<TFileAdapterEntity>> Store(int parentId, Stream stream, string name, CancellationToken ct)
     {
         await _provider.Store(stream, name, ct);
-        return await CreateEntity(name, parentId, ct);
+        return new FileStoreCreationResult<TFileAdapterEntity>
+        {
+            FileAdapter = await CreateEntity(name, parentId, ct),
+            FileName = name
+        };
     }
 
     public async Task Delete(int adapterId, CancellationToken ct)
@@ -69,17 +77,23 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
 
     public async Task<List<FileStoreDto>> Attach(int parentId, IEnumerable<Guid> fileIds, CancellationToken ct)
     {
-        var adapters = fileIds.Select(fileId => new TFileAdapterEntity
+        var files = await _fileRepository.ToList(x => fileIds.Contains(x.Id), ct);
+        var adapters = files.Select(x => new
         {
-            FileId = fileId,
-            ParentId = parentId
+            x.Name,
+            Adapter = new TFileAdapterEntity
+            {
+                FileId = x.Id,
+                ParentId = parentId
+            }
         }).ToList();
 
-        await _storeAdapterRepository.Create(adapters, ct);
+        await _storeAdapterRepository.Create(adapters.Select(x => x.Adapter), ct);
         return adapters.Select(x => new FileStoreDto
         {
-            Id = x.Id,
-            FileId = x.FileId
+            Id = x.Adapter.Id,
+            FileId = x.Adapter.FileId,
+            FileName = x.Name
         }).ToList();
     }
 
@@ -110,7 +124,8 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
             {
                 Id = file.Id,
                 FileId = file.FileId,
-                Url = absoluteUrl
+                Url = absoluteUrl,
+                FileName = file.Name
             });
         }
 
@@ -119,10 +134,11 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
 
     public async Task<List<FileStoreDto>> GetAll(Expression<Func<TFileAdapterEntity, bool>> predicate, CancellationToken ct)
     {
-        var files = await _storeAdapterRepository.ToList(predicate, ent => new FileStoreDto()
+        var files = await _storeAdapterRepository.ToList(predicate, ent => new FileStoreDto
         {
             Id = ent.Id,
             FileId = ent.FileId,
+            FileName = ent.File.Name
         }, ct: ct);
 
         return files;

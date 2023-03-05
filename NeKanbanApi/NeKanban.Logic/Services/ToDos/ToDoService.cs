@@ -169,7 +169,7 @@ public class ToDoService : BaseService, IToDoService
         var todo = await _toDoRepository.Single(x => x.Id == toDoId, ct);
         _mapper.AutoMap(model, todo);
         await _toDoRepository.Update(todo, ct);
-        return _mapper.AutoMap<ToDoDto, ToDo>(todo!);
+        return _mapper.AutoMap<ToDoDto, ToDo>(todo);
     }
 
     public Task<ToDoDto> GetToDo(int toDoId, CancellationToken ct)
@@ -180,6 +180,6 @@ public class ToDoService : BaseService, IToDoService
     public async Task<string> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
     {
         var entity = await _toDoFileStorageAdapter.Store(toDoId, file, ct);
-        return _fileStorageProxy.GetProxyUrl(entity.FileId);
+        return _fileStorageProxy.GetProxyUrl(entity.FileName);
     }
 }

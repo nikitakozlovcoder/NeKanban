@@ -11,8 +11,8 @@ public interface IFileStorageAdapter<TFileAdapterEntity, TParent, TFileEntity>
     where TParent : IHasPk<int>
     where TFileEntity : IFileEntity
 {
-    Task<TFileAdapterEntity> Store(int parentId, IFormFile file, CancellationToken ct);
-    Task<TFileAdapterEntity> Store(int parentId, Stream stream, string name, CancellationToken ct);
+    Task<FileStoreCreationResult<TFileAdapterEntity>> Store(int parentId, IFormFile file, CancellationToken ct);
+    Task<FileStoreCreationResult<TFileAdapterEntity>> Store(int parentId, Stream stream, string name, CancellationToken ct);
     
     Task Delete(int adapterIds, CancellationToken ct);
     Task Delete(IEnumerable<int> adapterIds, CancellationToken ct);
