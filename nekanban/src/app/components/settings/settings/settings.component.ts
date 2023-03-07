@@ -36,18 +36,19 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.loadDesks(parseInt(params['id']));
+      this.loadCurrentDesk(parseInt(params['id']));
+      this.initRolesForDesk(parseInt(params['id']));
     })
   }
 
   changeDesk(id: number) {
-    this.router.navigate(['/desks', id]);
+    this.router.navigate(['/desks', id]).then();
   }
 
   loadCurrentDesk(deskId: number) {
     this.deskService.getDesk(deskId).subscribe(result => {
       this.desk = result;
       this.name.setValue(this.desk.name);
-      this.initRolesForDesk();
     });
   }
 
@@ -57,17 +58,16 @@ export class SettingsComponent implements OnInit {
       next: (data: Desk[]) => {
         this.desks = data;
         if (!this.desks.some(el => el.id === deskId)) {
-          this.router.navigate(['/**'], { skipLocationChange: true });
+          this.router.navigate(['/**'], { skipLocationChange: true }).then();
           return;
         }
       },
       error: () => {
-      },
-      complete: () => this.loadCurrentDesk(deskId)
+      }
     });
   }
-  private initRolesForDesk() {
-    this.rolesService.getRoles(this.desk!.id).subscribe(result => {
+  private initRolesForDesk(deskId: number) {
+    this.rolesService.getRoles(deskId).subscribe(result => {
       this.roles = result;
       this.isLoaded = true;
     });

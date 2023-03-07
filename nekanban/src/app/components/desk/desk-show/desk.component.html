@@ -1,4 +1,5 @@
-<div *ngIf="isLoaded && desks.length > 0 && desk != undefined">
+<div *ngIf="((desksLoaded | async) && (columnsLoaded | async) && (todosLoaded | async) && (rolesLoaded | async))
+ && desks.length > 0 && desk != undefined">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened" >
       <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
@@ -77,7 +78,7 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
-<div *ngIf="isLoaded && (desks.length === 0 || desk === undefined)">
+<div *ngIf="((desksLoaded | async) && (columnsLoaded | async) && (todosLoaded | async) && (rolesLoaded | async)) && (desks.length === 0 || desk === undefined)">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened">
       <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
@@ -94,7 +95,7 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
-<div *ngIf="!isLoaded">
+<div *ngIf="!((desksLoaded | async) && (columnsLoaded | async) && (todosLoaded | async) && (rolesLoaded | async))">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened">
       <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
