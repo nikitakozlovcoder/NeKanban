@@ -1,8 +1,8 @@
 <h2 class="mat-h2">Мои доски</h2>
 <div class="sidenav-container">
   <mat-nav-list>
-    <mat-list-item *ngFor="let desk of desks; index as i">
-      <a matLine [routerLink]="['/desks', desk.id]" (click)="closeSidenav()">{{ desk.name }}<mat-divider></mat-divider></a>
+    <mat-list-item *ngFor="let desk of desks; index as i" [routerLink]="['/desks', desk.id]" (click)="closeSidenav()">
+      <a href="#" matLine>{{ desk.name }}<mat-divider></mat-divider></a>
     </mat-list-item>
   </mat-nav-list>
   <div class = "menu-bottom-button">

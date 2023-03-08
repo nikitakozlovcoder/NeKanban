@@ -8,7 +8,7 @@
         </div>
         <div>
           <mat-icon (click)="openRoleUpdatingDialog(role)">edit</mat-icon>
-          <mat-icon class="role-delete-icon" (click)="openRoleDeletingDialog(role)">delete</mat-icon>
+          <mat-icon class="role-delete-icon" (click)="openRoleDeletingDialog(role, $event)" *ngIf="!role.isDefault">delete</mat-icon>
         </div>
       </a>
     </mat-nav-list>

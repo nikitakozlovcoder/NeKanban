@@ -12,8 +12,6 @@
       <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isNameUpdateLoaded"></mat-spinner>
     </div>
 
-
-
     <mat-card-subtitle *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ViewInviteLink')" class="invite-link">
       <h2 class="invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</h2>
       <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, {duration:2000})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>

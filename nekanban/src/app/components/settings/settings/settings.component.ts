@@ -26,8 +26,8 @@ export class SettingsComponent implements OnInit {
   name = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
 
   constructor(private readonly deskService: DeskService,
-              private rolesService: RolesService,
-              private route: ActivatedRoute,
+              private readonly rolesService: RolesService,
+              private readonly route: ActivatedRoute,
               private readonly router: Router,
               private readonly dialog: MatDialog) {
     this.opened = false;
@@ -81,7 +81,7 @@ export class SettingsComponent implements OnInit {
     return this.desks.find(el => el.id === this.desk?.id);
   }
 
-  getDeskOwner() {
+  getDeskOwner() : DeskUser | undefined {
     return this.desk?.deskUsers.find(el => el.isOwner);
   }
 
@@ -95,7 +95,7 @@ export class SettingsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
-        this.router.navigate(['/desks', result.id]);
+        this.router.navigate(['/desks', result.id]).then();
       }
     });
     this.opened = false;

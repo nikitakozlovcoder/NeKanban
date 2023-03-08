@@ -1,12 +1,11 @@
-<div *ngIf="((desksLoaded | async) && (columnsLoaded | async) && (todosLoaded | async) && (rolesLoaded | async))
- && desks.length > 0 && desk != undefined">
+<ng-container *ngIf="((isLoaded | async) && desks && desks.length); else noItemsRef">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened" >
       <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <app-header [currentUser]="getCurrentUser()!"  [(opened)]="opened" [(desks)]="desks" [currentDeskId]="getCurrentDesk()!.id"></app-header>
+      <app-header [currentUser]="getCurrentUser()" [(opened)]="opened" [(desks)]="desks" [currentDeskId]="getCurrentDesk()?.id"></app-header>
       <mat-card>
         <mat-card-title-group>
           <mat-card-title>
@@ -15,7 +14,7 @@
           <mat-card-subtitle>
             <p>Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
           </mat-card-subtitle>
-          <button class="settings-button" [routerLink]="['/desks', desk.id, 'settings']" mat-raised-button color="primary">Настройки<mat-icon>settings</mat-icon></button>
+          <button class="settings-button" [routerLink]="['/desks', desk!.id, 'settings']" mat-raised-button color="primary">Настройки<mat-icon>settings</mat-icon></button>
         </mat-card-title-group>
       </mat-card>
 
@@ -32,12 +31,12 @@
             <div cdkDropList
                  [cdkDropListData]="columns"
                  class="cards-list"
-                 (cdkDropListDropped)="drop_column($event)"
+                 (cdkDropListDropped)="dropColumn($event)"
                  cdkDropListOrientation="horizontal"
                  cdkDropListGroup
             >
               <div *ngFor="let column of columns; index as i">
-                <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(column.type === 0 && checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')) ? false : true">
+                <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(!(column.type === 0 && checkUserPermission(getCurrentDesk()!.deskUser, 'ManageColumns')))">
                   <mat-card-title class="column-card-title">
                     <mat-spinner *ngIf="!isColumnDeleteLoaded[i]" diameter="20"></mat-spinner>
                     <p #columnName [matTooltip]="column.name" [matTooltipDisabled]="!(columnName.offsetWidth < columnName.scrollWidth)">{{column.name}}</p>
@@ -61,7 +60,7 @@
                       [cdkDropListData]="column.todos"
                       class="todos-list"
                       (cdkDropListDropped)="drop($event, column.id)">
-                      <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks') ? false : true" >
+                      <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="!checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks')" >
                         <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
                         <p (click)="openTaskShowingDialog(toDo)" class="todo-name">{{toDo.name}}</p>
                         <mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon>
@@ -77,25 +76,28 @@
       </mat-card>
     </mat-sidenav-content>
   </mat-sidenav-container>
-</div>
-<div *ngIf="((desksLoaded | async) && (columnsLoaded | async) && (todosLoaded | async) && (rolesLoaded | async)) && (desks.length === 0 || desk === undefined)">
-  <mat-sidenav-container class="example-container" >
-    <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened">
-      <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
-    </mat-sidenav>
+</ng-container>
 
-    <mat-sidenav-content>
-      <app-header [currentUser]="getCurrentUser()!"  [(opened)]="opened"></app-header>
+<ng-template #noItemsRef>
+  <ng-container *ngIf="(desksLoaded | async) && (!desks || !desks.length); else loadingRef">
+    <mat-sidenav-container class="example-container" >
+      <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened">
+        <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
+      </mat-sidenav>
 
-      <mat-card>
-        <mat-card-title>
-          Вы пока не назначены ни на одну из досок
-        </mat-card-title>
-      </mat-card>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>
-<div *ngIf="!((desksLoaded | async) && (columnsLoaded | async) && (todosLoaded | async) && (rolesLoaded | async))">
+      <mat-sidenav-content>
+        <app-header [currentUser]="getCurrentUser()!"  [(opened)]="opened"></app-header>
+        <mat-card>
+          <mat-card-title>
+            Вы пока не назначены ни на одну из досок
+          </mat-card-title>
+        </mat-card>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #loadingRef>
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened">
       <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
@@ -106,4 +108,4 @@
       <mat-spinner class="spinner" diameter="50"></mat-spinner>
     </mat-sidenav-content>
   </mat-sidenav-container>
-</div>
+</ng-template>

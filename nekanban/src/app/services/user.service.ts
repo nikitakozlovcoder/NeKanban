@@ -1,4 +1,4 @@
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
@@ -9,7 +9,6 @@ import ErrorTypes from "../constants/ErrorTypes";
 import {ErrorCodes} from "../constants/ErrorCodes";
 import {UserStorageService} from "./userStorage.service";
 import {UserWithToken} from "../models/user-with-token";
-import {User} from "../models/user";
 import {Token} from "../models/token";
 
 @Injectable()
@@ -17,7 +16,7 @@ export class UserService {
 
   openDialog(err?: string): void {
     let errorType = ErrorTypes.Unknown;
-    switch (err){
+    switch (err) {
       case ErrorCodes.DuplicateEmail:
         errorType = ErrorTypes.DuplicateEmail;
         break;

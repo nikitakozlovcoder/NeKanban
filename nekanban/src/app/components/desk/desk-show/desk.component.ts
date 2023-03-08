@@ -1,11 +1,9 @@
-import {ChangeDetectorRef, Component, OnChanges, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Desk} from "../../../models/desk";
 import {DeskService} from "../../../services/desk.service";
 import {UserService} from "../../../services/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
-import {DeskCreationComponent} from "../desk-creation/desk-creation.component";
-import {UntypedFormControl, Validators} from "@angular/forms";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {TodoShowComponent} from "../../todo/todo-show/todo-show.component";
 import {Column} from "../../../models/column";
@@ -16,14 +14,11 @@ import {TodoService} from "../../../services/todo.service";
 import {TodoCreationComponent} from "../../todo/todo-creation/todo-creation.component";
 import {TodoEditingComponent} from "../../todo/todo-editing/todo-editing.component";
 import {ColumnUpdatingComponent} from "../../column/column-updating/column-updating.component";
-import {MatSelectChange} from "@angular/material/select";
 import {RolesService} from "../../../services/roles.service";
 import {DeskUser} from "../../../models/deskUser";
-import {DeskRole} from "../../../models/deskrole";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {BehaviorSubject} from "rxjs";
+import { BehaviorSubject, combineLatest, map } from "rxjs";
 
 @Component({
   selector: 'app-desk',
@@ -31,20 +26,58 @@ import {BehaviorSubject} from "rxjs";
   styleUrls: ['./desk.component.css']
 })
 export class DeskComponent implements OnInit {
-  opened: boolean;
+  opened: boolean = false;
   desks: Desk[] = [];
   desk: Desk | undefined;
   index: number = 0;
   columns: Column[] = [];
   toDos: Todo[] = [];
-  isLoaded = false;
   isColumnDeleteLoaded: boolean[] = [];
-  isRemoveDeskLoaded = true;
   roles : Role[] = [];
   desksLoaded = new BehaviorSubject(false);
   columnsLoaded = new BehaviorSubject(false);
   todosLoaded = new BehaviorSubject(false);
   rolesLoaded = new BehaviorSubject(false);
+
+  get isLoaded() {
+    return combineLatest([this.desksLoaded, this.columnsLoaded, this.todosLoaded, this.rolesLoaded])
+      .pipe(map(x => x.every(isLoaded => isLoaded)));
+  }
+
+  constructor(private readonly deskService: DeskService,
+              private readonly userService: UserService,
+              private readonly router: Router,
+              public readonly dialog: MatDialog,
+              private readonly columnService: ColumnService,
+              private readonly todoService: TodoService,
+              private readonly rolesService: RolesService,
+              private readonly deskUserService: DeskUserService,
+              private readonly route: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      if (params['id'] === undefined) {
+        this.deskService.getDesks().subscribe(result => {
+          if (result.length == 0) {
+            this.desks = result;
+            this.desksLoaded.next(true);
+            return;
+          }
+
+          let founded = result.find(el => el.deskUser.preference === 1);
+          if (founded != undefined) {
+            this.router.navigate(['/desks', founded.id]).then();
+          }
+          else {
+            this.router.navigate(['/desks', result[0].id]).then();
+          }
+        });
+      }
+      else {
+        this.loadDesks(parseInt(params['id']));
+      }
+    });
+  }
 
   drop(event: CdkDragDrop<Todo[]>, columnId: number) {
     if (event.previousContainer === event.container) {
@@ -95,7 +128,7 @@ export class DeskComponent implements OnInit {
     }
   }
 
-  drop_column(event: CdkDragDrop<Column[]>) {
+  dropColumn(event: CdkDragDrop<Column[]>) {
     if (event.previousIndex != 0 && event.previousIndex != event.container.data.length - 1 && event.currentIndex != 0 && event.currentIndex != event.container.data.length - 1) {
       let position;
       if (event.previousIndex < event.currentIndex) {
@@ -122,43 +155,6 @@ export class DeskComponent implements OnInit {
       })
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     }
-  }
-
-  constructor(private deskService: DeskService,
-              private userService: UserService,
-              private router: Router,
-              public dialog: MatDialog,
-              private columnService: ColumnService,
-              private todoService: TodoService,
-              private rolesService: RolesService,
-              private deskUserService: DeskUserService,
-              private route: ActivatedRoute) {
-    this.opened = false;
-    route.params.subscribe(params => {
-      if (params['id'] === undefined) {
-        this.deskService.getDesks().subscribe(result => {
-          if (result.length == 0) {
-            this.desks = result;
-            this.desksLoaded.next(true);
-            return;
-          }
-          let founded = result.find(el => el.deskUser.preference === 1);
-
-          if (founded != undefined) {
-            this.router.navigate(['/desks', founded.id]).then();
-          }
-          else {
-            this.router.navigate(['/desks', result[0].id]).then();
-          }
-        });
-      }
-      else {
-        this.loadDesks(parseInt(params['id']));
-      }
-    });
-  }
-
-  ngOnInit(): void {
   }
 
 
@@ -245,7 +241,7 @@ export class DeskComponent implements OnInit {
     })
   }
 
-  getDeskOwner() {
+  getDeskOwner() : DeskUser | undefined  {
     return this.desk?.deskUsers.find(el => el.isOwner);
   }
 
@@ -299,7 +295,9 @@ export class DeskComponent implements OnInit {
     })
   }
 
+
   getCurrentUser() {
+    //TODO move to service
     return JSON.parse(localStorage.getItem("currentUser")!);
   }
 

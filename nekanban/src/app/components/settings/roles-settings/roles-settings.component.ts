@@ -1,19 +1,16 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
-import {Desk} from "../../../models/desk";
-import {Role} from "../../../models/Role";
-import {Permission} from "../../../models/permission";
-import {MatListModule} from '@angular/material/list';
-import {DeskCreationComponent} from "../../desk/desk-creation/desk-creation.component";
-import {UntypedFormControl, Validators} from "@angular/forms";
-import {MatDialog} from "@angular/material/dialog";
-import {RoleCreationComponent} from "../dialogs/role-creation/role-creation.component";
-import {RoleUpdatingComponent} from "../dialogs/role-updating/role-updating.component";
-import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
-import {DialogActionTypes} from "../../../constants/DialogActionTypes";
-import {RolesService} from "../../../services/roles.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {TranslateService} from "@ngx-translate/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Desk } from "../../../models/desk";
+import { Role } from "../../../models/Role";
+import { Permission } from "../../../models/permission";
+import { MatDialog } from "@angular/material/dialog";
+import { RoleCreationComponent } from "../dialogs/role-creation/role-creation.component";
+import { RoleUpdatingComponent } from "../dialogs/role-updating/role-updating.component";
+import { ConfirmationComponent } from "../../dialogs/confirmation/confirmation.component";
+import { DialogActionTypes } from "../../../constants/DialogActionTypes";
+import { RolesService } from "../../../services/roles.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: 'app-roles-settings',
@@ -63,6 +60,7 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
     const dialogRef = this.dialog.open(RoleUpdatingComponent, {
       data: {role},
     });
+
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
         this.roles = result;
@@ -72,19 +70,22 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
     });
   }
 
-  openRoleDeletingDialog(role: Role) {
+  openRoleDeletingDialog(role: Role, $event: MouseEvent) {
+    $event.stopPropagation();
     const dialogRef = this.dialog.open(ConfirmationComponent);
-
     dialogRef.afterClosed().subscribe(result => {
       if (result == DialogActionTypes.Reject) {
         return;
       }
+
       this.rolesService.deleteRole(role.id).subscribe({
         next: (data: Role[]) => {
           this.roles = data;
           this.rolesChange.emit(this.roles);
-        }
-        ,error: (error: HttpErrorResponse) => {
+          if (this.currentRole?.id == role.id){
+            this.currentRole = this.roles.find(x => x.isDefault);
+          }
+        },error: (error: HttpErrorResponse) => {
           if (error.error === "CantDeleteRoleWhenAnyUserHasThisRole") {
             this.snackBar.open('Невозможно удалить роль, на которую назначен хотя бы один пользователь!', undefined, {duration:2000, panelClass: ['big-sidenav']})
           }
@@ -122,5 +123,4 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   private updateCurrentRole() {
     this.currentRole = this.roles.find(el => el.id === this.currentRole!.id);
   }
-
 }
