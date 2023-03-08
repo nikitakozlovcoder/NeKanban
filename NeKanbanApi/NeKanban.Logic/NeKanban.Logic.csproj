@@ -12,7 +12,6 @@
     <ItemGroup>
       <ProjectReference Include="..\NeKanban.Common\NeKanban.Common.csproj" />
       <ProjectReference Include="..\NeKanban.Data\NeKanban.Data.csproj" />
-      <ProjectReference Include="..\NeKanban.FrameworkExceptions\NeKanban.FrameworkExceptions.csproj" />
       <ProjectReference Include="..\NeKanban.Security\NeKanban.Security.csproj" />
     </ItemGroup>
 

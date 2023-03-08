@@ -31,16 +31,30 @@ public class CommentsController : BaseAuthController
     }
     
     [HttpPost("{toDoId:int}")]
-    public async Task<List<CommentDto>> Create(int toDoId, [FromBody]CommentCreateModel model, CancellationToken ct)
+    public async Task<CommentDraftDto> GetDraft(int toDoId, CancellationToken ct)
     {
-        await EnsureAbleTo<ToDo>(PermissionType.AddComments, toDoId, ct);
-        return await _commentsService.Create(toDoId, await GetApplicationUser(), model, ct);
+        await EnsureAbleTo<ToDo>(PermissionType.AddOrUpdateOwnComments, toDoId, ct);
+        return await _commentsService.GetDraft(toDoId, await GetApplicationUser(), ct);
+    }
+    
+    [HttpPut("{commentId:int}")]
+    public async Task<List<CommentDto>> ApplyDraft(int commentId, CancellationToken ct)
+    {
+        await EnsureAbleTo<Comment>(PermissionType.AddOrUpdateOwnComments, commentId, ct);
+        return await _commentsService.ApplyDraft(commentId, await GetApplicationUser(), ct);
+    }
+    
+    [HttpPut("{commentId:int}")]
+    public async Task<CommentDraftDto> UpdateDraft(int commentId, [FromBody]CommentUpdateModel model, CancellationToken ct)
+    {
+        await EnsureAbleTo<Comment>(PermissionType.AddOrUpdateOwnComments, commentId, ct);
+        return await _commentsService.UpdateDraft(commentId, await GetApplicationUser(), model, ct);
     }
     
     [HttpPut("{commentId:int}")]
     public async Task<List<CommentDto>> Update(int commentId, [FromBody]CommentUpdateModel model, CancellationToken ct)
     {
-        await EnsureAbleTo<Comment>(PermissionType.UpdateOwnComments, commentId, ct);
+        await EnsureAbleTo<Comment>(PermissionType.AddOrUpdateOwnComments, commentId, ct);
         return await _commentsService.Update(commentId, await GetApplicationUser(), model, ct);
     }
     
@@ -56,5 +70,12 @@ public class CommentsController : BaseAuthController
     {
         await EnsureAbleTo<Comment>(PermissionType.DeleteAnyComments, commentId, ct);
         return await _commentsService.Delete(commentId, ct);
+    }
+    
+    [HttpPut("{commentId:int}")]
+    public async Task<string> AttachFile(int commentId, IFormFile file, CancellationToken ct)
+    {
+        await EnsureAbleTo<Comment>(PermissionType.AddOrUpdateOwnComments, commentId, ct);
+        return await _commentsService.AttachFile(commentId, file, ct);
     }
 }

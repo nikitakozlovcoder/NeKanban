@@ -32,8 +32,4 @@
       <Reference Include="Microsoft.Extensions.Configuration" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Migrations" />
-    </ItemGroup>
-
 </Project>

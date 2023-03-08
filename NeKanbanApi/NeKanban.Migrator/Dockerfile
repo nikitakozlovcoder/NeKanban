@@ -6,6 +6,7 @@ WORKDIR /src
 COPY ["NeKanban.Migrator/NeKanban.Migrator.csproj", "NeKanban.Migrator/"]
 COPY ["NeKanban.Data/NeKanban.Data.csproj", "NeKanban.Data/"]
 COPY ["NeKanban.Common/NeKanban.Common.csproj", "NeKanban.Common/"]
+COPY ["Batteries/Batteries.csproj", "Batteries/"]
 COPY ["NeKanban.Security/NeKanban.Security.csproj", "NeKanban.Security/"]
 RUN dotnet restore "NeKanban.Migrator/NeKanban.Migrator.csproj"
 COPY . .

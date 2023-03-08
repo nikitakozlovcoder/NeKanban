@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
-using NeKanban.Common.ViewModels;
+using NeKanban.Common.ViewModels.ToDos;
 using NeKanban.Controllers.Auth;
 using NeKanban.Logic.Services.DesksUsers;
 using NeKanban.Logic.Services.ToDos;
@@ -39,18 +39,41 @@ public class ToDosController : BaseAuthController
         return await _toDoService.GetToDos(deskId, ct);
     }
     
-    [HttpPost("{deskId:int}")]
-    public async Task<List<ToDoDto>> CreateToDo(int deskId, [FromBody]ToDoCreateModel model, CancellationToken ct)
+    [HttpGet("{todoId:int}")]
+    public async Task<ToDoFullDto> GetTodo(int todoId, CancellationToken ct)
     {
-        await EnsureAbleTo<Desk>(PermissionType.CreateTasks, deskId, ct);
+        await EnsureAbleTo<ToDo>(todoId, ct);
+        return await _toDoService.GetToDoFull(todoId, ct);
+    }
+    
+    [HttpPost("{deskId:int}")]
+    public async Task<ToDoDraftDto> GetDraft(int deskId, CancellationToken ct)
+    {
+        await EnsureAbleTo<Desk>(PermissionType.CreateOrUpdateTasks, deskId, ct);
         var user = await GetApplicationUser();
-        return await _toDoService.CreateToDo(deskId, user, model, ct);
+        return await _toDoService.GetDraft(deskId, user, ct);
+    }
+    
+    [HttpPut("{todoId:int}")]
+    public async Task<ToDoDraftDto> UpdateDraft(int todoId, [FromBody]ToDoUpdateModel model, CancellationToken ct)
+    {
+        await EnsureAbleTo<ToDo>(PermissionType.CreateOrUpdateTasks, todoId, ct);
+        var user = await GetApplicationUser();
+        return await _toDoService.UpdateDraftToDo(todoId, user, model, ct);
+    }
+    
+    [HttpPut("{todoId:int}")]
+    public async Task<ToDoFullDto> ApplyDraft(int todoId, CancellationToken ct)
+    {
+        await EnsureAbleTo<ToDo>(PermissionType.CreateOrUpdateTasks, todoId, ct);
+        var user = await GetApplicationUser();
+        return await _toDoService.ApplyDraftToDo(todoId, user, ct);
     }
     
     [HttpPut("{toDoId:int}")]
     public async Task<ToDoDto> UpdateToDo(int toDoId, [FromBody]ToDoUpdateModel model, CancellationToken ct)
     {
-        await EnsureAbleTo<ToDo>(PermissionType.UpdateTask, toDoId, ct);
+        await EnsureAbleTo<ToDo>(PermissionType.CreateOrUpdateTasks, toDoId, ct);
         return await _toDoService.UpdateToDo(toDoId, model, ct);
     }
     
@@ -79,4 +102,10 @@ public class ToDosController : BaseAuthController
         return await _toDoService.MoveToDo(toDoId, model, ct);
     }
     
+    [HttpPut("{toDoId:int}")]
+    public async Task<string> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
+    {
+        await EnsureAbleTo<ToDo>(PermissionType.CreateOrUpdateTasks, toDoId, ct);
+        return await _toDoService.AttachFile(toDoId, file, ct);
+    }
 }

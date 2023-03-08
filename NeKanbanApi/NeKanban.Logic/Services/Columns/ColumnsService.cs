@@ -1,16 +1,15 @@
 ﻿using System.Net;
-using AutoMapper;
+using Batteries.Exceptions;
+using Batteries.Injection.Attributes;
+using Batteries.Mapper.AppMapper;
+using Batteries.Repository;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
-using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
-using NeKanban.Common.AppMapper;
-using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.Columns;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.ColumnModels;
-using NeKanban.Common.ViewModels;
+using NeKanban.Common.ViewModels.Columns;
 using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Logic.Services.Columns;

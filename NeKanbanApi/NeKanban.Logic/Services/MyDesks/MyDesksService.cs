@@ -1,11 +1,10 @@
-﻿using AutoMapper;
+﻿using Batteries.Injection.Attributes;
+using Batteries.Mapper.AppMapper;
+using Batteries.Repository;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
-using NeKanban.Common.AppMapper;
-using NeKanban.Common.Attributes;
 using NeKanban.Common.DTOs.Desks;
 using NeKanban.Common.Entities;
-using NeKanban.Common.ViewModels;
 using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Logic.Services.MyDesks;

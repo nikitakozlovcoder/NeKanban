@@ -1,11 +1,10 @@
 ﻿using System.Net;
-using AutoMapper;
+using Batteries.Exceptions;
+using Batteries.Injection.Attributes;
+using Batteries.Mapper.AppMapper;
+using Batteries.Repository;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
-using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
-using NeKanban.Common.AppMapper;
-using NeKanban.Common.Attributes;
-using NeKanban.Common.DTOs.ApplicationUsers;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.UserModel;

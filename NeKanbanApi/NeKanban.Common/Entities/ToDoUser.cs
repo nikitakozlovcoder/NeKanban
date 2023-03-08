@@ -1,4 +1,5 @@
-﻿using NeKanban.Common.Constants;
+﻿using Batteries.Repository;
+using NeKanban.Common.Constants;
 
 namespace NeKanban.Common.Entities;
 

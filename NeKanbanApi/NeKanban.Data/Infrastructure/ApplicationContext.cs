@@ -1,20 +1,28 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Batteries.Injection.Attributes;
+using JetBrains.Annotations;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Entities;
 
 namespace NeKanban.Data.Infrastructure;
 
+[UsedImplicitly]
+[Injectable<DbContext>]
 public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
 {
-    public ApplicationContext(DbContextOptions<ApplicationContext> options)
+    private readonly QueryFilterSettings _filterSettings;
+    public ApplicationContext(DbContextOptions<ApplicationContext> options, QueryFilterSettings filterSettings)
         : base(options)
     {
-       
+        _filterSettings = filterSettings;
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<ToDo>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.ToDoDraftFilter || !x.IsDraft);
+        modelBuilder.Entity<ToDoUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.ToDoDraftFilter || !x.ToDo!.IsDraft);
+        modelBuilder.Entity<Comment>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.CommentDraftFilter || !x.IsDraft);
         modelBuilder.Entity<ToDoUser>()
             .HasOne(x => x.ToDo)
             .WithMany(x => x.ToDoUsers)
@@ -31,7 +39,6 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
 
     public void Migrate()
     {
-        Database.EnsureCreated();
         Database.Migrate();
     }
 
@@ -47,6 +54,6 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
     public DbSet<ToDoUser>? ToDoUser { get; set; }
     public DbSet<ToDo>? ToDo { get; set; }
     public DbSet<Comment>? Comments { get; set; }
-    public DbSet<Role>? Roles  { get; set; }
+    public DbSet<Role>? AppRoles  { get; set; }
     public DbSet<RolePermission>? RolePermissions  { get; set; }
 }

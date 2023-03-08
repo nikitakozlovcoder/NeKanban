@@ -1,4 +1,6 @@
-﻿namespace NeKanban.Common.Entities;
+﻿using Batteries.Repository;
+
+namespace NeKanban.Common.Entities;
 
 public class UserRefreshToken : IHasPk<int>
 {

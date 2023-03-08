@@ -1,7 +1,8 @@
-﻿using JetBrains.Annotations;
-using NeKanban.Common.Attributes;
+﻿using Batteries.Injection.Attributes;
+using Batteries.Mapper;
+using Batteries.Mapper.Interfaces;
+using JetBrains.Annotations;
 using NeKanban.Common.DTOs.ApplicationUsers;
-using NeKanban.Common.Interfaces;
 using NeKanban.Common.ViewModels;
 
 namespace NeKanban.Logic.Mappings;

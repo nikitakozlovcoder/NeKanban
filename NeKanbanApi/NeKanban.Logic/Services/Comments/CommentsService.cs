@@ -1,6 +1,10 @@
-﻿using JetBrains.Annotations;
-using NeKanban.Common.AppMapper;
-using NeKanban.Common.Attributes;
+﻿using Batteries.FileStorage.FileStorageAdapters;
+using Batteries.FileStorage.FileStorageProxies;
+using Batteries.Injection.Attributes;
+using Batteries.Mapper.AppMapper;
+using Batteries.Repository;
+using JetBrains.Annotations;
+using Microsoft.AspNetCore.Http;
 using NeKanban.Common.DTOs.Comments;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.CommentModels;
@@ -17,15 +21,24 @@ public class CommentsService : ICommentsService
     private readonly IRepository<ToDo> _toDosRepository;
     private readonly IAppMapper _appMapper;
     private readonly IDeskUserService _deskUserService;
+    private readonly QueryFilterSettings _filterSettings;
+    private readonly IFileStorageAdapter<CommentFileAdapter, Comment> _fileStorageAdapter;
+    private readonly IFileStorageProxy _fileStorageProxy;
     public CommentsService(IRepository<Comment> commentsRepository,
         IRepository<ToDo> toDosRepository,
         IAppMapper appMapper,
-        IDeskUserService deskUserService)
+        IDeskUserService deskUserService,
+        QueryFilterSettings filterSettings,
+        IFileStorageAdapter<CommentFileAdapter, Comment> fileStorageAdapter,
+        IFileStorageProxy fileStorageProxy)
     {
         _commentsRepository = commentsRepository;
         _toDosRepository = toDosRepository;
         _appMapper = appMapper;
         _deskUserService = deskUserService;
+        _filterSettings = filterSettings;
+        _fileStorageAdapter = fileStorageAdapter;
+        _fileStorageProxy = fileStorageProxy;
     }
 
     public Task<List<CommentDto>> GetComments(int toDoId, CancellationToken ct)
@@ -33,26 +46,85 @@ public class CommentsService : ICommentsService
         return _commentsRepository.ProjectTo<CommentDto>(x => x.ToDoId == toDoId, ct);
     }
 
-    public async Task<List<CommentDto>> Create(int toDoId, ApplicationUser user, CommentCreateModel model, CancellationToken ct)
+    public async Task<CommentDraftDto> GetDraft(int toDoId, ApplicationUser user, CancellationToken ct)
     {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions()
+        {
+            CommentDraftFilter = false
+        });
+        
+        var draft = await _commentsRepository.ProjectToFirstOrDefault<CommentDraftDto>(x =>
+            x.IsDraft && x.DeskUser != null && x.DeskUser.UserId == user.Id && x.ToDoId == toDoId, ct);
+
+        if (draft != null)
+        {
+            return draft;
+        }
+        
         var deskId = await _toDosRepository.Single(x => x.Id == toDoId, x => x.Column!.DeskId, ct: ct);
         var deskUserId = await _deskUserService.GetDeskUserId(deskId, user, ct);
-        var comment = _appMapper.AutoMap<Comment, CommentCreateModel>(model);
-        comment.DeskUserId = deskUserId;
-        comment.ToDoId = toDoId;
-        comment.CreatedAtUtc = DateTime.UtcNow;
+        var comment = new Comment
+        {
+            DeskUserId = deskUserId,
+            ToDoId = toDoId,
+            Body = string.Empty,
+            CreatedAtUtc = default,
+            IsDraft = true
+        };
+
         await _commentsRepository.Create(comment, ct);
-        return await GetComments(toDoId, ct);
+        return _appMapper.AutoMap<CommentDraftDto, Comment>(comment);
+    }
+
+    public async Task<List<CommentDto>> ApplyDraft(int commentId, ApplicationUser user, CancellationToken ct)
+    {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            CommentDraftFilter = false
+        });
+        
+        var comment = await _commentsRepository.Single(x => x.IsDraft && x.DeskUser != null
+                                                                && x.DeskUser.UserId == user.Id && x.Id == commentId, ct);
+
+        comment.CreatedAtUtc = DateTime.UtcNow;
+        comment.IsDraft = false;
+        await _commentsRepository.Update(comment, ct);
+        return await GetComments(comment.ToDoId, ct);
     }
 
     public async Task<List<CommentDto>> Update(int commentId, ApplicationUser user, CommentUpdateModel model, CancellationToken ct)
     {
         var comment = await _commentsRepository
-            .Single(x => x.Id == commentId && x.DeskUser != null && x.DeskUser.UserId == user.Id, ct);
-        
+            .Single(x => x.Id == commentId
+                         && x.DeskUser != null
+                         && x.DeskUser.UserId == user.Id, ct);
         _appMapper.AutoMap(model, comment);
         await _commentsRepository.Update(comment, ct);
         return await GetComments(comment.ToDoId, ct);
+    }
+
+    public async Task<CommentDraftDto> UpdateDraft(int commentId, ApplicationUser user, CommentUpdateModel model, CancellationToken ct)
+    {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            CommentDraftFilter = false
+        });
+
+        var comment = await _commentsRepository
+            .Single(x => x.Id == commentId
+                         && x.DeskUser != null
+                         && x.DeskUser.UserId == user.Id
+                         && x.IsDraft, ct);
+        
+        _appMapper.AutoMap(model, comment);
+        await _commentsRepository.Update(comment, ct);
+        return _appMapper.AutoMap<CommentDraftDto, Comment>(comment);
+    }
+
+    public async Task<string> AttachFile(int commentId, IFormFile file, CancellationToken ct)
+    {
+        var result = await _fileStorageAdapter.Store(commentId, file, ct);
+        return _fileStorageProxy.GetProxyUrl(result.FileName);
     }
 
     public async Task<List<CommentDto>> DeleteOwn(int commentId, ApplicationUser user, CancellationToken ct)
@@ -72,5 +144,10 @@ public class CommentsService : ICommentsService
     {
         await _commentsRepository.Remove(comment, ct);
         return await GetComments(comment.ToDoId, ct);
+    }
+    
+    private Task<CommentDto> GetComment(int id, CancellationToken ct)
+    {
+        return _commentsRepository.ProjectToSingle<CommentDto>(x => x.Id == id, ct);
     }
 }

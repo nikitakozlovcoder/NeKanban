@@ -1,11 +1,11 @@
-﻿using JetBrains.Annotations;
-using NeKanban.Common.Attributes;
+﻿using Batteries.Injection.Attributes;
+using JetBrains.Annotations;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.SecurityProfile;
 
-[Injectable<IDefaultPermissionProvider>]
 [UsedImplicitly]
+[Injectable<IDefaultPermissionProvider>]
 public class DefaultPermissionsProvider : IDefaultPermissionProvider
 {
     private readonly List<PermissionType> _userPermissions;
@@ -16,8 +16,7 @@ public class DefaultPermissionsProvider : IDefaultPermissionProvider
         {
           PermissionType.AssignTasksThemself,
           PermissionType.MoveTasks,
-          PermissionType.AddComments,
-          PermissionType.UpdateOwnComments,
+          PermissionType.AddOrUpdateOwnComments,
           PermissionType.DeleteOwnComments,
         };
         
@@ -25,7 +24,7 @@ public class DefaultPermissionsProvider : IDefaultPermissionProvider
         {
             PermissionType.ViewInviteLink,
             PermissionType.ManageColumns,
-            PermissionType.CreateTasks,
+            PermissionType.CreateOrUpdateTasks,
             PermissionType.DeleteAnyComments,
         };
         

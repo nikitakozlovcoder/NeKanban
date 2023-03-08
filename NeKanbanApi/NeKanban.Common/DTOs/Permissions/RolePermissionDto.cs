@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Batteries.Mapper.Interfaces;
 using NeKanban.Common.Entities;
-using NeKanban.Common.Interfaces;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Common.DTOs.Permissions;

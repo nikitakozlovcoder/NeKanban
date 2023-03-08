@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using Batteries.Mapper.Interfaces;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.Roles;
 using NeKanban.Common.Entities;
-using NeKanban.Common.Interfaces;
 using NeKanban.Common.ViewModels;
+using NeKanban.Common.ViewModels.Roles;
 
 namespace NeKanban.Common.DTOs.DesksUsers;
 

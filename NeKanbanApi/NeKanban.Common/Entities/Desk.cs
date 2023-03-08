@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using NeKanban.Common.Extensions;
-using NeKanban.Common.Interfaces;
+using Batteries.Mapper.AppMapper.Extensions;
+using Batteries.Mapper.Interfaces;
+using Batteries.Repository;
 using NeKanban.Common.Models.DeskModels;
 
 namespace NeKanban.Common.Entities;

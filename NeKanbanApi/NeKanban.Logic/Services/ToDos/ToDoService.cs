@@ -1,21 +1,25 @@
 ﻿using System.Net;
+using Batteries.Exceptions;
+using Batteries.FileStorage.FileStorageAdapters;
+using Batteries.FileStorage.FileStorageProxies;
+using Batteries.Injection.Attributes;
+using Batteries.Mapper.AppMapper;
+using Batteries.Repository;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using NeKanban.Api.FrameworkExceptions.ExceptionHandling;
-using NeKanban.Common.AppMapper;
-using NeKanban.Common.Attributes;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
-using NeKanban.Common.ViewModels;
+using NeKanban.Common.ViewModels.ToDos;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Columns;
 
 namespace NeKanban.Logic.Services.ToDos;
 
 [UsedImplicitly]
-[Injectable(typeof(IToDoService))]
+[Injectable<IToDoService>]
 public class ToDoService : BaseService, IToDoService
 {
     private readonly IRepository<Desk> _deskRepository;
@@ -25,6 +29,9 @@ public class ToDoService : BaseService, IToDoService
     private readonly IRepository<ToDoUser> _toDoUserRepository;
     private readonly IRepository<Column> _columnRepository;
     private readonly IAppMapper _mapper;
+    private readonly IFileStorageAdapter<ToDoFileAdapter, ToDo> _toDoFileStorageAdapter;
+    private readonly IFileStorageProxy _fileStorageProxy;
+    private readonly QueryFilterSettings _filterSettings;
 
     public ToDoService(
         IRepository<Desk> deskRepository, 
@@ -33,7 +40,9 @@ public class ToDoService : BaseService, IToDoService
         IRepository<DeskUser> deskUserRepository, 
         IRepository<ToDoUser> toDoUserRepository,
         IRepository<Column> columnRepository,
-        IAppMapper mapper)
+        IAppMapper mapper,
+        IFileStorageAdapter<ToDoFileAdapter, ToDo> toDoFileStorageAdapter,
+        IFileStorageProxy fileStorageProxy, QueryFilterSettings filterSettings)
     {
         _deskRepository = deskRepository;
         _columnsService = columnsService;
@@ -42,6 +51,9 @@ public class ToDoService : BaseService, IToDoService
         _toDoUserRepository = toDoUserRepository;
         _columnRepository = columnRepository;
         _mapper = mapper;
+        _toDoFileStorageAdapter = toDoFileStorageAdapter;
+        _fileStorageProxy = fileStorageProxy;
+        _filterSettings = filterSettings;
     }
 
     public async Task<List<ToDoDto>> GetToDos(int deskId, CancellationToken ct)
@@ -51,24 +63,78 @@ public class ToDoService : BaseService, IToDoService
         return todos;
     }
 
-    public async Task<List<ToDoDto>> CreateToDo(int deskId, ApplicationUser user, ToDoCreateModel model, CancellationToken ct)
+    public async Task<ToDoFullDto> GetToDoFull(int todoId, CancellationToken ct)
     {
-        var deskUser = await _deskUserRepository.FirstOrDefault(x => x.UserId == user.Id && x.DeskId == deskId, ct); 
-        EnsureEntityExists(deskUser);
-        var todo = _mapper.AutoMap<ToDo, ToDoCreateModel>(model);
+        var dto = await _toDoRepository.ProjectToSingle<ToDoFullDto>(x => x.Id == todoId, ct);
+        return dto;
+    }
+    
+    public async Task<ToDoDraftDto> GetDraft(int deskId, ApplicationUser user, CancellationToken ct)
+    {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions()
+        {
+            ToDoDraftFilter = false
+        });
+        
+        var deskUser = await _deskUserRepository.First(x => x.UserId == user.Id && x.DeskId == deskId, ct);
         var columns = await _columnsService.GetColumns(deskId, ct);
-        todo.ColumnId = columns.Single(x => x.Type == ColumnType.Start).Id;
-        todo.Order = await GetCreateOrderInColum(todo.ColumnId, ct);
-        await _toDoRepository.Create(todo, ct);
+        var column = columns.Single(x => x.Type == ColumnType.Start).Id;
+        var draft = await _toDoRepository.ProjectToFirstOrDefault<ToDoDraftDto>(x =>
+            x.ColumnId == column &&
+            x.ToDoUsers.Any(u => u.ToDoUserType == ToDoUserType.Creator && u.DeskUserId == deskUser.Id), ct);
 
+        if (draft != null)
+        {
+            return draft;
+        }
+        
+        var todo = new ToDo
+        {
+            Order = 0,
+            Name = string.Empty,
+            Body = null,
+            ColumnId = column,
+            IsDraft = true
+        };
+        
+        await _toDoRepository.Create(todo, ct);
         var creator = new ToDoUser
         {
             ToDoUserType = ToDoUserType.Creator,
             ToDoId = todo.Id,
-            DeskUserId = deskUser!.Id
+            DeskUserId = deskUser.Id
         };
+        
         await _toDoUserRepository.Create(creator, ct);
-        return await GetToDos(deskId, ct);
+        return _mapper.AutoMap<ToDoDraftDto, ToDo>(todo);
+    }
+    
+    public async Task<ToDoDraftDto> UpdateDraftToDo(int toDoId, ApplicationUser user, ToDoUpdateModel model,
+        CancellationToken ct)
+    {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            ToDoDraftFilter = false
+        });
+        await _toDoUserRepository.AnyOrThrow(x => x.DeskUser!.UserId == user.Id && x.ToDoId == toDoId, ct);
+        var todo = await _toDoRepository.Single(x => x.Id == toDoId && x.IsDraft, ct);
+        _mapper.AutoMap(model, todo);
+        await _toDoRepository.Update(todo, ct);
+        return _mapper.AutoMap<ToDoDraftDto, ToDo>(todo);
+    }
+
+    public async Task<ToDoFullDto> ApplyDraftToDo(int toDoId, ApplicationUser user, CancellationToken ct)
+    {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            ToDoDraftFilter = false
+        });
+        await _toDoUserRepository.AnyOrThrow(x => x.DeskUser!.UserId == user.Id && x.ToDoId == toDoId, ct);
+        var todo = await _toDoRepository.Single(x => x.Id == toDoId && x.IsDraft, ct);
+        todo.IsDraft = false;
+        todo.Order = await GetCreateOrderInColum(todo.ColumnId, ct);
+        await _toDoRepository.Update(todo, ct);
+        return await GetToDoFull(todo.Id, ct);
     }
 
     private async Task<int> GetCreateOrderInColum(int todoColumnId, CancellationToken ct)
@@ -77,8 +143,7 @@ public class ToDoService : BaseService, IToDoService
             .MinAsync(x => (int?)x.Order, ct) ?? 0;
         return Math.Min(minId, 0) - 1;
     }
-
-
+    
     public async Task<List<ToDoDto>> MoveToDo(int toDoId, ToDoMoveModel model, CancellationToken ct)
     {
         var toDo = await _toDoRepository.QueryableSelect().Include(x=> x.Column)
@@ -119,11 +184,17 @@ public class ToDoService : BaseService, IToDoService
         var todo = await _toDoRepository.Single(x => x.Id == toDoId, ct);
         _mapper.AutoMap(model, todo);
         await _toDoRepository.Update(todo, ct);
-        return _mapper.AutoMap<ToDoDto, ToDo>(todo!);
+        return _mapper.AutoMap<ToDoDto, ToDo>(todo);
     }
 
     public Task<ToDoDto> GetToDo(int toDoId, CancellationToken ct)
     {
         return _toDoRepository.ProjectToSingle<ToDoDto>(x => x.Id == toDoId, ct);
+    }
+
+    public async Task<string> AttachFile(int toDoId, IFormFile file, CancellationToken ct)
+    {
+        var entity = await _toDoFileStorageAdapter.Store(toDoId, file, ct);
+        return _fileStorageProxy.GetProxyUrl(entity.FileName);
     }
 }

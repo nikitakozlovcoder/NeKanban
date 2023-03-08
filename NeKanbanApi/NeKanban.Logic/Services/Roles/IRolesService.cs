@@ -1,5 +1,6 @@
 ﻿using NeKanban.Common.DTOs.Roles;
 using NeKanban.Common.Models.RoleModels;
+using NeKanban.Common.ViewModels.Roles;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.Roles;
