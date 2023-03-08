@@ -63,23 +63,37 @@ public class ToDoService : BaseService, IToDoService
         return todos;
     }
 
-    public async Task<ToDoFullVm> GetToDoFull(int todoId, CancellationToken ct)
+    public async Task<ToDoFullDto> GetToDoFull(int todoId, CancellationToken ct)
     {
         var dto = await _toDoRepository.ProjectToSingle<ToDoFullDto>(x => x.Id == todoId, ct);
-        var todoVm = await _mapper.Map<ToDoFullVm, ToDoFullDto>(dto, ct);
-        return todoVm;
+        return dto;
     }
     
-    public async Task<int> CreateDraftToDo(int deskId, ApplicationUser user, CancellationToken ct)
+    public async Task<ToDoDraftDto> GetDraft(int deskId, ApplicationUser user, CancellationToken ct)
     {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions()
+        {
+            ToDoDraftFilter = false
+        });
+        
         var deskUser = await _deskUserRepository.First(x => x.UserId == user.Id && x.DeskId == deskId, ct);
         var columns = await _columnsService.GetColumns(deskId, ct);
+        var column = columns.Single(x => x.Type == ColumnType.Start).Id;
+        var draft = await _toDoRepository.ProjectToFirstOrDefault<ToDoDraftDto>(x =>
+            x.ColumnId == column &&
+            x.ToDoUsers.Any(u => u.ToDoUserType == ToDoUserType.Creator && u.DeskUserId == deskUser.Id), ct);
+
+        if (draft != null)
+        {
+            return draft;
+        }
+        
         var todo = new ToDo
         {
             Order = 0,
             Name = string.Empty,
             Body = null,
-            ColumnId = columns.Single(x => x.Type == ColumnType.Start).Id,
+            ColumnId = column,
             IsDraft = true
         };
         
@@ -92,10 +106,11 @@ public class ToDoService : BaseService, IToDoService
         };
         
         await _toDoUserRepository.Create(creator, ct);
-        return todo.Id;
+        return _mapper.AutoMap<ToDoDraftDto, ToDo>(todo);
     }
     
-    public async Task<ToDoFullVm> UpdateDraftToDo(int toDoId, ApplicationUser user, ToDoUpdateModel model, CancellationToken ct)
+    public async Task<ToDoDraftDto> UpdateDraftToDo(int toDoId, ApplicationUser user, ToDoUpdateModel model,
+        CancellationToken ct)
     {
         using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
         {
@@ -105,10 +120,10 @@ public class ToDoService : BaseService, IToDoService
         var todo = await _toDoRepository.Single(x => x.Id == toDoId && x.IsDraft, ct);
         _mapper.AutoMap(model, todo);
         await _toDoRepository.Update(todo, ct);
-        return await GetToDoFull(todo.Id, ct);
+        return _mapper.AutoMap<ToDoDraftDto, ToDo>(todo);
     }
 
-    public async Task<ToDoFullVm> ApplyDraftToDo(int toDoId, ApplicationUser user, CancellationToken ct)
+    public async Task<ToDoFullDto> ApplyDraftToDo(int toDoId, ApplicationUser user, CancellationToken ct)
     {
         using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
         {

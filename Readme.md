@@ -12,7 +12,7 @@
 В папке ```/NeKanban/nekanban``` выполнить команду ```npm start``` предварительно скачав все пакеты (```npm i```)
 
 ### Применение миграций
-```docker compose up migrator``` или ```dotnet ef datebase udapte --verbose --project ..\NeKanban.Data``` из папки ```NeKanban/NeKanban.Api```
+```docker compose up migrator``` или ```dotnet ef database update --verbose --project ..\NeKanban.Data``` из папки ```NeKanban/NeKanban.Api```
 
 ### Генерация миграции 
 ```dotnet ef migrations add [Migration Name] --verbose --project ..\NeKanban.Data``` из папки ```NeKanban/NeKanban.Api```

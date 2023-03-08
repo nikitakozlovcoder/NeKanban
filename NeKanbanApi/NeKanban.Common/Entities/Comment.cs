@@ -16,6 +16,7 @@ public class Comment : IHasPk<int>, IAutoMapFrom<CommentUpdateModel, Comment>
     public required bool IsDraft { get; set; }
     public virtual DeskUser? DeskUser { get; set; }
     public virtual ToDo? ToDo { get; set; }
+    public virtual ICollection<CommentFileAdapter> Files { get; set; } = new List<CommentFileAdapter>();
 
     public static void ConfigureMap(IMappingExpression<CommentUpdateModel, Comment> cfg)
     {

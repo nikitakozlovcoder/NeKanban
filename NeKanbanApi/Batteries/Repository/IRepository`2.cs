@@ -14,6 +14,7 @@ public interface IRepository<TEntity, in TPrimaryKey>
     Task Remove(TEntity item, CancellationToken ct);
     Task Remove(IEnumerable<TEntity> items, CancellationToken ct);
     Task<TEntity> Remove(TPrimaryKey id, CancellationToken ct);
+    Task<List<TEntity>> Remove(IEnumerable<TPrimaryKey> ids, CancellationToken ct);
     Task Update(TEntity item, CancellationToken ct);
     Task Update(IEnumerable<TEntity> items, CancellationToken ct);
     

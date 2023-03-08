@@ -68,11 +68,19 @@ public abstract class BaseFileStorageAdapter<TFileAdapterEntity, TParent, TFileE
         await _fileRepository.Remove(files, ct);
     }
 
+    public Task Detach(int adapterId, CancellationToken ct)
+    {
+        return Detach(new[] {adapterId}, ct);
+    }
+
+    public Task Detach(IEnumerable<int> adapterIds, CancellationToken ct)
+    {
+        return _storeAdapterRepository.Remove(adapterIds, ct);
+    }
+
     public async Task<FileStoreDto> Attach(int parentId, Guid fileId, CancellationToken ct)
     {
-
         return (await Attach(parentId, new[] {fileId}, ct)).Single();
-       
     }
 
     public async Task<List<FileStoreDto>> Attach(int parentId, IEnumerable<Guid> fileIds, CancellationToken ct)

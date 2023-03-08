@@ -7,7 +7,7 @@ namespace NeKanban.Common.DTOs.Comments;
 
 public class CommentDto : BaseEntityModel<int>, IAutoMapFrom<Comment, CommentDto>
 {
-    public required string Body { get; set; } = null!;
+    public required string Body { get; set; }
     public required DateTime CreatedAtUtc { get; set; }
     public required DeskUserLiteDto? DeskUser { get; set; }
     public static void ConfigureMap(IMappingExpression<Comment, CommentDto> cfg)

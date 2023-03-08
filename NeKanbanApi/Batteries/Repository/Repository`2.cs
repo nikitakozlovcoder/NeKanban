@@ -65,6 +65,13 @@ public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TP
         return item;
     }
 
+    public async Task<List<TEntity>> Remove(IEnumerable<TPrimaryKey> ids, CancellationToken ct)
+    {
+        var items = await ToList(x => ids.Contains(x.Id), ct);
+        await Remove(items, ct);
+        return items;
+    }
+
     public async Task<TEntity> Remove(int id, CancellationToken ct)
     {
         var item = await Single(x => x.Id.Equals(id), ct);
