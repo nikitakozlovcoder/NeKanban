@@ -22,10 +22,7 @@ export class GeneralSettingsComponent implements OnInit {
   @Input() roles: Role[] = [];
   @Input() desks: Desk[] = [];
   @Output() desksChange = new EventEmitter<Desk[]>;
-  isUserRemoveLoaded = true;
   isRemoveDeskLoaded = true;
-  isLoaded = true;
-  private sub: any;
   isNameUpdateLoaded = true;
   isLinkLoaded = true;
   name = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
@@ -47,8 +44,6 @@ export class GeneralSettingsComponent implements OnInit {
   getCurrentDesk() {
     return this.desks.find(el => el.id === this.desk!.id);
   }
-
-
 
   updateDesk() {
     if (this.name.invalid) {
@@ -92,14 +87,12 @@ export class GeneralSettingsComponent implements OnInit {
     })
   }
 
-
-
   removeDesk(deskId: number) {
     this.isRemoveDeskLoaded = false;
     this.deskService.removeDesk(deskId).subscribe({
       next: () => {
         this.isRemoveDeskLoaded = true;
-        this.router.navigate(['']);
+        this.router.navigate(['']).then();
       },
       error: () => {
       }

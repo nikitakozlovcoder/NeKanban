@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   baseUrl: "http://localhost:7146/",
-  angularBaseUrl: "http://localhost:4200/"
+  angularBaseUrl: "http://localhost:4200/",
+  urlsToDisableAuthInterceptor: ['/Users/LogIn', '/Users/Refresh']
 };
 
 /*

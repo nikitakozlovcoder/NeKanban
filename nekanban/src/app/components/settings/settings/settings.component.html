@@ -1,4 +1,4 @@
-<div *ngIf="isLoaded && desks.length > 0 && desk != undefined">
+<div *ngIf="isLoaded && desk && desks.length">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
                  (closed)="events.push('close!')">
@@ -15,22 +15,19 @@
           <button class = "register_button create-desk-button" mat-raised-button color="primary" (click)="showDeskCreation()">Создать доску</button>
         </div>
       </div>
-
-
     </mat-sidenav>
 
     <mat-sidenav-content>
       <p>
         <app-header [currentUser]="getCurrentUser()" [sidenav]="sidenav" [(desks)]="desks" [currentDeskId]="getCurrentDesk()!.id"></app-header>
       </p>
-
       <mat-card>
         <mat-card-title-group>
           <mat-card-title class="settings-desk-name">
             <mat-icon [routerLink]="['/desks', this.desk.id]">arrow_back</mat-icon>
             <p class="desk-name">{{desk?.name}}</p>
           </mat-card-title>
-          <mat-card-subtitle>
+          <mat-card-subtitle *ngIf="getDeskOwner()">
             <p>Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
           </mat-card-subtitle>
         </mat-card-title-group>
@@ -50,8 +47,8 @@
       </mat-tab-group>
     </mat-sidenav-content>
   </mat-sidenav-container>
-
 </div>
+
 <div *ngIf="!isLoaded || !areRolesLoaded">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
@@ -59,20 +56,13 @@
       <h2 class="mat-h2">Мои доски</h2>
       <div class="sidenav-container">
         <mat-nav-list>
-
-
           <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
-
         </mat-nav-list>
       </div>
-
-
     </mat-sidenav>
 
     <mat-sidenav-content class="full-height-content">
       <app-header [currentUser]="getCurrentUser()" [sidenav]="sidenav"></app-header>
-
-
       <mat-spinner class="spinner" diameter="50"></mat-spinner>
     </mat-sidenav-content>
   </mat-sidenav-container>

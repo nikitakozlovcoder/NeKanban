@@ -7,30 +7,21 @@ import {UserStorageService} from "./userStorage.service";
 @Injectable()
 export class AppHttpService {
   private readonly baseUrl = environment.baseUrl;
-  constructor(private readonly http: HttpClient, private readonly userStorageService: UserStorageService) {}
+  constructor(private readonly http: HttpClient) {}
 
   post<T>(action: string, body: {}|null) {
-    return this.http.post<T>(`${this.baseUrl}${action}`, body, this.getHttpHeaders());
+    return this.http.post<T>(`${this.baseUrl}${action}`, body);
   }
 
   get<T>(action: string, query: HttpParams|undefined = undefined) {
-    return this.http.get<T>(`${this.baseUrl}${action}`, {...this.getHttpHeaders(), params: query});
+    return this.http.get<T>(`${this.baseUrl}${action}`, {params: query});
   }
 
   put<T>(action: string, body: {}|null) {
-    return this.http.put<T>(`${this.baseUrl}${action}`, body, this.getHttpHeaders());
+    return this.http.put<T>(`${this.baseUrl}${action}`, body);
   }
 
   delete<T>(action: string, body: {}|null = null) {
-    return this.http.delete<T>(`${this.baseUrl}${action}`, {...this.getHttpHeaders(), body: body});
-  }
-
-  private getHttpHeaders() {
-    return {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.userStorageService.getToken()
-      })
-    };
+    return this.http.delete<T>(`${this.baseUrl}${action}`, {body: body});
   }
 }

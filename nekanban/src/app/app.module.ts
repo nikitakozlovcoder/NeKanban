@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialExampleModule } from '../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
@@ -44,8 +44,9 @@ import { PageNotFoundComponent } from './components/routing/page-not-found/page-
 import { SidenavComponent } from './components/partials/sidenav/sidenav.component';
 import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import {AuthInterceptor} from "./interceptors/auth/auth.interceptor";
 
-const appRoutes: Routes =[
+const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
   { path: '', component: DeskComponent, canActivate: [DeskGuard]},
   { path: 'invite', component: InviteComponent},
@@ -85,27 +86,28 @@ export function HttpLoaderFactory(http: HttpClient) {
     PageNotFoundComponent,
     SidenavComponent,
   ],
-    imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
-        FormsModule,
-        HttpClientModule,
-        MatNativeDateModule,
-        MaterialExampleModule,
-        ReactiveFormsModule,
-        RouterModule.forRoot(appRoutes),
-        NgScrollbarModule,
-      MatListModule,
-      TranslateModule.forRoot({
-        defaultLanguage: 'ru',
-        loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
-        }
-      })
-    ],
-  providers: [UserService,
+  imports: [
+    BrowserAnimationsModule,
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    MatNativeDateModule,
+    MaterialExampleModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot(appRoutes),
+    NgScrollbarModule,
+    MatListModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'ru',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
+  ],
+  providers: [
+    UserService,
     DeskService,
     AppHttpService,
     DeskGuard,
@@ -117,7 +119,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     DataGeneratorService,
     CommentsService,
     UserStorageService,
-  TranslateService],
+    TranslateService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
