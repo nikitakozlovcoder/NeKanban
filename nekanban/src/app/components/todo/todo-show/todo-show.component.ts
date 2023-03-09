@@ -24,7 +24,7 @@ import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.com
 })
 export class TodoShowComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {todo: Todo, isEdit: boolean, desk: Desk, deskUser: DeskUser, roles: Role[]}, private toDoService: TodoService, public rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {todoId: number, isEdit: boolean, desk: Desk, deskUser: DeskUser, roles: Role[]}, private toDoService: TodoService, public rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService,
               private commentsService: CommentsService, public dialog: MatDialog) {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
@@ -33,8 +33,10 @@ export class TodoShowComponent implements OnInit {
   readonly ViewStateTypes = ViewStateTypes;
 
 
-  usersSelected : number[] = this.getIdsOfSelectedUsers();
-  userSelected : number[] = this.getIdOfSingleUser();
+  todo: Todo | undefined;
+
+  usersSelected : number[] = [];
+  userSelected : number[] = [];
   users = new UntypedFormControl(this.usersSelected);
   user = new UntypedFormControl(this.userSelected);
   isLoaded = true;
@@ -48,15 +50,23 @@ export class TodoShowComponent implements OnInit {
   commentInput = new UntypedFormControl('', [Validators.required, Validators.minLength(10)]);
 
   commentUpdatingFields: UntypedFormControl[] = [];
+
   ngOnInit(): void {
     this.getComments();
+    this.toDoService.getToDo(this.data.todoId).subscribe({
+      next: value => {
+        this.todo = value;
+        this.usersSelected = this.getIdsOfSelectedUsers();
+        this.userSelected = this.getIdOfSingleUser();
+      }
+    })
   }
 
   closeDialog() {
-    this.dialogRef.close(this.data.todo);
+    this.dialogRef.close(this.todo!);
   }
   getToDoCreator() {
-    return this.data.todo.toDoUsers.find(el => el.toDoUserType == 0);
+    return this.todo!.toDoUsers.find(el => el.toDoUserType == 0);
   }
 
   getIdOfSingleUser() {
@@ -68,7 +78,7 @@ export class TodoShowComponent implements OnInit {
     return ids;
   }
   getToDoUsers() {
-    return this.data.todo.toDoUsers.filter(el => el.toDoUserType != 0);
+    return this.todo!.toDoUsers.filter(el => el.toDoUserType != 0);
   }
   getDeskUsers() : User[] {
     let deskUsers: User[] = [];
@@ -79,13 +89,13 @@ export class TodoShowComponent implements OnInit {
   }
   getAllTodoUsers() : User[] {
     let todoUsers : User[] = [];
-    this.data.todo.toDoUsers.forEach( el => {
+    this.todo!.toDoUsers.forEach( el => {
       todoUsers.push(el.deskUser.user);
     })
     return todoUsers;
   }
   getIdsOfSelectedUsers() : number[] {
-    let selectedUsers : User[] = this.getDeskUsers().filter(el => this.getAllTodoUsers().some(someEl => someEl.id === el.id) && this.data.todo.toDoUsers.find(todoUser => todoUser.deskUser.user.id === el.id  && todoUser.toDoUserType != 0));
+    let selectedUsers : User[] = this.getDeskUsers().filter(el => this.getAllTodoUsers().some(someEl => someEl.id === el.id) && this.todo!.toDoUsers.find(todoUser => todoUser.deskUser.user.id === el.id  && todoUser.toDoUserType != 0));
     let ids : number[] = [];
     selectedUsers.forEach( el => {
       ids.push(el.id);
@@ -111,13 +121,13 @@ export class TodoShowComponent implements OnInit {
       this.isLoaded = false;
       this.dialogRef.disableClose = true;
       let deskUser = this.data.desk.deskUsers.find(obj => obj.user.id === el);
-      this.toDoService.assignUser(this.data.todo.id, deskUser!.id).subscribe({
+      this.toDoService.assignUser(this.data.todoId, deskUser!.id).subscribe({
         next: data => {
           if (appearedIds.indexOf(el) === appearedIds.length - 1) {
             this.isLoaded = true;
             this.dialogRef.disableClose = false;
           }
-          this.data.todo = data;
+          this.todo! = data;
         },
         error: _ => {
         }
@@ -126,14 +136,14 @@ export class TodoShowComponent implements OnInit {
     disappearedIds.forEach( el => {
       this.isLoaded = false;
       this.dialogRef.disableClose = true;
-      let todo = this.data.todo.toDoUsers.find(obj => obj.deskUser.user.id === el && obj.toDoUserType != 0);
+      let todo = this.todo!.toDoUsers.find(obj => obj.deskUser.user.id === el && obj.toDoUserType != 0);
       this.toDoService.removeUser(todo!.id).subscribe({
         next: data => {
           if (disappearedIds.indexOf(el) === disappearedIds.length - 1) {
             this.isLoaded = true;
             this.dialogRef.disableClose = false;
           }
-          this.data.todo = data;
+          this.todo! = data;
         },
         error: _ => {
         }
@@ -148,14 +158,14 @@ export class TodoShowComponent implements OnInit {
     let newIds : number[] = select.value;
     console.log(select.value);
     if (newIds.length === 0) {
-      let todo = this.data.todo.toDoUsers.find(obj => obj.deskUser.user.id === this.data.deskUser.user.id);
+      let todo = this.todo!.toDoUsers.find(obj => obj.deskUser.user.id === this.data.deskUser.user.id);
       if (todo !== undefined) {
         this.isLoaded = false;
         this.dialogRef.disableClose = true;
         this.toDoService.removeUser(todo.id).subscribe({
           next: data => {
             this.isLoaded = true;
-            this.data.todo = data;
+            this.todo! = data;
             this.dialogRef.disableClose = false;
           },
           error: _ => {
@@ -168,10 +178,10 @@ export class TodoShowComponent implements OnInit {
       if (!this.usersSelected.includes(this.data.deskUser.user.id)) {
         this.isLoaded = false;
         this.dialogRef.disableClose = true;
-        this.toDoService.assignUser(this.data.todo.id, this.data.deskUser.id).subscribe({
+        this.toDoService.assignUser(this.data.todoId, this.data.deskUser.id).subscribe({
           next: data => {
             this.isLoaded = true;
-            this.data.todo = data;
+            this.todo! = data;
             this.dialogRef.disableClose = false;
           },
           error: _ => {
@@ -208,7 +218,7 @@ export class TodoShowComponent implements OnInit {
     this.RefreshUpdatingStatesAndFormControls();
   }
   getComments() {
-    this.commentsService.getComments(this.data.todo.id).subscribe(
+    this.commentsService.getComments(this.data.todoId).subscribe(
       {
         next: data => {
           this.commentsState = LoadingStateTypes.Loaded;
@@ -227,7 +237,7 @@ export class TodoShowComponent implements OnInit {
     }
     else {
       this.commentSendingState = LoadingStateTypes.Loading;
-      this.commentsService.createComment(this.data.todo.id, this.commentInput.value).subscribe({
+      this.commentsService.createComment(this.data.todoId, this.commentInput.value).subscribe({
         next: data => {
           this.commentSendingState = LoadingStateTypes.Loaded;
           this.comments = this.SortAndMapComments(data);

@@ -9,11 +9,27 @@ export class TodoService {
   }
 
   getToDos(deskId: number) {
-    return this.httpService.get<Todo[]>("ToDos/GetToDos/" + deskId);
+    return this.httpService.get<Todo[]>(`ToDos/GetToDos/${deskId}`);
   }
 
-  addToDo(deskId: number, name: string, body: string) {
-    return this.httpService.post<Todo[]>("ToDos/CreateToDo/" + deskId, {name, body});
+  getToDo(todoId: number) {
+    return this.httpService.get<Todo>(`ToDos/GetTodo/${todoId}`);
+  }
+
+  getDraft(deskId: number) {
+    return this.httpService.post<Todo>(`ToDos/GetDraft/${deskId}`, {});
+  }
+
+  updateDraft(todo: Todo) {
+    return this.httpService.put<Todo>(`ToDos/UpdateDraft/${todo.id}`, {name: todo.name, body: todo.body});
+  }
+
+  applyDraft(todoId: number) {
+    return this.httpService.put<Todo>(`ToDos/ApplyDraft/${todoId}`, {});
+  }
+
+  addToDo(deskId: number, todo: Todo) {
+    return this.httpService.post<Todo[]>("ToDos/CreateToDo/" + deskId, {name: todo.name, body: todo.body});
   }
 
   assignUser(todoId: number, deskUserId: number) {

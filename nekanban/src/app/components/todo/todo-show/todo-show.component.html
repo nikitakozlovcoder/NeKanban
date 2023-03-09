@@ -1,16 +1,16 @@
-<div class="todo-wrap">
+<div *ngIf="todo" class="todo-wrap">
   <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
   <mat-card class = "column-card">
     <div>
       <mat-card-title>
-        <p>{{data.todo.name}}</p>
+        <p>{{todo!.name}}</p>
       </mat-card-title>
 
       <mat-card-content>
         <mat-card-subtitle>
           <p>Описание:</p>
         </mat-card-subtitle>
-        <div class="description">{{data.todo.body}}</div>
+        <div class="description">{{todo!.body}}</div>
       </mat-card-content>
     </div>
 

@@ -195,7 +195,7 @@ export class DeskComponent implements OnInit {
 
   openTaskShowingDialog(todo: Todo): void {
     const dialogRefView = this.dialog.open(TodoShowComponent, {
-      data: {todo: todo, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser, roles: this.roles},
+      data: {todoId: todo.id, desk: this.desk, deskUser: this.getCurrentDesk()!.deskUser, roles: this.roles},
       panelClass: 'todo-show-wrap'
     });
     dialogRefView.afterClosed().subscribe( result => {
@@ -342,7 +342,9 @@ export class DeskComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
-        this.toDos = result;
+        this.toDos.push(result);
+        this.reloadTodosForColumns(this.toDos);
+        /*this.toDos = result;
         for (let i = 0; i < this.columns.length; i++) {
           this.columns[i].todos =  result.filter( (todo : Todo) => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
             if (a.order > b.order) {
@@ -353,7 +355,7 @@ export class DeskComponent implements OnInit {
             }
             return 0;
           });
-        }
+        }*/
 
       }
     })

@@ -24,6 +24,7 @@ public class ToDo: IHasPk<int>, IAutoMapFrom<ToDoUpdateModel, ToDo>
 
     public static void ConfigureMap(IMappingExpression<ToDoUpdateModel, ToDo> cfg)
     {
-        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name));
+        cfg.IgnoreAllMembers().ForMember(x => x.Name, _ => _.MapFrom(x => x.Name))
+            .ForMember(x => x.Body, _ => _.MapFrom(x => x.Body));
     }
 }

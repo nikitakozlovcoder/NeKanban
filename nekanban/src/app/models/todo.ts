@@ -4,11 +4,11 @@ import {ToDoUsers} from "./todousers";
 export class Todo {
   id: number;
   name: string;
-  body: string;
+  body: string | undefined;
   column: Column;
   order: number;
   toDoUsers: ToDoUsers[];
-  constructor(id: number, name: string, body: string, column: Column, toDoUsers: ToDoUsers[], order: number) {
+  constructor(id: number, name: string, column: Column, toDoUsers: ToDoUsers[], order: number, body?: string) {
     this.id = id;
     this.name = name;
     this.body = body;
