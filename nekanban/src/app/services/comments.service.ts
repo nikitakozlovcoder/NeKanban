@@ -12,6 +12,18 @@ export class CommentsService {
     return this.httpService.get<Comment[]>("Comments/GetComments/" + toDoId);
   }
 
+  getDraft(toDoId: number) {
+    return this.httpService.post<Comment>(`Comments/GetDraft/${toDoId}`, {});
+  }
+
+  applyDraft(commentId: number) {
+    return this.httpService.put<Comment[]>(`Comments/ApplyDraft/${commentId}`, {});
+  }
+
+  updateDraft(commentId: number, body: string) {
+    return this.httpService.put<Comment>(`Comments/UpdateDraft/${commentId}`, {body});
+  }
+
   createComment(toDoId: number, body: string) {
     return this.httpService.post<Comment[]>("Comments/Create/" + toDoId, {body});
   }

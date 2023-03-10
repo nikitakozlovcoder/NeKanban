@@ -40,8 +40,8 @@ export class TodoService {
     return this.httpService.delete<Todo>("ToDos/RemoveUser/", {toDoUserId});
   }
 
-  updateToDo(todoId: number, name: string, body: string) {
-    return this.httpService.put<Todo>("ToDos/UpdateToDo/" + todoId, {name, body});
+  updateToDo(todo: Todo) {
+    return this.httpService.put<Todo>("ToDos/UpdateToDo/" + todo.id, {name: todo.name, body: todo.body});
   }
 
   moveToDo(todoId: number, columnId: number, order: number) {
