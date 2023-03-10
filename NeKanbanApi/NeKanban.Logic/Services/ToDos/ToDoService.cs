@@ -12,7 +12,6 @@ using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
-using NeKanban.Common.ViewModels.ToDos;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Columns;
 
@@ -185,7 +184,7 @@ public class ToDoService : BaseService, IToDoService
         var todo = await _toDoRepository.Single(x => x.Id == toDoId, ct);
         _mapper.AutoMap(model, todo);
         await _toDoRepository.Update(todo, ct);
-        return _mapper.AutoMap<ToDoDto, ToDo>(todo);
+        return await GetToDo(todo.Id, ct);
     }
 
     public Task<ToDoDto> GetToDo(int toDoId, CancellationToken ct)
