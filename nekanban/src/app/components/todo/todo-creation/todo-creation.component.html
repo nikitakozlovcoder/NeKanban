@@ -15,7 +15,7 @@
 
 </div>-->
 
-<form [formGroup]="todoFormGroup" (ngSubmit)="applyDraft()">
+<form *ngIf="formLoaded | async; else todoFormNotLoaded" [formGroup]="todoFormGroup" (ngSubmit)="applyDraft()">
   <mat-form-field appearance="fill">
     <mat-label>Название задачи</mat-label>
     <input matInput placeholder="Новая задача" formControlName="name" required>
@@ -30,7 +30,10 @@
     <mat-error *ngIf="todoFormGroup.controls.body.errors?.['required']">Поле не должно быть пустым!</mat-error>
     <mat-error *ngIf="todoFormGroup.controls.body.errors?.['minlength']">Длина описания должна быть не менее 10 символов!</mat-error>
   </mat-form-field>
-  <button *ngIf="isLoaded" class = "register_button" mat-raised-button color="primary" type="submit">Создать задачу</button>
-  <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLoaded"></mat-spinner>
+  <button *ngIf="formSubmitLoaded | async" class = "register_button" mat-raised-button color="primary" type="submit">Создать задачу</button>
+  <mat-spinner class="spinner-centered" diameter="36" *ngIf="!(formSubmitLoaded | async)"></mat-spinner>
 </form>
+<ng-template #todoFormNotLoaded>
+    <mat-spinner class="spinner-centered" diameter="50"></mat-spinner>
+</ng-template>
 

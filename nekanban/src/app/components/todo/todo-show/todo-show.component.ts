@@ -264,18 +264,27 @@ export class TodoShowComponent implements OnInit {
     }
     else {
       this.commentsSendingLoaded.next(false);
-      this.commentsService.applyDraft(this.draftId!).subscribe({
-        next: data => {
-          this.commentsSendingLoaded.next(true);
-          this.comments = this.SortAndMapComments(data);
-          this.commentInput.setValue("", {emitEvent: false})
-          this.getCommentDraft();
-          this.commentInput.markAsUntouched();
+      this.commentsService.updateDraft(this.draftId!, this.commentInput.value!).subscribe({
+        next: (data) => {
+          this.commentInput.setValue(data.body, {emitEvent : false});
+          this.draftId = data.id;
         },
-        error: _ => {
-        },
-        complete: () => this.RefreshUpdatingStatesAndFormControls()
+        complete: () => {
+          this.commentsService.applyDraft(this.draftId!).subscribe({
+            next: data => {
+              this.commentsSendingLoaded.next(true);
+              this.comments = this.SortAndMapComments(data);
+              this.commentInput.setValue("", {emitEvent: false});
+              this.getCommentDraft();
+              this.commentInput.markAsUntouched();
+            },
+            error: _ => {
+            },
+            complete: () => this.RefreshUpdatingStatesAndFormControls()
+          })
+        }
       })
+
     }
   }
 
@@ -373,10 +382,11 @@ export class TodoShowComponent implements OnInit {
   }
 
   private initDebounce() {
-    this.draftSubject.pipe(debounceTime(1000),
+    this.draftSubject.pipe(debounceTime(2000),
       switchMap(() => this.commentsService.updateDraft(this.draftId!, this.commentInput.value!))).subscribe({
       next: (data: Comment) => {
         this.commentInput.setValue(data.body, {emitEvent : false});
+        this.draftId = data.id;
       },
     });
   }

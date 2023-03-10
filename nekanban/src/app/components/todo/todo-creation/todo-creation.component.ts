@@ -4,7 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, UntypedFormControl, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 import {Todo} from "../../../models/todo";
-import {debounce, debounceTime, interval, Subject, switchMap} from "rxjs";
+import {BehaviorSubject, debounce, debounceTime, interval, Subject, switchMap} from "rxjs";
 
 @Component({
   selector: 'app-todo-creation',
@@ -14,10 +14,15 @@ import {debounce, debounceTime, interval, Subject, switchMap} from "rxjs";
 export class TodoCreationComponent implements OnInit {
 
   private draftSubject = new Subject();
-  draft: Todo | undefined;
+
+  formLoaded = new BehaviorSubject(false);
+
+  formSubmitLoaded = new BehaviorSubject(true);
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: {deskId: number},
               private todoService: TodoService,
               public dialogRef: MatDialogRef<TodoCreationComponent>) { }
+
 
   ngOnInit(): void {
     this.getDraft();
@@ -31,43 +36,35 @@ export class TodoCreationComponent implements OnInit {
     body: new FormControl<string>('', [Validators.required, Validators.minLength(10)])
   })
 
-  isLoaded = true;
-
-  createToDo() {
-    if (this.todoFormGroup.invalid) {
-      this.todoFormGroup.markAsTouched();
-    }
-    else {
-      this.isLoaded = false;
-      this.todoService.addToDo(this.data.deskId, this.todoFormGroup.getRawValue() as Todo).subscribe({
-        next: (data: Todo[]) => {
-          this.isLoaded = true;
-          this.dialogRef.close(data);
-        }
-      });
-    }
-  }
-
   applyDraft() {
     if (this.todoFormGroup.invalid) {
       this.todoFormGroup.markAsTouched();
     }
     else {
-      this.isLoaded = false;
-      this.todoService.applyDraft(this.todoFormGroup.controls.id.value!).subscribe({
+      this.formSubmitLoaded.next(false);
+      this.todoService.updateDraft(this.todoFormGroup.getRawValue() as Todo).subscribe({
         next: (data: Todo) => {
-          this.isLoaded = true;
-          this.dialogRef.close(
-            new Todo(data.id, data.name, data.column, data.toDoUsers, data.order)
-          );
+          this.todoFormGroup.patchValue(data, {emitEvent : false});
+        },
+        complete: () => {
+          this.todoService.applyDraft(this.todoFormGroup.controls.id.value!).subscribe({
+            next: (data: Todo) => {
+              this.formSubmitLoaded.next(true);
+              this.dialogRef.close(
+                new Todo(data.id, data.name, data.column, data.toDoUsers, data.order)
+              );
+            }
+          })
         }
       })
     }
   }
 
   private getDraft() {
+    this.formLoaded.next(false);
     this.todoService.getDraft(this.data.deskId).subscribe( {
       next: (data: Todo) => {
+        this.formLoaded.next(true);
         this.todoFormGroup.patchValue(data, {emitEvent : false});
       }
     });
