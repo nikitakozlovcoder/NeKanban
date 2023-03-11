@@ -3,5 +3,5 @@
 public class ToDoUpdateModel
 {
     public required string Name { get; set; }
-    public required string Body { get; set; }
+    public string? Body { get; set; }
 }
