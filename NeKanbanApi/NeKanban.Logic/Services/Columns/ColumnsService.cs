@@ -16,7 +16,7 @@ namespace NeKanban.Logic.Services.Columns;
 
 [UsedImplicitly]
 [Injectable<IColumnsService>]
-public class ColumnsService : BaseService, IColumnsService
+public class ColumnsService : IColumnsService
 {
     private readonly IRepository<Column> _columnRepository;
     private readonly IAppMapper _mapper;
