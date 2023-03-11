@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
@@ -17,13 +18,19 @@ public static class ExceptionHandlerExtensions
             catch (EntityDoesNotExists e)
             {
                 context.Response.StatusCode = (int) HttpStatusCode.NotFound;
-                await context.Response.WriteAsync(e.Message);
+                await WriteToBody(context.Response, e.Message);
             }
             catch (HttpStatusCodeException e)
             {
                 context.Response.StatusCode = (int) e.Status;
-                await context.Response.WriteAsync(e.Message);
+                await WriteToBody(context.Response, e.Message);
             }
         });
+    }
+
+    private static async Task WriteToBody(HttpResponse response, string str)
+    {
+        response.ContentType = "text/plain";
+        await response.WriteAsync(str);
     }
 }

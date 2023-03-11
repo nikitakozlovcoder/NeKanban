@@ -20,7 +20,7 @@ namespace NeKanban.Logic.Services.DesksUsers;
 
 [UsedImplicitly]
 [Injectable(typeof(IDeskUserService))]
-public class DeskUserService : BaseService, IDeskUserService
+public class DeskUserService : IDeskUserService
 {
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IMyDesksService _myDesksService;

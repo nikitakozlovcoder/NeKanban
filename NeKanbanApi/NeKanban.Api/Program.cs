@@ -3,6 +3,7 @@ using Batteries.Exceptions;
 using Batteries.FileStorage.FileStorageProviders;
 using Batteries.FileStorage.FileStorageProxies;
 using Batteries.Mapper;
+using Batteries.Validation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -12,6 +13,7 @@ using NeKanban.Logic.Configuration;
 using NeKanban.Logic.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddAppValidator();
 builder.Services.AddControllers();
 builder.Services.AddServices();
 builder.Services.AddWwwRootStorage(new WebRootStorageConfig
@@ -25,6 +27,7 @@ builder.Services.AddFileStorageProxy(new FileStorageProxyConfig
 {
     ProxyEndpoint = "FileStorage/Proxy"
 });
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();

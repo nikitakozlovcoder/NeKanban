@@ -16,7 +16,7 @@ namespace NeKanban.Logic.Services.Users;
 
 [UsedImplicitly]
 [Injectable<IApplicationUsersService>]
-public class ApplicationUsersService : BaseService, IApplicationUsersService
+public class ApplicationUsersService : IApplicationUsersService
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IRepository<ApplicationUser> _userRepository;

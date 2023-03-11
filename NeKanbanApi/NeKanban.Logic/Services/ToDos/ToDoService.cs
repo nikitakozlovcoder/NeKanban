@@ -5,6 +5,7 @@ using Batteries.FileStorage.FileStorageProxies;
 using Batteries.Injection.Attributes;
 using Batteries.Mapper.AppMapper;
 using Batteries.Repository;
+using Batteries.Validation;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +15,13 @@ using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Columns;
+using NeKanban.Logic.ValidationProfiles.ToDos;
 
 namespace NeKanban.Logic.Services.ToDos;
 
 [UsedImplicitly]
 [Injectable<IToDoService>]
-public class ToDoService : BaseService, IToDoService
+public class ToDoService : IToDoService
 {
     private readonly IRepository<Desk> _deskRepository;
     private readonly IRepository<ToDo> _toDoRepository;
@@ -31,6 +33,7 @@ public class ToDoService : BaseService, IToDoService
     private readonly IFileStorageAdapter<ToDoFileAdapter, ToDo> _toDoFileStorageAdapter;
     private readonly IFileStorageProxy _fileStorageProxy;
     private readonly QueryFilterSettings _filterSettings;
+    private readonly IAppValidator<ToDoValidationModel> _toDoValidator;
 
     public ToDoService(
         IRepository<Desk> deskRepository, 
@@ -41,7 +44,7 @@ public class ToDoService : BaseService, IToDoService
         IRepository<Column> columnRepository,
         IAppMapper mapper,
         IFileStorageAdapter<ToDoFileAdapter, ToDo> toDoFileStorageAdapter,
-        IFileStorageProxy fileStorageProxy, QueryFilterSettings filterSettings)
+        IFileStorageProxy fileStorageProxy, QueryFilterSettings filterSettings, IAppValidator<ToDoValidationModel> toDoValidator)
     {
         _deskRepository = deskRepository;
         _columnsService = columnsService;
@@ -53,6 +56,7 @@ public class ToDoService : BaseService, IToDoService
         _toDoFileStorageAdapter = toDoFileStorageAdapter;
         _fileStorageProxy = fileStorageProxy;
         _filterSettings = filterSettings;
+        _toDoValidator = toDoValidator;
     }
 
     public async Task<List<ToDoDto>> GetToDos(int deskId, CancellationToken ct)
@@ -131,6 +135,11 @@ public class ToDoService : BaseService, IToDoService
         });
         await _toDoUserRepository.AnyOrThrow(x => x.DeskUser!.UserId == user.Id && x.ToDoId == toDoId, ct);
         var todo = await _toDoRepository.Single(x => x.Id == toDoId && x.IsDraft, ct);
+        await _toDoValidator.ValidateOrThrow(new ToDoValidationModel
+        {
+            Name = todo.Name
+        }, ct);
+        
         todo.IsDraft = false;
         todo.Order = await GetCreateOrderInColum(todo.ColumnId, ct);
         await _toDoRepository.Update(todo, ct);
@@ -147,8 +156,7 @@ public class ToDoService : BaseService, IToDoService
     public async Task<List<ToDoDto>> MoveToDo(int toDoId, ToDoMoveModel model, CancellationToken ct)
     {
         var toDo = await _toDoRepository.QueryableSelect().Include(x=> x.Column)
-            .FirstOrDefaultAsync(x => x.Id == toDoId, ct);
-        EnsureEntityExists(toDo);
+            .FirstAsync(x => x.Id == toDoId, ct);
         var isMoveValid = await _columnRepository.QueryableSelect()
             .AnyAsync(x => x.Id == model.ColumnId && x.DeskId == toDo!.Column!.DeskId, ct);
         if (!isMoveValid)
@@ -181,6 +189,11 @@ public class ToDoService : BaseService, IToDoService
 
     public async Task<ToDoDto> UpdateToDo(int toDoId, ToDoUpdateModel model, CancellationToken ct)
     {
+        await _toDoValidator.ValidateOrThrow(new ToDoValidationModel
+        {
+            Name = model.Name
+        }, ct);
+        
         var todo = await _toDoRepository.Single(x => x.Id == toDoId, ct);
         _mapper.AutoMap(model, todo);
         await _toDoRepository.Update(todo, ct);

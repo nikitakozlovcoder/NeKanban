@@ -3,6 +3,7 @@ using Batteries.FileStorage.FileStorageProxies;
 using Batteries.Injection.Attributes;
 using Batteries.Mapper.AppMapper;
 using Batteries.Repository;
+using Batteries.Validation;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 using NeKanban.Common.DTOs.Comments;
@@ -10,6 +11,7 @@ using NeKanban.Common.Entities;
 using NeKanban.Common.Models.CommentModels;
 using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.DesksUsers;
+using NeKanban.Logic.ValidationProfiles.Comments;
 
 namespace NeKanban.Logic.Services.Comments;
 
@@ -24,13 +26,15 @@ public class CommentsService : ICommentsService
     private readonly QueryFilterSettings _filterSettings;
     private readonly IFileStorageAdapter<CommentFileAdapter, Comment> _fileStorageAdapter;
     private readonly IFileStorageProxy _fileStorageProxy;
+    private readonly IAppValidator<CommentValidationModel> _commentValidator;
     public CommentsService(IRepository<Comment> commentsRepository,
         IRepository<ToDo> toDosRepository,
         IAppMapper appMapper,
         IDeskUserService deskUserService,
         QueryFilterSettings filterSettings,
         IFileStorageAdapter<CommentFileAdapter, Comment> fileStorageAdapter,
-        IFileStorageProxy fileStorageProxy)
+        IFileStorageProxy fileStorageProxy,
+        IAppValidator<CommentValidationModel> commentValidator)
     {
         _commentsRepository = commentsRepository;
         _toDosRepository = toDosRepository;
@@ -39,6 +43,7 @@ public class CommentsService : ICommentsService
         _filterSettings = filterSettings;
         _fileStorageAdapter = fileStorageAdapter;
         _fileStorageProxy = fileStorageProxy;
+        _commentValidator = commentValidator;
     }
 
     public Task<List<CommentDto>> GetComments(int toDoId, CancellationToken ct)
@@ -85,7 +90,11 @@ public class CommentsService : ICommentsService
         
         var comment = await _commentsRepository.Single(x => x.IsDraft && x.DeskUser != null
                                                                 && x.DeskUser.UserId == user.Id && x.Id == commentId, ct);
-
+        await _commentValidator.ValidateOrThrow(new CommentValidationModel
+        {
+            Body = comment.Body
+        }, ct);
+        
         comment.CreatedAtUtc = DateTime.UtcNow;
         comment.IsDraft = false;
         await _commentsRepository.Update(comment, ct);
@@ -94,6 +103,11 @@ public class CommentsService : ICommentsService
 
     public async Task<List<CommentDto>> Update(int commentId, ApplicationUser user, CommentUpdateModel model, CancellationToken ct)
     {
+        await _commentValidator.ValidateOrThrow(new CommentValidationModel
+        {
+            Body = model.Body
+        }, ct);
+        
         var comment = await _commentsRepository
             .Single(x => x.Id == commentId
                          && x.DeskUser != null

@@ -14,7 +14,7 @@ namespace NeKanban.Logic.Services.ToDos.ToDoUsers;
 
 [UsedImplicitly]
 [Injectable<IToDoUserService>]
-public class ToDoUserService : BaseService, IToDoUserService
+public class ToDoUserService : IToDoUserService
 {
     private readonly IRepository<ToDoUser> _toDoUserRepository;
     private readonly IToDoService _toDoService;
@@ -66,10 +66,7 @@ public class ToDoUserService : BaseService, IToDoUserService
 
     public async Task<int> GetToDoUserUserId(int toDoUserId, CancellationToken ct)
     {
-        var todoUser = await _toDoUserRepository.QueryableSelect()
-            .Include(x=> x.DeskUser)
-            .FirstOrDefaultAsync(x => x.Id == toDoUserId, ct);
-        EnsureEntityExists(todoUser);
-        return todoUser!.DeskUser!.UserId;
+        var userId = await _toDoUserRepository.Single(x => x.Id == toDoUserId, x => x.DeskUser!.UserId, ct);
+        return userId;
     }
 }
