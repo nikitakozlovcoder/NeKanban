@@ -14,14 +14,12 @@ public class InitialSeeder : ISeeder
 {
     private readonly IApplicationUsersService _applicationUsersService;
     private readonly IDesksService _desksService;
-    private readonly ApplicationContext _context;
 
     public InitialSeeder(IApplicationUsersService applicationUsersService,
-        IDesksService desksService, ApplicationContext context)
+        IDesksService desksService)
     {
         _applicationUsersService = applicationUsersService;
         _desksService = desksService;
-        _context = context;
     }
 
     public async Task Run(CancellationToken ct)
