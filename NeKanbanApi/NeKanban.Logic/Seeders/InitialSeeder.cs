@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.Models.UserModel;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Desks;
 using NeKanban.Logic.Services.Users;
 
