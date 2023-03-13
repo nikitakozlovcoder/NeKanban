@@ -16,7 +16,7 @@ import {ViewStateTypes} from "../../../constants/ViewStateTypes";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {Role} from "../../../models/Role";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
-import {BehaviorSubject, debounceTime, Subject, switchMap} from "rxjs";
+import {BehaviorSubject, combineLatest, debounceTime, filter, map, Subject, switchMap} from "rxjs";
 
 @Component({
   selector: 'app-task-creation',
@@ -29,42 +29,31 @@ export class TodoShowComponent implements OnInit {
               private commentsService: CommentsService, public dialog: MatDialog) {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
-
-  readonly LoadingStateTypes = LoadingStateTypes;
-
   readonly ViewStateTypes = ViewStateTypes;
-
-  todo: Todo | undefined;
-
+  todo?: Todo;
   usersSelected : number[] = [];
-
   userSelected : number[] = [];
-
   users = new UntypedFormControl(this.usersSelected);
-
   user = new UntypedFormControl(this.userSelected);
-
-  isLoaded = true;
-
   commentsUpdatingStates : ViewStateTypes[] = [];
-
   isSortDescending = true;
-
   comments: Comment[] = [];
-
-  draftId: number | undefined;
-
+  draftId?: number;
   commentInput = new FormControl<string>('', [Validators.required, Validators.minLength(10)]);
-
   commentUpdatingFields: UntypedFormControl[] = [];
-
   draftSubject = new Subject();
-
   commentsLoaded = new BehaviorSubject(false);
-
   commentsSendingLoaded = new BehaviorSubject(true);
-
   commentsUpdateLoaded : BehaviorSubject<boolean>[] = [];
+  commentDraftLoaded = new BehaviorSubject(false);
+  areUsersLoaded = new BehaviorSubject(true);
+  todoLoaded = new BehaviorSubject(false);
+  notSend =  true;
+
+  get isLoaded() {
+    return combineLatest([this.commentsLoaded, this.commentDraftLoaded, this.todoLoaded])
+      .pipe(map(x => x.every(isLoaded => isLoaded)));
+  }
 
   ngOnInit(): void {
     this.getComments();
@@ -72,6 +61,7 @@ export class TodoShowComponent implements OnInit {
     this.toDoService.getToDo(this.data.todoId).subscribe({
       next: value => {
         this.todo = value;
+        this.todoLoaded.next(true);
         this.usersSelected = this.getIdsOfSelectedUsers();
         this.userSelected = this.getIdOfSingleUser();
       }
@@ -79,6 +69,7 @@ export class TodoShowComponent implements OnInit {
     this.initDebounce();
     this.setFormListeners();
   }
+
 
   closeDialog() {
     this.dialogRef.close(this.todo!);
@@ -138,13 +129,13 @@ export class TodoShowComponent implements OnInit {
     })
 
     appearedIds.forEach(el => {
-      this.isLoaded = false;
+      this.areUsersLoaded.next(false);
       this.dialogRef.disableClose = true;
       let deskUser = this.data.desk.deskUsers.find(obj => obj.user.id === el);
       this.toDoService.assignUser(this.data.todoId, deskUser!.id).subscribe({
         next: data => {
           if (appearedIds.indexOf(el) === appearedIds.length - 1) {
-            this.isLoaded = true;
+            this.areUsersLoaded.next(true);
             this.dialogRef.disableClose = false;
           }
           this.todo!.toDoUsers = data.toDoUsers;
@@ -154,13 +145,13 @@ export class TodoShowComponent implements OnInit {
       })
     })
     disappearedIds.forEach( el => {
-      this.isLoaded = false;
+      this.areUsersLoaded.next(false);
       this.dialogRef.disableClose = true;
       let todo = this.todo!.toDoUsers.find(obj => obj.deskUser.user.id === el && obj.toDoUserType != 0);
       this.toDoService.removeUser(todo!.id).subscribe({
         next: data => {
           if (disappearedIds.indexOf(el) === disappearedIds.length - 1) {
-            this.isLoaded = true;
+            this.areUsersLoaded.next(true);
             this.dialogRef.disableClose = false;
           }
           this.todo!.toDoUsers = data.toDoUsers;
@@ -182,11 +173,11 @@ export class TodoShowComponent implements OnInit {
     if (newIds.length === 0) {
       let todo = this.todo!.toDoUsers.find(obj => obj.deskUser.user.id === this.data.deskUser.user.id);
       if (todo !== undefined) {
-        this.isLoaded = false;
+        this.areUsersLoaded.next(false);
         this.dialogRef.disableClose = true;
         this.toDoService.removeUser(todo.id).subscribe({
           next: data => {
-            this.isLoaded = true;
+            this.areUsersLoaded.next(true);
             this.todo!.toDoUsers = data.toDoUsers;
             this.dialogRef.disableClose = false;
           },
@@ -198,11 +189,11 @@ export class TodoShowComponent implements OnInit {
     }
     else {
       if (!this.usersSelected.includes(this.data.deskUser.user.id)) {
-        this.isLoaded = false;
+        this.areUsersLoaded.next(false);
         this.dialogRef.disableClose = true;
         this.toDoService.assignUser(this.data.todoId, this.data.deskUser.id).subscribe({
           next: data => {
-            this.isLoaded = true;
+            this.areUsersLoaded.next(true);
             this.todo!.toDoUsers = data.toDoUsers;
             this.dialogRef.disableClose = false;
           },
@@ -264,6 +255,7 @@ export class TodoShowComponent implements OnInit {
     }
     else {
       this.commentsSendingLoaded.next(false);
+      this.notSend = false;
       this.commentsService.updateDraft(this.draftId!, this.commentInput.value!).subscribe({
         next: (data) => {
           this.commentInput.setValue(data.body, {emitEvent : false});
@@ -373,8 +365,11 @@ export class TodoShowComponent implements OnInit {
   }
 
   private getCommentDraft() {
+    this.commentDraftLoaded.next(false);
     this.commentsService.getDraft(this.data.todoId).subscribe({
       next: (data) => {
+        this.commentDraftLoaded.next(true);
+        this.notSend = true;
         this.commentInput.setValue(data.body, {emitEvent: false});
         this.draftId = data.id;
       }
@@ -383,6 +378,7 @@ export class TodoShowComponent implements OnInit {
 
   private initDebounce() {
     this.draftSubject.pipe(debounceTime(2000),
+      filter(() => this.notSend),
       switchMap(() => this.commentsService.updateDraft(this.draftId!, this.commentInput.value!))).subscribe({
       next: (data: Comment) => {
         this.commentInput.setValue(data.body, {emitEvent : false});

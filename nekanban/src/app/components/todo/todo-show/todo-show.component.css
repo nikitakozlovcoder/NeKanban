@@ -46,7 +46,12 @@
   margin-left: 10px;
   border-radius: 50%;
   min-width: 48px;
+  width: 48px;
   height: 48px;
+}
+
+.comments-card button mat-icon {
+  margin-left: -2px;
 }
 
 .comment-field-group {
