@@ -33,7 +33,7 @@
   min-width: 300px;
   max-width: 700px;
   padding-right: 15px;
-  white-space:pre-wrap;
+  /*white-space:pre-wrap;*/
 }
 .comments-card {
   margin-top: 10px;

@@ -4,7 +4,9 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, UntypedFormControl, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 import {Todo} from "../../../models/todo";
-import {BehaviorSubject, debounce, debounceTime, interval, Subject, switchMap} from "rxjs";
+import {BehaviorSubject, combineLatest, debounce, debounceTime, interval, map, Subject, switchMap} from "rxjs";
+import tinymce, {Editor} from "tinymce";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-todo-creation',
@@ -13,11 +15,15 @@ import {BehaviorSubject, debounce, debounceTime, interval, Subject, switchMap} f
 })
 export class TodoCreationComponent implements OnInit {
 
-  private draftSubject = new Subject();
-
+  draftSubject = new Subject();
   formLoaded = new BehaviorSubject(false);
-
   formSubmitLoaded = new BehaviorSubject(true);
+  editorLoaded = new BehaviorSubject(false);
+
+  get isLoaded() {
+    return combineLatest([this.formLoaded])
+      .pipe(map(x => x.every(isLoaded => isLoaded)));
+  }
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: {deskId: number},
               private todoService: TodoService,
@@ -33,8 +39,12 @@ export class TodoCreationComponent implements OnInit {
   todoFormGroup = new FormGroup({
     id: new FormControl<number>(0),
     name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
-    body: new FormControl<string>('', [Validators.required, Validators.minLength(10)])
+    body: new FormControl<string>('')
   })
+
+  setLoaded() {
+    this.editorLoaded.next(true);
+  }
 
   applyDraft() {
     if (this.todoFormGroup.invalid) {
@@ -74,13 +84,15 @@ export class TodoCreationComponent implements OnInit {
     this.draftSubject.pipe(debounceTime(1500),
       switchMap(() => this.todoService.updateDraft(this.todoFormGroup.getRawValue() as Todo))).subscribe({
         next: (data: Todo) => {
-          this.todoFormGroup.patchValue(data, {emitEvent : false});
+          this.todoFormGroup.controls.name.patchValue(data.name, {emitEvent: false});
+          this.todoFormGroup.controls.id.patchValue(data.id, {emitEvent: false});
+          //this.todoFormGroup.patchValue(data, {emitEvent : false});
         },
     });
   }
 
   private setFormListeners() {
-    this.todoFormGroup.valueChanges.subscribe({
+    this.todoFormGroup.controls.name.valueChanges.subscribe({
       next: () => {
         this.draftSubject.next(1);
       }

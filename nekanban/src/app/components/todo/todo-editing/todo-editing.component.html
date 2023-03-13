@@ -5,12 +5,17 @@
     <mat-error *ngIf="todoFormGroup.controls.name.errors?.['required']">Поле не должно быть пустым!</mat-error>
     <mat-error *ngIf="todoFormGroup.controls.name.errors?.['minlength']">Длина названия должна быть не менее 3 символов!</mat-error>
   </mat-form-field>
-  <mat-form-field appearance="fill">
+  <div>
     <mat-label>Описание задачи</mat-label>
-    <textarea  matInput placeholder="Очень хорошая задача" formControlName="body" required></textarea>
+    <!--<textarea  matInput placeholder="Очень хорошая задача" formControlName="body" required></textarea>-->
+    <editor formControlName="body"
+            [init]="{
+      base_url: '/tinymce',
+      suffix: '.min',
+      plugins: 'lists link image table code help wordcount' }"
+    ></editor>
     <mat-error *ngIf="todoFormGroup.controls.body.errors?.['required']">Поле не должно быть пустым!</mat-error>
-    <mat-error *ngIf="todoFormGroup.controls.body.errors?.['minlength']">Длина описания должна быть не менее 10 символов!</mat-error>
-  </mat-form-field>
+  </div>
   <button *ngIf="updateLoaded | async" class = "register_button" mat-raised-button color="primary" type="submit">Обновить задачу</button>
   <mat-spinner class="spinner-centered" diameter="36" *ngIf="!(updateLoaded | async)"></mat-spinner>
 </form>

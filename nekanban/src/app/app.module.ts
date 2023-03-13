@@ -45,6 +45,8 @@ import { SidenavComponent } from './components/partials/sidenav/sidenav.componen
 import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {AuthInterceptor} from "./interceptors/auth/auth.interceptor";
+import {EditorComponent, TINYMCE_SCRIPT_SRC} from "@tinymce/tinymce-angular";
+import { SafeHtmlPipe } from './pipes/safehtml/safe-html.pipe';
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -85,27 +87,29 @@ export function HttpLoaderFactory(http: HttpClient) {
     ConfirmationComponent,
     PageNotFoundComponent,
     SidenavComponent,
+    SafeHtmlPipe,
   ],
-  imports: [
-    BrowserAnimationsModule,
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    MatNativeDateModule,
-    MaterialExampleModule,
-    ReactiveFormsModule,
-    RouterModule.forRoot(appRoutes),
-    NgScrollbarModule,
-    MatListModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'ru',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
-  ],
+    imports: [
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        MatNativeDateModule,
+        MaterialExampleModule,
+        ReactiveFormsModule,
+        RouterModule.forRoot(appRoutes),
+        NgScrollbarModule,
+        MatListModule,
+        TranslateModule.forRoot({
+            defaultLanguage: 'ru',
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        EditorComponent
+    ],
   providers: [
     UserService,
     DeskService,
@@ -124,7 +128,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
-    }
+    },
+    //{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
   ],
   bootstrap: [AppComponent]
 })

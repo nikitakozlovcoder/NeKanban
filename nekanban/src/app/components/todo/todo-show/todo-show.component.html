@@ -10,7 +10,17 @@
         <mat-card-subtitle>
           <p>Описание:</p>
         </mat-card-subtitle>
-        <div class="description">{{todo!.body}}</div>
+        <div class="description" [innerHTML]="todo!.body! | safeHtml"></div>
+        <!--<editor class="description"
+                [disabled]="true"
+                [init]="{
+                menubar: false,
+                toolbar: false,
+                branding: false,
+      base_url: '/tinymce',
+      suffix: '.min',
+      plugins: '' }"
+        ></editor>-->
       </mat-card-content>
     </div>
 

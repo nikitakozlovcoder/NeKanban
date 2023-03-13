@@ -11,12 +11,12 @@ import {RolesService} from "../../../services/roles.service";
 import {DeskUser} from "../../../models/deskUser";
 import {DataGeneratorService} from "../../../services/dataGenerator.service";
 import {CommentsService} from "../../../services/comments.service";
-import LoadingStateTypes from "../../../constants/LoadingStateTypes";
 import {ViewStateTypes} from "../../../constants/ViewStateTypes";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {Role} from "../../../models/Role";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 import {BehaviorSubject, combineLatest, debounceTime, filter, map, Subject, switchMap} from "rxjs";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-task-creation',
@@ -26,7 +26,8 @@ import {BehaviorSubject, combineLatest, debounceTime, filter, map, Subject, swit
 export class TodoShowComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: {todoId: number, isEdit: boolean, desk: Desk, deskUser: DeskUser, roles: Role[]}, private toDoService: TodoService, public rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService,
-              private commentsService: CommentsService, public dialog: MatDialog) {
+              private commentsService: CommentsService, public dialog: MatDialog,
+              public sanitizer: DomSanitizer) {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
   readonly ViewStateTypes = ViewStateTypes;

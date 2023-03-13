@@ -19,7 +19,7 @@ export class TodoEditingComponent implements OnInit {
   todoFormGroup = new FormGroup({
     id: new FormControl<number>(0),
     name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
-    body: new FormControl<string>('', [Validators.required, Validators.minLength(10)])
+    body: new FormControl<string>('')
   })
 
   isLoaded = new BehaviorSubject(false);
