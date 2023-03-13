@@ -1,6 +1,8 @@
 .column-card {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  min-width: 600px;
 }
 .task-settings-card {
   min-width: 300px;
@@ -30,7 +32,6 @@
   margin-left: auto;
 }
 .description {
-  min-width: 300px;
   max-width: 700px;
   padding-right: 15px;
   /*white-space:pre-wrap;*/

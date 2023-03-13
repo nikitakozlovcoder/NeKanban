@@ -378,7 +378,7 @@ export class TodoShowComponent implements OnInit {
   }
 
   private initDebounce() {
-    this.draftSubject.pipe(debounceTime(2000),
+    this.draftSubject.pipe(debounceTime(1000),
       filter(() => this.notSend),
       switchMap(() => this.commentsService.updateDraft(this.draftId!, this.commentInput.value!))).subscribe({
       next: (data: Comment) => {

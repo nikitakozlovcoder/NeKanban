@@ -338,7 +338,7 @@ export class DeskComponent implements OnInit {
   openToDoCreationDialog() {
     const dialogRef = this.dialog.open(TodoCreationComponent, {
       data: {deskId: this.desk?.id, isEdit: false},
-      width: '400px'
+      width: '600px'
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
@@ -363,7 +363,7 @@ export class DeskComponent implements OnInit {
   openToDoEditingDialog(todo: Todo) {
     const dialogRef = this.dialog.open(TodoEditingComponent, {
       data: {deskId: this.desk?.id, toDo: todo},
-      width: '400px'
+      width: '600px'
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result !== undefined) {

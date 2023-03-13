@@ -29,7 +29,7 @@
               cdkAutosizeMaxRows="6" matInput placeholder="Очень хорошая задача" formControlName="body" required></textarea>-->
     <editor formControlName="body"
             (onInit)="setLoaded()"
-            (onAddUndo)="draftSubject.next(1)"
+            (onAddUndo)="updateDraft()"
       [init]="{
       base_url: '/tinymce',
       suffix: '.min',

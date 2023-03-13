@@ -4,9 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, UntypedFormControl, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 import {Todo} from "../../../models/todo";
-import {BehaviorSubject, combineLatest, debounce, debounceTime, interval, map, Subject, switchMap} from "rxjs";
-import tinymce, {Editor} from "tinymce";
-import {DomSanitizer} from "@angular/platform-browser";
+import {BehaviorSubject, combineLatest, debounce, debounceTime, filter, interval, map, Subject, switchMap} from "rxjs";
 
 @Component({
   selector: 'app-todo-creation',
@@ -19,6 +17,7 @@ export class TodoCreationComponent implements OnInit {
   formLoaded = new BehaviorSubject(false);
   formSubmitLoaded = new BehaviorSubject(true);
   editorLoaded = new BehaviorSubject(false);
+  firstUpdateRequest = true;
 
   get isLoaded() {
     return combineLatest([this.formLoaded])
@@ -70,6 +69,14 @@ export class TodoCreationComponent implements OnInit {
     }
   }
 
+  updateDraft() {
+    if (this.firstUpdateRequest) {
+      this.firstUpdateRequest = false;
+      return;
+    }
+    this.draftSubject.next(1);
+  }
+
   private getDraft() {
     this.formLoaded.next(false);
     this.todoService.getDraft(this.data.deskId).subscribe( {
@@ -81,7 +88,7 @@ export class TodoCreationComponent implements OnInit {
   }
 
   private initDebounce() {
-    this.draftSubject.pipe(debounceTime(1500),
+    this.draftSubject.pipe(debounceTime(1000),
       switchMap(() => this.todoService.updateDraft(this.todoFormGroup.getRawValue() as Todo))).subscribe({
         next: (data: Todo) => {
           this.todoFormGroup.controls.name.patchValue(data.name, {emitEvent: false});
