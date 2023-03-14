@@ -27,13 +27,11 @@
     <!--<textarea cdkTextareaAutosize
               cdkAutosizeMinRows="1"
               cdkAutosizeMaxRows="6" matInput placeholder="Очень хорошая задача" formControlName="body" required></textarea>-->
+    <mat-spinner *ngIf="!(editorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
     <editor formControlName="body"
             (onInit)="setLoaded()"
             (onAddUndo)="updateDraft()"
-      [init]="{
-      base_url: '/tinymce',
-      suffix: '.min',
-      plugins: 'lists link image table code help wordcount' }"
+      [init]="editorConfig"
     ></editor>
     <mat-error *ngIf="todoFormGroup.controls.body.errors?.['required']">Поле не должно быть пустым!</mat-error>
   </div>
