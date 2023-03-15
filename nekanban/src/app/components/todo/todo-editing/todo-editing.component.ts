@@ -4,6 +4,9 @@ import {Todo} from "../../../models/todo";
 import {FormControl, FormGroup, UntypedFormControl, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 import {BehaviorSubject, Subject} from "rxjs";
+import tinymce, {EditorOptions} from "tinymce";
+import {environment} from "../../../../environments/environment";
+import {EditorConfigService} from "../../../services/editor-config-service";
 
 @Component({
   selector: 'app-todo-editing',
@@ -12,24 +15,42 @@ import {BehaviorSubject, Subject} from "rxjs";
 })
 export class TodoEditingComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {deskId: number, toDo: Todo},
-              private todoService: TodoService,
-              public dialogRef: MatDialogRef<TodoEditingComponent>) { }
-
   todoFormGroup = new FormGroup({
     id: new FormControl<number>(0),
     name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
     body: new FormControl<string>('')
   })
 
+  editorConfig: Partial<EditorOptions>;
   isLoaded = new BehaviorSubject(false);
-
   updateLoaded = new BehaviorSubject(true);
+  editorLoaded = new BehaviorSubject(false);
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {deskId: number, toDo: Todo},
+              private todoService: TodoService,
+              public dialogRef: MatDialogRef<TodoEditingComponent>,
+              private editorConfigService: EditorConfigService) {
+    this.editorConfig = this.editorConfigService.getConfig(this.imageUploadHandler);
+  }
+
 
   ngOnInit(): void {
     this.getToDo();
   }
 
+  setLoaded() {
+    this.editorLoaded.next(true);
+  }
+
+  imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
+    let formData = new FormData();
+    formData.append('file', blobInfo.blob(), blobInfo.filename());
+    this.todoService.attachFile(this.todoFormGroup.controls.id.value!, formData).subscribe({
+      next: (data) => {
+        resolve(data);
+      }
+    });
+  });
 
   getToDo() {
     this.isLoaded.next(false);
@@ -47,14 +68,16 @@ export class TodoEditingComponent implements OnInit {
     }
     else {
       this.updateLoaded.next(false);
-      this.todoService.updateToDo(this.todoFormGroup.getRawValue() as Todo).subscribe({
-        next: data => {
-          this.updateLoaded.next(true);
-          this.dialogRef.close(data);
-        },
-        error: () => {
-        }
-      })
+      tinymce.activeEditor?.uploadImages().then(() => {
+        this.todoService.updateToDo(this.todoFormGroup.getRawValue() as Todo).subscribe({
+          next: data => {
+            this.updateLoaded.next(true);
+            this.dialogRef.close(data);
+          },
+          error: () => {
+          }
+        });
+      });
     }
   }
 }

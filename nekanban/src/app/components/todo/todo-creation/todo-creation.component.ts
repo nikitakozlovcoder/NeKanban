@@ -4,10 +4,22 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, UntypedFormControl, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 import {Todo} from "../../../models/todo";
-import {BehaviorSubject, combineLatest, debounce, debounceTime, filter, interval, map, Subject, switchMap} from "rxjs";
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounce,
+  debounceTime,
+  filter,
+  interval,
+  map,
+  Subject,
+  subscribeOn,
+  switchMap
+} from "rxjs";
 import tinymce, {EditorOptions} from "tinymce";
 import {UserStorageService} from "../../../services/userStorage.service";
 import {environment} from "../../../../environments/environment";
+import {EditorConfigService} from "../../../services/editor-config-service";
 
 @Component({
   selector: 'app-todo-creation',
@@ -23,6 +35,11 @@ export class TodoCreationComponent implements OnInit {
   firstUpdateRequest = true;
   editorConfig: Partial<EditorOptions>;
 
+  todoFormGroup = new FormGroup({
+    id: new FormControl<number>(0),
+    name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+    body: new FormControl<string>('')
+  })
 
   get isLoaded() {
     return combineLatest([this.formLoaded])
@@ -32,20 +49,10 @@ export class TodoCreationComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: {deskId: number},
               private todoService: TodoService,
               public dialogRef: MatDialogRef<TodoCreationComponent>,
-              private readonly userStorageService: UserStorageService)
+              private readonly userStorageService: UserStorageService,
+              private readonly editorConfigService: EditorConfigService)
   {
-    this.editorConfig = {
-      language: 'ru',
-      language_url: `/assets/tinymce/ru/ru.js`,
-      images_upload_handler: this.imageUploadHandler,
-      automatic_uploads: false,
-      base_url: '/tinymce',
-      suffix: '.min',
-      relative_urls: false,
-      remove_script_host: false,
-      document_base_url: environment.baseUrl,
-      plugins: ['lists', 'link', 'image', 'table', 'code', 'help', 'wordcount']
-    }
+    this.editorConfig = editorConfigService.getConfig(this.imageUploadHandler);
   }
 
 
@@ -55,12 +62,6 @@ export class TodoCreationComponent implements OnInit {
     this.initDebounce();
     this.setFormListeners();
   }
-
-  todoFormGroup = new FormGroup({
-    id: new FormControl<number>(0),
-    name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
-    body: new FormControl<string>('')
-  })
 
   setLoaded() {
     this.editorLoaded.next(true);
@@ -123,13 +124,19 @@ export class TodoCreationComponent implements OnInit {
   }
 
   private initDebounce() {
-    this.draftSubject.pipe(debounceTime(1000),
-      switchMap(() => this.todoService.updateDraft(this.todoFormGroup.getRawValue() as Todo))).subscribe({
-        next: (data: Todo) => {
-          this.todoFormGroup.controls.name.patchValue(data.name, {emitEvent: false});
-          this.todoFormGroup.controls.id.patchValue(data.id, {emitEvent: false});
-          //this.todoFormGroup.patchValue(data, {emitEvent : false});
+    this.draftSubject.pipe(debounceTime(1000))
+      .subscribe({
+        next: () => {
+          tinymce.activeEditor?.uploadImages().then(() => {
+            this.todoService.updateDraft(this.todoFormGroup.getRawValue() as Todo).subscribe({
+              next: (data: Todo) => {
+                this.todoFormGroup.controls.name.patchValue(data.name, {emitEvent: false});
+                this.todoFormGroup.controls.id.patchValue(data.id, {emitEvent: false});
+              },
+            });
+          })
         },
+
     });
   }
 

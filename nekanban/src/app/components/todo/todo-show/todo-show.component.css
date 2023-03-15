@@ -2,10 +2,11 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  min-width: 600px;
+  min-width: 500px;
 }
 .task-settings-card {
-  min-width: 300px;
+  min-width: 250px;
+  margin-left: 10px;
 }
 .employees-list {
   max-height: 300px;
@@ -98,7 +99,7 @@
   white-space:pre-wrap;
 }
 .todo-wrap {
-  max-height: 100vh;
+  max-height: 90vh;
   overflow: auto;
   padding: 32px;
   position: relative;
@@ -148,4 +149,9 @@ mat-dialog-container {
 }
 ::ng-deep .comment-update-spinner circle {
   stroke: black;
+}
+.todo-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }

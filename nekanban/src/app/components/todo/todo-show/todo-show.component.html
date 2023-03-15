@@ -1,29 +1,32 @@
 <div *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap">
   <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
-  <mat-card class = "column-card">
-    <div>
-      <mat-card-title>
-        <p>{{todo!.name}}</p>
-      </mat-card-title>
+  <div class="todo-container">
+    <mat-card class = "column-card">
+      <div>
+        <mat-card-title>
+          <p>{{todo!.name}}</p>
+        </mat-card-title>
 
-      <mat-card-content>
-        <mat-card-subtitle>
-          <p>Описание:</p>
-        </mat-card-subtitle>
-        <div class="description" [innerHTML]="todo!.body! | safeHtml"></div>
-        <!--<editor class="description"
-                [disabled]="true"
-                [init]="{
-                menubar: false,
-                toolbar: false,
-                branding: false,
-      base_url: '/tinymce',
-      suffix: '.min',
-      plugins: '' }"
-        ></editor>-->
-      </mat-card-content>
-    </div>
+        <mat-card-content>
+          <mat-card-subtitle>
+            <p>Описание:</p>
+          </mat-card-subtitle>
+          <div class="description" [innerHTML]="todo!.body! | safeHtml"></div>
+          <!--<editor class="description"
+                  [disabled]="true"
+                  [init]="{
+                  menubar: false,
+                  toolbar: false,
+                  branding: false,
+        base_url: '/tinymce',
+        suffix: '.min',
+        plugins: '' }"
+          ></editor>-->
+        </mat-card-content>
+      </div>
 
+
+    </mat-card>
     <mat-card class = "task-settings-card">
       <mat-card-title>
         <p>Свойства задания</p>
@@ -57,7 +60,8 @@
         </mat-card-subtitle>
       </mat-card-content>
     </mat-card>
-  </mat-card>
+  </div>
+
   <mat-card class="comments-card">
     <mat-card-title class="comments-card-title">
       Комментарии

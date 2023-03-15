@@ -47,6 +47,7 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {AuthInterceptor} from "./interceptors/auth/auth.interceptor";
 import {EditorComponent, TINYMCE_SCRIPT_SRC} from "@tinymce/tinymce-angular";
 import { SafeHtmlPipe } from './pipes/safehtml/safe-html.pipe';
+import {EditorConfigService} from "./services/editor-config-service";
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -124,6 +125,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     CommentsService,
     UserStorageService,
     TranslateService,
+    EditorConfigService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

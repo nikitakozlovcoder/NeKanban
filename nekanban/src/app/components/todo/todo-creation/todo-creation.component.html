@@ -15,7 +15,7 @@
 
 </div>-->
 
-<form *ngIf="(isLoaded | async); else todoFormNotLoaded" [formGroup]="todoFormGroup" (ngSubmit)="applyDraft()">
+<form class="todo-creation-form" *ngIf="(isLoaded | async); else todoFormNotLoaded" [formGroup]="todoFormGroup" (ngSubmit)="applyDraft()">
   <mat-form-field appearance="fill">
     <mat-label>Название задачи</mat-label>
     <input matInput placeholder="Новая задача" formControlName="name" required>
@@ -35,7 +35,7 @@
     ></editor>
     <mat-error *ngIf="todoFormGroup.controls.body.errors?.['required']">Поле не должно быть пустым!</mat-error>
   </div>
-  <button *ngIf="formSubmitLoaded | async" class = "register_button" mat-raised-button color="primary" type="submit">Создать задачу</button>
+  <button *ngIf="(formSubmitLoaded | async) && (editorLoaded | async)" class = "register_button" mat-raised-button color="primary" type="submit">Создать задачу</button>
   <mat-spinner class="spinner-centered" diameter="36" *ngIf="!(formSubmitLoaded | async)"></mat-spinner>
 </form>
 <ng-template #todoFormNotLoaded>

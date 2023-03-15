@@ -51,6 +51,8 @@ export class TodoShowComponent implements OnInit {
   todoLoaded = new BehaviorSubject(false);
   notSend =  true;
 
+  htmlTest = "<p>Juifiludgfud</p> lkfughlfhgu";
+
   get isLoaded() {
     return combineLatest([this.commentsLoaded, this.commentDraftLoaded, this.todoLoaded])
       .pipe(map(x => x.every(isLoaded => isLoaded)));
