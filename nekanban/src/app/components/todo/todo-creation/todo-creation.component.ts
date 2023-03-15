@@ -53,6 +53,7 @@ export class TodoCreationComponent implements OnInit {
               private readonly editorConfigService: EditorConfigService)
   {
     this.editorConfig = editorConfigService.getConfig(this.imageUploadHandler);
+    this.editorConfig.max_height = 400;
   }
 
 
@@ -73,24 +74,22 @@ export class TodoCreationComponent implements OnInit {
     }
     else {
       this.formSubmitLoaded.next(false);
-      tinymce.activeEditor?.uploadImages().then( () => {
-        this.todoService.updateDraft(this.todoFormGroup.getRawValue() as Todo).subscribe({
-          next: (data: Todo) => {
-            this.todoFormGroup.patchValue(data, {emitEvent : false});
+      this.todoService.updateDraft(this.todoFormGroup.getRawValue() as Todo).subscribe({
+        next: (data: Todo) => {
+          this.todoFormGroup.patchValue(data, {emitEvent : false});
           },
-          complete: () => {
-            this.todoService.applyDraft(this.todoFormGroup.controls.id.value!).subscribe({
-              next: (data: Todo) => {
-                this.formSubmitLoaded.next(true);
-                this.dialogRef.close(
-                  new Todo(data.id, data.name, data.column, data.toDoUsers, data.order)
-                );
-              }
-            });
+        complete: () => {
+          this.todoService.applyDraft(this.todoFormGroup.controls.id.value!).subscribe({
+            next: (data: Todo) => {
+              this.formSubmitLoaded.next(true);
+              this.dialogRef.close(
+                new Todo(data.id, data.name, data.column, data.toDoUsers, data.order)
+              );
+            }
+          });
 
-          }
-        })
-      });
+        }
+      })
 
     }
   }
@@ -124,19 +123,13 @@ export class TodoCreationComponent implements OnInit {
   }
 
   private initDebounce() {
-    this.draftSubject.pipe(debounceTime(1000))
+    this.draftSubject.pipe(debounceTime(1000),
+      switchMap(() => this.todoService.updateDraft(this.todoFormGroup.getRawValue() as Todo)))
       .subscribe({
-        next: () => {
-          tinymce.activeEditor?.uploadImages().then(() => {
-            this.todoService.updateDraft(this.todoFormGroup.getRawValue() as Todo).subscribe({
-              next: (data: Todo) => {
-                this.todoFormGroup.controls.name.patchValue(data.name, {emitEvent: false});
-                this.todoFormGroup.controls.id.patchValue(data.id, {emitEvent: false});
-              },
-            });
-          })
+        next: (data) => {
+          this.todoFormGroup.controls.name.patchValue(data.name, {emitEvent: false});
+          this.todoFormGroup.controls.id.patchValue(data.id, {emitEvent: false});
         },
-
     });
   }
 

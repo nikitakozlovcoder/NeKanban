@@ -13,7 +13,7 @@ export class EditorConfigService {
       language: 'ru',
       language_url: `/assets/tinymce/ru/ru.js`,
       images_upload_handler: imageUploadHandler,
-      automatic_uploads: false,
+      automatic_uploads: true,
       base_url: '/tinymce',
       suffix: '.min',
       relative_urls: false,
@@ -21,7 +21,7 @@ export class EditorConfigService {
       document_base_url: environment.baseUrl,
       branding: false,
       promotion: false,
-      plugins: ['lists', 'link', 'image', 'table', 'code', 'help', 'wordcount'],
+      plugins: ['lists', 'link', 'image', 'table', 'code', 'help', 'wordcount', 'autoresize'],
     };
   }
 

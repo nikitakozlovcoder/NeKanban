@@ -3,10 +3,11 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AppHttpService} from "./app-http.service";
 import {Comment} from "../models/comment";
 import {Column} from "../models/column";
+import {environment} from "../../environments/environment";
 
 @Injectable()
 export class CommentsService {
-  constructor(private httpService: AppHttpService) { }
+  constructor(private httpService: AppHttpService, private testHttp: HttpClient) { }
 
   getComments(toDoId: number) {
     return this.httpService.get<Comment[]>("Comments/GetComments/" + toDoId);
@@ -38,5 +39,13 @@ export class CommentsService {
 
   deleteComment(commentId: number) {
     return this.httpService.delete<Comment[]>("Comments/Delete/" + commentId);
+  }
+
+  attachFile(commentId: number, formData: any) {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'multipart/form-data');
+    headers.append('Accept', 'application/json');
+    let options = { headers: headers, responseType: 'text' as const };
+    return this.testHttp.put(environment.baseUrl + `Comments/AttachFile/${commentId}`, formData, options);
   }
 }

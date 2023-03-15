@@ -70,19 +70,26 @@
     </mat-card-title>
 
     <div class="comment-field-group" *ngIf="checkUserPermission(data.deskUser, 'AddComments')">
-      <mat-form-field appearance="fill">
+      <div class="comment-area">
         <mat-label>Оставьте свой комментарий!</mat-label>
-        <textarea cdkTextareaAutosize
+        <!--<textarea cdkTextareaAutosize
                   cdkAutosizeMinRows="1"
-                  cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentInput" matInput placeholder="Текст комментария" required></textarea>
-        <mat-error *ngIf="commentInput.errors?.['required']">Поле не должно быть пустым!</mat-error>
-        <mat-error *ngIf="commentInput.errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
-      </mat-form-field>
+                  cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentInput" matInput placeholder="Текст комментария" required></textarea>-->
+        <mat-spinner *ngIf="!(editorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
+        <editor [formControl]="commentInput"
+                (onInit)="setLoaded()"
+                (onAddUndo)="updateCommentDraft()"
+                [init]="editorConfig"
+                id="comment-tinymce"
+        ></editor>
+        <mat-error *ngIf="commentInput.errors?.['commentRequired']">Поле не должно быть пустым!</mat-error>
+        <mat-error *ngIf="commentInput.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
+      </div>
       <button *ngIf="commentsSendingLoaded | async" mat-raised-button color="primary" (click)="createComment()"><mat-icon>send</mat-icon></button>
       <mat-spinner class="comments-sending-spinner" diameter="24" *ngIf="!(commentsSendingLoaded | async)"></mat-spinner>
     </div>
 
-    <ng-scrollbar *ngIf="commentsLoaded | async; else commentsNotLoaded" [autoHeightDisabled]="false" class="comments-section">
+    <div *ngIf="commentsLoaded | async; else commentsNotLoaded" class="comments-section">
       <mat-card class="single-comment-card" *ngFor="let comment of comments; index as i">
         <ng-container *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Show">
           <div class="comment-properties-group">
@@ -103,24 +110,30 @@
               </div>
             </div>
           </div>
-          <div class="comment-text">{{comment.body}}</div>
+          <div class="comment-text" [innerHTML]="comment.body | safeHtml"></div>
         </ng-container>
         <div class="comment-updating-group" *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Update">
-          <mat-form-field class="comment-updating-field" appearance="fill">
+          <div class="comment-updating-field">
             <mat-label>Редактирование комментария</mat-label>
-            <textarea cdkTextareaAutosize
+            <!--<textarea cdkTextareaAutosize
                       cdkAutosizeMinRows="1"
-                      cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentUpdatingFields[i]" matInput placeholder="Текст комментария" required></textarea>
+                      cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentUpdatingFields[i]" matInput placeholder="Текст комментария" required></textarea>-->
+            <mat-spinner *ngIf="!(commentsUpdateEditorLoaded[i] | async)" class="spinner-centered" diameter="50"></mat-spinner>
+            <editor [formControl]="commentUpdatingFields[i]"
+                    (onInit)="setUpdateEditorLoaded(i)"
+                    [init]="editorConfig"
+                    [id]="'comment-tinymce-update' + i.toString()"
+            ></editor>
             <mat-error *ngIf="commentUpdatingFields[i].errors?.['required']">Поле не должно быть пустым!</mat-error>
             <mat-error *ngIf="commentUpdatingFields[i].errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
-          </mat-form-field>
+          </div>
           <mat-icon *ngIf="(commentsUpdateLoaded[i] | async)" class="comment-update-icon clickable-icon" (click)="updateComment(comment.id, i)">done</mat-icon>
           <mat-spinner *ngIf="!(commentsUpdateLoaded[i] | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
           <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField(i)">close</mat-icon>
 
         </div>
       </mat-card>
-    </ng-scrollbar>
+    </div>
     <ng-template #commentsNotLoaded>
       <div>
         <mat-spinner class="spinner-centered" diameter="40"></mat-spinner>

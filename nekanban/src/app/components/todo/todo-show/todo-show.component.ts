@@ -1,7 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
-import {FormControl, UntypedFormControl, Validators} from "@angular/forms";
+import {
+  AbstractControl,
+  FormControl,
+  UntypedFormControl,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from "@angular/forms";
 import {Desk} from "../../../models/desk";
 import {User} from "../../../models/user";
 import {Comment} from "../../../models/comment";
@@ -15,8 +22,11 @@ import {ViewStateTypes} from "../../../constants/ViewStateTypes";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {Role} from "../../../models/Role";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
-import {BehaviorSubject, combineLatest, debounceTime, filter, map, Subject, switchMap} from "rxjs";
+import {BehaviorSubject, combineLatest, debounceTime, filter, map, Observable, Subject, switchMap} from "rxjs";
 import {DomSanitizer} from "@angular/platform-browser";
+import tinymce, {EditorOptions} from "tinymce";
+import {EditorConfigService} from "../../../services/editor-config-service";
+import {F} from "@angular/cdk/keycodes";
 
 @Component({
   selector: 'app-task-creation',
@@ -25,11 +35,7 @@ import {DomSanitizer} from "@angular/platform-browser";
 })
 export class TodoShowComponent implements OnInit {
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {todoId: number, isEdit: boolean, desk: Desk, deskUser: DeskUser, roles: Role[]}, private toDoService: TodoService, public rolesService: RolesService, public dialogRef: MatDialogRef<TodoShowComponent>, private dataGeneratorService: DataGeneratorService,
-              private commentsService: CommentsService, public dialog: MatDialog,
-              public sanitizer: DomSanitizer) {
-    this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
-  }
+
   readonly ViewStateTypes = ViewStateTypes;
   todo?: Todo;
   usersSelected : number[] = [];
@@ -40,8 +46,8 @@ export class TodoShowComponent implements OnInit {
   isSortDescending = true;
   comments: Comment[] = [];
   draftId?: number;
-  commentInput = new FormControl<string>('', [Validators.required, Validators.minLength(10)]);
-  commentUpdatingFields: UntypedFormControl[] = [];
+  commentInput = new FormControl<string>('', [this.commentLengthValidator()]);
+  commentUpdatingFields: FormControl<string>[] = [];
   draftSubject = new Subject();
   commentsLoaded = new BehaviorSubject(false);
   commentsSendingLoaded = new BehaviorSubject(true);
@@ -50,13 +56,39 @@ export class TodoShowComponent implements OnInit {
   areUsersLoaded = new BehaviorSubject(true);
   todoLoaded = new BehaviorSubject(false);
   notSend =  true;
+  editorLoaded = new BehaviorSubject(false);
+  editorConfig: Partial<EditorOptions>;
+  private firstUpdateRequest = true;
+  commentsUpdateEditorLoaded : BehaviorSubject<boolean>[] = [];
 
-  htmlTest = "<p>Juifiludgfud</p> lkfughlfhgu";
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {todoId: number, isEdit: boolean, desk: Desk, deskUser: DeskUser, roles: Role[]},
+              private toDoService: TodoService,
+              public rolesService: RolesService,
+              public dialogRef: MatDialogRef<TodoShowComponent>,
+              private dataGeneratorService: DataGeneratorService,
+              private commentsService: CommentsService,
+              public dialog: MatDialog,
+              public sanitizer: DomSanitizer,
+              private readonly editorConfigService: EditorConfigService) {
+    this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
+    this.editorConfig = editorConfigService.getConfig(this.imageUploadHandler);
+    this.editorConfig.max_height = 400;
+  }
 
   get isLoaded() {
     return combineLatest([this.commentsLoaded, this.commentDraftLoaded, this.todoLoaded])
       .pipe(map(x => x.every(isLoaded => isLoaded)));
   }
+
+  imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
+    let formData = new FormData();
+    formData.append('file', blobInfo.blob(), blobInfo.filename());
+    this.commentsService.attachFile(this.draftId!, formData).subscribe({
+      next: (data) => {
+        resolve(data);
+      }
+    });
+  });
 
   ngOnInit(): void {
     this.getComments();
@@ -73,10 +105,18 @@ export class TodoShowComponent implements OnInit {
     this.setFormListeners();
   }
 
+  setLoaded() {
+    this.editorLoaded.next(true);
+  }
+
+  setUpdateEditorLoaded(index: number) {
+    this.commentsUpdateEditorLoaded[index].next(true);
+  }
 
   closeDialog() {
     this.dialogRef.close(this.todo!);
   }
+
   getToDoCreator() {
     return this.todo!.toDoUsers.find(el => el.toDoUserType == 0);
   }
@@ -253,15 +293,17 @@ export class TodoShowComponent implements OnInit {
   }
 
   createComment() {
+    this.commentInput.updateValueAndValidity();
     if (this.commentInput.invalid) {
       this.commentInput.markAsTouched();
     }
     else {
       this.commentsSendingLoaded.next(false);
       this.notSend = false;
+      this.commentInput.clearValidators();
       this.commentsService.updateDraft(this.draftId!, this.commentInput.value!).subscribe({
         next: (data) => {
-          this.commentInput.setValue(data.body, {emitEvent : false});
+          //this.commentInput.setValue(data.body, {emitEvent : false});
           this.draftId = data.id;
         },
         complete: () => {
@@ -271,15 +313,13 @@ export class TodoShowComponent implements OnInit {
               this.comments = this.SortAndMapComments(data);
               this.commentInput.setValue("", {emitEvent: false});
               this.getCommentDraft();
-              this.commentInput.markAsUntouched();
             },
             error: _ => {
             },
             complete: () => this.RefreshUpdatingStatesAndFormControls()
-          })
+          });
         }
-      })
-
+      });
     }
   }
 
@@ -294,6 +334,7 @@ export class TodoShowComponent implements OnInit {
           this.commentsUpdateLoaded[index].next(true);
           this.comments = this.SortAndMapComments(data);
           this.commentsUpdatingStates[index] = ViewStateTypes.Show;
+          this.commentsUpdateEditorLoaded[index].next(false);
         },
         error: _ => {
         }
@@ -311,6 +352,40 @@ export class TodoShowComponent implements OnInit {
       this.makeDeletion(id);
     });
 
+  }
+
+  updateCommentDraft() {
+    console.log(this.firstUpdateRequest)
+    console.log('not send', this.notSend)
+    if (this.firstUpdateRequest) {
+      this.firstUpdateRequest = false;
+      return;
+    }
+    this.draftSubject.next(1);
+  }
+
+
+  commentRequiredValidator() : ValidatorFn {
+    return (): ValidationErrors | null => {
+      console.log(1)
+      if (tinymce.get('comment-tinymce')?.initialized) {
+        console.log('length:', tinymce.get('comment-tinymce')!.getContent({format : 'text'}).length)
+        console.log('content:', tinymce.get('comment-tinymce')!.getContent({format : 'text'}))
+        return tinymce.get('comment-tinymce')!.getContent({format : 'text'}) === '' || tinymce.get('comment-tinymce')!.getContent({format : 'text'}) === ' ' ? {commentRequired: true} : null;
+      }
+      return null;
+    };
+  }
+
+  commentLengthValidator() : ValidatorFn {
+    return (): ValidationErrors | null => {
+      console.log(2)
+      if (tinymce.get('comment-tinymce')?.initialized) {
+        console.log(tinymce.get('comment-tinymce')!.getContent({format : 'text'}))
+        return tinymce.get('comment-tinymce')!.getContent({format : 'text'}).length < 10 ? {commentMinLength: true} : null;
+      }
+      return null;
+    };
   }
 
   private makeDeletion(id: number) {
@@ -342,6 +417,7 @@ export class TodoShowComponent implements OnInit {
   hideUpdatingField(index: number) {
     this.commentsUpdatingStates[index] = ViewStateTypes.Show;
     this.commentUpdatingFields[index] = new UntypedFormControl(this.comments[index].body, [Validators.required, Validators.minLength(10)]);
+    this.commentsUpdateEditorLoaded[index].next(false);
   }
 
   private SortAndMapComments(comments: Comment[]) {
@@ -356,6 +432,7 @@ export class TodoShowComponent implements OnInit {
     this.comments.forEach(() => {
       this.commentsUpdatingStates.push(ViewStateTypes.Show);
       this.commentsUpdateLoaded.push(new BehaviorSubject<boolean>(true));
+      this.commentsUpdateEditorLoaded.push(new BehaviorSubject<boolean>(false));
     })
     this.commentUpdatingFields = [];
     this.comments.forEach(el => {
@@ -383,17 +460,18 @@ export class TodoShowComponent implements OnInit {
     this.draftSubject.pipe(debounceTime(1000),
       filter(() => this.notSend),
       switchMap(() => this.commentsService.updateDraft(this.draftId!, this.commentInput.value!))).subscribe({
-      next: (data: Comment) => {
-        this.commentInput.setValue(data.body, {emitEvent : false});
+      next: (data) => {
+        console.log("Retrieved value");
+        //this.commentInput.setValue(data.body, {emitEvent : false});
         this.draftId = data.id;
-      },
+      }
     });
   }
 
   private setFormListeners() {
     this.commentInput.valueChanges.subscribe({
       next: () => {
-        this.draftSubject.next(1);
+        this.commentInput.addValidators(this.commentLengthValidator());
       }
     })
   }
