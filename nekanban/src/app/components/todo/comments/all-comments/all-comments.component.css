@@ -1,42 +1,4 @@
-.column-card {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  min-width: 500px;
-}
-.task-settings-card {
-  min-width: 250px;
-  margin-left: 10px;
-}
-.employees-list {
-  max-height: 300px;
-  overflow: auto;
-}
-.employees-settings {
-  display: flex;
-  margin-bottom: 20px;
-}
-.employees-settings button {
-  margin-left: auto;
-}
-.employees-settings p {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-direction: column;
-  margin: 0px !important;
-}
-.mat-list-item a {
-  display: flex;
-}
-.mat-list-item a mat-icon {
-  margin-left: auto;
-}
-.description {
-  max-width: 700px;
-  padding-right: 15px;
-  /*white-space:pre-wrap;*/
-}
+
 .comments-card {
   margin-top: 10px;
 }
@@ -81,10 +43,6 @@
 .single-comment-card {
   margin: 10px 10px 10px 1px;
 }
-.user-select {
-  margin-top: 10px;
-  width: 100%;
-}
 .clickable-icon {
   cursor: pointer;
 }
@@ -97,12 +55,6 @@
 }
 .comment-text {
   white-space:pre-wrap;
-}
-.todo-wrap {
-  max-width: 900px;
-  max-height: 95vh;
-  overflow: auto;
-  position: relative;
 }
 mat-dialog-container {
   padding: 0;
@@ -122,7 +74,7 @@ mat-dialog-container {
 }
 .comment-updating-group {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 }
 .comment-updating-field ::ng-deep .mat-form-field-wrapper{
   margin-bottom: -1.25em;
@@ -137,11 +89,8 @@ mat-dialog-container {
   margin-left: 15px;
   font-weight: bold;
 }
-.assignees-title {
-  margin: 0;
-}
 .comments-card .comments-sending-spinner {
-  margin-bottom: 2.34375em;
+  margin-left: 10px;
 }
 ::ng-deep .comment-update-spinner {
   width: 30px !important;
@@ -150,18 +99,6 @@ mat-dialog-container {
 ::ng-deep .comment-update-spinner circle {
   stroke: black;
 }
-.todo-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
 .comment-area {
   width: 100%;
-}
-::ng-deep .todo-wrap .ng-scroll-content {
-  padding: 32px;
-  min-width: unset;
-}
-.todo-spinner-wrap {
-  padding: 32px;
 }

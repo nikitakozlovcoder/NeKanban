@@ -24,6 +24,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .todo-show-wrap mat-dialog-container {
   padding: 0;
 }
-.description img {
+.description img, .comment-text img {
   max-width: 500px;
 }

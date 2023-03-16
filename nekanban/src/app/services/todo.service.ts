@@ -50,10 +50,6 @@ export class TodoService {
   }
 
   attachFile(todoId: number, formData: any) {
-    let headers = new HttpHeaders();
-    headers.append('Content-Type', 'multipart/form-data');
-    headers.append('Accept', 'application/json');
-    let options = { headers: headers, responseType: 'text' as const };
-    return this.testHttp.put(environment.baseUrl + `ToDos/AttachFile/${todoId}`, formData, options);
+    return this.testHttp.put(environment.baseUrl + `ToDos/AttachFile/${todoId}`, formData, {responseType: 'text' as const});
   }
 }

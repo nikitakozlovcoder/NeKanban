@@ -1,0 +1,43 @@
+<mat-card class="single-comment-card">
+  <ng-container *ngIf="commentUpdatingState === ViewStateTypes.Show">
+    <div class="comment-properties-group">
+      <div class="comment-upper-group">
+        <div class="comment-author-name">
+          <b *ngIf="comment!.deskUser != null">{{comment!.deskUser.user.name}}</b>
+          <b *ngIf="comment!.deskUser === null">Пользователь удален</b><span> оставил(а) комментарий
+          {{comment!.createdAtUtc.toLocaleDateString('ru')}} в {{comment!.createdAtUtc.toLocaleTimeString('ru')}}</span>
+        </div>
+        <div class="comment-controls">
+          <mat-icon *ngIf="checkUserPermission(deskUser!, 'UpdateOwnComments') &&
+                comment!.deskUser.user.id == deskUser!.user.id"
+                    class="clickable-icon" (click)="showCommentUpdateForm()">edit</mat-icon>
+          <mat-icon *ngIf="(commentDeleteLoaded | async) && (checkUserPermission(deskUser!, 'DeleteOwnComments') &&
+                comment!.deskUser.user.id == deskUser!.user.id ||
+                checkUserPermission(deskUser!, 'DeleteAnyComments'))" class="clickable-icon"
+                    (click)="deleteComment(comment!.id)">delete</mat-icon>
+          <mat-spinner *ngIf="!(commentDeleteLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
+        </div>
+      </div>
+    </div>
+    <div class="comment-text" [innerHTML]="comment!.body | safeHtml"></div>
+  </ng-container>
+  <div class="comment-updating-group" *ngIf="commentUpdatingState === ViewStateTypes.Update">
+    <div class="comment-updating-field">
+      <mat-label>Редактирование комментария</mat-label>
+      <!--<textarea cdkTextareaAutosize
+                cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentUpdatingFields[i]" matInput placeholder="Текст комментария" required></textarea>-->
+      <mat-spinner *ngIf="!(commentUpdateEditorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
+      <editor [formControl]="commentUpdatingField"
+              (onInit)="setUpdateEditorLoaded()"
+              [init]="editorConfig"
+              [id]="'comment-tinymce-update' + comment!.id.toString()"
+      ></editor>
+    </div>
+    <mat-icon *ngIf="(commentUpdateLoaded | async)" class="comment-update-icon clickable-icon" (click)="updateComment()">done</mat-icon>
+    <mat-spinner *ngIf="!(commentUpdateLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
+    <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField()">close</mat-icon>
+
+  </div>
+  <mat-error *ngIf="commentUpdatingField.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
+</mat-card>

@@ -1,4 +1,4 @@
-<div *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap">
+<ng-scrollbar *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap" [autoHeightDisabled]="false" [autoWidthDisabled]="false">
   <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
   <div class="todo-container">
     <mat-card class = "column-card">
@@ -62,7 +62,8 @@
     </mat-card>
   </div>
 
-  <mat-card class="comments-card">
+  <app-all-comments [roles]="data.roles" [todoId]="data.todoId" [deskUser]="data.deskUser"></app-all-comments>
+  <!--<mat-card class="comments-card">
     <mat-card-title class="comments-card-title">
       Комментарии
       <mat-icon (click)="toggleCommentsOrder()" *ngIf="isSortDescending" matTooltip="От новых к старым">arrow_downward</mat-icon>
@@ -72,9 +73,6 @@
     <div class="comment-field-group" *ngIf="checkUserPermission(data.deskUser, 'AddComments')">
       <div class="comment-area">
         <mat-label>Оставьте свой комментарий!</mat-label>
-        <!--<textarea cdkTextareaAutosize
-                  cdkAutosizeMinRows="1"
-                  cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentInput" matInput placeholder="Текст комментария" required></textarea>-->
         <mat-spinner *ngIf="!(editorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
         <editor [formControl]="commentInput"
                 (onInit)="setLoaded()"
@@ -115,9 +113,6 @@
         <div class="comment-updating-group" *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Update">
           <div class="comment-updating-field">
             <mat-label>Редактирование комментария</mat-label>
-            <!--<textarea cdkTextareaAutosize
-                      cdkAutosizeMinRows="1"
-                      cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentUpdatingFields[i]" matInput placeholder="Текст комментария" required></textarea>-->
             <mat-spinner *ngIf="!(commentsUpdateEditorLoaded[i] | async)" class="spinner-centered" diameter="50"></mat-spinner>
             <editor [formControl]="commentUpdatingFields[i]"
                     (onInit)="setUpdateEditorLoaded(i)"
@@ -139,10 +134,10 @@
         <mat-spinner class="spinner-centered" diameter="40"></mat-spinner>
       </div>
     </ng-template>
-  </mat-card>
-</div>
+  </mat-card>-->
+</ng-scrollbar>
 <ng-template #todoShowNotLoaded>
-  <div class="todo-wrap">
+  <div class="todo-spinner-wrap">
     <mat-spinner class="spinner-centered" diameter="50"></mat-spinner>
   </div>
 </ng-template>

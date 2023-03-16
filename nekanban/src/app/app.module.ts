@@ -48,6 +48,8 @@ import {AuthInterceptor} from "./interceptors/auth/auth.interceptor";
 import {EditorComponent, TINYMCE_SCRIPT_SRC} from "@tinymce/tinymce-angular";
 import { SafeHtmlPipe } from './pipes/safehtml/safe-html.pipe';
 import {EditorConfigService} from "./services/editor-config-service";
+import { AllCommentsComponent } from './components/todo/comments/all-comments/all-comments.component';
+import { SingleCommentComponent } from './components/todo/comments/single-comment/single-comment.component';
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -89,6 +91,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     PageNotFoundComponent,
     SidenavComponent,
     SafeHtmlPipe,
+    AllCommentsComponent,
+    SingleCommentComponent,
   ],
     imports: [
         BrowserAnimationsModule,
@@ -130,7 +134,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
-    },
+    }
     //{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
   ],
   bootstrap: [AppComponent]

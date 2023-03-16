@@ -42,10 +42,6 @@ export class CommentsService {
   }
 
   attachFile(commentId: number, formData: any) {
-    let headers = new HttpHeaders();
-    headers.append('Content-Type', 'multipart/form-data');
-    headers.append('Accept', 'application/json');
-    let options = { headers: headers, responseType: 'text' as const };
-    return this.testHttp.put(environment.baseUrl + `Comments/AttachFile/${commentId}`, formData, options);
+    return this.testHttp.put(environment.baseUrl + `Comments/AttachFile/${commentId}`, formData, {responseType: 'text' as const});
   }
 }
