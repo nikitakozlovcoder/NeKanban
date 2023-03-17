@@ -2,14 +2,13 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Comment} from "../../../../models/comment";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
 import {BehaviorSubject} from "rxjs";
-import {FormControl, UntypedFormControl, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
+import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 import tinymce, {EditorOptions} from "tinymce";
 import {EditorConfigService} from "../../../../services/editor-config-service";
 import {CommentsService} from "../../../../services/comments.service";
 import {DeskUser} from "../../../../models/deskUser";
 import {RolesService} from "../../../../services/roles.service";
 import {Role} from "../../../../models/Role";
-import {Desk} from "../../../../models/desk";
 import {ConfirmationComponent} from "../../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
@@ -47,7 +46,7 @@ export class SingleCommentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.commentUpdatingField = new FormControl<string>(this.comment ? this.comment!.body : '');
+    this.commentUpdatingField = new FormControl<string>(this.comment ? this.comment!.body : '', [this.commentLengthValidator()]);
     this.setFormListeners();
   }
 
@@ -71,11 +70,12 @@ export class SingleCommentComponent implements OnInit {
 
   showCommentUpdateForm() {
     this.commentUpdatingState = ViewStateTypes.Update;
+    this.commentUpdatingField = new FormControl<string>(this.comment!.body, [this.commentLengthValidator()]);
   }
 
   hideUpdatingField() {
     this.commentUpdatingState = ViewStateTypes.Show;
-    this.commentUpdatingField = new UntypedFormControl(this.comment!.body, [Validators.required, Validators.minLength(10)]);
+    this.commentUpdatingField = new FormControl<string>(this.comment!.body, [this.commentLengthValidator()]);
     this.commentUpdateEditorLoaded.next(false);
   }
 
@@ -151,6 +151,7 @@ export class SingleCommentComponent implements OnInit {
 
   private commentLengthValidator() : ValidatorFn {
     return (): ValidationErrors | null => {
+      console.log("Comment update length fired");
       if (tinymce.get(`comment-tinymce-update${this.comment!.id}`)?.initialized) {
         return tinymce.get(`comment-tinymce-update${this.comment!.id}`)!.getContent({format : 'text'}).length < 10 ? {commentMinLength: true} : null;
       }

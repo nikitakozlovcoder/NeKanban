@@ -8,9 +8,6 @@
   <div class="comment-field-group" *ngIf="checkUserPermission(deskUser!, 'AddComments')">
     <div class="comment-area">
       <mat-label>Оставьте свой комментарий!</mat-label>
-      <!--<textarea cdkTextareaAutosize
-                cdkAutosizeMinRows="1"
-                cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentInput" matInput placeholder="Текст комментария" required></textarea>-->
       <mat-spinner *ngIf="!(editorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
       <editor [formControl]="commentInput"
               (onInit)="setLoaded()"
@@ -26,47 +23,7 @@
   <mat-error *ngIf="commentInput.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
 
   <div *ngIf="commentsLoaded | async; else commentsNotLoaded" class="comments-section">
-    <app-single-comment *ngFor="let comment of comments" [comment]="comment" (commentChange)="handleCommentChange($event)" (commentsDeletion)="handleCommentDeletion($event)" [roles]="roles" [deskUser]="deskUser"></app-single-comment>
-    <!--<mat-card class="single-comment-card" *ngFor="let comment of comments; index as i">
-      <ng-container *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Show">
-        <div class="comment-properties-group">
-          <div class="comment-upper-group">
-            <div class="comment-author-name">
-              <b *ngIf="comment.deskUser != null">{{comment.deskUser.user.name}}</b>
-              <b *ngIf="comment.deskUser === null">Пользователь удален</b><span> оставил(а) комментарий
-              {{comment.createdAtUtc.toLocaleDateString('ru')}} в {{comment.createdAtUtc.toLocaleTimeString('ru')}}</span>
-            </div>
-            <div class="comment-controls">
-              <mat-icon *ngIf="checkUserPermission(deskUser!, 'UpdateOwnComments') &&
-                comment.deskUser.user.id == deskUser!.user.id"
-                        class="clickable-icon" (click)="showCommentUpdateForm(i)">edit</mat-icon>
-              <mat-icon *ngIf="checkUserPermission(deskUser!, 'DeleteOwnComments') &&
-                comment.deskUser.user.id == deskUser!.user.id ||
-                checkUserPermission(deskUser!, 'DeleteAnyComments')" class="clickable-icon"
-                        (click)="deleteComment(comment.id)">delete</mat-icon>
-            </div>
-          </div>
-        </div>
-        <div class="comment-text" [innerHTML]="comment.body | safeHtml"></div>
-      </ng-container>
-      <div class="comment-updating-group" *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Update">
-        <div class="comment-updating-field">
-          <mat-label>Редактирование комментария</mat-label>
-          <mat-spinner *ngIf="!(commentsUpdateEditorLoaded[i] | async)" class="spinner-centered" diameter="50"></mat-spinner>
-          <editor [formControl]="commentUpdatingFields[i]"
-                  (onInit)="setUpdateEditorLoaded(i)"
-                  [init]="editorConfig"
-                  [id]="'comment-tinymce-update' + i.toString()"
-          ></editor>
-          <mat-error *ngIf="commentUpdatingFields[i].errors?.['required']">Поле не должно быть пустым!</mat-error>
-          <mat-error *ngIf="commentUpdatingFields[i].errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
-        </div>
-        <mat-icon *ngIf="(commentsUpdateLoaded[i] | async)" class="comment-update-icon clickable-icon" (click)="updateComment(comment.id, i)">done</mat-icon>
-        <mat-spinner *ngIf="!(commentsUpdateLoaded[i] | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
-        <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField(i)">close</mat-icon>
-
-      </div>
-    </mat-card>-->
+    <app-single-comment *ngFor="let comment of comments" [comment]="comment" (commentsDeletion)="handleCommentDeletion($event)" [roles]="roles" [deskUser]="deskUser"></app-single-comment>
   </div>
   <ng-template #commentsNotLoaded>
     <div>

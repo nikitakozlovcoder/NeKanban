@@ -1,28 +1,3 @@
-
-.comments-card {
-  margin-top: 10px;
-}
-.comments-card mat-form-field {
-  width: 100%;
-}
-.comments-card button {
-  margin-left: 10px;
-  border-radius: 50%;
-  min-width: 48px;
-  width: 48px;
-  height: 48px;
-}
-
-.comments-card button mat-icon {
-  margin-left: -2px;
-}
-
-.comment-field-group {
-  justify-content: space-between;
-  margin-top: 20px;
-  display: flex;
-  align-items: flex-end;
-}
 .comment-properties-group {
   display: flex;
 }
@@ -39,9 +14,6 @@
 }
 .comment-controls mat-icon:last-child {
   margin-left: 20px;
-}
-.comments-section {
-  /*max-height: 200px;*/
 }
 .single-comment-card {
   margin: 10px 10px 10px 1px;
@@ -62,19 +34,6 @@
 mat-dialog-container {
   padding: 0;
 }
-.todo-close-icon {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  cursor: pointer;
-}
-.todo-creator-subtitle, .todo-creator-subtitle p {
-  margin: 0;
-}
-.comments-spinner {
-  display: flex;
-  justify-content: center;
-}
 .comment-updating-group {
   display: flex;
   align-items: flex-end;
@@ -91,9 +50,6 @@ mat-dialog-container {
 .comment-update-icon {
   margin-left: 15px;
   font-weight: bold;
-}
-.comments-card .comments-sending-spinner {
-  margin-bottom: 2.34375em;
 }
 ::ng-deep .comment-update-spinner {
   width: 30px !important;

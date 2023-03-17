@@ -24,9 +24,6 @@
   <div class="comment-updating-group" *ngIf="commentUpdatingState === ViewStateTypes.Update">
     <div class="comment-updating-field">
       <mat-label>Редактирование комментария</mat-label>
-      <!--<textarea cdkTextareaAutosize
-                cdkAutosizeMinRows="1"
-                cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentUpdatingFields[i]" matInput placeholder="Текст комментария" required></textarea>-->
       <mat-spinner *ngIf="!(commentUpdateEditorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
       <editor [formControl]="commentUpdatingField"
               (onInit)="setUpdateEditorLoaded()"
@@ -37,7 +34,6 @@
     <mat-icon *ngIf="(commentUpdateLoaded | async)" class="comment-update-icon clickable-icon" (click)="updateComment()">done</mat-icon>
     <mat-spinner *ngIf="!(commentUpdateLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
     <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField()">close</mat-icon>
-
   </div>
   <mat-error *ngIf="commentUpdatingField.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
 </mat-card>
