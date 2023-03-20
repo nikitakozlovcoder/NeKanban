@@ -145,7 +145,6 @@ export class TodoShowComponent implements OnInit {
 
   changeSingleUser(select:MatSelect) {
     let newIds : number[] = select.value;
-    console.log(select.value);
     if (newIds.length === 0) {
       let todo = this.todo!.toDoUsers.find(obj => obj.deskUser.user.id === this.data.deskUser.user.id);
       if (todo !== undefined) {

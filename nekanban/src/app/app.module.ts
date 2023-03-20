@@ -50,6 +50,7 @@ import { SafeHtmlPipe } from './pipes/safehtml/safe-html.pipe';
 import {EditorConfigService} from "./services/editor-config-service";
 import { AllCommentsComponent } from './components/todo/comments/all-comments/all-comments.component';
 import { SingleCommentComponent } from './components/todo/comments/single-comment/single-comment.component';
+import { DeskInfoComponent } from './components/partials/desk-info/desk-info.component';
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -93,6 +94,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SafeHtmlPipe,
     AllCommentsComponent,
     SingleCommentComponent,
+    DeskInfoComponent,
   ],
     imports: [
         BrowserAnimationsModule,

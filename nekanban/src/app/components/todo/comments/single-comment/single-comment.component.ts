@@ -92,7 +92,6 @@ export class SingleCommentComponent implements OnInit {
           this.commentUpdateLoaded.next(true);
           this.comment = data.find(el => el.id === this.comment?.id);
           this.comment!.createdAtUtc = new Date(this.comment!.createdAtUtc);
-          console.log(this.comment);
           this.commentChange.emit(this.comment);
           this.commentUpdatingState = ViewStateTypes.Show;
           this.commentUpdateEditorLoaded.next(false);
@@ -151,7 +150,6 @@ export class SingleCommentComponent implements OnInit {
 
   private commentLengthValidator() : ValidatorFn {
     return (): ValidationErrors | null => {
-      console.log("Comment update length fired");
       if (tinymce.get(`comment-tinymce-update${this.comment!.id}`)?.initialized) {
         return tinymce.get(`comment-tinymce-update${this.comment!.id}`)!.getContent({format : 'text'}).length < 10 ? {commentMinLength: true} : null;
       }

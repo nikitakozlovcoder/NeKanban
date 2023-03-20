@@ -19,7 +19,9 @@
         </div>
       </div>
     </div>
-    <div class="comment-text" [innerHTML]="comment!.body | safeHtml"></div>
+    <div class="comments-body-wrap">
+      <body [innerHTML]="comment!.body | safeHtml"></body>
+    </div>
   </ng-container>
   <div class="comment-updating-group" *ngIf="commentUpdatingState === ViewStateTypes.Update">
     <div class="comment-updating-field">
