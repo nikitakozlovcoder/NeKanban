@@ -19,6 +19,7 @@ import {DeskUser} from "../../../models/deskUser";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
 import { BehaviorSubject, combineLatest, map } from "rxjs";
+import {UserStorageService} from "../../../services/userStorage.service";
 
 @Component({
   selector: 'app-desk',
@@ -52,7 +53,8 @@ export class DeskComponent implements OnInit {
               private readonly todoService: TodoService,
               private readonly rolesService: RolesService,
               private readonly deskUserService: DeskUserService,
-              private readonly route: ActivatedRoute) { }
+              private readonly route: ActivatedRoute,
+              private readonly userStorageService: UserStorageService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -297,8 +299,7 @@ export class DeskComponent implements OnInit {
 
 
   getCurrentUser() {
-    //TODO move to service
-    return JSON.parse(localStorage.getItem("currentUser")!);
+    return JSON.parse(this.userStorageService.getUserFromStorage()!);
   }
 
   getToDos(deskId: number) {

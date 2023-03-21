@@ -67,3 +67,6 @@ mat-dialog-container {
 .comment-updating-field {
   width: 100%;
 }
+.comments-body-wrap {
+  margin-top: 10px;
+}

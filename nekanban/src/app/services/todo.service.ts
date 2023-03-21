@@ -1,12 +1,10 @@
 ﻿import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AppHttpService} from "./app-http.service";
 import {Todo} from "../models/todo";
-import {environment} from "../../environments/environment";
 
 @Injectable()
 export class TodoService {
-  constructor(private httpService: AppHttpService, private testHttp: HttpClient) {
+  constructor(private httpService: AppHttpService) {
   }
 
   getToDos(deskId: number) {
@@ -29,12 +27,8 @@ export class TodoService {
     return this.httpService.put<Todo>(`ToDos/ApplyDraft/${todoId}`, {});
   }
 
-  addToDo(deskId: number, todo: Todo) {
-    return this.httpService.post<Todo[]>("ToDos/CreateToDo/" + deskId, {name: todo.name, body: todo.body});
-  }
-
   assignUser(todoId: number, deskUserId: number) {
-    return this.httpService.put<Todo>("ToDos/AssignUser/" + todoId, {deskUserId});
+    return this.httpService.put<Todo>(`ToDos/AssignUser/${todoId}`, {deskUserId});
   }
 
   removeUser(toDoUserId: number) {
@@ -42,14 +36,14 @@ export class TodoService {
   }
 
   updateToDo(todo: Todo) {
-    return this.httpService.put<Todo>("ToDos/UpdateToDo/" + todo.id, {name: todo.name, body: todo.body});
+    return this.httpService.put<Todo>(`ToDos/UpdateToDo/${todo.id}`, {name: todo.name, body: todo.body});
   }
 
   moveToDo(todoId: number, columnId: number, order: number) {
-    return this.httpService.put<Todo[]>("ToDos/MoveToDo/" + todoId, {columnId, order});
+    return this.httpService.put<Todo[]>(`ToDos/MoveToDo/${todoId}`, {columnId, order});
   }
 
   attachFile(todoId: number, formData: any) {
-    return this.testHttp.put(environment.baseUrl + `ToDos/AttachFile/${todoId}`, formData, {responseType: 'text' as const});
+    return this.httpService.put<string>(`ToDos/AttachFile/${todoId}`, formData, {responseType: 'text' as const});
   }
 }
