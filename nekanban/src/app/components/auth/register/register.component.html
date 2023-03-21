@@ -1,44 +1,48 @@
-<mat-form-field appearance="fill">
+<form [formGroup]="registerFormGroup" (ngSubmit)="registerUser()">
+  <mat-form-field appearance="fill">
     <mat-label>Имя</mat-label>
-    <input matInput placeholder="Иван" [formControl]="name" required>
-    <mat-error *ngIf="name.invalid">Поле не должно быть пустым!</mat-error>
-</mat-form-field>
-<mat-form-field appearance="fill">
+    <input matInput placeholder="Иван" formControlName="name" required>
+    <mat-error *ngIf="this.registerFormGroup.controls.name.invalid">Поле не должно быть пустым!</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
     <mat-label>Фамилия</mat-label>
-    <input matInput placeholder="Иванов" [formControl]="surname" required>
-    <mat-error *ngIf="surname.invalid">Поле не должно быть пустым!</mat-error>
-</mat-form-field>
-<mat-form-field appearance="fill">
+    <input matInput placeholder="Иванов" formControlName="surname" required>
+    <mat-error *ngIf="this.registerFormGroup.controls.surname.invalid">Поле не должно быть пустым!</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
     <mat-label>Email</mat-label>
-    <input matInput placeholder="pat@example.com" [formControl]="email" required>
-    <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
-</mat-form-field>
-<mat-form-field appearance="fill">
+    <input matInput placeholder="pat@example.com" formControlName="email" required>
+    <mat-error *ngIf="this.registerFormGroup.controls.email.invalid">{{getEmailErrorMessage()}}</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
     <mat-label>Пароль</mat-label>
-    <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password" required>
+    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" required>
 
-    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide" type="button" tabindex="-1" >
       <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
     </button>
-    <mat-error *ngIf="password.errors?.['minlength']">Длина пароля должна быть не менее 8 символов!</mat-error>
-    <mat-error *ngIf="password.errors?.['required']">Поле не должно быть пустым!</mat-error>
-</mat-form-field>
-<mat-form-field appearance="fill">
+    <mat-error *ngIf="this.registerFormGroup.controls.password.errors?.['minlength']">Длина пароля должна быть не менее 8 символов!</mat-error>
+    <mat-error *ngIf="this.registerFormGroup.controls.password.errors?.['required']">Поле не должно быть пустым!</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
     <mat-label>Повторите пароль</mat-label>
-    <input matInput [type]="hideConfirm ? 'password' : 'text'" [formControl]="password_confirmation" required>
-    <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
+    <input matInput [type]="hideConfirm ? 'password' : 'text'" formControlName="password_confirmation" required>
+    <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm" type="button" tabindex="-1" >
       <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
     </button>
-    <mat-error *ngIf="password_confirmation.errors?.['minlength']">Длина пароля должна быть не менее 8 символов!</mat-error>
-    <mat-error *ngIf="password_confirmation.errors?.['required']">Поле не должно быть пустым!</mat-error>
-    <mat-error *ngIf="password_confirmation.errors?.['passwordMismatch']">Значения паролей должны совпадать!</mat-error>
-</mat-form-field>
-<div class="checkbox-wrap">
-  <mat-checkbox [formControl]="userAgreement">Я даю согласие на обработку указанных персональных данных</mat-checkbox>
-  <mat-error class="user-agreement-error" *ngIf="userAgreement.touched && userAgreement.errors?.['required']">Вы должны дать согласие на обработку персональных данных!</mat-error>
-</div>
+    <mat-error *ngIf="this.registerFormGroup.controls.password_confirmation.errors?.['minlength']">Длина пароля должна быть не менее 8 символов!</mat-error>
+    <mat-error *ngIf="this.registerFormGroup.controls.password_confirmation.errors?.['required']">Поле не должно быть пустым!</mat-error>
+    <mat-error *ngIf="this.registerFormGroup.controls.password_confirmation.errors?.['passwordMismatch']">Значения паролей должны совпадать!</mat-error>
+  </mat-form-field>
+  <div class="checkbox-wrap">
+    <mat-checkbox formControlName="userAgreement">Я даю согласие на обработку указанных персональных данных</mat-checkbox>
+    <mat-error class="user-agreement-error" *ngIf="this.registerFormGroup.controls.userAgreement.touched &&
+    this.registerFormGroup.controls.userAgreement.errors?.['required']">Вы должны дать согласие на обработку персональных данных!</mat-error>
+  </div>
 
-<button *ngIf="!(this.busy | async)" class = "register_button" mat-raised-button color="primary" (click)="registerUser()">Зарегистрироваться</button>
-<div *ngIf="(this.busy | async)" class="spinner__container spinner__container-centered">
-  <mat-spinner [diameter]="50"></mat-spinner>
-</div>
+  <button *ngIf="!(this.busy | async)" class = "register_button" mat-raised-button color="primary" type="submit">Зарегистрироваться</button>
+  <div *ngIf="(this.busy | async)" class="spinner__container spinner__container-centered">
+    <mat-spinner [diameter]="50"></mat-spinner>
+  </div>
+
+</form>

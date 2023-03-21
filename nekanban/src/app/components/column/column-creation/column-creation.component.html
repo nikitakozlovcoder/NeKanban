@@ -1,8 +1,10 @@
-<mat-form-field appearance="fill">
-  <mat-label>Название колонки</mat-label>
-  <input matInput placeholder="Новая колонка" [formControl]="name" required>
-  <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
-  <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 3 символов!</mat-error>
-</mat-form-field>
-<button *ngIf="isLoaded" class = "register_button" mat-raised-button color="primary" (click)="createColumn()">Создать колонку</button>
-<mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLoaded"></mat-spinner>
+<form (ngSubmit)="createColumn()" class="full-width-form">
+  <mat-form-field appearance="fill">
+    <mat-label>Название колонки</mat-label>
+    <input matInput placeholder="Новая колонка" [formControl]="name" required>
+    <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
+    <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 3 символов!</mat-error>
+  </mat-form-field>
+  <button *ngIf="isLoaded" class = "register_button" mat-raised-button color="primary">Создать колонку</button>
+  <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLoaded"></mat-spinner>
+</form>
