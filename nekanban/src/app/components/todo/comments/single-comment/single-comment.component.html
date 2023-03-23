@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="comments-body-wrap">
-      <body [innerHTML]="comment!.body | safeHtml"></body>
+      <div [innerHTML]="comment!.body | safeHtml"></div>
     </div>
   </ng-container>
   <div class="comment-updating-group" *ngIf="commentUpdatingState === ViewStateTypes.Update">

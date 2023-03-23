@@ -23,7 +23,7 @@
   <mat-error *ngIf="commentInput.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
 
   <div *ngIf="commentsLoaded | async; else commentsNotLoaded" class="comments-section">
-    <app-single-comment *ngFor="let comment of comments" [comment]="comment" (commentsDeletion)="handleCommentDeletion($event)" [roles]="roles" [deskUser]="deskUser"></app-single-comment>
+    <app-single-comment *ngFor="let comment of comments" [comment]="comment" [toggleComments]="toggleComments.asObservable()" (commentsDeletion)="handleCommentDeletion($event)" [roles]="roles" [deskUser]="deskUser"></app-single-comment>
   </div>
   <ng-template #commentsNotLoaded>
     <div>

@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, UntypedFormControl, Validators} from "@angular/forms";
@@ -13,7 +13,7 @@ import {
   interval,
   map,
   Subject,
-  subscribeOn,
+  subscribeOn, Subscription,
   switchMap
 } from "rxjs";
 import tinymce, {EditorOptions} from "tinymce";
@@ -26,7 +26,7 @@ import {EditorConfigService} from "../../../services/editor-config-service";
   templateUrl: './todo-creation.component.html',
   styleUrls: ['./todo-creation.component.css']
 })
-export class TodoCreationComponent implements OnInit {
+export class TodoCreationComponent implements OnInit, OnDestroy {
 
   draftSubject = new Subject();
   formLoaded = new BehaviorSubject(false);
@@ -34,6 +34,7 @@ export class TodoCreationComponent implements OnInit {
   editorLoaded = new BehaviorSubject(false);
   firstUpdateRequest = true;
   editorConfig: Partial<EditorOptions>;
+  private inputValueSubscription = new Subscription();
 
   todoFormGroup = new FormGroup({
     id: new FormControl<number>(0),
@@ -62,6 +63,10 @@ export class TodoCreationComponent implements OnInit {
     this.getDraft();
     this.initDebounce();
     this.setFormListeners();
+  }
+
+  ngOnDestroy(): void {
+    this.inputValueSubscription.unsubscribe();
   }
 
   setLoaded() {
@@ -134,7 +139,7 @@ export class TodoCreationComponent implements OnInit {
   }
 
   private setFormListeners() {
-    this.todoFormGroup.controls.name.valueChanges.subscribe({
+    this.inputValueSubscription = this.todoFormGroup.controls.name.valueChanges.subscribe({
       next: () => {
         this.draftSubject.next(1);
       }

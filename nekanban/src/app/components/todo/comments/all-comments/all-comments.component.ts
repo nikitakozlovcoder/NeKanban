@@ -11,6 +11,7 @@ import {RolesService} from "../../../../services/roles.service";
 import {DataGeneratorService} from "../../../../services/dataGenerator.service";
 import {CommentsService} from "../../../../services/comments.service";
 import {EditorConfigService} from "../../../../services/editor-config-service";
+import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
 
 @Component({
   selector: 'app-all-comments',
@@ -31,6 +32,7 @@ export class AllCommentsComponent implements OnInit {
   editorLoaded = new BehaviorSubject(false);
   editorConfig: Partial<EditorOptions>;
   private firstUpdateRequest = true;
+  toggleComments = new Subject<any>();
 
   @Input() todoId?: number;
   @Input() deskUser?: DeskUser;
@@ -97,6 +99,7 @@ export class AllCommentsComponent implements OnInit {
 
   toggleCommentsOrder() {
     this.isSortDescending = !this.isSortDescending;
+    this.toggleComments.next(1);
     this.comments = this.sortComments(this.comments);
   }
 
