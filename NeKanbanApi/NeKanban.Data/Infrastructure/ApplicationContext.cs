@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Entities;
+using NeKanban.Data.Infrastructure.QueryFilters;
 
 namespace NeKanban.Data.Infrastructure;
 

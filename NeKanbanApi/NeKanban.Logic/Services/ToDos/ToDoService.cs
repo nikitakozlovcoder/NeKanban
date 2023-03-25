@@ -13,7 +13,8 @@ using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
-using NeKanban.Data.Infrastructure;
+using NeKanban.Data.Infrastructure.QueryFilters;
+using NeKanban.Data.Infrastructure.Transactions;
 using NeKanban.Logic.Services.Columns;
 using NeKanban.Logic.ValidationProfiles.ToDos;
 
@@ -34,6 +35,7 @@ public class ToDoService : IToDoService
     private readonly IFileStorageProxy _fileStorageProxy;
     private readonly QueryFilterSettings _filterSettings;
     private readonly IAppValidator<ToDoValidationModel> _toDoValidator;
+    private readonly ITransactionManager _transactionManager;
 
     public ToDoService(
         IRepository<Desk> deskRepository, 
@@ -44,7 +46,10 @@ public class ToDoService : IToDoService
         IRepository<Column> columnRepository,
         IAppMapper mapper,
         IFileStorageAdapter<ToDoFileAdapter, ToDo> toDoFileStorageAdapter,
-        IFileStorageProxy fileStorageProxy, QueryFilterSettings filterSettings, IAppValidator<ToDoValidationModel> toDoValidator)
+        IFileStorageProxy fileStorageProxy,
+        QueryFilterSettings filterSettings,
+        IAppValidator<ToDoValidationModel> toDoValidator,
+        ITransactionManager transactionManager)
     {
         _deskRepository = deskRepository;
         _columnsService = columnsService;
@@ -57,6 +62,7 @@ public class ToDoService : IToDoService
         _fileStorageProxy = fileStorageProxy;
         _filterSettings = filterSettings;
         _toDoValidator = toDoValidator;
+        _transactionManager = transactionManager;
     }
 
     public async Task<List<ToDoDto>> GetToDos(int deskId, CancellationToken ct)
@@ -94,6 +100,7 @@ public class ToDoService : IToDoService
         
         var todo = new ToDo
         {
+            Code = null,
             Order = 0,
             Name = string.Empty,
             Body = null,
@@ -129,10 +136,12 @@ public class ToDoService : IToDoService
 
     public async Task<ToDoFullDto> ApplyDraftToDo(int toDoId, ApplicationUser user, CancellationToken ct)
     {
+        await using var transaction = await _transactionManager.CreateScope(ct);
         using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
         {
             ToDoDraftFilter = false
         });
+        
         await _toDoUserRepository.AnyOrThrow(x => x.DeskUser!.UserId == user.Id && x.ToDoId == toDoId, ct);
         var todo = await _toDoRepository.Single(x => x.Id == toDoId && x.IsDraft, ct);
         await _toDoValidator.ValidateOrThrow(new ToDoValidationModel
@@ -142,8 +151,18 @@ public class ToDoService : IToDoService
         
         todo.IsDraft = false;
         todo.Order = await GetCreateOrderInColum(todo.ColumnId, ct);
+        todo.Code = await GetNextCode(todo.ColumnId, ct);
         await _toDoRepository.Update(todo, ct);
+        await transaction.CommitAsync(ct);
         return await GetToDoFull(todo.Id, ct);
+    }
+
+    private async Task<int> GetNextCode(int todoColumnId, CancellationToken ct)
+    {
+        var maxCode = await _columnRepository.SingleOrDefault(x => x.Id == todoColumnId,
+            x => x.Desk!.Columns.SelectMany(c => c.ToDos).Max(todo => todo.Code), ct);
+
+        return maxCode.HasValue ? maxCode.Value + 1 : 1;
     }
 
     private async Task<int> GetCreateOrderInColum(int todoColumnId, CancellationToken ct)

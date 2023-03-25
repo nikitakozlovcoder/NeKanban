@@ -15,6 +15,7 @@ public class ToDo: IHasPk<int>, IAutoMapFrom<ToDoUpdateModel, ToDo>
     public required string? Body { get; set; }
     public required int ColumnId { get; set; }
     public required bool IsDraft { get; set; }
+    public required int? Code { get; set; }
     public virtual Column? Column { get; set; }
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public virtual ICollection<ToDoFileAdapter> Files { get; set; } = new List<ToDoFileAdapter>();
