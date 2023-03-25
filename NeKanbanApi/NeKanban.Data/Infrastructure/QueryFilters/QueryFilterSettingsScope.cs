@@ -1,4 +1,4 @@
-﻿namespace NeKanban.Data.Infrastructure;
+﻿namespace NeKanban.Data.Infrastructure.QueryFilters;
 
 public class QueryFilterSettingsScope : IDisposable
 {

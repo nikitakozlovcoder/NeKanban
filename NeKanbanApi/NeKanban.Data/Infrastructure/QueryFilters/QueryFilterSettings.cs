@@ -1,7 +1,7 @@
 ﻿using Batteries.Injection.Attributes;
 using JetBrains.Annotations;
 
-namespace NeKanban.Data.Infrastructure;
+namespace NeKanban.Data.Infrastructure.QueryFilters;
 
 [Injectable]
 [UsedImplicitly]

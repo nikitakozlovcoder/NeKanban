@@ -10,6 +10,7 @@ using NeKanban.Common.DTOs.Comments;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.CommentModels;
 using NeKanban.Data.Infrastructure;
+using NeKanban.Data.Infrastructure.QueryFilters;
 using NeKanban.Logic.Services.DesksUsers;
 using NeKanban.Logic.ValidationProfiles.Comments;
 

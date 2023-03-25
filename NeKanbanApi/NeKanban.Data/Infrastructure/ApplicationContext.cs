@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Entities;
+using NeKanban.Data.Infrastructure.QueryFilters;
 
 namespace NeKanban.Data.Infrastructure;
 
@@ -35,6 +36,7 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
             .WithMany().OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<RolePermission>().HasIndex(x => new {x.RoleId, x.Permission}).IsUnique();
+        modelBuilder.Entity<ToDo>().HasIndex(x => new {x.Id, x.Code}).IsUnique();
     }
 
     public void Migrate()
