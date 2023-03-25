@@ -51,6 +51,7 @@ import {EditorConfigService} from "./services/editor-config-service";
 import { AllCommentsComponent } from './components/todo/comments/all-comments/all-comments.component';
 import { SingleCommentComponent } from './components/todo/comments/single-comment/single-comment.component';
 import { DeskInfoComponent } from './components/partials/desk-info/desk-info.component';
+import { RawHtmlViewerComponent } from './components/partials/raw-html-viewer/raw-html-viewer.component';
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -95,6 +96,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AllCommentsComponent,
     SingleCommentComponent,
     DeskInfoComponent,
+    RawHtmlViewerComponent,
   ],
     imports: [
         BrowserAnimationsModule,

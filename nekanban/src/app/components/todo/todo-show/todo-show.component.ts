@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
 import {
@@ -12,13 +12,14 @@ import {RolesService} from "../../../services/roles.service";
 import {DeskUser} from "../../../models/deskUser";
 import {Role} from "../../../models/Role";
 import {BehaviorSubject} from "rxjs";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-task-creation',
   templateUrl: './todo-show.component.html',
   styleUrls: ['./todo-show.component.css']
 })
-export class TodoShowComponent implements OnInit {
+export class TodoShowComponent implements AfterViewInit {
 
   todo?: Todo;
   usersSelected : number[] = [];
@@ -35,7 +36,7 @@ export class TodoShowComponent implements OnInit {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.toDoService.getToDo(this.data.todoId).subscribe({
       next: value => {
         this.todo = value;

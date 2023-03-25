@@ -11,7 +11,7 @@
           <mat-card-subtitle>
             <p>Описание:</p>
           </mat-card-subtitle>
-          <div #description class="description" [innerHTML]="todo!.body! | safeHtml"></div>
+          <app-raw-html-viewer [html]="todo!.body"></app-raw-html-viewer>
           <!--<editor class="description"
                   [disabled]="true"
                   [init]="{
