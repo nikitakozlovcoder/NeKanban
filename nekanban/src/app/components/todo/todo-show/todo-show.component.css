@@ -46,11 +46,14 @@
   margin-left: 10px;
   border-radius: 50%;
   min-width: 48px;
+  width: 48px;
   height: 48px;
 }
-.comments-card mat-spinner {
-  margin-bottom: 1.34375em;
+
+.comments-card button mat-icon {
+  margin-left: -2px;
 }
+
 .comment-field-group {
   margin-top: 20px;
   display: flex;
@@ -135,4 +138,13 @@ mat-dialog-container {
 .assignees-title {
   margin: 0;
 }
-
+.comments-card .comments-sending-spinner {
+  margin-bottom: 2.34375em;
+}
+::ng-deep .comment-update-spinner {
+  width: 30px !important;
+  margin-bottom: 0;
+}
+::ng-deep .comment-update-spinner circle {
+  stroke: black;
+}

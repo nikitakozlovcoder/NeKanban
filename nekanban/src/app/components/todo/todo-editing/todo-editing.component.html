@@ -1,14 +1,19 @@
-<mat-form-field appearance="fill">
-  <mat-label>Название задачи</mat-label>
-  <input matInput placeholder="Новая задача" [formControl]="name" required>
-  <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
-  <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 3 символов!</mat-error>
-</mat-form-field>
-<mat-form-field appearance="fill">
-  <mat-label>Описание задачи</mat-label>
-  <textarea  matInput placeholder="Очень хорошая задача" [formControl]="body" required></textarea>
-  <mat-error *ngIf="body.errors?.['required']">Поле не должно быть пустым!</mat-error>
-  <mat-error *ngIf="body.errors?.['minlength']">Длина описания должна быть не менее 10 символов!</mat-error>
-</mat-form-field>
-<button *ngIf="isLoaded" class = "register_button" mat-raised-button color="primary" (click)="updateToDo()">Обновить задачу</button>
-<mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLoaded"></mat-spinner>
+<form *ngIf="(isLoaded | async); else todoNotLoaded" [formGroup]="todoFormGroup" (ngSubmit)="updateToDo()">
+  <mat-form-field appearance="fill">
+    <mat-label>Название задачи</mat-label>
+    <input matInput placeholder="Новая задача" formControlName="name" required>
+    <mat-error *ngIf="todoFormGroup.controls.name.errors?.['required']">Поле не должно быть пустым!</mat-error>
+    <mat-error *ngIf="todoFormGroup.controls.name.errors?.['minlength']">Длина названия должна быть не менее 3 символов!</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Описание задачи</mat-label>
+    <textarea  matInput placeholder="Очень хорошая задача" formControlName="body" required></textarea>
+    <mat-error *ngIf="todoFormGroup.controls.body.errors?.['required']">Поле не должно быть пустым!</mat-error>
+    <mat-error *ngIf="todoFormGroup.controls.body.errors?.['minlength']">Длина описания должна быть не менее 10 символов!</mat-error>
+  </mat-form-field>
+  <button *ngIf="updateLoaded | async" class = "register_button" mat-raised-button color="primary" type="submit">Обновить задачу</button>
+  <mat-spinner class="spinner-centered" diameter="36" *ngIf="!(updateLoaded | async)"></mat-spinner>
+</form>
+<ng-template #todoNotLoaded>
+  <mat-spinner class="spinner-centered" diameter="50"></mat-spinner>
+</ng-template>

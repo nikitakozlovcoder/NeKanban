@@ -12,9 +12,9 @@
             <p class="desk-name">{{desk?.name}}</p>
           </mat-card-title>
           <mat-card-subtitle>
-            <p>Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
+            <p *ngIf="getDeskOwner()">Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
           </mat-card-subtitle>
-          <button class="settings-button" [routerLink]="['/desks', desk!.id, 'settings']" mat-raised-button color="primary">Настройки<mat-icon>settings</mat-icon></button>
+          <button *ngIf="desk" class="settings-button" [routerLink]="['/desks', desk!.id, 'settings']" mat-raised-button color="primary">Настройки<mat-icon>settings</mat-icon></button>
         </mat-card-title-group>
       </mat-card>
 

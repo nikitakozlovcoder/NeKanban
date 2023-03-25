@@ -1,16 +1,16 @@
-<div class="todo-wrap">
+<div *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap">
   <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
   <mat-card class = "column-card">
     <div>
       <mat-card-title>
-        <p>{{data.todo.name}}</p>
+        <p>{{todo!.name}}</p>
       </mat-card-title>
 
       <mat-card-content>
         <mat-card-subtitle>
           <p>Описание:</p>
         </mat-card-subtitle>
-        <div class="description">{{data.todo.body}}</div>
+        <div class="description">{{todo!.body}}</div>
       </mat-card-content>
     </div>
 
@@ -30,41 +30,19 @@
             <mat-form-field class="user-select" appearance="fill">
               <mat-label>Исполнители</mat-label>
               <mat-select *ngIf="checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="users" multiple (closed)="changeUsers(select)">
-                <!--<mat-select-trigger>
-                  {{users.value ? users.value[0] : ''}}
-                  <span *ngIf="users.value?.length > 1" class="example-additional-selection">
-          (+{{users.value.length - 1}} {{users.value?.length === 2 ? 'еще' : 'еще'}})
-        </span>
-                </mat-select-trigger>-->
                 <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
               </mat-select>
               <mat-select *ngIf="!checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
-
                 <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
               </mat-select>
-              <!--<mat-select [formControl]="toppings" multiple>
-                <mat-select-trigger>
-                  {{toppings.value ? toppings.value[0] : ''}}
-                  <span *ngIf="toppings.value?.length > 1" class="example-additional-selection">
-          (+{{toppings.value.length - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})
-        </span>
-                </mat-select-trigger>
-                <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping.name}}</mat-option>
-              </mat-select>-->
             </mat-form-field>
-            <!--<button mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" >
-              <mat-icon>add</mat-icon>
-            </button>-->
           </div>
-          <mat-spinner class="spinner-centered" *ngIf="!isLoaded" diameter="30"></mat-spinner>
+          <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
           <h3 class="assignees-title">Назначенные исполнители:</h3>
           <mat-nav-list class ="employees-list">
             <mat-list-item *ngFor="let user of getToDoUsers()">
               <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
             </mat-list-item>
-
-            <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->
-
           </mat-nav-list>
         </mat-card-subtitle>
       </mat-card-content>
@@ -86,11 +64,11 @@
         <mat-error *ngIf="commentInput.errors?.['required']">Поле не должно быть пустым!</mat-error>
         <mat-error *ngIf="commentInput.errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
       </mat-form-field>
-      <button *ngIf="commentSendingState == LoadingStateTypes.Loaded" mat-raised-button color="primary" (click)="createComment()"><mat-icon>send</mat-icon></button>
-      <mat-spinner diameter="24" *ngIf="commentSendingState == LoadingStateTypes.Loading"></mat-spinner>
+      <button *ngIf="commentsSendingLoaded | async" mat-raised-button color="primary" (click)="createComment()"><mat-icon>send</mat-icon></button>
+      <mat-spinner class="comments-sending-spinner" diameter="24" *ngIf="!(commentsSendingLoaded | async)"></mat-spinner>
     </div>
 
-    <ng-scrollbar *ngIf="commentsState === LoadingStateTypes.Loaded" [autoHeightDisabled]="false" class="comments-section">
+    <ng-scrollbar *ngIf="commentsLoaded | async; else commentsNotLoaded" [autoHeightDisabled]="false" class="comments-section">
       <mat-card class="single-comment-card" *ngFor="let comment of comments; index as i">
         <ng-container *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Show">
           <div class="comment-properties-group">
@@ -122,17 +100,22 @@
             <mat-error *ngIf="commentUpdatingFields[i].errors?.['required']">Поле не должно быть пустым!</mat-error>
             <mat-error *ngIf="commentUpdatingFields[i].errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
           </mat-form-field>
-          <mat-icon class="comment-update-icon clickable-icon" (click)="updateComment(comment.id, i)">done</mat-icon>
+          <mat-icon *ngIf="(commentsUpdateLoaded[i] | async)" class="comment-update-icon clickable-icon" (click)="updateComment(comment.id, i)">done</mat-icon>
+          <mat-spinner *ngIf="!(commentsUpdateLoaded[i] | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
           <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField(i)">close</mat-icon>
 
         </div>
       </mat-card>
     </ng-scrollbar>
-    <div class="comments-spinner">
-      <mat-spinner diameter="24" *ngIf="commentsState == LoadingStateTypes.Loading"></mat-spinner>
-    </div>
-
+    <ng-template #commentsNotLoaded>
+      <div>
+        <mat-spinner class="spinner-centered" diameter="40"></mat-spinner>
+      </div>
+    </ng-template>
   </mat-card>
-  <!--<button class = "register_button" mat-raised-button color="primary" (click)="createDesk()">Создать доску</button>-->
-
 </div>
+<ng-template #todoShowNotLoaded>
+  <div class="todo-wrap">
+    <mat-spinner class="spinner-centered" diameter="50"></mat-spinner>
+  </div>
+</ng-template>

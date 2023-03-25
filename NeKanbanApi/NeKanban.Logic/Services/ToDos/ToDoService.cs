@@ -83,6 +83,7 @@ public class ToDoService : IToDoService
         var columns = await _columnsService.GetColumns(deskId, ct);
         var column = columns.Single(x => x.Type == ColumnType.Start).Id;
         var draft = await _toDoRepository.ProjectToFirstOrDefault<ToDoDraftDto>(x =>
+            x.IsDraft &&
             x.ColumnId == column &&
             x.ToDoUsers.Any(u => u.ToDoUserType == ToDoUserType.Creator && u.DeskUserId == deskUser.Id), ct);
 
