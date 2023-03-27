@@ -20,22 +20,23 @@
       </div>
     </div>
     <div class="comments-body-wrap">
-      <div [innerHTML]="comment!.body | safeHtml"></div>
+      <app-raw-html-viewer [html]="comment!.body"></app-raw-html-viewer>
     </div>
   </ng-container>
-  <div class="comment-updating-group" *ngIf="commentUpdatingState === ViewStateTypes.Update">
-    <div class="comment-updating-field">
-      <mat-label>Редактирование комментария</mat-label>
-      <mat-spinner *ngIf="!(commentUpdateEditorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
-      <editor [formControl]="commentUpdatingField"
-              (onInit)="setUpdateEditorLoaded()"
-              [init]="editorConfig"
-              [id]="'comment-tinymce-update' + comment!.id.toString()"
-      ></editor>
+  <div *ngIf="commentUpdatingState === ViewStateTypes.Update">
+    <div class="comment-updating-group">
+      <div class="comment-updating-field">
+        <mat-label>Редактирование комментария</mat-label>
+        <mat-spinner *ngIf="!(commentUpdateEditorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
+        <app-tinymce-editor [(editorFormControl)]="commentUpdatingField" [imageUploadHandler]="imageUploadHandler"
+                            [editorId]="'comment-tinymce-update' + this.comment!.id.toString()"
+                            (editorOnInit)="setUpdateEditorLoaded()"></app-tinymce-editor>
+      </div>
+      <mat-icon *ngIf="(commentUpdateLoaded | async)" class="comment-update-icon clickable-icon" (click)="updateComment()">done</mat-icon>
+      <mat-spinner *ngIf="!(commentUpdateLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
+      <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField()">close</mat-icon>
     </div>
-    <mat-icon *ngIf="(commentUpdateLoaded | async)" class="comment-update-icon clickable-icon" (click)="updateComment()">done</mat-icon>
-    <mat-spinner *ngIf="!(commentUpdateLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
-    <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField()">close</mat-icon>
+    <mat-error *ngIf="commentUpdatingField.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
   </div>
-  <mat-error *ngIf="commentUpdatingField.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
+
 </mat-card>

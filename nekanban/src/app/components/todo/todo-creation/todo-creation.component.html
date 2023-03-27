@@ -1,20 +1,3 @@
-<!--<div *ngIf="data.isEdit">
-  <mat-form-field appearance="fill">
-    <mat-label>Название задачи</mat-label>
-    <input matInput placeholder="Новая задача" [formControl]="name" required>
-    <mat-error *ngIf="name.invalid">Поле не должно быть пустым!</mat-error>
-  </mat-form-field>
-  <mat-form-field appearance="fill">
-    <mat-label>Описание задачи</mat-label>
-    <input matInput placeholder="Очень хорошая задача" [formControl]="body" required>
-    <mat-error *ngIf="name.invalid">Поле не должно быть пустым!</mat-error>
-  </mat-form-field>
-  <button class = "register_button" mat-raised-button color="primary" (click)="createToDo()">Обновить задачу</button>
-</div>
-<div *ngIf="!data.isEdit">
-
-</div>-->
-
 <form class="todo-creation-form" *ngIf="(isLoaded | async); else todoFormNotLoaded" [formGroup]="todoFormGroup" (ngSubmit)="applyDraft()">
   <mat-form-field appearance="fill">
     <mat-label>Название задачи</mat-label>
@@ -24,15 +7,10 @@
   </mat-form-field>
   <div>
     <mat-label>Описание задачи</mat-label>
-    <!--<textarea cdkTextareaAutosize
-              cdkAutosizeMinRows="1"
-              cdkAutosizeMaxRows="6" matInput placeholder="Очень хорошая задача" formControlName="body" required></textarea>-->
     <mat-spinner *ngIf="!(editorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
-    <editor formControlName="body"
-            (onInit)="setLoaded()"
-            (onAddUndo)="updateDraft()"
-      [init]="editorConfig"
-    ></editor>
+    <app-tinymce-editor [(editorFormControl)]="todoFormGroup.controls.body" [imageUploadHandler]="imageUploadHandler"
+                        editorId="todo-creation"
+                        (editorOnInit)="setLoaded()"></app-tinymce-editor>
     <mat-error *ngIf="todoFormGroup.controls.body.errors?.['required']">Поле не должно быть пустым!</mat-error>
   </div>
   <button *ngIf="(formSubmitLoaded | async) && (editorLoaded | async)" class = "register_button" mat-raised-button color="primary" type="submit">Создать задачу</button>

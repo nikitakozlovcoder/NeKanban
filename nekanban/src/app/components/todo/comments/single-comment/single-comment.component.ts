@@ -3,7 +3,7 @@ import {Comment} from "../../../../models/comment";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
 import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
-import tinymce, {EditorOptions} from "tinymce";
+import tinymce from "tinymce";
 import {EditorConfigService} from "../../../../services/editor-config-service";
 import {CommentsService} from "../../../../services/comments.service";
 import {DeskUser} from "../../../../models/deskUser";
@@ -12,6 +12,7 @@ import {Role} from "../../../../models/Role";
 import {ConfirmationComponent} from "../../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
+import {ValidationService} from "../../../../services/validation.service";
 
 @Component({
   selector: 'app-single-comment',
@@ -32,16 +33,14 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
   commentUpdateLoaded = new BehaviorSubject(true);
   commentDeleteLoaded = new BehaviorSubject(true);
   commentUpdatingField = new FormControl<string>(this.comment ? this.comment!.body : '');
-  editorConfig: Partial<EditorOptions>;
 
   private toggleCommentsSub?: Subscription;
 
   constructor(private readonly editorConfigService: EditorConfigService,
               private readonly commentsService: CommentsService,
               private readonly rolesService: RolesService,
+              private readonly validationService: ValidationService,
               public dialog: MatDialog) {
-    this.editorConfig = editorConfigService.getConfig(this.imageUploadHandler);
-    this.editorConfig.max_height = 400;
   }
 
   ngOnInit(): void {
@@ -79,11 +78,13 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
   showCommentUpdateForm() {
     this.commentUpdatingState = ViewStateTypes.Update;
     this.commentUpdatingField = new FormControl<string>(this.comment!.body, [this.commentLengthValidator()]);
+    this.setFormListeners();
   }
 
   hideUpdatingField() {
     this.commentUpdatingState = ViewStateTypes.Show;
     this.commentUpdatingField = new FormControl<string>(this.comment!.body, [this.commentLengthValidator()]);
+    this.setFormListeners();
     this.commentUpdateEditorLoaded.next(false);
   }
 
@@ -157,11 +158,12 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
   }
 
   private commentLengthValidator() : ValidatorFn {
-    return (): ValidationErrors | null => {
+    return this.validationService.editorMinLengthValidator(tinymce.get(`comment-tinymce-update${this.comment!.id}`), 10);
+    /*return (): ValidationErrors | null => {
       if (tinymce.get(`comment-tinymce-update${this.comment!.id}`)?.initialized) {
         return tinymce.get(`comment-tinymce-update${this.comment!.id}`)!.getContent({format : 'text'}).length < 10 ? {commentMinLength: true} : null;
       }
       return null;
-    };
+    };*/
   }
 }

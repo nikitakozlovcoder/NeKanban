@@ -7,12 +7,10 @@
   </mat-form-field>
   <div>
     <mat-label>Описание задачи</mat-label>
-    <!--<textarea  matInput placeholder="Очень хорошая задача" formControlName="body" required></textarea>-->
     <mat-spinner *ngIf="!(editorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
-    <editor formControlName="body"
-            (onInit)="setLoaded()"
-            [init]="editorConfig"
-    ></editor>
+    <app-tinymce-editor [(editorFormControl)]="todoFormGroup.controls.body" [imageUploadHandler]="imageUploadHandler"
+                        [editorId]="'todo-update' + this.todoFormGroup.controls.id.toString()"
+                        (editorOnInit)="setLoaded()"></app-tinymce-editor>
     <mat-error *ngIf="todoFormGroup.controls.body.errors?.['required']">Поле не должно быть пустым!</mat-error>
   </div>
   <button *ngIf="(updateLoaded | async) && (editorLoaded | async)" class = "register_button" mat-raised-button color="primary" type="submit">Обновить задачу</button>

@@ -1,11 +1,10 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
-import {FormControl, FormGroup, UntypedFormControl, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
-import {BehaviorSubject, Subject} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 import tinymce, {EditorOptions} from "tinymce";
-import {environment} from "../../../../environments/environment";
 import {EditorConfigService} from "../../../services/editor-config-service";
 
 @Component({

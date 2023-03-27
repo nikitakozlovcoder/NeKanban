@@ -12,6 +12,7 @@ import {DataGeneratorService} from "../../../../services/dataGenerator.service";
 import {CommentsService} from "../../../../services/comments.service";
 import {EditorConfigService} from "../../../../services/editor-config-service";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
+import {ValidationService} from "../../../../services/validation.service";
 
 @Component({
   selector: 'app-all-comments',
@@ -43,7 +44,8 @@ export class AllCommentsComponent implements OnInit {
               private dataGeneratorService: DataGeneratorService,
               private commentsService: CommentsService,
               public dialog: MatDialog,
-              private readonly editorConfigService: EditorConfigService) {
+              private readonly editorConfigService: EditorConfigService,
+              private readonly validationService: ValidationService) {
     this.editorConfig = editorConfigService.getConfig(this.imageUploadHandler);
     this.editorConfig.max_height = 400;
   }
@@ -147,21 +149,8 @@ export class AllCommentsComponent implements OnInit {
     }
   }
 
-  updateCommentDraft() {
-    if (this.firstUpdateRequest) {
-      this.firstUpdateRequest = false;
-      return;
-    }
-    this.draftSubject.next(1);
-  }
-
   commentLengthValidator() : ValidatorFn {
-    return (): ValidationErrors | null => {
-      if (tinymce.get('comment-tinymce')?.initialized) {
-        return tinymce.get('comment-tinymce')!.getContent({format : 'text'}).length < 10 ? {commentMinLength: true} : null;
-      }
-      return null;
-    };
+    return this.validationService.editorMinLengthValidator(tinymce.get('comment-tinymce' + this.todoId!.toString()), 10);
   }
 
   handleCommentDeletion(id: number) {
@@ -201,6 +190,11 @@ export class AllCommentsComponent implements OnInit {
     this.commentInput.valueChanges.subscribe({
       next: () => {
         this.commentInput.addValidators(this.commentLengthValidator());
+        if (this.firstUpdateRequest) {
+          this.firstUpdateRequest = false;
+          return;
+        }
+        this.draftSubject.next(1);
       }
     })
   }

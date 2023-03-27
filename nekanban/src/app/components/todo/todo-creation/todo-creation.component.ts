@@ -1,25 +1,18 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {FormControl, FormGroup, UntypedFormControl, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 import {Todo} from "../../../models/todo";
 import {
   BehaviorSubject,
   combineLatest,
-  debounce,
   debounceTime,
-  filter,
-  interval,
   map,
   Subject,
-  subscribeOn, Subscription,
+  Subscription,
   switchMap
 } from "rxjs";
-import tinymce, {EditorOptions} from "tinymce";
-import {UserStorageService} from "../../../services/userStorage.service";
-import {environment} from "../../../../environments/environment";
-import {EditorConfigService} from "../../../services/editor-config-service";
 
 @Component({
   selector: 'app-todo-creation',
@@ -33,8 +26,8 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
   formSubmitLoaded = new BehaviorSubject(true);
   editorLoaded = new BehaviorSubject(false);
   firstUpdateRequest = true;
-  editorConfig: Partial<EditorOptions>;
   private inputValueSubscription = new Subscription();
+  private inputBodySubscription = new Subscription();
 
   todoFormGroup = new FormGroup({
     id: new FormControl<number>(0),
@@ -49,12 +42,8 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: {deskId: number},
               private todoService: TodoService,
-              public dialogRef: MatDialogRef<TodoCreationComponent>,
-              private readonly userStorageService: UserStorageService,
-              private readonly editorConfigService: EditorConfigService)
+              public dialogRef: MatDialogRef<TodoCreationComponent>)
   {
-    this.editorConfig = editorConfigService.getConfig(this.imageUploadHandler);
-    this.editorConfig.max_height = 400;
   }
 
 
@@ -67,6 +56,7 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.inputValueSubscription.unsubscribe();
+    this.inputBodySubscription.unsubscribe();
   }
 
   setLoaded() {
@@ -97,14 +87,6 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
       })
 
     }
-  }
-
-  updateDraft() {
-    if (this.firstUpdateRequest) {
-      this.firstUpdateRequest = false;
-      return;
-    }
-    this.draftSubject.next(1);
   }
 
   imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
@@ -141,6 +123,15 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
   private setFormListeners() {
     this.inputValueSubscription = this.todoFormGroup.controls.name.valueChanges.subscribe({
       next: () => {
+        this.draftSubject.next(1);
+      }
+    })
+    this.inputBodySubscription = this.todoFormGroup.controls.body.valueChanges.subscribe({
+      next: () => {
+        if (this.firstUpdateRequest) {
+          this.firstUpdateRequest = false;
+          return;
+        }
         this.draftSubject.next(1);
       }
     })

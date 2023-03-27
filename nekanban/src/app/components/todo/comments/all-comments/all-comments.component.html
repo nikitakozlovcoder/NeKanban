@@ -9,12 +9,15 @@
     <div class="comment-area">
       <mat-label>Оставьте свой комментарий!</mat-label>
       <mat-spinner *ngIf="!(editorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
-      <editor [formControl]="commentInput"
+      <!--<editor [formControl]="commentInput"
               (onInit)="setLoaded()"
               (onAddUndo)="updateCommentDraft()"
               [init]="editorConfig"
               id="comment-tinymce"
-      ></editor>
+      ></editor>-->
+      <app-tinymce-editor [(editorFormControl)]="commentInput" [imageUploadHandler]="imageUploadHandler"
+                          [editorId]="'comment-tinymce' + this.todoId!.toString()"
+                          (editorOnInit)="setLoaded()"></app-tinymce-editor>
     </div>
     <button *ngIf="commentsSendingLoaded | async" mat-raised-button color="primary" (click)="createComment()"><mat-icon>send</mat-icon></button>
     <mat-spinner class="comments-sending-spinner" diameter="40" *ngIf="!(commentsSendingLoaded | async)"></mat-spinner>
