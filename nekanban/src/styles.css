@@ -18,6 +18,78 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-tooltip {
   font-size: 14px !important;
 }
+.todo-show-wrap {
+  max-width: 95vw !important;
+}
 .todo-show-wrap mat-dialog-container {
   padding: 0;
+}
+.description img, .comment-text img {
+  max-width: 500px;
+}
+
+.full-width-form {
+  width: 100%;
+}
+
+.comments-body-wrap body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+  line-height: 1.4 !important;
+  margin: 1rem !important;
+}
+.comments-body-wrap table {
+  border-collapse: collapse;
+}
+/* Apply a default padding if legacy cellpadding attribute is missing */
+.comments-body-wrap table:not([cellpadding]) th,
+.comments-body-wrap table:not([cellpadding]) td {
+  padding: 0.4rem;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.comments-body-wrap table[border]:not([border="0"]):not([style*="border-width"]) th,
+.comments-body-wrap table[border]:not([border="0"]):not([style*="border-width"]) td {
+  border-width: 1px;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.comments-body-wrap table[border]:not([border="0"]):not([style*="border-style"]) th,
+.comments-body-wrap table[border]:not([border="0"]):not([style*="border-style"]) td {
+  border-style: solid;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.comments-body-wrap table[border]:not([border="0"]):not([style*="border-color"]) th,
+.comments-body-wrap table[border]:not([border="0"]):not([style*="border-color"]) td {
+  border-color: #ccc;
+}
+.comments-body-wrap figure {
+  display: table;
+  margin: 1rem auto;
+}
+.comments-body-wrap figure figcaption {
+  color: #999;
+  display: block;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+.comments-body-wrap hr {
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+}
+.comments-body-wrap code {
+  background-color: #e8e8e8;
+  border-radius: 3px;
+  padding: 0.1rem 0.2rem;
+}
+.comments-body-wrap .mce-content-body:not([dir=rtl]) blockquote {
+  border-left: 2px solid #ccc;
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+}
+.comments-body-wrap .mce-content-body[dir=rtl] blockquote {
+  border-right: 2px solid #ccc;
+  margin-right: 1.5rem;
+  padding-right: 1rem;
 }

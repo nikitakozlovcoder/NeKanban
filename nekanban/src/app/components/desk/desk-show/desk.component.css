@@ -299,14 +299,6 @@ mat-card-title mat-spinner {
   --scrollbar-padding: -6px;
   --scrollbar-size: 8px;
 }
-
-
-.settings-button {
-  height: min-content;
-}
-.settings-button mat-icon {
-  margin-left: 8px;
-}
 mat-card-title-group {
   align-items: center;
 }

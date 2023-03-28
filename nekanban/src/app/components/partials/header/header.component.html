@@ -7,10 +7,10 @@
   <mat-icon>account_circle</mat-icon>
   <span class="user-name">{{ currentUser!.name}}</span>
   <div *ngIf="desk !== undefined">
-    <button *ngIf="desk!.deskUser.preference && isFavouriteLoaded" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(desk?.id)">
+    <button *ngIf="desk!.deskUser.preference && isFavouriteLoaded" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(desk.id)">
       <mat-icon>favorite</mat-icon>
     </button>
-    <button *ngIf="!desk!.deskUser.preference && isFavouriteLoaded" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "addToFavourite(desk?.id)">
+    <button *ngIf="!desk!.deskUser.preference && isFavouriteLoaded" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "addToFavourite(desk.id)">
       <mat-icon>favorite_border</mat-icon>
     </button>
   </div>
