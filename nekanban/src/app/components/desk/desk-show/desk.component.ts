@@ -59,6 +59,7 @@ export class DeskComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       if (params['id'] === undefined) {
+        console.log("undefined")
         this.deskService.getDesks().subscribe(result => {
           if (result.length == 0) {
             this.desks = result;
@@ -76,6 +77,7 @@ export class DeskComponent implements OnInit {
         });
       }
       else {
+        console.log("Id from params: " + params['id'])
         this.loadDesks(parseInt(params['id']));
       }
     });

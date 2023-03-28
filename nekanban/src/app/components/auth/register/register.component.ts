@@ -39,7 +39,6 @@ export class RegisterComponent implements OnInit {
     return this.registerFormGroup.controls.email.hasError('email') ? 'Некорректный email' : '';
   }
   passwordMatchValidator (password: UntypedFormControl) : ValidatorFn {
-    console.log("HIIII");
     return (passwordConfirmation) => {
       if (password.value === passwordConfirmation.value)
         return null;

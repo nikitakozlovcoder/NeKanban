@@ -1,8 +1,8 @@
 <div class ="users-list">
   <mat-spinner class="spinner-centered" *ngIf="!isUserRemoveLoaded" diameter="20"></mat-spinner>
   <div class="single-user-title">
-    <h2>Имя пользователя</h2>
-    <h2>Роль</h2>
+    <h2 class="h-minor-title">Имя пользователя</h2>
+    <h2 class="h-minor-title">Роль</h2>
   </div>
   <div class="single-user-container" *ngFor="let user of desk!.deskUsers; index as i">
     <div class="single-user">

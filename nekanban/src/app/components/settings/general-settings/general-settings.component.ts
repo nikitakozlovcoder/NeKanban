@@ -9,6 +9,9 @@ import {DeskService} from "../../../services/desk.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Router} from "@angular/router";
 import {environment} from "../../../../environments/environment";
+import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
+import {DialogActionTypes} from "../../../constants/DialogActionTypes";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-general-settings',
@@ -30,7 +33,8 @@ export class GeneralSettingsComponent implements OnInit {
               private readonly deskUserService: DeskUserService,
               private readonly deskService: DeskService,
               public snackBar: MatSnackBar,
-              private router: Router) {
+              private router: Router,
+              public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -87,7 +91,31 @@ export class GeneralSettingsComponent implements OnInit {
     })
   }
 
+  removeLink() {
+    this.isLinkLoaded = false;
+    this.deskService.removeLink(this.desk!.id).subscribe( {
+      next: data => {
+        this.isLinkLoaded = true;
+        this.desk = data;
+      },
+      error: () => {
+      }
+    })
+  }
+
   removeDesk(deskId: number) {
+    const dialogRef = this.dialog.open(ConfirmationComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == DialogActionTypes.Reject) {
+        return;
+      }
+      this.makeDeskRemoval(deskId);
+    });
+
+  }
+
+  private makeDeskRemoval(deskId: number) {
     this.isRemoveDeskLoaded = false;
     this.deskService.removeDesk(deskId).subscribe({
       next: () => {

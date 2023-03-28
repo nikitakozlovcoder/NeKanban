@@ -61,6 +61,7 @@ mat-dialog-container {
 }
 .assignees-title {
   margin: 0;
+  font-weight: normal;
 }
 .todo-container {
   display: flex;

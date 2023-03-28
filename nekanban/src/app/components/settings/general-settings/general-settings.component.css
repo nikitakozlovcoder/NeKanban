@@ -37,3 +37,14 @@
   display: flex;
   align-items: center;
 }
+.invite-link-content {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+.remove-link-button {
+  margin-left: 10px;
+}
+.link-remove-spinner {
+  margin-left: 50px;
+}

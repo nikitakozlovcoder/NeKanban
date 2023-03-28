@@ -21,7 +21,8 @@
   </div>
   <mat-spinner class="spinner-centered spinner-white" diameter="24" *ngIf="!isFavouriteLoaded"></mat-spinner>
   <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" (click)="logout()">
-    <mat-icon>logout</mat-icon>
+    <mat-icon *ngIf="isLogoutLoaded | async">logout</mat-icon>
+    <mat-spinner *ngIf="!(isLogoutLoaded | async)" diameter="24"></mat-spinner>
   </button>
 </mat-toolbar>
 

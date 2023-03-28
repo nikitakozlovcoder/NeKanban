@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; font-size: 14px; }
 
 .spinner__container {
   width: 100%;
@@ -30,6 +30,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .full-width-form {
   width: 100%;
+}
+
+p, h1, h2, h3, h4, h5, h6{
+  margin: 0;
+}
+
+.h-main-title {
+  font-size: 24px;
+  font-weight: 500;
+}
+.h-minor-title {
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .comments-body-wrap body {
@@ -89,6 +102,76 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   padding-left: 1rem;
 }
 .comments-body-wrap .mce-content-body[dir=rtl] blockquote {
+  border-right: 2px solid #ccc;
+  margin-right: 1.5rem;
+  padding-right: 1rem;
+}
+
+
+
+
+
+
+
+.description {
+  line-height: 1.4 !important;
+}
+.description p {
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+.description table {
+  border-collapse: collapse;
+}
+/* Apply a default padding if legacy cellpadding attribute is missing */
+.description table:not([cellpadding]) th,
+.description table:not([cellpadding]) td {
+  padding: 0.4rem;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.description table[border]:not([border="0"]):not([style*="border-width"]) th,
+.description table[border]:not([border="0"]):not([style*="border-width"]) td {
+  border-width: 1px;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.description table[border]:not([border="0"]):not([style*="border-style"]) th,
+.description table[border]:not([border="0"]):not([style*="border-style"]) td {
+  border-style: solid;
+}
+/* Set default table styles if a table has a positive border attribute
+   and no inline css */
+.description table[border]:not([border="0"]):not([style*="border-color"]) th,
+.description table[border]:not([border="0"]):not([style*="border-color"]) td {
+  border-color: #ccc;
+}
+.description figure {
+  display: table;
+  margin: 1rem auto;
+}
+.description figure figcaption {
+  color: #999;
+  display: block;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+.description hr {
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+}
+.description code {
+  background-color: #e8e8e8;
+  border-radius: 3px;
+  padding: 0.1rem 0.2rem;
+}
+.description .mce-content-body:not([dir=rtl]) blockquote {
+  border-left: 2px solid #ccc;
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+}
+.description .mce-content-body[dir=rtl] blockquote {
   border-right: 2px solid #ccc;
   margin-right: 1.5rem;
   padding-right: 1rem;

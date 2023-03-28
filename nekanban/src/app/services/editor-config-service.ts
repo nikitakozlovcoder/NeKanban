@@ -21,6 +21,7 @@ export class EditorConfigService {
       document_base_url: environment.baseUrl,
       branding: false,
       promotion: false,
+      content_style: "body {font-size: 14px; font-family: Roboto, \"Helvetica Neue\", sans-serif;}",
       plugins: ['lists', 'link', 'image', 'table', 'code', 'help', 'wordcount', 'autoresize'],
     };
   }
