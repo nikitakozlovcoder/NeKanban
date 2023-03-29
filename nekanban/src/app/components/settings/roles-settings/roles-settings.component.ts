@@ -47,6 +47,7 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   openRoleCreationDialog() {
     const dialogRef = this.dialog.open(RoleCreationComponent, {
       data: {deskId: this.desk?.id},
+      width: '400px',
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
@@ -59,6 +60,7 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   openRoleUpdatingDialog(role: Role) {
     const dialogRef = this.dialog.open(RoleUpdatingComponent, {
       data: {role},
+      width: '400px',
     });
 
     dialogRef.afterClosed().subscribe( result => {

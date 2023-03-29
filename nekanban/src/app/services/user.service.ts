@@ -10,6 +10,7 @@ import {ErrorCodes} from "../constants/ErrorCodes";
 import {UserStorageService} from "./userStorage.service";
 import {UserWithToken} from "../models/user-with-token";
 import {Token} from "../models/token";
+import {Desk} from "../models/desk";
 
 @Injectable()
 export class UserService {

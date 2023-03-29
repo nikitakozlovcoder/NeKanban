@@ -62,18 +62,16 @@ export class AllCommentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getComments();
-    this.getCommentDraft();
-    this.initDebounce();
-    this.setFormListeners();
-    this.commentInput.markAsUntouched();
+    if (this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.AddOrUpdateOwnComments)) {
+      this.getCommentDraft();
+      this.initDebounce();
+      this.setFormListeners();
+      this.commentInput.markAsUntouched();
+    }
   }
 
   setLoaded() {
     this.editorLoaded.next(true);
-  }
-
-  checkUserPermission(deskUser: DeskUser, permissionName: string) {
-    return this.rolesService.userHasPermission(this.roles, deskUser, permissionName);
   }
 
   sortComments(comments: Comment[]): Comment[] {

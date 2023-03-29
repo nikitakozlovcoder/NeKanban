@@ -30,8 +30,8 @@ export class TodoShowComponent implements AfterViewInit {
   todoLoaded = new BehaviorSubject(false);
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: {todoId: number, isEdit: boolean, desk: Desk, deskUser: DeskUser, roles: Role[]},
-              private toDoService: TodoService,
-              public rolesService: RolesService,
+              private readonly toDoService: TodoService,
+              public readonly rolesService: RolesService,
               public dialogRef: MatDialogRef<TodoShowComponent>) {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
@@ -138,10 +138,6 @@ export class TodoShowComponent implements AfterViewInit {
       })
     })
     this.usersSelected  = newIds;
-  }
-
-  checkUserPermission(deskUser: DeskUser, permissionName: string) {
-    return this.rolesService.userHasPermission(this.data.roles, deskUser, permissionName);
   }
 
   changeSingleUser(select:MatSelect) {

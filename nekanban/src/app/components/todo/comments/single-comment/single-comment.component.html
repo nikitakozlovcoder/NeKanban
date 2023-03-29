@@ -3,17 +3,17 @@
     <div class="comment-properties-group">
       <div class="comment-upper-group">
         <div class="comment-author-name">
-          <b *ngIf="comment!.deskUser != null">{{comment!.deskUser.user.name}}</b>
+          <b *ngIf="comment!.deskUser !== null">{{comment!.deskUser.user.name}}</b>
           <b *ngIf="comment!.deskUser === null">Пользователь удален</b><span> оставил(а) комментарий
           {{comment!.createdAtUtc.toLocaleDateString('ru')}} в {{comment!.createdAtUtc.toLocaleTimeString('ru')}}</span>
         </div>
         <div class="comment-controls">
-          <mat-icon *ngIf="checkUserPermission(deskUser!, 'UpdateOwnComments') &&
+          <mat-icon *ngIf="rolesService.userHasPermission(this.roles, deskUser!, rolesService.permissionsTypes.AddOrUpdateOwnComments) &&
                 comment!.deskUser.user.id == deskUser!.user.id"
                     class="clickable-icon" (click)="showCommentUpdateForm()">edit</mat-icon>
-          <mat-icon *ngIf="(commentDeleteLoaded | async) && (checkUserPermission(deskUser!, 'DeleteOwnComments') &&
+          <mat-icon *ngIf="(commentDeleteLoaded | async) && (rolesService.userHasPermission(this.roles, deskUser!, rolesService.permissionsTypes.DeleteOwnComments) &&
                 comment!.deskUser.user.id == deskUser!.user.id ||
-                checkUserPermission(deskUser!, 'DeleteAnyComments'))" class="clickable-icon"
+                rolesService.userHasPermission(this.roles, deskUser!, rolesService.permissionsTypes.DeleteAnyComments))" class="clickable-icon"
                     (click)="deleteComment(comment!.id)">delete</mat-icon>
           <mat-spinner *ngIf="!(commentDeleteLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
         </div>

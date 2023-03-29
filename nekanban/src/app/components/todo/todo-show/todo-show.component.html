@@ -39,13 +39,13 @@
         <ng-container *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</ng-container>
         <ng-container *ngIf="getToDoCreator() === undefined">---</ng-container>
         <mat-card-subtitle>
-          <div class="employees-settings">
+          <div class="employees-settings" *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself) || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)">
             <mat-form-field class="user-select" appearance="fill">
               <mat-label>Исполнители</mat-label>
-              <mat-select *ngIf="checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="users" multiple (closed)="changeUsers(select)">
+              <mat-select *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)" #select [formControl]="users" multiple (closed)="changeUsers(select)">
                 <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
               </mat-select>
-              <mat-select *ngIf="!checkUserPermission(data.deskUser, 'ManageAssigners')" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
+              <mat-select *ngIf="!rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) && rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
                 <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
               </mat-select>
             </mat-form-field>

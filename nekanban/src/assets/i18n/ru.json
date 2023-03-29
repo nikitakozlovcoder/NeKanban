@@ -2,7 +2,7 @@
   "Permissions": {
     "UpdateGeneralDesk": "Обновлять доску",
     "ViewInviteLink": "Просматривать ссылку для приглашения",
-    "ManageInviteLink": "Генерировать ссылку для приглашения",
+    "ManageInviteLink": "Генерировать и удалять ссылку для приглашения",
     "DeleteDesk": "Удалять доску",
     "CreateColumns": "Создавать колонки",
     "ManageColumns": "Управлять колонками",
@@ -17,6 +17,8 @@
     "UpdateOwnComments": "Обновлять свои комментарии",
     "DeleteOwnComments": "Удалять свои комментарии",
     "DeleteAnyComments": "Удалять любые комментарии",
-    "ManageRoles": "Управление ролями"
+    "ManageRoles": "Управление ролями",
+    "CreateOrUpdateTasks": "Создавать задачи и редактировать их",
+    "AddOrUpdateOwnComments": "Создавать комментарии и редактировать их"
   }
 }

@@ -1,10 +1,9 @@
 ﻿import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AppHttpService} from "./app-http.service";
-import {DeskRole} from "../models/deskrole";
 import {DeskUser} from "../models/deskUser";
 import {Role} from "../models/Role";
 import {Permission} from "../models/permission";
+import {Permissions} from "../constants/Permissions";
 
 @Injectable()
 export class RolesService {
@@ -12,6 +11,7 @@ export class RolesService {
   constructor(private httpService: AppHttpService) {
   }
   permissions: Permission[] = [];
+  permissionsTypes = Permissions;
   initPermissions() {
     this.getAllPermissions().subscribe(result => {
       this.permissions = result;
@@ -21,11 +21,33 @@ export class RolesService {
     })*/
   }
 
-  userHasPermission(roles: Role[], deskUser : DeskUser, permissionName: string) : boolean {
+  userHasPermission(roles: Role[], deskUser : DeskUser, permission: Permissions) : boolean {
     if (deskUser.isOwner) {
       return true;
     }
-    return roles.some(el => el.id === deskUser.role.id && el.permissions.some(perm => perm.permissionName === permissionName));
+    return roles.some(el => el.id === deskUser.role.id && el.permissions.some(perm => perm.permission === permission));
+  }
+
+  userHasAtLeastOnePermissionForAllSettings(roles: Role[], deskUser : DeskUser) {
+    return this.userHasAtLeastOnePermissionForGeneralSettings(roles, deskUser) ||
+      this.userHasAtLeastOnePermissionForUsersSettings(roles, deskUser) ||
+      this.userHasAtLeastOnePermissionForRolesSettings(roles, deskUser);
+  }
+
+  userHasAtLeastOnePermissionForGeneralSettings(roles: Role[], deskUser : DeskUser) {
+    return this.userHasPermission(roles, deskUser, Permissions.UpdateGeneralDesk) ||
+      this.userHasPermission(roles, deskUser, Permissions.ViewInviteLink) ||
+      this.userHasPermission(roles, deskUser, Permissions.ManageInviteLink) ||
+      this.userHasPermission(roles, deskUser, Permissions.DeleteDesk);
+  }
+
+  userHasAtLeastOnePermissionForUsersSettings(roles: Role[], deskUser : DeskUser) {
+    return this.userHasPermission(roles, deskUser, Permissions.RemoveUsers) ||
+      this.userHasPermission(roles, deskUser, Permissions.ChangeUserRole);
+  }
+
+  userHasAtLeastOnePermissionForRolesSettings(roles: Role[], deskUser : DeskUser) {
+    return this.userHasPermission(roles, deskUser, Permissions.ManageRoles);
   }
 
   getRoles(deskId: number) {

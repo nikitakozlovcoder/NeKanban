@@ -36,12 +36,13 @@ export class DeskComponent implements OnInit {
   isColumnDeleteLoaded: boolean[] = [];
   roles : Role[] = [];
   desksLoaded = new BehaviorSubject(false);
+  deskLoaded = new BehaviorSubject(false);
   columnsLoaded = new BehaviorSubject(false);
   todosLoaded = new BehaviorSubject(false);
   rolesLoaded = new BehaviorSubject(false);
 
   get isLoaded() {
-    return combineLatest([this.desksLoaded, this.columnsLoaded, this.todosLoaded, this.rolesLoaded])
+    return combineLatest([this.desksLoaded, this.columnsLoaded, this.todosLoaded, this.rolesLoaded, this.deskLoaded])
       .pipe(map(x => x.every(isLoaded => isLoaded)));
   }
 
@@ -51,15 +52,14 @@ export class DeskComponent implements OnInit {
               public readonly dialog: MatDialog,
               private readonly columnService: ColumnService,
               private readonly todoService: TodoService,
-              private readonly rolesService: RolesService,
-              private readonly deskUserService: DeskUserService,
+              public readonly rolesService: RolesService,
+              public readonly deskUserService: DeskUserService,
               private readonly route: ActivatedRoute,
               private readonly userStorageService: UserStorageService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       if (params['id'] === undefined) {
-        console.log("undefined")
         this.deskService.getDesks().subscribe(result => {
           if (result.length == 0) {
             this.desks = result;
@@ -77,7 +77,6 @@ export class DeskComponent implements OnInit {
         });
       }
       else {
-        console.log("Id from params: " + params['id'])
         this.loadDesks(parseInt(params['id']));
       }
     });
@@ -188,11 +187,11 @@ export class DeskComponent implements OnInit {
   }
 
   loadDesk(deskId: number) {
-    this.desksLoaded.next(false);
+    this.deskLoaded.next(false);
     this.deskService.getDesk(deskId).subscribe( {
       next: (data: Desk) => {
         this.desk = data;
-        this.desksLoaded.next(true);
+        this.deskLoaded.next(true);
       }
     });
   }
@@ -245,10 +244,6 @@ export class DeskComponent implements OnInit {
     })
   }
 
-  getDeskOwner() : DeskUser | undefined  {
-    return this.desk?.deskUsers.find(el => el.isOwner);
-  }
-
   getCurrentDesk() {
     return this.desks.find(el => el.id === this.desk?.id);
   }
@@ -276,6 +271,7 @@ export class DeskComponent implements OnInit {
       }
     })
   }
+
   removeColumn(columnId: number) {
     this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = false;
     this.columnService.removeColumn(columnId).subscribe({
@@ -398,9 +394,9 @@ export class DeskComponent implements OnInit {
     })
   }
 
-  checkUserPermission(deskUser: DeskUser, permissionName: string) {
+  /*checkUserPermission(deskUser: DeskUser, permissionName: string) {
     return this.rolesService.userHasPermission(this.roles, deskUser, permissionName);
-  }
+  }*/
 
   isUserAssigned(todo: Todo) {
     return !!todo.toDoUsers.find(el => el.deskUser.user.id === this.getCurrentUser().id && el.toDoUserType === 1);
