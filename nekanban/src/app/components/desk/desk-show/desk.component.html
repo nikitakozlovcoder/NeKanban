@@ -51,8 +51,12 @@
                       class="todos-list"
                       (cdkDropListDropped)="drop($event, column.id)">
                       <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="!rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.MoveTasks)" >
-                        <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
-                        <p (click)="openTaskShowingDialog(toDo)" class="todo-name"><app-todo-code [todoCode]="toDo.code"></app-todo-code>{{toDo.name}}</p>
+                        <p (click)="openTaskShowingDialog(toDo)" class="todo-name">
+                          <span>
+                            <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="assigned-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
+                          </span>
+                          <app-todo-code [todoCode]="toDo.code"></app-todo-code>{{toDo.name}}
+                        </p>
                         <mat-icon *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.CreateOrUpdateTasks)" (click)="openToDoEditingDialog(toDo)" class="todo-edit-icon">edit</mat-icon>
                       </div>
                     </div>

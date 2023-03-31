@@ -78,7 +78,7 @@ export class SettingsComponent implements OnInit {
 
   redirectIfDontHaveAccessToSettings() {
     if (!this.rolesService.userHasAtLeastOnePermissionForAllSettings(this.roles, this.deskUserService.getCurrentDeskUser(this.desk)!)) {
-      this.router.navigate(['/**']).then();
+      this.router.navigate(['/**'],{ skipLocationChange: true }).then();
     }
   }
 

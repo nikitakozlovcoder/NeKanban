@@ -14,7 +14,6 @@
 }
 .employees-settings {
   display: flex;
-  margin-bottom: 20px;
 }
 .employees-settings button {
   margin-left: auto;
@@ -38,7 +37,6 @@
   /*white-space:pre-wrap;*/
 }
 .user-select {
-  margin-top: 10px;
   width: 100%;
 }
 .todo-wrap {
@@ -58,6 +56,7 @@ mat-dialog-container {
 }
 .todo-creator-subtitle, .todo-creator-subtitle p {
   margin: 0;
+  font-weight: normal;
 }
 .assignees-title {
   margin: 0;
@@ -74,4 +73,10 @@ mat-dialog-container {
 }
 .todo-spinner-wrap {
   padding: 32px;
+}
+.employees-list a {
+  font-size: 14px;
+}
+.creator-name {
+  margin-bottom: 10px;
 }

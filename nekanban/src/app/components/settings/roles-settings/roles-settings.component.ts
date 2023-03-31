@@ -11,6 +11,7 @@ import { RolesService } from "../../../services/roles.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
+import {DialogService} from "../../../services/dialog.service";
 
 @Component({
   selector: 'app-roles-settings',
@@ -30,9 +31,11 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   constructor(public dialog: MatDialog,
               private readonly rolesService: RolesService,
               public snackBar: MatSnackBar,
-              public translate: TranslateService) { }
+              public readonly translate: TranslateService,
+              private readonly dialogService: DialogService) { }
 
   ngOnInit(): void {
+
   }
 
   ngOnChanges() {
@@ -88,9 +91,10 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
             this.currentRole = this.roles.find(x => x.isDefault);
           }
         },error: (error: HttpErrorResponse) => {
-          if (error.error === "CantDeleteRoleWhenAnyUserHasThisRole") {
+          this.dialogService.openToast(error.error);
+          /*if (error.error === "CantDeleteRoleWhenAnyUserHasThisRole") {
             this.snackBar.open('Невозможно удалить роль, на которую назначен хотя бы один пользователь!', undefined, {duration:2000, panelClass: ['big-sidenav']})
-          }
+          }*/
         }
       });
     });

@@ -19,7 +19,7 @@ import {environment} from "../../../../environments/environment";
   templateUrl: './todo-show.component.html',
   styleUrls: ['./todo-show.component.css']
 })
-export class TodoShowComponent implements AfterViewInit {
+export class TodoShowComponent implements OnInit {
 
   todo?: Todo;
   usersSelected : number[] = [];
@@ -36,13 +36,15 @@ export class TodoShowComponent implements AfterViewInit {
     this.dialogRef.beforeClosed().subscribe(() => this.closeDialog());
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.toDoService.getToDo(this.data.todoId).subscribe({
       next: value => {
         this.todo = value;
         this.todoLoaded.next(true);
         this.usersSelected = this.getIdsOfSelectedUsers();
+        this.users.patchValue(this.usersSelected);
         this.userSelected = this.getIdOfSingleUser();
+        this.user.patchValue(this.userSelected);
       }
     })
   }
@@ -83,7 +85,8 @@ export class TodoShowComponent implements AfterViewInit {
     return todoUsers;
   }
   getIdsOfSelectedUsers() : number[] {
-    let selectedUsers : User[] = this.getDeskUsers().filter(el => this.getAllTodoUsers().some(someEl => someEl.id === el.id) && this.todo!.toDoUsers.find(todoUser => todoUser.deskUser.user.id === el.id  && todoUser.toDoUserType != 0));
+    let selectedUsers : User[] = this.getDeskUsers().filter(el => this.getAllTodoUsers().some(someEl => someEl.id === el.id)
+      && this.todo!.toDoUsers.find(todoUser => todoUser.deskUser.user.id === el.id  && todoUser.toDoUserType != 0));
     let ids : number[] = [];
     selectedUsers.forEach( el => {
       ids.push(el.id);
@@ -137,7 +140,8 @@ export class TodoShowComponent implements AfterViewInit {
         }
       })
     })
-    this.usersSelected  = newIds;
+    this.usersSelected = newIds;
+    this.users.patchValue(this.usersSelected);
   }
 
   changeSingleUser(select:MatSelect) {

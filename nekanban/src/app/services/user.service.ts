@@ -11,30 +11,14 @@ import {UserStorageService} from "./userStorage.service";
 import {UserWithToken} from "../models/user-with-token";
 import {Token} from "../models/token";
 import {Desk} from "../models/desk";
+import {DialogService} from "./dialog.service";
 
 @Injectable()
 export class UserService {
 
-  openDialog(err?: string): void {
-    let errorType = ErrorTypes.Unknown;
-    switch (err) {
-      case ErrorCodes.DuplicateEmail:
-        errorType = ErrorTypes.DuplicateEmail;
-        break;
-      case ErrorCodes.ValidationError:
-        errorType = ErrorTypes.ValidationError;
-        break;
-    }
-
-    this.dialog.open(DialogComponent, {
-      width: '250px',
-      data: {errorType: errorType}
-    });
-  }
-
-  constructor(private router: Router,
-              public dialog: MatDialog,
-              private httpService: AppHttpService,
+  constructor(private readonly router: Router,
+              private readonly dialogService: DialogService,
+              private readonly httpService: AppHttpService,
               private userStorageService: UserStorageService) { }
 
   addUser(name: string, surname: string, email: string, password: string, personalDataAgreement: boolean) {
@@ -43,7 +27,7 @@ export class UserService {
       this.userStorageService.addUserToStorage(x);
       this.router.navigate(['']).then();
     }), catchError((err : HttpErrorResponse) => {
-      this.openDialog(err.error)
+      this.dialogService.openToast(err.error)
       return throwError(() => err);
     }))
   }
@@ -54,7 +38,7 @@ export class UserService {
       this.userStorageService.addUserToStorage(x);
       this.router.navigate(['']).then();
     }), catchError((err : HttpErrorResponse) => {
-      this.openDialog(ErrorCodes.ValidationError)
+      this.dialogService.openToast(ErrorCodes.ValidationError)
       return throwError(() => err);
     }))
   }

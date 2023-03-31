@@ -20,5 +20,11 @@
     "ManageRoles": "Управление ролями",
     "CreateOrUpdateTasks": "Создавать задачи и редактировать их",
     "AddOrUpdateOwnComments": "Создавать комментарии и редактировать их"
+  },
+  "Errors": {
+    "UnknownError": "Неизвестная ошибка",
+    "DuplicateEmail": "Учетная запись с таким адресом электронной почты уже существует!",
+    "ValidationError": "Неверные данные!",
+    "CantDeleteRoleWhenAnyUserHasThisRole": "Нельзя удалить роль, на которую назначен хотя бы один участник!"
   }
 }

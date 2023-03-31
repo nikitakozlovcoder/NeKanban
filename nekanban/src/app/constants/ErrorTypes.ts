@@ -1,7 +1,8 @@
 ﻿enum ErrorTypes {
   Unknown,
   ValidationError,
-  DuplicateEmail
+  DuplicateEmail,
+  CantDeleteRoleWhenAnyUserHasThisRole
 }
 
 export default ErrorTypes;

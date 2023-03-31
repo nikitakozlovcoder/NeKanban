@@ -36,8 +36,8 @@
         <mat-card-subtitle class="todo-creator-subtitle">
           <p>Создатель:</p>
         </mat-card-subtitle>
-        <ng-container *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</ng-container>
-        <ng-container *ngIf="getToDoCreator() === undefined">---</ng-container>
+        <p class="creator-name" *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</p>
+        <p class="creator-name" *ngIf="getToDoCreator() === undefined">---</p>
         <mat-card-subtitle>
           <div class="employees-settings" *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself) || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)">
             <mat-form-field class="user-select" appearance="fill">
@@ -51,7 +51,7 @@
             </mat-form-field>
           </div>
           <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
-          <h3 class="assignees-title">Назначенные исполнители:</h3>
+          <p class="assignees-title">Назначенные исполнители:</p>
           <mat-nav-list class ="employees-list">
             <mat-list-item *ngFor="let user of getToDoUsers()">
               <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
