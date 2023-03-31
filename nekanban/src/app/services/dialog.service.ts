@@ -19,9 +19,7 @@ export class DialogService {
       }
       this.translateService.get(`Errors.${errorCode}`).subscribe(result => {
         this.toastrService.error(result);
-      }, error => {
-        console.log("Translation error", error)
-      })
+      });
     }
   }
 }
