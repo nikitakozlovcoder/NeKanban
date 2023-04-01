@@ -4,7 +4,6 @@ using Batteries.Injection.Attributes;
 using Batteries.Mapper.AppMapper;
 using Batteries.Repository;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.Desks;
 using NeKanban.Common.DTOs.DesksUsers;
@@ -12,7 +11,7 @@ using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.Models.DeskUserModels;
-using NeKanban.Data.Infrastructure;
+using NeKanban.Data.Infrastructure.QueryFilters;
 using NeKanban.Logic.Services.MyDesks;
 using NeKanban.Logic.Services.Roles;
 
@@ -25,24 +24,33 @@ public class DeskUserService : IDeskUserService
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IMyDesksService _myDesksService;
     private readonly IRolesService _rolesService;
+    private readonly QueryFilterSettings _filterSettings;
 
     public DeskUserService(IRepository<DeskUser> deskUserRepository,
         IMyDesksService myDesksService,
         IAppMapper mapper,
-        IRolesService rolesService)
+        IRolesService rolesService,
+        QueryFilterSettings filterSettings)
     {
         _deskUserRepository = deskUserRepository;
         _myDesksService = myDesksService;
         _rolesService = rolesService;
+        _filterSettings = filterSettings;
     }
 
     public async Task CreateDeskUser(int deskId, int userId, bool isOwner, CancellationToken ct)
     {
-        var exists = await _deskUserRepository.QueryableSelect()
-            .AnyAsync(x => x.UserId == userId && x.DeskId == deskId, ct);
-        if (exists)
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
         {
-            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.UserAlreadyAddedToDesk);
+            DeskUserDeletedFilter = false
+        });
+        
+        var currDeskUser = await _deskUserRepository.SingleOrDefault(x => x.UserId == userId && x.DeskId == deskId, ct);
+        if (currDeskUser != null)
+        {
+            currDeskUser.IsDeleted = false;
+            await _deskUserRepository.Revoke(currDeskUser, ct);
+            return;
         }
 
         var deskUser = new DeskUser

@@ -70,6 +70,8 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
         modelBuilder.Entity<Comment>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.CommentDraftFilter || !x.IsDraft);
         modelBuilder.Entity<DeskUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.DeskUserDeletedFilter || !x.IsDeleted);
         modelBuilder.Entity<ToDoUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.DeskUserDeletedFilter || !x.DeskUser!.IsDeleted);
+        modelBuilder.Entity<CommentFileAdapter>().HasOne(x => x.Parent).WithMany(x => x.Files).OnDelete(DeleteBehavior.SetNull);
+        modelBuilder.Entity<ToDoFileAdapter>().HasOne(x => x.Parent).WithMany(x => x.Files).OnDelete(DeleteBehavior.SetNull);
         modelBuilder.Entity<ToDoUser>()
             .HasOne(x => x.ToDo)
             .WithMany(x => x.ToDoUsers)
@@ -82,6 +84,7 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
             .WithMany().OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<RolePermission>().HasIndex(x => new {x.RoleId, x.Permission}).IsUnique();
+        modelBuilder.Entity<DeskUser>().HasIndex(x => new {x.DeskId, x.UserId}).IsUnique();
     }
 
     private void OnSaveChanges()
