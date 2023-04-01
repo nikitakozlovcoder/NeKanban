@@ -78,7 +78,7 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
             next: (data: Todo) => {
               this.formSubmitLoaded.next(true);
               this.dialogRef.close(
-                new Todo(data.id, data.name, data.column, data.toDoUsers, data.order)
+                new Todo(data.id, data.name, data.column, data.toDoUsers, data.order, data.code)
               );
             }
           });

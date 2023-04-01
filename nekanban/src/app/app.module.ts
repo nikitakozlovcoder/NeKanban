@@ -54,6 +54,7 @@ import { DeskInfoComponent } from './components/partials/desk-info/desk-info.com
 import { RawHtmlViewerComponent } from './components/partials/raw-html-viewer/raw-html-viewer.component';
 import { TinymceEditorComponent } from './components/partials/tinymce-editor/tinymce-editor.component';
 import {ValidationService} from "./services/validation.service";
+import { TodoCodeComponent } from './components/partials/todo-code/todo-code.component';
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -100,6 +101,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     DeskInfoComponent,
     RawHtmlViewerComponent,
     TinymceEditorComponent,
+    TodoCodeComponent,
   ],
     imports: [
         BrowserAnimationsModule,
