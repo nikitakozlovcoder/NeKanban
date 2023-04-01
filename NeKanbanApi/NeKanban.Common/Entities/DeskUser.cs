@@ -3,7 +3,7 @@ using NeKanban.Common.Constants;
 
 namespace NeKanban.Common.Entities;
 
-public class DeskUser : IHasPk<int>
+public class DeskUser : IHasPk<int>, ISoftDeletable
 {
     public int Id { get; set; }
     public required int DeskId { get; set; }
@@ -15,4 +15,5 @@ public class DeskUser : IHasPk<int>
     public virtual Role? Role { get; set; }
     public virtual ApplicationUser? User { get; set; }
     public virtual Desk? Desk { get; set; }
+    public bool IsDeleted { get; set; }
 }

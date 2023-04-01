@@ -24,7 +24,6 @@ public class DeskUserService : IDeskUserService
 {
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IMyDesksService _myDesksService;
-    private readonly IAppMapper _mapper;
     private readonly IRolesService _rolesService;
 
     public DeskUserService(IRepository<DeskUser> deskUserRepository,
@@ -34,7 +33,6 @@ public class DeskUserService : IDeskUserService
     {
         _deskUserRepository = deskUserRepository;
         _myDesksService = myDesksService;
-        _mapper = mapper;
         _rolesService = rolesService;
     }
 

@@ -1,4 +1,5 @@
 ﻿using Batteries.Injection.Attributes;
+using Batteries.Repository;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,53 @@ namespace NeKanban.Data.Infrastructure;
 public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
 {
     private readonly QueryFilterSettings _filterSettings;
+    public DbSet<Desk>? Desk { get; set; }
+    public DbSet<DeskUser>? DeskUser { get; set; }
+    public DbSet<Column>? Column { get; set; }
+    public DbSet<ToDoUser>? ToDoUser { get; set; }
+    public DbSet<ToDo>? ToDo { get; set; }
+    public DbSet<Comment>? Comments { get; set; }
+    public DbSet<Role>? AppRoles  { get; set; }
+    public DbSet<RolePermission>? RolePermissions  { get; set; }
     public ApplicationContext(DbContextOptions<ApplicationContext> options, QueryFilterSettings filterSettings)
         : base(options)
     {
         _filterSettings = filterSettings;
+    }
+
+    public override int SaveChanges()
+    {
+        OnSaveChanges();
+        return base.SaveChanges();
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        OnSaveChanges();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        OnSaveChanges();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+    {
+        OnSaveChanges();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    public void Migrate()
+    {
+        Database.Migrate();
+    }
+
+    public void TestConnection()
+    {
+        Database.OpenConnection();
+        Database.CloseConnection();
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +68,8 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
         modelBuilder.Entity<ToDo>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.ToDoDraftFilter || !x.IsDraft);
         modelBuilder.Entity<ToDoUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.ToDoDraftFilter || !x.ToDo!.IsDraft);
         modelBuilder.Entity<Comment>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.CommentDraftFilter || !x.IsDraft);
+        modelBuilder.Entity<DeskUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.DeskUserDeletedFilter || !x.IsDeleted);
+        modelBuilder.Entity<ToDoUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.DeskUserDeletedFilter || !x.DeskUser!.IsDeleted);
         modelBuilder.Entity<ToDoUser>()
             .HasOne(x => x.ToDo)
             .WithMany(x => x.ToDoUsers)
@@ -38,23 +84,8 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
         modelBuilder.Entity<RolePermission>().HasIndex(x => new {x.RoleId, x.Permission}).IsUnique();
     }
 
-    public void Migrate()
+    private void OnSaveChanges()
     {
-        Database.Migrate();
+        ChangeTracker.AddSoftDelete();
     }
-
-    public void TestConnection()
-    {
-        Database.OpenConnection();
-        Database.CloseConnection();
-    }
-    
-    public DbSet<Desk>? Desk { get; set; }
-    public DbSet<DeskUser>? DeskUser { get; set; }
-    public DbSet<Column>? Column { get; set; }
-    public DbSet<ToDoUser>? ToDoUser { get; set; }
-    public DbSet<ToDo>? ToDo { get; set; }
-    public DbSet<Comment>? Comments { get; set; }
-    public DbSet<Role>? AppRoles  { get; set; }
-    public DbSet<RolePermission>? RolePermissions  { get; set; }
 }
