@@ -42,7 +42,7 @@ import { RoleUpdatingComponent } from './components/settings/dialogs/role-updati
 import { ConfirmationComponent } from './components/dialogs/confirmation/confirmation.component';
 import { PageNotFoundComponent } from './components/routing/page-not-found/page-not-found.component';
 import { SidenavComponent } from './components/partials/sidenav/sidenav.component';
-import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
+import {MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {AuthInterceptor} from "./interceptors/auth/auth.interceptor";
 import {EditorComponent, TINYMCE_SCRIPT_SRC} from "@tinymce/tinymce-angular";
@@ -55,6 +55,9 @@ import { RawHtmlViewerComponent } from './components/partials/raw-html-viewer/ra
 import { TinymceEditorComponent } from './components/partials/tinymce-editor/tinymce-editor.component';
 import {ValidationService} from "./services/validation.service";
 import { TodoCodeComponent } from './components/partials/todo-code/todo-code.component';
+import {DialogService} from "./services/dialog.service";
+import {ToastrModule} from "ngx-toastr";
+import {ErrorsMissingTranslationHandler} from "./services/errors-missing-translation-handler";
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -103,27 +106,28 @@ export function HttpLoaderFactory(http: HttpClient) {
     TinymceEditorComponent,
     TodoCodeComponent,
   ],
-    imports: [
-        BrowserAnimationsModule,
-        BrowserModule,
-        FormsModule,
-        HttpClientModule,
-        MatNativeDateModule,
-        MaterialExampleModule,
-        ReactiveFormsModule,
-        RouterModule.forRoot(appRoutes),
-        NgScrollbarModule,
-        MatListModule,
-        TranslateModule.forRoot({
-            defaultLanguage: 'ru',
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        }),
-        EditorComponent
-    ],
+  imports: [
+    BrowserAnimationsModule,
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    MatNativeDateModule,
+    MaterialExampleModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot(appRoutes),
+    NgScrollbarModule,
+    MatListModule,
+    TranslateModule.forRoot({
+      missingTranslationHandler: {provide: MissingTranslationHandler, useClass: ErrorsMissingTranslationHandler},
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
+    EditorComponent,
+    ToastrModule.forRoot()
+  ],
   providers: [
     UserService,
     DeskService,
@@ -140,6 +144,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateService,
     EditorConfigService,
     ValidationService,
+    DialogService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

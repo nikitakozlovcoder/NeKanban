@@ -38,7 +38,7 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
 
   constructor(private readonly editorConfigService: EditorConfigService,
               private readonly commentsService: CommentsService,
-              private readonly rolesService: RolesService,
+              public readonly rolesService: RolesService,
               private readonly validationService: ValidationService,
               public dialog: MatDialog) {
   }
@@ -66,10 +66,6 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
       }
     });
   });
-
-  checkUserPermission(deskUser: DeskUser, permissionName: string) {
-    return this.rolesService.userHasPermission(this.roles, deskUser, permissionName);
-  }
 
   setUpdateEditorLoaded() {
     this.commentUpdateEditorLoaded.next(true);
@@ -136,7 +132,7 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
         }
       })
     }
-    else if (this.checkUserPermission(this.deskUser!, 'DeleteAnyComments')) {
+    else if (this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.DeleteAnyComments)) {
       this.commentsService.deleteComment(id).subscribe({
         next: data => {
           this.commentDeleteLoaded.next(true);

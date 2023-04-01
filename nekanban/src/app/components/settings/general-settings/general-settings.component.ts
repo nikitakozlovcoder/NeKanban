@@ -12,6 +12,8 @@ import {environment} from "../../../../environments/environment";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
+import {User} from "../../../models/user";
+import {UserService} from "../../../services/user.service";
 
 @Component({
   selector: 'app-general-settings',
@@ -29,9 +31,9 @@ export class GeneralSettingsComponent implements OnInit {
   isNameUpdateLoaded = true;
   isLinkLoaded = true;
   name = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
-  constructor(private readonly rolesService: RolesService,
-              private readonly deskUserService: DeskUserService,
+  constructor(public readonly rolesService: RolesService,
               private readonly deskService: DeskService,
+              public readonly deskUserService: DeskUserService,
               public snackBar: MatSnackBar,
               private router: Router,
               public dialog: MatDialog) {
@@ -39,10 +41,6 @@ export class GeneralSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.name = new UntypedFormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
-  }
-
-  checkUserPermission(deskUser: DeskUser, permissionName: string) {
-    return this.rolesService.userHasPermission(this.roles, deskUser, permissionName);
   }
 
   getCurrentDesk() {

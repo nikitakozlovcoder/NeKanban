@@ -7,13 +7,13 @@
   <div class="single-user-container" *ngFor="let user of desk!.deskUsers; index as i">
     <div class="single-user">
       <p class="desk-user-name">{{user.user.name}} {{user.user.surname}}</p>
-      <div class="select" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
+      <div class="select" *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ChangeUserRole) && !desk!.deskUsers[i].isOwner">
         <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role.id">
           <option *ngFor="let role of roles" [value]="role.id">
             {{role.name}}
           </option>
         </select>
-        <svg *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
+        <svg *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ChangeUserRole) && !desk!.deskUsers[i].isOwner">
           <use xlink:href="#select-arrow-down"></use>
         </svg>
       </div>
@@ -26,10 +26,10 @@
       <div class="role-name" *ngIf="desk!.deskUsers[i].isOwner">
         Владелец
       </div>
-      <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
+      <div class="role-name" *ngIf="!rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ChangeUserRole) && !desk!.deskUsers[i].isOwner">
         {{desk!.deskUsers[i].role.name}}
       </div>
-      <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && !desk!.deskUsers[i].isOwner" (click)="removeUser([user.user.id])" matTooltip="Удалить пользователя">cancel</mat-icon>
+      <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.RemoveUsers) && !desk!.deskUsers[i].isOwner" (click)="removeUser([user.user.id])" matTooltip="Удалить пользователя">cancel</mat-icon>
     </div>
     <mat-divider></mat-divider>
   </div>
