@@ -9,7 +9,6 @@ COPY ["NeKanban.Security/NeKanban.Security.csproj", "NeKanban.Security/"]
 COPY ["NeKanban.Data/NeKanban.Data.csproj", "NeKanban.Data/"]
 COPY ["Batteries/Batteries.csproj", "Batteries/"]
 COPY ["NeKanban.Logic/NeKanban.Logic.csproj", "NeKanban.Logic/"]
-COPY ["NeKanban.FrameworkExceptions/NeKanban.FrameworkExceptions.csproj", "NeKanban.FrameworkExceptions/"]
 RUN dotnet restore "NeKanban.Seeder/NeKanban.Seeder.csproj"
 COPY . .
 WORKDIR "/src/NeKanban.Seeder"

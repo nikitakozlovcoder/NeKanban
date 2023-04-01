@@ -11,7 +11,6 @@ COPY ["NeKanban.Common/NeKanban.Common.csproj", "NeKanban.Common/"]
 COPY ["Batteries/Batteries.csproj", "Batteries/"]
 COPY ["NeKanban.Security/NeKanban.Security.csproj", "NeKanban.Security/"]
 COPY ["NeKanban.Data/NeKanban.Data.csproj", "NeKanban.Data/"]
-COPY ["NeKanban.FrameworkExceptions/NeKanban.FrameworkExceptions.csproj", "NeKanban.FrameworkExceptions/"]
 RUN dotnet restore "NeKanban.Api/NeKanban.Api.csproj"
 COPY . .
 WORKDIR "/src/NeKanban.Api"

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NeKanban.Data.Infrastructure;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NeKanban.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230401084347_AddIsDeletedToDeskUser")]
+    partial class AddIsDeletedToDeskUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -374,12 +377,11 @@ namespace NeKanban.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DeskId");
+
                     b.HasIndex("RoleId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("DeskId", "UserId")
-                        .IsUnique();
 
                     b.ToTable("DeskUser");
                 });
@@ -631,8 +633,7 @@ namespace NeKanban.Data.Migrations
 
                     b.HasOne("NeKanban.Common.Entities.Comment", "Parent")
                         .WithMany("Files")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("ParentId");
 
                     b.Navigation("File");
 
@@ -706,8 +707,7 @@ namespace NeKanban.Data.Migrations
 
                     b.HasOne("NeKanban.Common.Entities.ToDo", "Parent")
                         .WithMany("Files")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("ParentId");
 
                     b.Navigation("File");
 

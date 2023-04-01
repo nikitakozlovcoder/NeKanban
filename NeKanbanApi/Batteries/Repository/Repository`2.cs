@@ -72,6 +72,12 @@ public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TP
         return items;
     }
 
+    public async Task Revoke<T>(T entity, CancellationToken ct) where T : TEntity, ISoftDeletable
+    {
+        entity.IsDeleted = false;
+        await Update(entity, ct);
+    }
+
     public async Task<TEntity> Remove(int id, CancellationToken ct)
     {
         var item = await Single(x => x.Id.Equals(id), ct);

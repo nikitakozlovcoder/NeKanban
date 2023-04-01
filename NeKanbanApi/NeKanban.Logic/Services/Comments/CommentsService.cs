@@ -84,22 +84,26 @@ public class CommentsService : ICommentsService
 
     public async Task<List<CommentDto>> ApplyDraft(int commentId, ApplicationUser user, CancellationToken ct)
     {
-        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        int todoId;
+        using (_filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+               {
+                   CommentDraftFilter = false
+               }))
         {
-            CommentDraftFilter = false
-        });
+            var comment = await _commentsRepository.Single(x => x.IsDraft && x.DeskUser != null
+                                                                          && x.DeskUser.UserId == user.Id && x.Id == commentId, ct);
+            await _commentValidator.ValidateOrThrow(new CommentValidationModel
+            {
+                Body = comment.Body
+            }, ct);
         
-        var comment = await _commentsRepository.Single(x => x.IsDraft && x.DeskUser != null
-                                                                && x.DeskUser.UserId == user.Id && x.Id == commentId, ct);
-        await _commentValidator.ValidateOrThrow(new CommentValidationModel
-        {
-            Body = comment.Body
-        }, ct);
+            comment.CreatedAtUtc = DateTime.UtcNow;
+            comment.IsDraft = false;
+            await _commentsRepository.Update(comment, ct);
+            todoId = comment.ToDoId;
+        }
         
-        comment.CreatedAtUtc = DateTime.UtcNow;
-        comment.IsDraft = false;
-        await _commentsRepository.Update(comment, ct);
-        return await GetComments(comment.ToDoId, ct);
+        return await GetComments(todoId, ct);
     }
 
     public async Task<List<CommentDto>> Update(int commentId, ApplicationUser user, CommentUpdateModel model, CancellationToken ct)
