@@ -6,17 +6,7 @@
 
     <mat-sidenav-content>
       <app-header [currentUser]="getCurrentUser()" [(opened)]="opened" [(desks)]="desks" [currentDeskId]="getCurrentDesk()?.id"></app-header>
-      <mat-card>
-        <mat-card-title-group>
-          <mat-card-title>
-            <p class="desk-name">{{desk?.name}}</p>
-          </mat-card-title>
-          <mat-card-subtitle>
-            <p *ngIf="getDeskOwner()">Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
-          </mat-card-subtitle>
-          <button *ngIf="desk" class="settings-button" [routerLink]="['/desks', desk!.id, 'settings']" mat-raised-button color="primary">Настройки<mat-icon>settings</mat-icon></button>
-        </mat-card-title-group>
-      </mat-card>
+      <app-desk-info [settingsLink]="['/desks', desk!.id, 'settings']" [desk]="desk"></app-desk-info>
 
       <mat-card class = "desk-cards">
         <mat-card-title>

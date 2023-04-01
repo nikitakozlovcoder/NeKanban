@@ -1,19 +1,32 @@
-<div *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap">
+<ng-scrollbar *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap" [autoHeightDisabled]="false" [autoWidthDisabled]="false">
   <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
-  <mat-card class = "column-card">
-    <div>
-      <mat-card-title>
-        <p>{{todo!.name}}</p>
-      </mat-card-title>
+  <div class="todo-container">
+    <mat-card class = "column-card">
+      <div>
+        <mat-card-title>
+          <p>{{todo!.name}}</p>
+        </mat-card-title>
 
-      <mat-card-content>
-        <mat-card-subtitle>
-          <p>Описание:</p>
-        </mat-card-subtitle>
-        <div class="description">{{todo!.body}}</div>
-      </mat-card-content>
-    </div>
+        <mat-card-content>
+          <mat-card-subtitle>
+            <p>Описание:</p>
+          </mat-card-subtitle>
+          <app-raw-html-viewer [html]="todo!.body"></app-raw-html-viewer>
+          <!--<editor class="description"
+                  [disabled]="true"
+                  [init]="{
+                  menubar: false,
+                  toolbar: false,
+                  branding: false,
+        base_url: '/tinymce',
+        suffix: '.min',
+        plugins: '' }"
+          ></editor>-->
+        </mat-card-content>
+      </div>
 
+
+    </mat-card>
     <mat-card class = "task-settings-card">
       <mat-card-title>
         <p>Свойства задания</p>
@@ -47,75 +60,12 @@
         </mat-card-subtitle>
       </mat-card-content>
     </mat-card>
-  </mat-card>
-  <mat-card class="comments-card">
-    <mat-card-title class="comments-card-title">
-      Комментарии
-      <mat-icon (click)="toggleCommentsOrder()" *ngIf="isSortDescending" matTooltip="От новых к старым">arrow_downward</mat-icon>
-      <mat-icon (click)="toggleCommentsOrder()" *ngIf="!isSortDescending" matTooltip="От старых к новым">arrow_upward</mat-icon>
-    </mat-card-title>
+  </div>
 
-    <div class="comment-field-group" *ngIf="checkUserPermission(data.deskUser, 'AddComments')">
-      <mat-form-field appearance="fill">
-        <mat-label>Оставьте свой комментарий!</mat-label>
-        <textarea cdkTextareaAutosize
-                  cdkAutosizeMinRows="1"
-                  cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentInput" matInput placeholder="Текст комментария" required></textarea>
-        <mat-error *ngIf="commentInput.errors?.['required']">Поле не должно быть пустым!</mat-error>
-        <mat-error *ngIf="commentInput.errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
-      </mat-form-field>
-      <button *ngIf="commentsSendingLoaded | async" mat-raised-button color="primary" (click)="createComment()"><mat-icon>send</mat-icon></button>
-      <mat-spinner class="comments-sending-spinner" diameter="24" *ngIf="!(commentsSendingLoaded | async)"></mat-spinner>
-    </div>
-
-    <ng-scrollbar *ngIf="commentsLoaded | async; else commentsNotLoaded" [autoHeightDisabled]="false" class="comments-section">
-      <mat-card class="single-comment-card" *ngFor="let comment of comments; index as i">
-        <ng-container *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Show">
-          <div class="comment-properties-group">
-            <div class="comment-upper-group">
-              <div class="comment-author-name">
-                <b *ngIf="comment.deskUser != null">{{comment.deskUser.user.name}}</b>
-                <b *ngIf="comment.deskUser === null">Пользователь удален</b><span> оставил(а) комментарий
-                {{comment.createdAtUtc.toLocaleDateString('ru')}} в {{comment.createdAtUtc.toLocaleTimeString('ru')}}</span>
-              </div>
-              <div class="comment-controls">
-                <mat-icon *ngIf="checkUserPermission(data.deskUser, 'UpdateOwnComments') &&
-                comment.deskUser.user.id == data.deskUser.user.id"
-                          class="clickable-icon" (click)="showCommentUpdateForm(i)">edit</mat-icon>
-                <mat-icon *ngIf="checkUserPermission(data.deskUser, 'DeleteOwnComments') &&
-                comment.deskUser.user.id == data.deskUser.user.id ||
-                checkUserPermission(data.deskUser, 'DeleteAnyComments')" class="clickable-icon"
-                          (click)="deleteComment(comment.id)">delete</mat-icon>
-              </div>
-            </div>
-          </div>
-          <div class="comment-text">{{comment.body}}</div>
-        </ng-container>
-        <div class="comment-updating-group" *ngIf="commentsUpdatingStates[i] === ViewStateTypes.Update">
-          <mat-form-field class="comment-updating-field" appearance="fill">
-            <mat-label>Редактирование комментария</mat-label>
-            <textarea cdkTextareaAutosize
-                      cdkAutosizeMinRows="1"
-                      cdkAutosizeMaxRows="6" class="comment-area" [formControl]="commentUpdatingFields[i]" matInput placeholder="Текст комментария" required></textarea>
-            <mat-error *ngIf="commentUpdatingFields[i].errors?.['required']">Поле не должно быть пустым!</mat-error>
-            <mat-error *ngIf="commentUpdatingFields[i].errors?.['minlength']">Длина комментария должна быть не менее 10 символов!</mat-error>
-          </mat-form-field>
-          <mat-icon *ngIf="(commentsUpdateLoaded[i] | async)" class="comment-update-icon clickable-icon" (click)="updateComment(comment.id, i)">done</mat-icon>
-          <mat-spinner *ngIf="!(commentsUpdateLoaded[i] | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
-          <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField(i)">close</mat-icon>
-
-        </div>
-      </mat-card>
-    </ng-scrollbar>
-    <ng-template #commentsNotLoaded>
-      <div>
-        <mat-spinner class="spinner-centered" diameter="40"></mat-spinner>
-      </div>
-    </ng-template>
-  </mat-card>
-</div>
+  <app-all-comments [roles]="data.roles" [todoId]="data.todoId" [deskUser]="data.deskUser"></app-all-comments>
+</ng-scrollbar>
 <ng-template #todoShowNotLoaded>
-  <div class="todo-wrap">
+  <div class="todo-spinner-wrap">
     <mat-spinner class="spinner-centered" diameter="50"></mat-spinner>
   </div>
 </ng-template>

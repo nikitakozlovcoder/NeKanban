@@ -59,7 +59,10 @@ export class UserService {
   }
 
   logoutUser() {
-    this.userStorageService.removeUserFromStorage();
+    const body = {refreshToken: this.userStorageService.getRefreshToken()};
+    return this.httpService.post(`Users/Logout`, body).pipe(tap( () => {
+      this.userStorageService.removeUserFromStorage();
+    }));
   }
 
   refreshToken() {

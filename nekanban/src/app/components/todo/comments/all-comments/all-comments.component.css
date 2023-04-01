@@ -1,0 +1,36 @@
+.comments-card {
+  margin-top: 10px;
+}
+.comments-card button {
+  margin-left: 10px;
+  border-radius: 50%;
+  min-width: 48px;
+  width: 48px;
+  height: 48px;
+}
+.comments-card button mat-icon {
+  margin-left: -2px;
+}
+.comment-field-group {
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-end;
+}
+.comments-card-title {
+  display: flex;
+}
+.comments-card-title mat-icon {
+  margin-left: 15px;
+  cursor: pointer;
+}
+mat-dialog-container {
+  padding: 0;
+}
+.comments-card .comments-sending-spinner {
+  margin-left: 10px;
+}
+.comment-area {
+  width: 100%;
+}

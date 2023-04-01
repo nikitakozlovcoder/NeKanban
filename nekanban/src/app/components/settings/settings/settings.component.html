@@ -1,12 +1,12 @@
 <div *ngIf="isLoaded && desk && desks.length">
   <mat-sidenav-container class="example-container" >
-    <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
+    <!--<mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
                  (closed)="events.push('close!')">
       <h2 class="mat-h2">Мои доски</h2>
       <div class="sidenav-container">
         <mat-nav-list>
           <mat-list-item *ngFor="let desk of desks; index as i">
-            <!--<a *ngIf="isCurrentDesk(i)" matLine (click) = "changeDesk(i)"><mat-icon>check_box</mat-icon>{{ desk.name }} {{desk.id}}<mat-divider></mat-divider></a>-->
+
             <a matLine (click) = "changeDesk(desk.id)">{{ desk.name }}<mat-divider></mat-divider></a>
           </mat-list-item>
 
@@ -15,24 +15,14 @@
           <button class = "register_button create-desk-button" mat-raised-button color="primary" (click)="showDeskCreation()">Создать доску</button>
         </div>
       </div>
+    </mat-sidenav>-->
+    <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened" >
+      <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <p>
-        <app-header [currentUser]="getCurrentUser()" [sidenav]="sidenav" [(desks)]="desks" [currentDeskId]="getCurrentDesk()!.id"></app-header>
-      </p>
-      <mat-card>
-        <mat-card-title-group>
-          <mat-card-title class="settings-desk-name">
-            <mat-icon [routerLink]="['/desks', this.desk.id]">arrow_back</mat-icon>
-            <p class="desk-name">{{desk?.name}}</p>
-          </mat-card-title>
-          <mat-card-subtitle *ngIf="getDeskOwner()">
-            <p>Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
-          </mat-card-subtitle>
-        </mat-card-title-group>
-
-      </mat-card>
+      <app-header [currentUser]="getCurrentUser()" [(opened)]="opened" [(desks)]="desks" [currentDeskId]="getCurrentDesk()?.id"></app-header>
+      <app-desk-info [returnLink]="['/desks', this.desk.id]" [desk]="desk"></app-desk-info>
 
       <mat-tab-group class="mat-tab-group-wrap" animationDuration="0ms">
         <mat-tab label="Общие" *ngIf="hasAnyPermissionsForGeneralSettings()">
@@ -53,7 +43,7 @@
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" #sidenav mode="over" [(opened)]="opened" (opened)="events.push('open!')"
                  (closed)="events.push('close!')">
-      <h2 class="mat-h2">Мои доски</h2>
+      <p class="h-minor-title">Мои доски</p>
       <div class="sidenav-container">
         <mat-nav-list>
           <!--<a mat-list-item *ngFor="let desk of desks"> {{ desk.name }}<mat-divider></mat-divider> </a>-->

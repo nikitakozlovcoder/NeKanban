@@ -17,8 +17,8 @@ export class AppHttpService {
     return this.http.get<T>(`${this.baseUrl}${action}`, {params: query});
   }
 
-  put<T>(action: string, body: {}|null) {
-    return this.http.put<T>(`${this.baseUrl}${action}`, body);
+  put<T>(action: string, body: {}|null, options?: {}) {
+    return this.http.put<T>(`${this.baseUrl}${action}`, body, options);
   }
 
   delete<T>(action: string, body: {}|null = null) {

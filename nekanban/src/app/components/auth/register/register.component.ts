@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormGroup, UntypedFormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import {FormControl, FormGroup, UntypedFormControl, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import {BehaviorSubject} from "rxjs";
 
@@ -10,28 +10,33 @@ import {BehaviorSubject} from "rxjs";
 })
 export class RegisterComponent implements OnInit {
   busy = new BehaviorSubject(false);
+
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
+    this.registerFormGroup.controls.password_confirmation.addValidators(this.passwordMatchValidator(this.registerFormGroup.controls.password));
   }
 
   hide = true;
   hideConfirm = true;
 
-  email = new UntypedFormControl('', [Validators.required, Validators.email]);
-  name = new UntypedFormControl('', [Validators.required]);
-  surname = new UntypedFormControl('', [Validators.required]);
-  password = new UntypedFormControl('', [Validators.required, Validators.minLength(8)]);
-  password_confirmation = new UntypedFormControl('', [Validators.required, this.passwordMatchValidator(this.password)]);
-  userAgreement = new UntypedFormControl(false, [Validators.requiredTrue]);
+  registerFormGroup = new FormGroup({
+    email: new FormControl<string>('', [Validators.required, Validators.email]),
+    name: new FormControl<string>('', [Validators.required]),
+    surname: new FormControl<string>('', [Validators.required]),
+    password: new FormControl<string>('', [Validators.required, Validators.minLength(6)]),
+    password_confirmation: new FormControl<string>('', [Validators.required]),
+    userAgreement: new FormControl<boolean>(false, [Validators.requiredTrue]),
+  });
+
 
 
   getEmailErrorMessage() {
-    if (this.email.hasError('required')) {
+    if (this.registerFormGroup.controls.email.hasError('required')) {
       return 'Поле не должно быть пустым!';
     }
 
-    return this.email.hasError('email') ? 'Некорректный email' : '';
+    return this.registerFormGroup.controls.email.hasError('email') ? 'Некорректный email' : '';
   }
   passwordMatchValidator (password: UntypedFormControl) : ValidatorFn {
     return (passwordConfirmation) => {
@@ -43,17 +48,14 @@ export class RegisterComponent implements OnInit {
   };
 
   registerUser() {
-    if (this.email.invalid || this.name.invalid || this.surname.invalid || this.password.invalid ||
-      this.password_confirmation.invalid || this.userAgreement.invalid) {
-      this.name.markAsTouched();
-      this.surname.markAsTouched();
-      this.email.markAsTouched();
-      this.password.markAsTouched();
-      this.password_confirmation.markAsTouched();
-      this.userAgreement.markAsTouched();
+    if (this.registerFormGroup.invalid) {
+      this.registerFormGroup.markAsTouched();
+      this.registerFormGroup.controls.userAgreement.markAsTouched();
     } else {
       this.busy.next(true);
-      this.userService.addUser(this.name.value, this.surname.value, this.email.value, this.password.value, this.userAgreement.value).subscribe({
+      this.userService.addUser(this.registerFormGroup.value.name!,this.registerFormGroup.value.surname!,
+        this.registerFormGroup.value.email!, this.registerFormGroup.value.password!,
+        this.registerFormGroup.value.userAgreement!).subscribe({
         next: () => this.busy.next(false),
         error: () => this.busy.next(false)
       });

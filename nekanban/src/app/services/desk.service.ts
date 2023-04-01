@@ -35,6 +35,10 @@ export class DeskService {
     return this.httpService.put<Desk>("Desks/InviteLink/" + deskId, {action: InviteLinkAction.Generate});
   }
 
+  removeLink(deskId: number) {
+    return this.httpService.put<Desk>("Desks/InviteLink/" + deskId, {action: InviteLinkAction.Remove});
+  }
+
   inviteByLink(guid: number) {
     return this.httpService.put<Desk>("DesksUsers/AddUserByLink/", {uid: guid});
   }

@@ -9,6 +9,10 @@ export class UserStorageService {
     this.setTokens(user.token);
   }
 
+  getUserFromStorage() {
+    return localStorage.getItem("currentUser");
+  }
+
   setTokens(token: Token) {
     localStorage.setItem("accessToken", token.accessToken);
     localStorage.setItem("refreshToken", token.refreshToken);
