@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {UntypedFormControl, ValidationErrors, Validators} from '@angular/forms';
+import {FormControl, FormGroup, UntypedFormControl, ValidationErrors, Validators} from '@angular/forms';
 import {UserService} from "../../../services/user.service";
 import {BehaviorSubject, mergeMap, of} from "rxjs";
 
@@ -16,24 +16,23 @@ export class LoginComponent implements OnInit {
   }
 
   hide = true;
-  email = new UntypedFormControl('', [Validators.required, Validators.email]);
-  password = new UntypedFormControl('', [Validators.required]);
+  loginFormGroup = new FormGroup({
+    email: new FormControl<string>('', [Validators.required, Validators.email]),
+    password: new FormControl<string>('', [Validators.required])
+  });
+
 
   getEmailErrorMessage() {
-    if (this.email.hasError('required')) {
+    if (this.loginFormGroup.controls.email.hasError('required')) {
       return 'Поле не должно быть пустым!';
     }
 
-    return this.email.hasError('email') ? 'Некорректный email' : '';
-  }
-
-  getRequiredErrorMessage() {
-    return 'Поле не должно быть пустым!';
+    return this.loginFormGroup.controls.email.hasError('email') ? 'Некорректный email' : '';
   }
 
   makeLogin() {
     this.busy.next(true);
-    this.userService.loginUser(this.email.value, this.password.value).subscribe({
+    this.userService.loginUser(this.loginFormGroup.value.email!, this.loginFormGroup.value.password!).subscribe({
       next: () => this.busy.next(false),
       error: () => this.busy.next(false)
     });

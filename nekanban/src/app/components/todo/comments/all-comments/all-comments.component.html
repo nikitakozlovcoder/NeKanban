@@ -1,0 +1,36 @@
+<mat-card class="comments-card">
+  <mat-card-title class="comments-card-title">
+    Комментарии
+    <mat-icon (click)="toggleCommentsOrder()" *ngIf="isSortDescending" matTooltip="От новых к старым">arrow_downward</mat-icon>
+    <mat-icon (click)="toggleCommentsOrder()" *ngIf="!isSortDescending" matTooltip="От старых к новым">arrow_upward</mat-icon>
+  </mat-card-title>
+
+  <div class="comment-field-group" *ngIf="checkUserPermission(deskUser!, 'AddComments')">
+    <div class="comment-area">
+      <mat-label>Оставьте свой комментарий!</mat-label>
+      <mat-spinner *ngIf="!(editorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
+      <!--<editor [formControl]="commentInput"
+              (onInit)="setLoaded()"
+              (onAddUndo)="updateCommentDraft()"
+              [init]="editorConfig"
+              id="comment-tinymce"
+      ></editor>-->
+      <app-tinymce-editor [(editorFormControl)]="commentInput" [imageUploadHandler]="imageUploadHandler"
+                          [editorId]="'comment-tinymce' + this.todoId!.toString()"
+                          (editorOnInit)="setLoaded()"></app-tinymce-editor>
+    </div>
+    <button *ngIf="commentsSendingLoaded | async" mat-raised-button color="primary" (click)="createComment()"><mat-icon>send</mat-icon></button>
+    <mat-spinner class="comments-sending-spinner" diameter="40" *ngIf="!(commentsSendingLoaded | async)"></mat-spinner>
+  </div>
+  <mat-error *ngIf="commentInput.errors?.['commentRequired']">Поле не должно быть пустым!</mat-error>
+  <mat-error *ngIf="commentInput.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
+
+  <div *ngIf="commentsLoaded | async; else commentsNotLoaded" class="comments-section">
+    <app-single-comment *ngFor="let comment of comments" [comment]="comment" [toggleComments]="toggleComments.asObservable()" (commentsDeletion)="handleCommentDeletion($event)" [roles]="roles" [deskUser]="deskUser"></app-single-comment>
+  </div>
+  <ng-template #commentsNotLoaded>
+    <div>
+      <mat-spinner class="spinner-centered" diameter="40"></mat-spinner>
+    </div>
+  </ng-template>
+</mat-card>

@@ -232,6 +232,9 @@ mat-card-title p {
   margin: 0 auto 0 0;
 }
 
+.todo-name {
+  cursor: pointer;
+}
 .desk-name {
   padding-bottom: 5px;
 }
@@ -299,14 +302,9 @@ mat-card-title mat-spinner {
   --scrollbar-padding: -6px;
   --scrollbar-size: 8px;
 }
-
-
-.settings-button {
-  height: min-content;
-}
-.settings-button mat-icon {
-  margin-left: 8px;
-}
 mat-card-title-group {
   align-items: center;
+}
+.todo-edit-icon {
+  cursor: pointer;
 }

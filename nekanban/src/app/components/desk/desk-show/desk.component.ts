@@ -19,6 +19,7 @@ import {DeskUser} from "../../../models/deskUser";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
 import { BehaviorSubject, combineLatest, map } from "rxjs";
+import {UserStorageService} from "../../../services/userStorage.service";
 
 @Component({
   selector: 'app-desk',
@@ -52,11 +53,13 @@ export class DeskComponent implements OnInit {
               private readonly todoService: TodoService,
               private readonly rolesService: RolesService,
               private readonly deskUserService: DeskUserService,
-              private readonly route: ActivatedRoute) { }
+              private readonly route: ActivatedRoute,
+              private readonly userStorageService: UserStorageService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       if (params['id'] === undefined) {
+        console.log("undefined")
         this.deskService.getDesks().subscribe(result => {
           if (result.length == 0) {
             this.desks = result;
@@ -74,6 +77,7 @@ export class DeskComponent implements OnInit {
         });
       }
       else {
+        console.log("Id from params: " + params['id'])
         this.loadDesks(parseInt(params['id']));
       }
     });
@@ -297,8 +301,7 @@ export class DeskComponent implements OnInit {
 
 
   getCurrentUser() {
-    //TODO move to service
-    return JSON.parse(localStorage.getItem("currentUser")!);
+    return JSON.parse(this.userStorageService.getUserFromStorage()!);
   }
 
   getToDos(deskId: number) {
@@ -338,7 +341,7 @@ export class DeskComponent implements OnInit {
   openToDoCreationDialog() {
     const dialogRef = this.dialog.open(TodoCreationComponent, {
       data: {deskId: this.desk?.id, isEdit: false},
-      width: '400px'
+      width: '600px'
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
@@ -363,7 +366,7 @@ export class DeskComponent implements OnInit {
   openToDoEditingDialog(todo: Todo) {
     const dialogRef = this.dialog.open(TodoEditingComponent, {
       data: {deskId: this.desk?.id, toDo: todo},
-      width: '400px'
+      width: '600px'
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result !== undefined) {

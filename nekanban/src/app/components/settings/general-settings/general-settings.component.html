@@ -1,6 +1,6 @@
 <mat-card class = "settings-card">
   <mat-card-content *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateGeneralDesk')">
-    <h2>Обновление названия доски</h2>
+    <h2 class="h-minor-title">Обновление названия доски</h2>
     <div class="desk-name-update-group">
       <mat-form-field class="desk-name-update-field" appearance="fill">
         <mat-label>Название доски</mat-label>
@@ -13,64 +13,15 @@
     </div>
 
     <mat-card-subtitle *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ViewInviteLink')" class="invite-link">
-      <h2 class="invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</h2>
-      <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, {duration:2000})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>
-      <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageInviteLink') && !hasInviteLink() && isLinkLoaded" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
-      <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isLinkLoaded"></mat-spinner>
+      <p class="h-minor-title invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
+      <div class="invite-link-content">
+        <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, {duration:2000})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>
+        <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageInviteLink') && !hasInviteLink() && isLinkLoaded" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
+        <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageInviteLink') && hasInviteLink() && isLinkLoaded" class = "remove-link-button" mat-raised-button color="primary" (click)="removeLink()">Удалить ссылку</button>
+        <mat-spinner class="link-remove-spinner" diameter="36" *ngIf="!isLinkLoaded"></mat-spinner>
+      </div>
     </mat-card-subtitle>
-    <!--<mat-expansion-panel (opened)="panelOpenState = true"
-                         (closed)="panelOpenState = false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Пользователи
-        </mat-panel-title>
-        <mat-panel-description>
-
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <mat-nav-list>
-        <ng-scrollbar class ="users-list" [autoHeightDisabled]="false">
-          <mat-spinner class="spinner-centered" *ngIf="!isUserRemoveLoaded" diameter="20"></mat-spinner>
-          <mat-list-item class="single-user" *ngFor="let user of desk!.deskUsers; index as i">
-            <p class="desk-user-name">{{user.user.name}} {{user.user.surname}}</p>
-            <div class="select" *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
-              <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role.id">
-                <option *ngFor="let role of roles" [value]="role.id">
-                  {{role.name}}
-                </option>
-              </select>
-              <svg *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
-                <use xlink:href="#select-arrow-down"></use>
-              </svg>
-            </div>
-            <svg class="sprites">
-              <symbol id="select-arrow-down" viewbox="0 0 10 6">
-                <polyline points="1 1 5 5 9 1"></polyline>
-              </symbol>
-            </svg>
-
-            <div class="role-name" *ngIf="desk!.deskUsers[i].isOwner">
-              Владелец
-            </div>
-            <div class="role-name" *ngIf="!checkUserPermission(getCurrentDesk()!.deskUser, 'ChangeUserRole') && !desk!.deskUsers[i].isOwner">
-              {{desk!.deskUsers[i].role.name}}
-            </div>
-            <div>
-              <mat-icon class="cancel-icon" *ngIf="isUserRemoveLoaded && checkUserPermission(getCurrentDesk()!.deskUser, 'RemoveUsers') && !desk!.deskUsers[i].isOwner" (click)="removeUser([user.user.id])">cancel</mat-icon>
-            </div>
-
-
-
-            <mat-divider></mat-divider>
-          </mat-list-item>
-        </ng-scrollbar>
-
-
-      </mat-nav-list>
-    </mat-expansion-panel>-->
     <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'DeleteDesk') && isRemoveDeskLoaded" class = "desk-remove-button" mat-raised-button color="warn" (click)="removeDesk(desk!.id)"><mat-icon>delete</mat-icon>Удалить доску</button>
     <mat-spinner class="spinner-centered" color="warn" diameter="36" *ngIf="!isRemoveDeskLoaded"></mat-spinner>
   </mat-card-content>
-
-
 </mat-card>

@@ -1,0 +1,22 @@
+.settings-desk-name {
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 13px;
+  align-items: center;
+}
+.settings-desk-name mat-icon {
+  cursor: pointer;
+}
+.desk-name {
+  margin-bottom: 0;
+}
+.settings-button {
+  height: min-content;
+}
+.settings-button mat-icon {
+  margin-left: 8px;
+}
+.desk-info-group {
+  display: flex;
+  align-items: center;
+}

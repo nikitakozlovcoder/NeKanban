@@ -1,0 +1,14 @@
+<mat-card>
+  <mat-card-title-group class="desk-info-group">
+    <mat-card-title class="settings-desk-name">
+      <mat-icon *ngIf="returnLink" [routerLink]="returnLink">arrow_back</mat-icon>
+      <p class="desk-name">{{desk?.name}}</p>
+    </mat-card-title>
+    <mat-card-subtitle>
+      <p *ngIf="getDeskOwner()">Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
+    </mat-card-subtitle>
+    <button *ngIf="settingsLink" class="settings-button" [routerLink]="settingsLink" mat-raised-button color="primary">Настройки
+      <mat-icon>settings</mat-icon>
+    </button>
+  </mat-card-title-group>
+</mat-card>

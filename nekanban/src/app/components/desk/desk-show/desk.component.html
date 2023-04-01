@@ -6,17 +6,7 @@
 
     <mat-sidenav-content>
       <app-header [currentUser]="getCurrentUser()" [(opened)]="opened" [(desks)]="desks" [currentDeskId]="getCurrentDesk()?.id"></app-header>
-      <mat-card>
-        <mat-card-title-group>
-          <mat-card-title>
-            <p class="desk-name">{{desk?.name}}</p>
-          </mat-card-title>
-          <mat-card-subtitle>
-            <p *ngIf="getDeskOwner()">Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
-          </mat-card-subtitle>
-          <button *ngIf="desk" class="settings-button" [routerLink]="['/desks', desk!.id, 'settings']" mat-raised-button color="primary">Настройки<mat-icon>settings</mat-icon></button>
-        </mat-card-title-group>
-      </mat-card>
+      <app-desk-info *ngIf="desk" [settingsLink]="['/desks', desk!.id, 'settings']" [desk]="desk"></app-desk-info>
 
       <mat-card class = "desk-cards">
         <mat-card-title>
@@ -62,8 +52,8 @@
                       (cdkDropListDropped)="drop($event, column.id)">
                       <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="!checkUserPermission(getCurrentDesk()!.deskUser, 'MoveTasks')" >
                         <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="red-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
-                        <p (click)="openTaskShowingDialog(toDo)" class="todo-name">{{toDo.name}}</p>
-                        <mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)">edit</mat-icon>
+                        <p (click)="openTaskShowingDialog(toDo)" class="todo-name"><app-todo-code [todoCode]="toDo.code"></app-todo-code>{{toDo.name}}</p>
+                        <mat-icon *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateTask')" (click)="openToDoEditingDialog(toDo)" class="todo-edit-icon">edit</mat-icon>
                       </div>
                     </div>
                   </mat-card-content>

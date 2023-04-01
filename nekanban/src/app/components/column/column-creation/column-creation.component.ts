@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {UntypedFormControl, Validators} from "@angular/forms";
+import {FormControl, UntypedFormControl, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ColumnService} from "../../../services/column.service";
 import {Column} from "../../../models/column";
@@ -15,7 +15,7 @@ export class ColumnCreationComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  name = new UntypedFormControl('', [Validators.required, Validators.minLength(3)]);
+  name = new FormControl<string>('', [Validators.required, Validators.minLength(3)]);
   isLoaded = true;
 
   createColumn() {
@@ -24,7 +24,7 @@ export class ColumnCreationComponent implements OnInit {
     }
     else {
       this.isLoaded = false;
-      this.columnService.addColumn(this.data.deskId, this.name.value).subscribe({
+      this.columnService.addColumn(this.data.deskId, this.name.value!).subscribe({
         next: (data: Column[]) => {
           this.isLoaded = true;
           this.dialogRef.close(data);

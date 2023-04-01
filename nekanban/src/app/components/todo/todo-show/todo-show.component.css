@@ -1,9 +1,12 @@
 .column-card {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  min-width: 500px;
 }
 .task-settings-card {
-  min-width: 300px;
+  min-width: 250px;
+  margin-left: 10px;
 }
 .employees-list {
   max-height: 300px;
@@ -30,76 +33,18 @@
   margin-left: auto;
 }
 .description {
-  min-width: 300px;
   max-width: 700px;
   padding-right: 15px;
-  white-space:pre-wrap;
-}
-.comments-card {
-  margin-top: 10px;
-}
-.comments-card mat-form-field {
-  width: 100%;
-}
-.comments-card button {
-  margin-bottom: 1.34375em;
-  margin-left: 10px;
-  border-radius: 50%;
-  min-width: 48px;
-  width: 48px;
-  height: 48px;
-}
-
-.comments-card button mat-icon {
-  margin-left: -2px;
-}
-
-.comment-field-group {
-  margin-top: 20px;
-  display: flex;
-  align-items: flex-end;
-}
-.comment-properties-group {
-  display: flex;
-}
-.comment-author-name span {
-  color: rgba(0,0,0,.54);
-}
-.comment-upper-group {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-.comment-controls mat-icon:last-child {
-  margin-left: 20px;
-}
-.comments-section {
-  max-height: 200px;
-}
-.single-comment-card {
-  margin: 10px 10px 10px 1px;
+  /*white-space:pre-wrap;*/
 }
 .user-select {
   margin-top: 10px;
   width: 100%;
 }
-.clickable-icon {
-  cursor: pointer;
-}
-.comments-card-title {
-  display: flex;
-}
-.comments-card-title mat-icon {
-  margin-left: 15px;
-  cursor: pointer;
-}
-.comment-text {
-  white-space:pre-wrap;
-}
 .todo-wrap {
-  max-height: 100vh;
+  max-width: 900px;
+  max-height: 95vh;
   overflow: auto;
-  padding: 32px;
   position: relative;
 }
 mat-dialog-container {
@@ -114,37 +59,19 @@ mat-dialog-container {
 .todo-creator-subtitle, .todo-creator-subtitle p {
   margin: 0;
 }
-.comments-spinner {
-  display: flex;
-  justify-content: center;
-}
-.comment-updating-group {
-  display: flex;
-  align-items: center;
-}
-.comment-updating-field ::ng-deep .mat-form-field-wrapper{
-  margin-bottom: -1.25em;
-}
-.comment-updating-group button {
-  margin-bottom: 0;
-}
-.comment-update-icon {
-  width: 30px;
-}
-.comment-update-icon {
-  margin-left: 15px;
-  font-weight: bold;
-}
 .assignees-title {
   margin: 0;
+  font-weight: normal;
 }
-.comments-card .comments-sending-spinner {
-  margin-bottom: 2.34375em;
+.todo-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
-::ng-deep .comment-update-spinner {
-  width: 30px !important;
-  margin-bottom: 0;
+::ng-deep .todo-wrap .ng-scroll-content {
+  padding: 32px;
+  min-width: unset;
 }
-::ng-deep .comment-update-spinner circle {
-  stroke: black;
+.todo-spinner-wrap {
+  padding: 32px;
 }

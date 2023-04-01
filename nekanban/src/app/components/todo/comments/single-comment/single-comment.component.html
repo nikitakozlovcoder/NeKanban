@@ -1,0 +1,42 @@
+<mat-card class="single-comment-card">
+  <ng-container *ngIf="commentUpdatingState === ViewStateTypes.Show">
+    <div class="comment-properties-group">
+      <div class="comment-upper-group">
+        <div class="comment-author-name">
+          <b *ngIf="comment!.deskUser != null">{{comment!.deskUser.user.name}}</b>
+          <b *ngIf="comment!.deskUser === null">Пользователь удален</b><span> оставил(а) комментарий
+          {{comment!.createdAtUtc.toLocaleDateString('ru')}} в {{comment!.createdAtUtc.toLocaleTimeString('ru')}}</span>
+        </div>
+        <div class="comment-controls">
+          <mat-icon *ngIf="checkUserPermission(deskUser!, 'UpdateOwnComments') &&
+                comment!.deskUser.user.id == deskUser!.user.id"
+                    class="clickable-icon" (click)="showCommentUpdateForm()">edit</mat-icon>
+          <mat-icon *ngIf="(commentDeleteLoaded | async) && (checkUserPermission(deskUser!, 'DeleteOwnComments') &&
+                comment!.deskUser.user.id == deskUser!.user.id ||
+                checkUserPermission(deskUser!, 'DeleteAnyComments'))" class="clickable-icon"
+                    (click)="deleteComment(comment!.id)">delete</mat-icon>
+          <mat-spinner *ngIf="!(commentDeleteLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
+        </div>
+      </div>
+    </div>
+    <div class="comments-body-wrap">
+      <app-raw-html-viewer [html]="comment!.body"></app-raw-html-viewer>
+    </div>
+  </ng-container>
+  <div *ngIf="commentUpdatingState === ViewStateTypes.Update">
+    <div class="comment-updating-group">
+      <div class="comment-updating-field">
+        <mat-label>Редактирование комментария</mat-label>
+        <mat-spinner *ngIf="!(commentUpdateEditorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
+        <app-tinymce-editor [(editorFormControl)]="commentUpdatingField" [imageUploadHandler]="imageUploadHandler"
+                            [editorId]="'comment-tinymce-update' + this.comment!.id.toString()"
+                            (editorOnInit)="setUpdateEditorLoaded()"></app-tinymce-editor>
+      </div>
+      <mat-icon *ngIf="(commentUpdateLoaded | async)" class="comment-update-icon clickable-icon" (click)="updateComment()">done</mat-icon>
+      <mat-spinner *ngIf="!(commentUpdateLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
+      <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField()">close</mat-icon>
+    </div>
+    <mat-error *ngIf="commentUpdatingField.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
+  </div>
+
+</mat-card>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {UntypedFormControl, Validators} from "@angular/forms";
+import {FormControl, UntypedFormControl, Validators} from "@angular/forms";
 import {DeskService} from "../../../services/desk.service";
 import {Desk} from "../../../models/desk";
 import {MatDialogRef} from "@angular/material/dialog";
@@ -15,7 +15,7 @@ export class DeskCreationComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  name = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
+  name = new FormControl<string>('', [Validators.required, Validators.minLength(6)]);
   isLoaded = true;
 
   createDesk() {
@@ -24,7 +24,7 @@ export class DeskCreationComponent implements OnInit {
     }
     else {
       this.isLoaded = false;
-      this.deskService.addDesk(this.name.value).subscribe({
+      this.deskService.addDesk(this.name.value!).subscribe({
         next: (data: Desk) => {
           this.isLoaded = true;
           this.dialogRef.close(data);

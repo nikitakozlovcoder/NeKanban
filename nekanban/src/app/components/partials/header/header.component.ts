@@ -5,6 +5,7 @@ import {UserService} from "../../../services/user.service";
 import {Router} from "@angular/router";
 import {MatSidenav} from "@angular/material/sidenav";
 import {DeskService} from "../../../services/desk.service";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-header',
@@ -29,6 +30,8 @@ export class HeaderComponent implements OnInit {
   @Input() opened = false;
   @Output() openedChange = new EventEmitter<boolean>();
 
+  isLogoutLoaded = new BehaviorSubject(true);
+
   constructor(private readonly userService: UserService,
               private router: Router,
               private readonly deskService: DeskService) { }
@@ -39,8 +42,13 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.userService.logoutUser();
-    this.router.navigate(['authorization']);
+    this.isLogoutLoaded.next(false);
+    this.userService.logoutUser().subscribe({
+      next: () => {
+        this.isLogoutLoaded.next(true);
+        this.router.navigate(['authorization']).then();
+      }
+    });
   }
 
   addToFavourite(index: number |undefined) {

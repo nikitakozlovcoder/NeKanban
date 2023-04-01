@@ -45,6 +45,16 @@ import { SidenavComponent } from './components/partials/sidenav/sidenav.componen
 import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {AuthInterceptor} from "./interceptors/auth/auth.interceptor";
+import {EditorComponent, TINYMCE_SCRIPT_SRC} from "@tinymce/tinymce-angular";
+import { SafeHtmlPipe } from './pipes/safehtml/safe-html.pipe';
+import {EditorConfigService} from "./services/editor-config-service";
+import { AllCommentsComponent } from './components/todo/comments/all-comments/all-comments.component';
+import { SingleCommentComponent } from './components/todo/comments/single-comment/single-comment.component';
+import { DeskInfoComponent } from './components/partials/desk-info/desk-info.component';
+import { RawHtmlViewerComponent } from './components/partials/raw-html-viewer/raw-html-viewer.component';
+import { TinymceEditorComponent } from './components/partials/tinymce-editor/tinymce-editor.component';
+import {ValidationService} from "./services/validation.service";
+import { TodoCodeComponent } from './components/partials/todo-code/todo-code.component';
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -85,27 +95,35 @@ export function HttpLoaderFactory(http: HttpClient) {
     ConfirmationComponent,
     PageNotFoundComponent,
     SidenavComponent,
+    SafeHtmlPipe,
+    AllCommentsComponent,
+    SingleCommentComponent,
+    DeskInfoComponent,
+    RawHtmlViewerComponent,
+    TinymceEditorComponent,
+    TodoCodeComponent,
   ],
-  imports: [
-    BrowserAnimationsModule,
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    MatNativeDateModule,
-    MaterialExampleModule,
-    ReactiveFormsModule,
-    RouterModule.forRoot(appRoutes),
-    NgScrollbarModule,
-    MatListModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'ru',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
-  ],
+    imports: [
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        MatNativeDateModule,
+        MaterialExampleModule,
+        ReactiveFormsModule,
+        RouterModule.forRoot(appRoutes),
+        NgScrollbarModule,
+        MatListModule,
+        TranslateModule.forRoot({
+            defaultLanguage: 'ru',
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        EditorComponent
+    ],
   providers: [
     UserService,
     DeskService,
@@ -120,11 +138,14 @@ export function HttpLoaderFactory(http: HttpClient) {
     CommentsService,
     UserStorageService,
     TranslateService,
+    EditorConfigService,
+    ValidationService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
     }
+    //{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
   ],
   bootstrap: [AppComponent]
 })
