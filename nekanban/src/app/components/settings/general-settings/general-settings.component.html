@@ -1,27 +1,29 @@
 <mat-card class = "settings-card">
-  <mat-card-content *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'UpdateGeneralDesk')">
-    <h2 class="h-minor-title">Обновление названия доски</h2>
-    <div class="desk-name-update-group">
-      <mat-form-field class="desk-name-update-field" appearance="fill">
-        <mat-label>Название доски</mat-label>
-        <input matInput placeholder="Новая доска" [formControl]="name" required>
-        <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
-        <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 6 символов!</mat-error>
-      </mat-form-field>
-      <button *ngIf="isNameUpdateLoaded" class = "register_button" mat-raised-button color="primary" (click)="updateDesk()">Сохранить</button>
-      <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isNameUpdateLoaded"></mat-spinner>
-    </div>
+  <mat-card-content>
+    <ng-container *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.UpdateGeneralDesk)">
+      <h2 class="h-minor-title">Обновление названия доски</h2>
+      <div class="desk-name-update-group">
+        <mat-form-field class="desk-name-update-field" appearance="fill">
+          <mat-label>Название доски</mat-label>
+          <input matInput placeholder="Новая доска" [formControl]="name" required>
+          <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
+          <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 6 символов!</mat-error>
+        </mat-form-field>
+        <button *ngIf="isNameUpdateLoaded" class = "register_button" mat-raised-button color="primary" (click)="updateDesk()">Сохранить</button>
+        <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isNameUpdateLoaded"></mat-spinner>
+      </div>
+    </ng-container>
 
-    <mat-card-subtitle *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ViewInviteLink')" class="invite-link">
+    <mat-card-subtitle *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ViewInviteLink)" class="invite-link">
       <p class="h-minor-title invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
       <div class="invite-link-content">
         <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, {duration:2000})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>
-        <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageInviteLink') && !hasInviteLink() && isLinkLoaded" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
-        <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'ManageInviteLink') && hasInviteLink() && isLinkLoaded" class = "remove-link-button" mat-raised-button color="primary" (click)="removeLink()">Удалить ссылку</button>
+        <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageInviteLink) && !hasInviteLink() && isLinkLoaded" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
+        <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageInviteLink) && hasInviteLink() && isLinkLoaded" class = "remove-link-button" mat-raised-button color="primary" (click)="removeLink()">Удалить ссылку</button>
         <mat-spinner class="link-remove-spinner" diameter="36" *ngIf="!isLinkLoaded"></mat-spinner>
       </div>
     </mat-card-subtitle>
-    <button *ngIf="checkUserPermission(getCurrentDesk()!.deskUser, 'DeleteDesk') && isRemoveDeskLoaded" class = "desk-remove-button" mat-raised-button color="warn" (click)="removeDesk(desk!.id)"><mat-icon>delete</mat-icon>Удалить доску</button>
+    <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.DeleteDesk) && isRemoveDeskLoaded" class = "desk-remove-button" mat-raised-button color="warn" (click)="removeDesk(desk!.id)"><mat-icon>delete</mat-icon>Удалить доску</button>
     <mat-spinner class="spinner-centered" color="warn" diameter="36" *ngIf="!isRemoveDeskLoaded"></mat-spinner>
   </mat-card-content>
 </mat-card>

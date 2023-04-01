@@ -5,9 +5,8 @@ import {DeskService} from "../../../services/desk.service";
 import {RolesService} from "../../../services/roles.service";
 import {Role} from "../../../models/Role";
 import {ActivatedRoute, Router} from "@angular/router";
-import {DeskUser} from "../../../models/deskUser";
-import {DeskCreationComponent} from "../../desk/desk-creation/desk-creation.component";
-import {MatDialog} from "@angular/material/dialog";
+import {DeskUserService} from "../../../services/deskUser.service";
+import {BehaviorSubject, map, combineLatest, combineLatestWith, filter} from "rxjs";
 
 @Component({
   selector: 'app-settings',
@@ -20,16 +19,21 @@ export class SettingsComponent implements OnInit {
   opened: boolean;
   desks: Desk[] = [];
   desk: Desk | undefined;
-  isLoaded = true;
-  areRolesLoaded = true;
+  desksLoaded = new BehaviorSubject(false);
+  currentDeskLoaded = new BehaviorSubject(false);
+  rolesLoaded = new BehaviorSubject(false);
+  get isLoaded() {
+    return combineLatest([this.desksLoaded, this.currentDeskLoaded, this.rolesLoaded]).
+    pipe(map(x => x.every(isLoaded => isLoaded)));
+  }
   roles : Role[] = [];
   name = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
 
   constructor(private readonly deskService: DeskService,
-              private readonly rolesService: RolesService,
+              public readonly rolesService: RolesService,
+              public readonly deskUserService: DeskUserService,
               private readonly route: ActivatedRoute,
-              private readonly router: Router,
-              private readonly dialog: MatDialog) {
+              private readonly router: Router) {
     this.opened = false;
   }
 
@@ -39,24 +43,29 @@ export class SettingsComponent implements OnInit {
       this.loadCurrentDesk(parseInt(params['id']));
       this.initRolesForDesk(parseInt(params['id']));
     })
-  }
-
-  changeDesk(id: number) {
-    this.router.navigate(['/desks', id]).then();
+    this.desksLoaded.pipe(combineLatestWith(this.currentDeskLoaded)).pipe(
+      combineLatestWith(this.rolesLoaded), filter(el => el[0].every(x => x === true) && el[1] === true)
+      ).subscribe(result => {
+        this.redirectIfDontHaveAccessToSettings();
+    })
   }
 
   loadCurrentDesk(deskId: number) {
-    this.deskService.getDesk(deskId).subscribe(result => {
-      this.desk = result;
-      this.name.setValue(this.desk.name);
+    this.deskService.getDesk(deskId).subscribe({
+      next: (result) => {
+        this.desk = result;
+        this.currentDeskLoaded.next(true);
+        this.name.setValue(this.desk.name);
+      }
     });
   }
 
   loadDesks(deskId: number) {
-    this.isLoaded = false;
+    this.desksLoaded.next(false);
     this.deskService.getDesks().subscribe({
       next: (data: Desk[]) => {
         this.desks = data;
+        this.desksLoaded.next(true);
         if (!this.desks.some(el => el.id === deskId)) {
           this.router.navigate(['/**'], { skipLocationChange: true }).then();
           return;
@@ -66,45 +75,23 @@ export class SettingsComponent implements OnInit {
       }
     });
   }
+
+  redirectIfDontHaveAccessToSettings() {
+    if (!this.rolesService.userHasAtLeastOnePermissionForAllSettings(this.roles, this.deskUserService.getCurrentDeskUser(this.desk)!)) {
+      this.router.navigate(['/**'],{ skipLocationChange: true }).then();
+    }
+  }
+
   private initRolesForDesk(deskId: number) {
-    this.rolesService.getRoles(deskId).subscribe(result => {
-      this.roles = result;
-      this.isLoaded = true;
+    this.rolesService.getRoles(deskId).subscribe({
+      next: (result) => {
+        this.roles = result;
+        this.rolesLoaded.next(true);
+      }
     });
   }
 
   getCurrentUser() {
     return JSON.parse(localStorage.getItem("currentUser")!);
-  }
-
-  getCurrentDesk() {
-    return this.desks.find(el => el.id === this.desk?.id);
-  }
-
-  getDeskOwner() : DeskUser | undefined {
-    return this.desk?.deskUsers.find(el => el.isOwner);
-  }
-
-  checkUserPermission(deskUser: DeskUser, permissionName: string) {
-    return this.rolesService.userHasPermission(this.roles, deskUser, permissionName);
-  }
-
-  showDeskCreation() {
-    const dialogRef = this.dialog.open(DeskCreationComponent, {
-      width: '400px',
-    });
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.router.navigate(['/desks', result.id]).then();
-      }
-    });
-    this.opened = false;
-  }
-
-  hasAnyPermissionsForGeneralSettings() {
-    return this.checkUserPermission(this.getCurrentDesk()!.deskUser, "UpdateGeneralDesk") ||
-      this.checkUserPermission(this.getCurrentDesk()!.deskUser, "ViewInviteLink") ||
-      this.checkUserPermission(this.getCurrentDesk()!.deskUser, "ManageInviteLink") ||
-      this.checkUserPermission(this.getCurrentDesk()!.deskUser, "DeleteDesk");
   }
 }

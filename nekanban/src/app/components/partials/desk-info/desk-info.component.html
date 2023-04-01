@@ -7,7 +7,7 @@
     <mat-card-subtitle>
       <p *ngIf="getDeskOwner()">Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>
     </mat-card-subtitle>
-    <button *ngIf="settingsLink" class="settings-button" [routerLink]="settingsLink" mat-raised-button color="primary">Настройки
+    <button *ngIf="settingsLink && rolesService.userHasAtLeastOnePermissionForAllSettings(roles, deskUserService.getCurrentDeskUser(desk)!)" class="settings-button" [routerLink]="settingsLink" mat-raised-button color="primary">Настройки
       <mat-icon>settings</mat-icon>
     </button>
   </mat-card-title-group>

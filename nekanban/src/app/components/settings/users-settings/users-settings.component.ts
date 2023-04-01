@@ -5,6 +5,7 @@ import {DeskUser} from "../../../models/deskUser";
 import {RolesService} from "../../../services/roles.service";
 import {DeskUserService} from "../../../services/deskUser.service";
 import {DeskService} from "../../../services/desk.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-users-settings',
@@ -19,19 +20,12 @@ export class UsersSettingsComponent implements OnInit {
   @Input() desks: Desk[] = [];
   isUserRemoveLoaded = true;
 
-  constructor(private readonly rolesService: RolesService,
-              private readonly deskUserService: DeskUserService,
-              private readonly deskService: DeskService) { }
+  constructor(public readonly rolesService: RolesService,
+              public readonly deskUserService: DeskUserService,
+              private readonly deskService: DeskService,
+              private readonly router: Router) { }
 
   ngOnInit(): void {
-  }
-
-  checkUserPermission(deskUser: DeskUser, permissionName: string) {
-    return this.rolesService.userHasPermission(this.roles, deskUser, permissionName);
-  }
-
-  getCurrentDesk() {
-    return this.desks.find(el => el.id === this.desk!.id);
   }
 
   changeUserRole(event: Event, deskUserId: number) {
@@ -57,6 +51,9 @@ export class UsersSettingsComponent implements OnInit {
     this.deskService.removeUserFromDesk(usersId, this.desk!.id).subscribe({
       next: data => {
         this.isUserRemoveLoaded = true;
+        if (usersId.some(el => el === this.deskUserService.getCurrentDeskUser(this.desk)!.user.id)) {
+          this.router.navigate(['']).then();
+        }
         this.desk = data;
       },
       error: () => {

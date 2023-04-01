@@ -1,3 +1,5 @@
 <p *ngIf="this.data.errorType == this.errorsEnum.DuplicateEmail">Адрес почты уже используется</p>
 <p *ngIf="this.data.errorType == this.errorsEnum.ValidationError">Неверные данные!</p>
+<p *ngIf="this.data.errorType == this.errorsEnum.CantDeleteRoleWhenAnyUserHasThisRole">
+  Нельзя удалить роль, на которую назначен хотя бы один участник!</p>
 <p *ngIf="this.data.errorType == this.errorsEnum.Unknown">Неизвестная ошибка</p>

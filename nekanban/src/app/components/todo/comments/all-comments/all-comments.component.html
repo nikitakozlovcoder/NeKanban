@@ -5,16 +5,10 @@
     <mat-icon (click)="toggleCommentsOrder()" *ngIf="!isSortDescending" matTooltip="От старых к новым">arrow_upward</mat-icon>
   </mat-card-title>
 
-  <div class="comment-field-group" *ngIf="checkUserPermission(deskUser!, 'AddComments')">
+  <div class="comment-field-group" *ngIf="rolesService.userHasPermission(this.roles, deskUser!, rolesService.permissionsTypes.AddOrUpdateOwnComments)">
     <div class="comment-area">
       <mat-label>Оставьте свой комментарий!</mat-label>
       <mat-spinner *ngIf="!(editorLoaded | async)" class="spinner-centered" diameter="50"></mat-spinner>
-      <!--<editor [formControl]="commentInput"
-              (onInit)="setLoaded()"
-              (onAddUndo)="updateCommentDraft()"
-              [init]="editorConfig"
-              id="comment-tinymce"
-      ></editor>-->
       <app-tinymce-editor [(editorFormControl)]="commentInput" [imageUploadHandler]="imageUploadHandler"
                           [editorId]="'comment-tinymce' + this.todoId!.toString()"
                           (editorOnInit)="setLoaded()"></app-tinymce-editor>

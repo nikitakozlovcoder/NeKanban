@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RolesService} from "./services/roles.service";
+import {TranslateService} from "@ngx-translate/core";
 
 
 @Component({
@@ -9,10 +10,12 @@ import {RolesService} from "./services/roles.service";
 })
 export class AppComponent implements OnInit {
   title = 'nekanban';
-  constructor(private readonly rolesService: RolesService) {
+  constructor(private readonly rolesService: RolesService,
+              private readonly translateService: TranslateService) {
   }
 
   ngOnInit(): void {
     this.rolesService.initPermissions();
+    this.translateService.use('ru');
   }
 }
