@@ -107,40 +107,47 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteComment(id: number) {
+  deleteComment() {
     const dialogRef = this.dialog.open(ConfirmationComponent);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == DialogActionTypes.Reject) {
         return;
       }
-      this.makeDeletion(id);
+      this.makeDeletion();
     });
-
   }
 
-  private makeDeletion(id: number) {
+  isAbleToDeleteComment() {
+    if (this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.DeleteAnyComments)) {
+      return true;
+    }
+    return this.comment!.deskUser && this.comment!.deskUser.user.id == this.deskUser!.user.id &&
+      this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.DeleteOwnComments);
+  }
+
+  private makeDeletion() {
     this.commentDeleteLoaded.next(false);
-    if (id == this.deskUser!.user.id) {
-      this.commentsService.deleteOwnComment(id).subscribe({
-        next: data => {
+    if (this.comment!.deskUser &&
+      this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.DeleteOwnComments) &&
+      this.comment!.deskUser.user.id == this.deskUser!.user.id) {
+      this.commentsService.deleteOwnComment(this.comment!.id).subscribe({
+        next: () => {
           this.commentDeleteLoaded.next(true);
-          this.comment = data.find(el => el.id === this.comment?.id);
-          this.commentsDeletion.emit(id);
-        },
-        error: _ => {
+          this.commentsDeletion.emit(this.comment!.id);
         }
+      }).add(() => {
+        this.commentDeleteLoaded.next(true);
       })
     }
     else if (this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.DeleteAnyComments)) {
-      this.commentsService.deleteComment(id).subscribe({
-        next: data => {
+      this.commentsService.deleteComment(this.comment!.id).subscribe({
+        next: () => {
           this.commentDeleteLoaded.next(true);
-          this.comment = data.find(el => el.id === this.comment?.id);
-          this.commentsDeletion.emit(id);
-        },
-        error: _ => {
+          this.commentsDeletion.emit(this.comment!.id);
         }
+      }).add(() => {
+        this.commentDeleteLoaded.next(true);
       })
     }
   }
@@ -155,11 +162,5 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
 
   private commentLengthValidator() : ValidatorFn {
     return this.validationService.editorMinLengthValidator(tinymce.get(`comment-tinymce-update${this.comment!.id}`), 10);
-    /*return (): ValidationErrors | null => {
-      if (tinymce.get(`comment-tinymce-update${this.comment!.id}`)?.initialized) {
-        return tinymce.get(`comment-tinymce-update${this.comment!.id}`)!.getContent({format : 'text'}).length < 10 ? {commentMinLength: true} : null;
-      }
-      return null;
-    };*/
   }
 }

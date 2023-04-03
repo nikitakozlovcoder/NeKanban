@@ -6,6 +6,9 @@ import {RolesService} from "../../../services/roles.service";
 import {DeskUserService} from "../../../services/deskUser.service";
 import {DeskService} from "../../../services/desk.service";
 import {Router} from "@angular/router";
+import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
+import {DialogActionTypes} from "../../../constants/DialogActionTypes";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-users-settings',
@@ -23,7 +26,8 @@ export class UsersSettingsComponent implements OnInit {
   constructor(public readonly rolesService: RolesService,
               public readonly deskUserService: DeskUserService,
               private readonly deskService: DeskService,
-              private readonly router: Router) { }
+              private readonly router: Router,
+              private readonly dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -47,6 +51,18 @@ export class UsersSettingsComponent implements OnInit {
   }
 
   removeUser(usersId: number[]) {
+    const dialogRef = this.dialog.open(ConfirmationComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == DialogActionTypes.Reject) {
+        return;
+      }
+      this.makeRemoval(usersId);
+    });
+
+  }
+
+  private makeRemoval(usersId: number[]) {
     this.isUserRemoveLoaded = false;
     this.deskService.removeUserFromDesk(usersId, this.desk!.id).subscribe({
       next: data => {
