@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Comment} from "../../../../models/comment";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
-import {BehaviorSubject, Observable, Subscription} from "rxjs";
+import {BehaviorSubject, last, map, Observable, Subscription} from "rxjs";
 import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 import tinymce from "tinymce";
 import {EditorConfigService} from "../../../../services/editor-config-service";
@@ -13,6 +13,7 @@ import {ConfirmationComponent} from "../../../dialogs/confirmation/confirmation.
 import {DialogActionTypes} from "../../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
 import {ValidationService} from "../../../../services/validation.service";
+import {EditorUploaderService} from "../../../../services/editor-uploader.service";
 
 @Component({
   selector: 'app-single-comment',
@@ -40,7 +41,8 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
               private readonly commentsService: CommentsService,
               public readonly rolesService: RolesService,
               private readonly validationService: ValidationService,
-              public dialog: MatDialog) {
+              public dialog: MatDialog,
+              private readonly editorUploaderService: EditorUploaderService) {
   }
 
   ngOnInit(): void {
@@ -60,7 +62,10 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
   imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
     let formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
-    this.commentsService.attachFile(this.comment!.id, formData).subscribe({
+    this.commentsService.attachFile(this.comment!.id, formData).pipe(
+      map(event => this.editorUploaderService.getEventMessage(event, progress)),
+      last()
+    ).subscribe({
       next: (data) => {
         resolve(data);
       }

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 import {Comment} from "../../../../models/comment";
-import {BehaviorSubject, debounceTime, filter, Subject, switchMap} from "rxjs";
+import {BehaviorSubject, debounceTime, filter, last, map, Subject, switchMap} from "rxjs";
 import tinymce, {EditorOptions} from "tinymce";
 import {MatDialog} from "@angular/material/dialog";
 import {DeskUser} from "../../../../models/deskUser";
@@ -13,6 +13,7 @@ import {CommentsService} from "../../../../services/comments.service";
 import {EditorConfigService} from "../../../../services/editor-config-service";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
 import {ValidationService} from "../../../../services/validation.service";
+import {EditorUploaderService} from "../../../../services/editor-uploader.service";
 
 @Component({
   selector: 'app-all-comments',
@@ -31,7 +32,6 @@ export class AllCommentsComponent implements OnInit {
   commentDraftLoaded = new BehaviorSubject(false);
   notSend =  true;
   editorLoaded = new BehaviorSubject(false);
-  editorConfig: Partial<EditorOptions>;
   private firstUpdateRequest = true;
   toggleComments = new Subject<any>();
 
@@ -44,16 +44,17 @@ export class AllCommentsComponent implements OnInit {
               private dataGeneratorService: DataGeneratorService,
               private commentsService: CommentsService,
               public dialog: MatDialog,
-              private readonly editorConfigService: EditorConfigService,
+              private readonly editorUploaderService: EditorUploaderService,
               private readonly validationService: ValidationService) {
-    this.editorConfig = editorConfigService.getConfig(this.imageUploadHandler);
-    this.editorConfig.max_height = 400;
   }
 
   imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
     let formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
-    this.commentsService.attachFile(this.draftId!, formData).subscribe({
+    this.commentsService.attachFile(this.draftId!, formData).pipe(
+      map(event => this.editorUploaderService.getEventMessage(event, progress)),
+      last()
+    ).subscribe({
       next: (data) => {
         resolve(data);
       }

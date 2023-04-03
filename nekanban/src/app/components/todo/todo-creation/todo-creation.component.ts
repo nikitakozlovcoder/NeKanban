@@ -7,12 +7,14 @@ import {Todo} from "../../../models/todo";
 import {
   BehaviorSubject,
   combineLatest,
-  debounceTime,
+  debounceTime, last,
   map,
   Subject,
   Subscription,
-  switchMap
+  switchMap, tap
 } from "rxjs";
+import {HttpEvent, HttpEventType} from "@angular/common/http";
+import {EditorUploaderService} from "../../../services/editor-uploader.service";
 
 @Component({
   selector: 'app-todo-creation',
@@ -42,7 +44,8 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: {deskId: number},
               private todoService: TodoService,
-              public dialogRef: MatDialogRef<TodoCreationComponent>)
+              public dialogRef: MatDialogRef<TodoCreationComponent>,
+              private readonly editorUploaderService: EditorUploaderService)
   {
   }
 
@@ -92,7 +95,10 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
   imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
     let formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
-    this.todoService.attachFile(this.todoFormGroup.controls.id.value!, formData).subscribe({
+    this.todoService.attachFile(this.todoFormGroup.controls.id.value!, formData).pipe(
+      map(event => this.editorUploaderService.getEventMessage(event, progress)),
+      last()
+    ).subscribe({
       next: (data) => {
         resolve(data);
       }
