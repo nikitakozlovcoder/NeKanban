@@ -81,14 +81,21 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
             next: (data: Todo) => {
               this.formSubmitLoaded.next(true);
               this.dialogRef.close(
-                new Todo(data.id, data.name, data.column, data.toDoUsers, data.order, data.code)
+                <Todo>{
+                  id: data.id,
+                  name: data.name,
+                  column: data.column,
+                  toDoUsers: data.toDoUsers,
+                  order: data.order,
+                  code: data.code}
               );
             }
           });
 
         }
-      })
-
+      }).add(() => {
+        this.formSubmitLoaded.next(true);
+      });
     }
   }
 
@@ -109,9 +116,10 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
     this.formLoaded.next(false);
     this.todoService.getDraft(this.data.deskId).subscribe( {
       next: (data: Todo) => {
-        this.formLoaded.next(true);
         this.todoFormGroup.patchValue(data, {emitEvent : false});
       }
+    }).add(() => {
+      this.formLoaded.next(true);
     });
   }
 

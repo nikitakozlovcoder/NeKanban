@@ -9,6 +9,7 @@ import {Router} from "@angular/router";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-users-settings',
@@ -21,7 +22,7 @@ export class UsersSettingsComponent implements OnInit {
   @Output() deskChange = new EventEmitter<Desk>;
   @Input() roles: Role[] = [];
   @Input() desks: Desk[] = [];
-  isUserRemoveLoaded = true;
+  isUserRemoveLoaded = new BehaviorSubject(true);
 
   constructor(public readonly rolesService: RolesService,
               public readonly deskUserService: DeskUserService,
@@ -63,10 +64,9 @@ export class UsersSettingsComponent implements OnInit {
   }
 
   private makeRemoval(usersId: number[]) {
-    this.isUserRemoveLoaded = false;
+    this.isUserRemoveLoaded.next(false);
     this.deskService.removeUserFromDesk(usersId, this.desk!.id).subscribe({
       next: data => {
-        this.isUserRemoveLoaded = true;
         if (usersId.some(el => el === this.deskUserService.getCurrentDeskUser(this.desk)!.user.id)) {
           this.router.navigate(['']).then();
         }
@@ -74,6 +74,8 @@ export class UsersSettingsComponent implements OnInit {
       },
       error: () => {
       }
+    }).add(() => {
+      this.isUserRemoveLoaded.next(true);
     })
   }
 }

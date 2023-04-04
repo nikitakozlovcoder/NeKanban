@@ -77,6 +77,7 @@ export class TodoShowComponent implements OnInit {
     })
     return deskUsers;
   }
+
   getAllTodoUsers() : User[] {
     let todoUsers : User[] = [];
     this.todo!.toDoUsers.forEach( el => {
@@ -84,6 +85,7 @@ export class TodoShowComponent implements OnInit {
     })
     return todoUsers;
   }
+
   getIdsOfSelectedUsers() : number[] {
     let selectedUsers : User[] = this.getDeskUsers().filter(el => this.getAllTodoUsers().some(someEl => someEl.id === el.id)
       && this.todo!.toDoUsers.find(todoUser => todoUser.deskUser.user.id === el.id  && todoUser.toDoUserType != 0));
@@ -93,6 +95,7 @@ export class TodoShowComponent implements OnInit {
     })
     return ids;
   }
+
   changeUsers(select:MatSelect)  {
     let newIds : number[] = select.value;
     let appearedIds: number[] = [];

@@ -108,6 +108,9 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
         },
         error: _ => {
         }
+      }).add(() => {
+        this.commentUpdateLoaded.next(true);
+        this.commentUpdateEditorLoaded.next(false);
       })
     }
   }

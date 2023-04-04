@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit {
   @Input() currentDeskId: number | undefined;
 
   //@Output() deskChange = new EventEmitter<Desk>;
-  isFavouriteLoaded = true;
+  isFavouriteLoaded = new BehaviorSubject(true);
 
   @Input() sidenav : MatSidenav | undefined;
 
@@ -53,15 +53,16 @@ export class HeaderComponent implements OnInit {
 
   addToFavourite(index: number |undefined) {
     let founded = this.desks.find(el => el.deskUser.preference === 1);
-    this.isFavouriteLoaded = false;
+    this.isFavouriteLoaded.next(false);
     if (founded != undefined) {
       this.deskService.addPreference(founded.id, 0).subscribe({
         next: (data: Desk[]) => {
-          this.isFavouriteLoaded = true;
           this.desks = data;
           this.setCurrentDesk();
           this.desksChange.emit(this.desks);
         }
+      }).add(() => {
+        this.isFavouriteLoaded.next(true);
       });
     }
 
@@ -69,24 +70,26 @@ export class HeaderComponent implements OnInit {
       this.deskService.addPreference(index, 1).subscribe({
         next: (data: Desk[]) => {
           this.desks = data;
-          this.isFavouriteLoaded = true;
           this.desksChange.emit(this.desks);
           this.setCurrentDesk();
         }
+      }).add(() => {
+        this.isFavouriteLoaded.next(true);
       });
     }
   }
 
   removeFromFavourites(index: number |undefined) {
     if (index != undefined) {
-      this.isFavouriteLoaded = false;
+      this.isFavouriteLoaded.next(false);
       this.deskService.addPreference(index, 0).subscribe({
         next: (data: Desk[]) => {
-          this.desks = data;
-          this.isFavouriteLoaded = true;
+          this.desks = data
           this.desksChange.emit(this.desks);
           this.setCurrentDesk();
         }
+      }).add(() => {
+        this.isFavouriteLoaded.next(true);
       });
     }
   }

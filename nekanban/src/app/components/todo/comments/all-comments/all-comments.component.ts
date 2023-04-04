@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 import {Comment} from "../../../../models/comment";
-import {BehaviorSubject, debounceTime, filter, last, map, Subject, switchMap} from "rxjs";
+import {BehaviorSubject, debounceTime, filter, from, last, map, Subject, switchMap} from "rxjs";
 import tinymce, {EditorOptions} from "tinymce";
 import {MatDialog} from "@angular/material/dialog";
 import {DeskUser} from "../../../../models/deskUser";
@@ -14,6 +14,8 @@ import {EditorConfigService} from "../../../../services/editor-config-service";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
 import {ValidationService} from "../../../../services/validation.service";
 import {EditorUploaderService} from "../../../../services/editor-uploader.service";
+import {Todo} from "../../../../models/todo";
+import {Column} from "../../../../models/column";
 
 @Component({
   selector: 'app-all-comments',
@@ -114,9 +116,7 @@ export class AllCommentsComponent implements OnInit {
         },
         error: _ => {
         }
-      }
-    )
-
+      });
   }
 
   createComment() {
@@ -144,6 +144,8 @@ export class AllCommentsComponent implements OnInit {
             }
           });
         }
+      }).add(() => {
+        this.commentsSendingLoaded.next(true);
       });
     }
   }
@@ -158,7 +160,11 @@ export class AllCommentsComponent implements OnInit {
 
   private SortAndMapComments(comments: Comment[]) {
     return this.sortComments(comments.map(el => {
-      return new Comment(el.id, el.body, el.deskUser, new Date(el.createdAtUtc));
+      return <Comment>{
+        id: el.id,
+        body: el.body,
+        deskUser: el.deskUser,
+        createdAtUtc: new Date(el.createdAtUtc)};
     }));
   }
 
