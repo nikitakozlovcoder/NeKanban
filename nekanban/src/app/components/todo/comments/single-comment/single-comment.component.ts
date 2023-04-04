@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Comment} from "../../../../models/comment";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
-import {BehaviorSubject, last, map, Observable, Subscription} from "rxjs";
+import {BehaviorSubject, interval, last, map, Observable, Subscription} from "rxjs";
 import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 import tinymce from "tinymce";
 import {EditorConfigService} from "../../../../services/editor-config-service";
@@ -14,13 +14,15 @@ import {DialogActionTypes} from "../../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
 import {ValidationService} from "../../../../services/validation.service";
 import {EditorUploaderService} from "../../../../services/editor-uploader.service";
+import {UntilDestroy} from "@ngneat/until-destroy";
 
+@UntilDestroy({checkProperties: true})
 @Component({
   selector: 'app-single-comment',
   templateUrl: './single-comment.component.html',
   styleUrls: ['./single-comment.component.css']
 })
-export class SingleCommentComponent implements OnInit, OnDestroy {
+export class SingleCommentComponent implements OnInit {
 
   readonly ViewStateTypes = ViewStateTypes;
   @Input() comment?: Comment;
@@ -35,7 +37,7 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
   commentDeleteLoaded = new BehaviorSubject(true);
   commentUpdatingField = new FormControl<string>(this.comment ? this.comment!.body : '');
 
-  private toggleCommentsSub?: Subscription;
+  private subscriptions = new Subscription();
 
   constructor(private readonly editorConfigService: EditorConfigService,
               private readonly commentsService: CommentsService,
@@ -47,16 +49,12 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.commentUpdatingField = new FormControl<string>(this.comment ? this.comment!.body : '', [this.commentLengthValidator()]);
-    this.toggleCommentsSub = this.toggleComments.subscribe({
+    this.subscriptions.add(this.toggleComments.subscribe({
       next: () => {
         this.commentUpdatingState = ViewStateTypes.Show;
       }
-    })
+    }));
     this.setFormListeners();
-  }
-
-  ngOnDestroy(): void {
-    this.toggleCommentsSub?.unsubscribe();
   }
 
   imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
@@ -158,11 +156,11 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
   }
 
   private setFormListeners() {
-    this.commentUpdatingField.valueChanges.subscribe({
+    this.subscriptions.add(this.commentUpdatingField.valueChanges.subscribe({
       next: () => {
         this.commentUpdatingField.addValidators(this.commentLengthValidator());
       }
-    })
+    }));
   }
 
   private commentLengthValidator() : ValidatorFn {

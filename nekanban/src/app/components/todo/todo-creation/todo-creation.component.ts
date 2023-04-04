@@ -21,15 +21,14 @@ import {EditorUploaderService} from "../../../services/editor-uploader.service";
   templateUrl: './todo-creation.component.html',
   styleUrls: ['./todo-creation.component.css']
 })
-export class TodoCreationComponent implements OnInit, OnDestroy {
+export class TodoCreationComponent implements OnInit {
 
   draftSubject = new Subject();
   formLoaded = new BehaviorSubject(false);
   formSubmitLoaded = new BehaviorSubject(true);
   editorLoaded = new BehaviorSubject(false);
   firstUpdateRequest = true;
-  private inputValueSubscription = new Subscription();
-  private inputBodySubscription = new Subscription();
+  private subscriptions = new Subscription();
 
   todoFormGroup = new FormGroup({
     id: new FormControl<number>(0),
@@ -55,11 +54,6 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
     this.getDraft();
     this.initDebounce();
     this.setFormListeners();
-  }
-
-  ngOnDestroy(): void {
-    this.inputValueSubscription.unsubscribe();
-    this.inputBodySubscription.unsubscribe();
   }
 
   setLoaded() {
@@ -127,12 +121,12 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
   }
 
   private setFormListeners() {
-    this.inputValueSubscription = this.todoFormGroup.controls.name.valueChanges.subscribe({
+    this.subscriptions.add(this.todoFormGroup.controls.name.valueChanges.subscribe({
       next: () => {
         this.draftSubject.next(1);
       }
-    })
-    this.inputBodySubscription = this.todoFormGroup.controls.body.valueChanges.subscribe({
+    }));
+    this.subscriptions.add(this.todoFormGroup.controls.body.valueChanges.subscribe({
       next: () => {
         if (this.firstUpdateRequest) {
           this.firstUpdateRequest = false;
@@ -140,6 +134,6 @@ export class TodoCreationComponent implements OnInit, OnDestroy {
         }
         this.draftSubject.next(1);
       }
-    })
+    }));
   }
 }
