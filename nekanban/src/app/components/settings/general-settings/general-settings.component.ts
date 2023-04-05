@@ -4,7 +4,7 @@ import {DeskUser} from "../../../models/deskUser";
 import {RolesService} from "../../../services/roles.service";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
-import {UntypedFormControl, Validators} from "@angular/forms";
+import {FormControl, UntypedFormControl, Validators} from "@angular/forms";
 import {DeskService} from "../../../services/desk.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Router} from "@angular/router";
@@ -14,6 +14,7 @@ import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
 import {User} from "../../../models/user";
 import {UserService} from "../../../services/user.service";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-general-settings',
@@ -27,10 +28,11 @@ export class GeneralSettingsComponent implements OnInit {
   @Input() roles: Role[] = [];
   @Input() desks: Desk[] = [];
   @Output() desksChange = new EventEmitter<Desk[]>;
-  isRemoveDeskLoaded = true;
-  isNameUpdateLoaded = true;
-  isLinkLoaded = true;
-  name = new UntypedFormControl('', [Validators.required, Validators.minLength(6)]);
+  isRemoveDeskLoaded = new BehaviorSubject(true);
+  isNameUpdateLoaded = new BehaviorSubject(true);
+  isLinkLoaded = new BehaviorSubject(true);
+  name = new FormControl<string>('', [Validators.required, Validators.minLength(6)]);
+
   constructor(public readonly rolesService: RolesService,
               private readonly deskService: DeskService,
               public readonly deskUserService: DeskUserService,
@@ -43,26 +45,23 @@ export class GeneralSettingsComponent implements OnInit {
     this.name = new UntypedFormControl(this.desk!.name, [Validators.required, Validators.minLength(6)]);
   }
 
-  getCurrentDesk() {
-    return this.desks.find(el => el.id === this.desk!.id);
-  }
-
   updateDesk() {
     if (this.name.invalid) {
       this.name.markAsTouched();
     }
     else {
-      this.isNameUpdateLoaded = false;
-      this.deskService.updateDesk(this.desk!.id, this.name.value).subscribe({
+      this.isNameUpdateLoaded.next(false);
+      this.deskService.updateDesk(this.desk!.id, this.name.value!).subscribe({
         next: (data: Desk) => {
-          this.isNameUpdateLoaded = true;
           this.desk = data;
           this.deskChange.emit(this.desk);
           let index = this.desks.findIndex(el => el.id === this.desk!.id);
           this.desks[index].name = data.name;
           this.desksChange.emit(this.desks);
         }
-      })
+      }).add(() => {
+        this.isNameUpdateLoaded.next(true);
+      });
     }
   }
 
@@ -78,27 +77,29 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   generateLink() {
-    this.isLinkLoaded = false;
+    this.isLinkLoaded.next(false);
     this.deskService.setLink(this.desk!.id).subscribe( {
       next: data => {
-        this.isLinkLoaded = true;
         this.desk = data;
       },
       error: () => {
       }
-    })
+    }).add(() => {
+      this.isLinkLoaded.next(true);
+    });
   }
 
   removeLink() {
-    this.isLinkLoaded = false;
+    this.isLinkLoaded.next(false);
     this.deskService.removeLink(this.desk!.id).subscribe( {
       next: data => {
-        this.isLinkLoaded = true;
         this.desk = data;
       },
       error: () => {
       }
-    })
+    }).add(() => {
+      this.isLinkLoaded.next(true);
+    });
   }
 
   removeDesk(deskId: number) {
@@ -114,14 +115,15 @@ export class GeneralSettingsComponent implements OnInit {
   }
 
   private makeDeskRemoval(deskId: number) {
-    this.isRemoveDeskLoaded = false;
+    this.isRemoveDeskLoaded.next(false);
     this.deskService.removeDesk(deskId).subscribe({
       next: () => {
-        this.isRemoveDeskLoaded = true;
         this.router.navigate(['']).then();
       },
       error: () => {
       }
-    })
+    }).add(() => {
+      this.isRemoveDeskLoaded.next(true);
+    });
   }
 }

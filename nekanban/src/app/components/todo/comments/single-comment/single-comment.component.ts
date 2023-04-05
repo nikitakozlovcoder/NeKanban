@@ -106,6 +106,9 @@ export class SingleCommentComponent implements OnInit {
         },
         error: _ => {
         }
+      }).add(() => {
+        this.commentUpdateLoaded.next(true);
+        this.commentUpdateEditorLoaded.next(false);
       })
     }
   }

@@ -1,10 +1,5 @@
-﻿export class Permission {
+﻿export interface Permission {
   id: number;
-  permission: number
-  permissionName: string
-  constructor(id: number, permission: number, permissionName: string) {
-    this.permission = permission;
-    this.permissionName = permissionName;
-    this.id = id;
-  }
+  permission: number;
+  permissionName: string;
 }

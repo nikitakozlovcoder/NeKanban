@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 import {Comment} from "../../../../models/comment";
-import {BehaviorSubject, debounceTime, filter, interval, last, map, Subject, Subscription, switchMap} from "rxjs";
+import {BehaviorSubject, debounceTime, filter, last, map, from, Subject, Subscription, switchMap} from "rxjs";
 import tinymce, {EditorOptions} from "tinymce";
 import {MatDialog} from "@angular/material/dialog";
 import {DeskUser} from "../../../../models/deskUser";
@@ -15,6 +15,8 @@ import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
 import {ValidationService} from "../../../../services/validation.service";
 import {EditorUploaderService} from "../../../../services/editor-uploader.service";
 import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
+import {Todo} from "../../../../models/todo";
+import {Column} from "../../../../models/column";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -118,9 +120,7 @@ export class AllCommentsComponent implements OnInit {
         },
         error: _ => {
         }
-      }
-    )
-
+      });
   }
 
   createComment() {
@@ -148,6 +148,8 @@ export class AllCommentsComponent implements OnInit {
             }
           });
         }
+      }).add(() => {
+        this.commentsSendingLoaded.next(true);
       });
     }
   }
@@ -162,7 +164,11 @@ export class AllCommentsComponent implements OnInit {
 
   private SortAndMapComments(comments: Comment[]) {
     return this.sortComments(comments.map(el => {
-      return new Comment(el.id, el.body, el.deskUser, new Date(el.createdAtUtc));
+      return <Comment>{
+        id: el.id,
+        body: el.body,
+        deskUser: el.deskUser,
+        createdAtUtc: new Date(el.createdAtUtc)};
     }));
   }
 

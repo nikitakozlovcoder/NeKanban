@@ -9,8 +9,8 @@
           <mat-error *ngIf="name.errors?.['required']">Поле не должно быть пустым!</mat-error>
           <mat-error *ngIf="name.errors?.['minlength']">Длина названия должна быть не менее 6 символов!</mat-error>
         </mat-form-field>
-        <button *ngIf="isNameUpdateLoaded" class = "register_button" mat-raised-button color="primary" (click)="updateDesk()">Сохранить</button>
-        <mat-spinner class="spinner-centered" diameter="36" *ngIf="!isNameUpdateLoaded"></mat-spinner>
+        <button *ngIf="isNameUpdateLoaded | async" class = "register_button" mat-raised-button color="primary" (click)="updateDesk()">Сохранить</button>
+        <mat-spinner class="spinner-centered" diameter="36" *ngIf="!(isNameUpdateLoaded | async)"></mat-spinner>
       </div>
     </ng-container>
 
@@ -18,12 +18,12 @@
       <p class="h-minor-title invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
       <div class="invite-link-content">
         <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, {duration:2000})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>
-        <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageInviteLink) && !hasInviteLink() && isLinkLoaded" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
-        <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageInviteLink) && hasInviteLink() && isLinkLoaded" class = "remove-link-button" mat-raised-button color="primary" (click)="removeLink()">Удалить ссылку</button>
-        <mat-spinner class="link-remove-spinner" diameter="36" *ngIf="!isLinkLoaded"></mat-spinner>
+        <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageInviteLink) && !hasInviteLink() && (isLinkLoaded | async)" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
+        <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageInviteLink) && hasInviteLink() && (isLinkLoaded | async)" class = "remove-link-button" mat-raised-button color="primary" (click)="removeLink()">Удалить ссылку</button>
+        <mat-spinner class="link-remove-spinner" diameter="36" *ngIf="!(isLinkLoaded | async)"></mat-spinner>
       </div>
     </mat-card-subtitle>
-    <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.DeleteDesk) && isRemoveDeskLoaded" class = "desk-remove-button" mat-raised-button color="warn" (click)="removeDesk(desk!.id)"><mat-icon>delete</mat-icon>Удалить доску</button>
-    <mat-spinner class="spinner-centered" color="warn" diameter="36" *ngIf="!isRemoveDeskLoaded"></mat-spinner>
+    <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.DeleteDesk) && (isRemoveDeskLoaded | async)" class = "desk-remove-button" mat-raised-button color="warn" (click)="removeDesk(desk!.id)"><mat-icon>delete</mat-icon>Удалить доску</button>
+    <mat-spinner class="spinner-centered" color="warn" diameter="36" *ngIf="!(isRemoveDeskLoaded | async)"></mat-spinner>
   </mat-card-content>
 </mat-card>

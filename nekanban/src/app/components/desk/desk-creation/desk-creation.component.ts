@@ -3,6 +3,7 @@ import {FormControl, UntypedFormControl, Validators} from "@angular/forms";
 import {DeskService} from "../../../services/desk.service";
 import {Desk} from "../../../models/desk";
 import {MatDialogRef} from "@angular/material/dialog";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-desk-creation',
@@ -16,19 +17,20 @@ export class DeskCreationComponent implements OnInit {
   ngOnInit(): void {
   }
   name = new FormControl<string>('', [Validators.required, Validators.minLength(6)]);
-  isLoaded = true;
+  isLoaded = new BehaviorSubject(true);
 
   createDesk() {
     if (this.name.invalid) {
       this.name.markAsTouched();
     }
     else {
-      this.isLoaded = false;
+      this.isLoaded.next(false);
       this.deskService.addDesk(this.name.value!).subscribe({
         next: (data: Desk) => {
-          this.isLoaded = true;
           this.dialogRef.close(data);
         }
+      }).add(() => {
+        this.isLoaded.next(true);
       });
     }
   }

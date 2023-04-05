@@ -45,7 +45,7 @@ export class SettingsComponent implements OnInit {
     })
     this.desksLoaded.pipe(combineLatestWith(this.currentDeskLoaded)).pipe(
       combineLatestWith(this.rolesLoaded), filter(el => el[0].every(x => x === true) && el[1] === true)
-      ).subscribe(result => {
+      ).subscribe(() => {
         this.redirectIfDontHaveAccessToSettings();
     })
   }

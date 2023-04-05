@@ -6,7 +6,7 @@
   <span class="example-spacer"></span>
   <mat-icon>account_circle</mat-icon>
   <span class="user-name">{{ currentUser!.name}}</span>
-  <div *ngIf="desk !== undefined">
+  <div *ngIf="desk !== undefined && (isFavouriteLoaded | async)">
     <button *ngIf="desk!.deskUser.preference && isFavouriteLoaded" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click) = "removeFromFavourites(desk.id)">
       <mat-icon>favorite</mat-icon>
     </button>
@@ -19,7 +19,7 @@
       <mat-icon>favorite_border</mat-icon>
     </button>
   </div>
-  <mat-spinner class="spinner-centered spinner-white" diameter="24" *ngIf="!isFavouriteLoaded"></mat-spinner>
+  <mat-spinner class="spinner-centered spinner-white" diameter="24" *ngIf="!(isFavouriteLoaded | async)"></mat-spinner>
   <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" (click)="logout()">
     <mat-icon *ngIf="isLogoutLoaded | async">logout</mat-icon>
     <mat-spinner *ngIf="!(isLogoutLoaded | async)" diameter="24"></mat-spinner>
