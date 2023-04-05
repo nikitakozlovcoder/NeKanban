@@ -68,7 +68,7 @@ mat-dialog-container {
   align-items: flex-start;
 }
 ::ng-deep .todo-wrap .ng-scroll-content {
-  padding: 32px;
+  /*padding: 32px;*/
   min-width: unset;
 }
 .todo-spinner-wrap {
@@ -79,4 +79,22 @@ mat-dialog-container {
 }
 .creator-name {
   margin-bottom: 10px;
+}
+.drag-handler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: move;
+}
+.drag-handler-top {
+  width: 100%;
+  height: 30px;
+}
+.drag-handler-left {
+  bottom: 0;
+  width: 30px;
+}
+.todo-content {
+  position: relative;
+  padding: 32px;
 }

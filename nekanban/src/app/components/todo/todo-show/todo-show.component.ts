@@ -13,6 +13,7 @@ import {DeskUser} from "../../../models/deskUser";
 import {Role} from "../../../models/Role";
 import {BehaviorSubject} from "rxjs";
 import {environment} from "../../../../environments/environment";
+import {ResizedEvent} from "angular-resize-event";
 
 @Component({
   selector: 'app-task-creation',
@@ -181,5 +182,18 @@ export class TodoShowComponent implements OnInit {
         })
       }
     }
+  }
+
+
+
+
+  handleResize(event: ResizedEvent) {
+    console.log("Height: ", event.newRect.height);
+    console.log("Width: ", event.newRect.width);
+  }
+
+  onResized(event: ResizedEvent): void {
+    let a = Math.round(event.newRect.width);
+    let b  = Math.round(event.newRect.height);
   }
 }
