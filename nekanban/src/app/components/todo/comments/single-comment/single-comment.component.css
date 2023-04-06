@@ -70,3 +70,14 @@ mat-dialog-container {
 .comments-body-wrap {
   margin-top: 10px;
 }
+
+
+
+@media screen and (max-width: 925px) {
+  .comment-author-name {
+    margin-right: 10px;
+  }
+  mat-card {
+    padding: 10px;
+  }
+}

@@ -1,7 +1,7 @@
 .comments-card {
   margin-top: 10px;
 }
-.comments-card button {
+.comment-send-button {
   margin-left: 10px;
   border-radius: 50%;
   min-width: 48px;
@@ -33,4 +33,19 @@ mat-dialog-container {
 }
 .comment-area {
   width: 100%;
+}
+
+
+
+@media screen and (max-width: 925px) {
+  .comment-field-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .comment-send-button {
+    margin-top: 10px;
+  }
+  mat-card {
+    padding: 10px;
+  }
 }
