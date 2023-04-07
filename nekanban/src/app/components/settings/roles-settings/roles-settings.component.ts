@@ -133,7 +133,7 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   setRoleAsDefault(role: Role) {
     this.rolesService.setAsDefault(role.id).subscribe(result => {
       this.roles = result;
-      /*this.rolesChange.emit(this.roles);*/
+      this.rolesChange.emit(this.roles);
       this.updateCurrentRole();
     })
   }

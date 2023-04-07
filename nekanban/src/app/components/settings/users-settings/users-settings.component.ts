@@ -33,8 +33,8 @@ export class UsersSettingsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  changeUserRole(event: Event, deskUserId: number) {
-    this.deskUserService.changeRole(deskUserId, parseInt((event.target as HTMLInputElement).value)).subscribe({
+  changeUserRole(roleId: number, deskUserId: number) {
+    this.deskUserService.changeRole(deskUserId, roleId).subscribe({
       next: (data: DeskUser[]) => {
         this.desk!.deskUsers = data.sort(function (a: DeskUser, b: DeskUser) {
           if (a.id > b.id) {

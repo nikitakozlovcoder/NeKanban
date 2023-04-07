@@ -8,8 +8,8 @@
     <div class="single-user">
       <p class="desk-user-name">{{user.user.name}} {{user.user.surname}}</p>
       <div class="select" *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ChangeUserRole) && !desk!.deskUsers[i].isOwner">
-        <select (change)="changeUserRole($event, desk!.deskUsers[i].id)" [ngModel]="desk!.deskUsers[i].role.id">
-          <option *ngFor="let role of roles" [value]="role.id">
+        <select (change)="changeUserRole(desk!.deskUsers[i].role.id, desk!.deskUsers[i].id)" [(ngModel)]="desk!.deskUsers[i].role.id">
+          <option *ngFor="let role of roles" [ngValue]="role.id">
             {{role.name}}
           </option>
         </select>
