@@ -48,3 +48,30 @@
 .link-remove-spinner {
   margin-left: 50px;
 }
+
+
+
+@media screen and (max-width: 700px) {
+  .desk-name-update-group {
+    flex-direction: column;
+  }
+  .desk-name-update-field {
+    width: 100%;
+    margin: 0;
+    margin-bottom: 15px;
+  }
+  button {
+    width: 100%;
+  }
+  .desk-remove-button ::ng-deep.mat-button-wrapper {
+    justify-content: center;
+  }
+  .invite-link-content {
+    flex-direction: column;
+  }
+  .invite-link .p-link {
+    text-overflow: clip;
+    width: unset;
+    white-space: initial;
+  }
+}

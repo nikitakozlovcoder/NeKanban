@@ -31,9 +31,11 @@
                             [editorId]="'comment-tinymce-update' + this.comment!.id.toString()"
                             (editorOnInit)="setUpdateEditorLoaded()"></app-tinymce-editor>
       </div>
-      <mat-icon *ngIf="(commentUpdateLoaded | async)" class="comment-update-icon clickable-icon" (click)="updateComment()">done</mat-icon>
-      <mat-spinner *ngIf="!(commentUpdateLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
-      <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField()">close</mat-icon>
+      <div class="comment-updating-controls">
+        <mat-icon *ngIf="(commentUpdateLoaded | async)" class="comment-update-icon clickable-icon" (click)="updateComment()">done</mat-icon>
+        <mat-spinner *ngIf="!(commentUpdateLoaded | async)" class="comment-update-spinner" diameter="24"></mat-spinner>
+        <mat-icon class="comment-update-icon clickable-icon" (click)="hideUpdatingField()">close</mat-icon>
+      </div>
     </div>
     <mat-error *ngIf="commentUpdatingField.errors?.['commentMinLength']">Длина комментария должна быть не менее 10 символов!</mat-error>
   </div>

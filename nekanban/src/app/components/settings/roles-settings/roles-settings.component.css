@@ -4,7 +4,8 @@
 }
 .roles-list {
   padding: 10px;
-  width: 40%;
+  flex: 1;
+  /*width: 40%;*/
 }
 .permissions-list {
   padding: 10px;
@@ -39,4 +40,21 @@
 .roles-title {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+.role-controls {
+  display: flex;
+}
+.permissions-list ::ng-deep .mat-checkbox-layout {
+  white-space: initial;
+}
+.permissions-list-full-width {
+  width: 100%;
+  padding: 0;
+}
+.roles-list-full-width {
+  width: 100%;
+  box-sizing: border-box;
+}
+.roles-list ::ng-deep .mat-expansion-panel-body {
+  padding: 0 10px 10px;
 }

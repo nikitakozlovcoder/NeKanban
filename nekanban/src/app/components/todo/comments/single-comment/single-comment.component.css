@@ -70,7 +70,9 @@ mat-dialog-container {
 .comments-body-wrap {
   margin-top: 10px;
 }
-
+.comment-updating-controls {
+  display: flex;
+}
 
 
 @media screen and (max-width: 925px) {
@@ -79,5 +81,8 @@ mat-dialog-container {
   }
   mat-card {
     padding: 10px;
+  }
+  .comment-updating-group {
+    flex-direction: column;
   }
 }
