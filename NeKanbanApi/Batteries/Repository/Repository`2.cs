@@ -24,13 +24,13 @@ public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TP
     }
 
     #region write
-    public Task Create(TEntity item, CancellationToken ct)
+    public virtual Task Create(TEntity item, CancellationToken ct)
     {
         _context.Entry(item).State = EntityState.Added;
         return _context.SaveChangesAsync(ct);
     }
 
-    public Task Create(IEnumerable<TEntity> items, CancellationToken ct)
+    public virtual Task Create(IEnumerable<TEntity> items, CancellationToken ct)
     {
         foreach (var item in items)
         {
@@ -40,58 +40,58 @@ public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TP
         return _context.SaveChangesAsync(ct);
     }
 
-    public Task CreateRecursive(TEntity entity, CancellationToken ct)
+    public virtual Task CreateRecursive(TEntity entity, CancellationToken ct)
     {
         EntityDbSet.Add(entity);
         return _context.SaveChangesAsync(ct);
     }
 
-    public Task Remove(TEntity item, CancellationToken ct)
+    public virtual Task Remove(TEntity item, CancellationToken ct)
     {
         EntityDbSet.Remove(item);
         return _context.SaveChangesAsync(ct);
     }
 
-    public Task Remove(IEnumerable<TEntity> items, CancellationToken ct)
+    public virtual Task Remove(IEnumerable<TEntity> items, CancellationToken ct)
     {
         EntityDbSet.RemoveRange(items);
         return _context.SaveChangesAsync(ct);
     }
 
-    public async Task<TEntity> Remove(TPrimaryKey id, CancellationToken ct)
+    public virtual async Task<TEntity> Remove(TPrimaryKey id, CancellationToken ct)
     {
         var item = await Single(x => x.Id.Equals(id), ct);
         await Remove(item, ct);
         return item;
     }
 
-    public async Task<List<TEntity>> Remove(IEnumerable<TPrimaryKey> ids, CancellationToken ct)
+    public virtual async Task<List<TEntity>> Remove(IEnumerable<TPrimaryKey> ids, CancellationToken ct)
     {
         var items = await ToList(x => ids.Contains(x.Id), ct);
         await Remove(items, ct);
         return items;
     }
 
-    public async Task Revoke<T>(T entity, CancellationToken ct) where T : TEntity, ISoftDeletable
+    public virtual async Task Revoke<T>(T entity, CancellationToken ct) where T : TEntity, ISoftDeletable
     {
         entity.IsDeleted = false;
         await Update(entity, ct);
     }
 
-    public async Task<TEntity> Remove(int id, CancellationToken ct)
+    public virtual async Task<TEntity> Remove(int id, CancellationToken ct)
     {
         var item = await Single(x => x.Id.Equals(id), ct);
         await Remove(item, ct);
         return item;
     }
 
-    public Task Update(TEntity item, CancellationToken ct)
+    public virtual Task Update(TEntity item, CancellationToken ct)
     {
         _context.Entry(item).State = EntityState.Modified;
         return _context.SaveChangesAsync(ct);
     }
 
-    public Task Update(IEnumerable<TEntity> items, CancellationToken ct)
+    public virtual Task Update(IEnumerable<TEntity> items, CancellationToken ct)
     {
         foreach (var item in items)
         {
@@ -104,103 +104,103 @@ public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TP
     #endregion
 
     #region ToList
-    public Task<List<TEntity>> ToList(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    public virtual Task<List<TEntity>> ToList(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return EntityDbSet.Where(predicate).ToListAsync(ct);
     }
 
-    public Task<List<T>> ToList<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, IEnumerable<Expression<Func<TEntity, object>>>? orders = null, CancellationToken ct = default)
+    public virtual Task<List<T>> ToList<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, IEnumerable<Expression<Func<TEntity, object>>>? orders = null, CancellationToken ct = default)
     {
         return Query(predicate, orders).Select(projection).ToListAsync(ct);
     }
     #endregion
     
     #region First/Single
-    public async Task<TEntity> First(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    public virtual async Task<TEntity> First(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return ThrowOnNull(await EntityDbSet.Where(predicate).FirstOrDefaultAsync(ct));
     }
     
-    public Task<TEntity?> FirstOrDefault(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    public virtual Task<TEntity?> FirstOrDefault(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return EntityDbSet.Where(predicate).FirstOrDefaultAsync(ct);
     }
 
-    public async Task<TEntity> Single(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    public virtual async Task<TEntity> Single(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return ThrowOnNull(await EntityDbSet.Where(predicate).SingleOrDefaultAsync(ct));
     }
 
-    public Task<TEntity?> SingleOrDefault(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    public virtual Task<TEntity?> SingleOrDefault(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return EntityDbSet.Where(predicate).SingleOrDefaultAsync(ct);
     }
 
-    public async Task<T> First<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
+    public virtual async Task<T> First<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
     {
         return ThrowOnNull(await FirstOrDefault(predicate, projection, ct));
     }
 
-    public Task<T?> FirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
+    public virtual Task<T?> FirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
     {
         return Query(predicate, null).Select(projection).FirstOrDefaultAsync(ct);
     }
 
-    public async Task<T> Single<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
+    public virtual async Task<T> Single<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
     {
         return ThrowOnNull(await SingleOrDefault(predicate, projection, ct));
     }
 
-    public Task<T?> SingleOrDefault<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
+    public virtual Task<T?> SingleOrDefault<T>(Expression<Func<TEntity, bool>> predicate, Expression<Func<TEntity, T>> projection, CancellationToken ct)
     {
         return Query(predicate, null).Select(projection).SingleOrDefaultAsync(ct);
     }
     #endregion
 
     #region ProjectTo
-    public Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
+    public virtual Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return Query(predicate, null).ProjectTo<T>(_mapper.ConfigurationProvider).ToListAsync(ct);
     }
     
-    public Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
+    public virtual Task<List<T>> ProjectTo<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return Query(predicate, orders).ProjectTo<T>(_mapper.ConfigurationProvider).ToListAsync(ct);
     }
     
-    public async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
+    public virtual async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return ThrowOnNull(await Query(predicate, null).ProjectTo<T>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(ct));
     }
     
-    public async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
+    public virtual async Task<T> ProjectToSingle<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return ThrowOnNull(await Query(predicate, orders).ProjectTo<T>(_mapper.ConfigurationProvider).SingleOrDefaultAsync(ct));
     }
     
-    public Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
+    public virtual Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return Query(predicate, null).ProjectTo<T>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(ct);
     }
     
-    public Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
+    public virtual Task<T?> ProjectToFirstOrDefault<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return Query(predicate, orders).ProjectTo<T>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(ct);
     }
     
-    public async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
+    public virtual async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return ThrowOnNull(await ProjectToFirstOrDefault<T>(predicate, ct));
     }
     
-    public async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
+    public virtual async Task<T> ProjectToFirst<T>(Expression<Func<TEntity, bool>> predicate, IEnumerable<Expression<Func<TEntity, object>>> orders, CancellationToken ct) where T : class, IAutoMapFrom<TEntity, T>
     {
         return ThrowOnNull(await ProjectToFirstOrDefault<T>(predicate, orders, ct));
     }
     #endregion
 
     #region Any
-    public async Task AnyOrThrow(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    public virtual async Task AnyOrThrow(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         var exists = await Any(predicate, ct);
         if (!exists)
@@ -209,18 +209,18 @@ public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TP
         }
     }
 
-    public Task<bool> Any(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
+    public virtual Task<bool> Any(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)
     {
         return EntityDbSet.AnyAsync(predicate, ct);
     }
     #endregion
     
-    public IQueryable<TEntity> QueryableSelect()
+    public virtual IQueryable<TEntity> QueryableSelect()
     {
         return EntityDbSet;
     }
     
-    private IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate,
+    protected  virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> predicate,
         IEnumerable<Expression<Func<TEntity, object>>>? orders)
     {
         var query = EntityDbSet.Where(predicate);
@@ -232,7 +232,7 @@ public abstract class Repository<TEntity, TPrimaryKey> : IRepository<TEntity, TP
         return query;
     }
     
-    private static T ThrowOnNull<T>(T? entity)
+    protected static T ThrowOnNull<T>(T? entity)
     {
         if (entity == null)
         {
