@@ -3,7 +3,6 @@ using Batteries.Repository;
 using JetBrains.Annotations;
 using NeKanban.Common.DTOs.DesksUsers;
 using NeKanban.Common.Entities;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Security.Constants;
 
 namespace NeKanban.Logic.Services.Security;
