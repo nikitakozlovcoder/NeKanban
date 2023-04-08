@@ -13,7 +13,7 @@
                           [editorId]="'comment-tinymce' + this.todoId!.toString()"
                           (editorOnInit)="setLoaded()"></app-tinymce-editor>
     </div>
-    <button *ngIf="commentsSendingLoaded | async" mat-raised-button color="primary" (click)="createComment()"><mat-icon>send</mat-icon></button>
+    <button *ngIf="commentsSendingLoaded | async" mat-raised-button color="primary" class="comment-send-button" (click)="createComment()"><mat-icon>send</mat-icon></button>
     <mat-spinner class="comments-sending-spinner" diameter="40" *ngIf="!(commentsSendingLoaded | async)"></mat-spinner>
   </div>
   <mat-error *ngIf="commentInput.errors?.['commentRequired']">Поле не должно быть пустым!</mat-error>

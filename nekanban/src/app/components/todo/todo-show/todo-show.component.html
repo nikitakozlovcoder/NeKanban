@@ -1,69 +1,185 @@
-<ng-scrollbar *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap" [autoHeightDisabled]="false" [autoWidthDisabled]="false">
-  <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
-  <div class="todo-container">
-    <mat-card class = "column-card">
-      <div>
+<!--<ng-scrollbar *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap" style="width: 900px; height: 500px;" [autoHeightDisabled]="true">
+  <div scrollViewport>
+    <div class="drag-handler" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary=".cdk-overlay-container">
+    </div>
+    <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
+    <div class="todo-container">
+      <mat-card class = "column-card">
+        <div>
+          <mat-card-title>
+            <p><app-todo-code [todoCode]="todo!.code"></app-todo-code>{{todo!.name}}</p>
+          </mat-card-title>
+
+          <mat-card-content>
+            <mat-card-subtitle>
+              <p>Описание:</p>
+            </mat-card-subtitle>
+            <app-raw-html-viewer *ngIf="todo!.body" [html]="todo!.body"></app-raw-html-viewer>
+          </mat-card-content>
+        </div>
+
+
+      </mat-card>
+      <mat-card class = "task-settings-card">
         <mat-card-title>
-          <p><app-todo-code [todoCode]="todo!.code"></app-todo-code>{{todo!.name}}</p>
+          <p>Свойства задания</p>
         </mat-card-title>
 
         <mat-card-content>
-          <mat-card-subtitle>
-            <p>Описание:</p>
+          <mat-card-subtitle class="todo-creator-subtitle">
+            <p>Создатель:</p>
           </mat-card-subtitle>
-          <app-raw-html-viewer *ngIf="todo!.body" [html]="todo!.body"></app-raw-html-viewer>
-          <!--<editor class="description"
-                  [disabled]="true"
-                  [init]="{
-                  menubar: false,
-                  toolbar: false,
-                  branding: false,
-        base_url: '/tinymce',
-        suffix: '.min',
-        plugins: '' }"
-          ></editor>-->
+          <p class="creator-name" *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</p>
+          <p class="creator-name" *ngIf="getToDoCreator() === undefined">---</p>
+          <mat-card-subtitle>
+            <div class="employees-settings" *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself) || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)">
+              <mat-form-field class="user-select" appearance="fill">
+                <mat-label>Исполнители</mat-label>
+                <mat-select *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)" #select [formControl]="users" multiple (closed)="changeUsers(select)">
+                  <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
+                </mat-select>
+                <mat-select *ngIf="!rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) && rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
+                  <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
+            <p class="assignees-title">Назначенные исполнители:</p>
+            <mat-nav-list class ="employees-list">
+              <mat-list-item *ngFor="let user of getToDoUsers()">
+                <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
+              </mat-list-item>
+            </mat-nav-list>
+          </mat-card-subtitle>
         </mat-card-content>
-      </div>
+      </mat-card>
+    </div>
 
-
-    </mat-card>
-    <mat-card class = "task-settings-card">
-      <mat-card-title>
-        <p>Свойства задания</p>
-      </mat-card-title>
-
-      <mat-card-content>
-        <mat-card-subtitle class="todo-creator-subtitle">
-          <p>Создатель:</p>
-        </mat-card-subtitle>
-        <p class="creator-name" *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</p>
-        <p class="creator-name" *ngIf="getToDoCreator() === undefined">---</p>
-        <mat-card-subtitle>
-          <div class="employees-settings" *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself) || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)">
-            <mat-form-field class="user-select" appearance="fill">
-              <mat-label>Исполнители</mat-label>
-              <mat-select *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)" #select [formControl]="users" multiple (closed)="changeUsers(select)">
-                <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
-              </mat-select>
-              <mat-select *ngIf="!rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) && rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
-                <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
-          <p class="assignees-title">Назначенные исполнители:</p>
-          <mat-nav-list class ="employees-list">
-            <mat-list-item *ngFor="let user of getToDoUsers()">
-              <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
-            </mat-list-item>
-          </mat-nav-list>
-        </mat-card-subtitle>
-      </mat-card-content>
-    </mat-card>
+    <app-all-comments [roles]="data.roles" [todoId]="data.todoId" [deskUser]="data.deskUser"></app-all-comments>
   </div>
 
-  <app-all-comments [roles]="data.roles" [todoId]="data.todoId" [deskUser]="data.deskUser"></app-all-comments>
-</ng-scrollbar>
+</ng-scrollbar>-->
+<!--<ng-scrollbar *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap" [autoHeightDisabled]="false" [autoWidthDisabled]="false">
+  <div class="todo-content">
+    <div class="drag-handler drag-handler-left" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary=".cdk-overlay-container"></div>
+    <div class="drag-handler drag-handler-top" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary=".cdk-overlay-container"></div>
+    <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
+    <div class="todo-container">
+      <mat-card class = "column-card">
+        <div>
+          <mat-card-title>
+            <p><app-todo-code [todoCode]="todo!.code"></app-todo-code>{{todo!.name}}</p>
+          </mat-card-title>
+
+          <mat-card-content>
+            <mat-card-subtitle>
+              <p>Описание:</p>
+            </mat-card-subtitle>
+            <app-raw-html-viewer *ngIf="todo!.body" [html]="todo!.body"></app-raw-html-viewer>
+          </mat-card-content>
+        </div>
+
+
+      </mat-card>
+      <mat-card class = "task-settings-card">
+        <mat-card-title>
+          <p>Свойства задания</p>
+        </mat-card-title>
+
+        <mat-card-content>
+          <mat-card-subtitle class="todo-creator-subtitle">
+            <p>Создатель:</p>
+          </mat-card-subtitle>
+          <p class="creator-name" *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</p>
+          <p class="creator-name" *ngIf="getToDoCreator() === undefined">---</p>
+          <mat-card-subtitle>
+            <div class="employees-settings" *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself) || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)">
+              <mat-form-field class="user-select" appearance="fill">
+                <mat-label>Исполнители</mat-label>
+                <mat-select *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)" #select [formControl]="users" multiple (closed)="changeUsers(select)">
+                  <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
+                </mat-select>
+                <mat-select *ngIf="!rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) && rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
+                  <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
+            <p class="assignees-title">Назначенные исполнители:</p>
+            <mat-nav-list class ="employees-list">
+              <mat-list-item *ngFor="let user of getToDoUsers()">
+                <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
+              </mat-list-item>
+            </mat-nav-list>
+          </mat-card-subtitle>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <app-all-comments [roles]="data.roles" [todoId]="data.todoId" [deskUser]="data.deskUser"></app-all-comments>
+  </div>
+
+</ng-scrollbar>-->
+<div *ngIf="(todoLoaded | async); else todoShowNotLoaded" class="todo-wrap">
+  <div class="todo-content">
+    <div class="drag-handler drag-handler-left" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary=".cdk-overlay-container"></div>
+    <div class="drag-handler drag-handler-top" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary=".cdk-overlay-container"></div>
+    <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
+    <div class="todo-container">
+      <mat-card class = "column-card">
+        <div>
+          <mat-card-title>
+            <p><app-todo-code [todoCode]="todo!.code"></app-todo-code>{{todo!.name}}</p>
+          </mat-card-title>
+
+          <mat-card-content>
+            <mat-card-subtitle>
+              <p>Описание:</p>
+            </mat-card-subtitle>
+            <app-raw-html-viewer *ngIf="todo!.body" [html]="todo!.body"></app-raw-html-viewer>
+          </mat-card-content>
+        </div>
+
+
+      </mat-card>
+      <mat-card class = "task-settings-card">
+        <mat-card-title>
+          <p>Свойства задания</p>
+        </mat-card-title>
+
+        <mat-card-content>
+          <mat-card-subtitle class="todo-creator-subtitle">
+            <p>Создатель:</p>
+          </mat-card-subtitle>
+          <p class="creator-name" *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</p>
+          <p class="creator-name" *ngIf="getToDoCreator() === undefined">---</p>
+          <mat-card-subtitle>
+            <div class="employees-settings" *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself) || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)">
+              <mat-form-field class="user-select" appearance="fill">
+                <mat-label>Исполнители</mat-label>
+                <mat-select *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)" #select [formControl]="users" multiple (closed)="changeUsers(select)">
+                  <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
+                </mat-select>
+                <mat-select *ngIf="!rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) && rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
+                  <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
+            <p class="assignees-title">Назначенные исполнители:</p>
+            <mat-nav-list class ="employees-list">
+              <mat-list-item *ngFor="let user of getToDoUsers()">
+                <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
+              </mat-list-item>
+            </mat-nav-list>
+          </mat-card-subtitle>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <app-all-comments [roles]="data.roles" [todoId]="data.todoId" [deskUser]="data.deskUser"></app-all-comments>
+  </div>
+</div>
 <ng-template #todoShowNotLoaded>
   <div class="todo-spinner-wrap">
     <mat-spinner class="spinner-centered" diameter="50"></mat-spinner>

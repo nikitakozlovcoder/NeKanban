@@ -13,6 +13,7 @@ import {DeskUser} from "../../../models/deskUser";
 import {Role} from "../../../models/Role";
 import {BehaviorSubject} from "rxjs";
 import {environment} from "../../../../environments/environment";
+import {ResizedEvent} from "angular-resize-event";
 
 @Component({
   selector: 'app-task-creation',
@@ -77,6 +78,7 @@ export class TodoShowComponent implements OnInit {
     })
     return deskUsers;
   }
+
   getAllTodoUsers() : User[] {
     let todoUsers : User[] = [];
     this.todo!.toDoUsers.forEach( el => {
@@ -84,6 +86,7 @@ export class TodoShowComponent implements OnInit {
     })
     return todoUsers;
   }
+
   getIdsOfSelectedUsers() : number[] {
     let selectedUsers : User[] = this.getDeskUsers().filter(el => this.getAllTodoUsers().some(someEl => someEl.id === el.id)
       && this.todo!.toDoUsers.find(todoUser => todoUser.deskUser.user.id === el.id  && todoUser.toDoUserType != 0));
@@ -93,6 +96,7 @@ export class TodoShowComponent implements OnInit {
     })
     return ids;
   }
+
   changeUsers(select:MatSelect)  {
     let newIds : number[] = select.value;
     let appearedIds: number[] = [];
@@ -178,5 +182,18 @@ export class TodoShowComponent implements OnInit {
         })
       }
     }
+  }
+
+
+
+
+  handleResize(event: ResizedEvent) {
+    console.log("Height: ", event.newRect.height);
+    console.log("Width: ", event.newRect.width);
+  }
+
+  onResized(event: ResizedEvent): void {
+    let a = Math.round(event.newRect.width);
+    let b  = Math.round(event.newRect.height);
   }
 }

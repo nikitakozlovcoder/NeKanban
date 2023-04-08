@@ -1,8 +1,10 @@
 .column-card {
-  display: flex;
+  /*display: flex;
   flex-direction: row;
   justify-content: space-between;
-  min-width: 500px;
+  min-width: 500px;*/
+  width: 100%;
+  box-sizing: border-box;
 }
 .task-settings-card {
   min-width: 250px;
@@ -40,9 +42,9 @@
   width: 100%;
 }
 .todo-wrap {
-  max-width: 900px;
+  /*max-width: 900px;*/
   max-height: 95vh;
-  overflow: auto;
+  /*overflow: auto;*/
   position: relative;
 }
 mat-dialog-container {
@@ -66,10 +68,13 @@ mat-dialog-container {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  max-width: 100%;
 }
 ::ng-deep .todo-wrap .ng-scroll-content {
-  padding: 32px;
-  min-width: unset;
+  /*padding: 32px;*/
+  display: block;
+  max-width: 100%;
+  min-width: 90%;
 }
 .todo-spinner-wrap {
   padding: 32px;
@@ -79,4 +84,40 @@ mat-dialog-container {
 }
 .creator-name {
   margin-bottom: 10px;
+}
+.drag-handler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: move;
+}
+.drag-handler-top {
+  width: 100%;
+  height: 30px;
+}
+.drag-handler-left {
+  bottom: 0;
+  width: 30px;
+}
+.todo-content {
+  position: relative;
+  padding: 32px;
+}
+
+
+
+@media screen and (max-width: 925px) {
+  .todo-container {
+    flex-direction: column;
+  }
+  .task-settings-card {
+    margin: 0;
+    margin-top: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .todo-content {
+    padding: 10px;
+    padding-top: 32px;
+  }
 }

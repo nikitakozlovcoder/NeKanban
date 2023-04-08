@@ -4,6 +4,7 @@ import {Todo} from "../../../../models/todo";
 import {RolesService} from "../../../../services/roles.service";
 import {Role} from "../../../../models/Role";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-role-creation',
@@ -14,7 +15,7 @@ export class RoleCreationComponent implements OnInit {
 
   name = new UntypedFormControl('', [Validators.required, Validators.minLength(5)]);
 
-  isLoaded = true;
+  isLoaded = new BehaviorSubject(true);
 
   constructor(private readonly rolesService: RolesService,
               @Inject(MAT_DIALOG_DATA) public data: {deskId: number},
@@ -28,12 +29,13 @@ export class RoleCreationComponent implements OnInit {
       this.name.markAsTouched();
       return;
     }
-    this.isLoaded = false;
+    this.isLoaded.next(false);
     this.rolesService.createRole(this.data.deskId, this.name.value).subscribe({
       next: (data: Role[]) => {
-        this.isLoaded = true;
         this.dialogRef.close(data);
       }
+    }).add(() => {
+      this.isLoaded.next(true);
     });
   }
 }

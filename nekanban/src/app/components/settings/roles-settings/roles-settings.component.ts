@@ -12,6 +12,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import {DialogService} from "../../../services/dialog.service";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-roles-settings',
@@ -28,14 +29,21 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   permissions: Permission[] = [];
   allPermissions: Permission[] = [];
   currentRole: Role | undefined;
+  showAccordion = false;
+
   constructor(public dialog: MatDialog,
               private readonly rolesService: RolesService,
               public snackBar: MatSnackBar,
               public readonly translate: TranslateService,
-              private readonly dialogService: DialogService) { }
+              private readonly dialogService: DialogService,
+              private readonly breakpointObserver: BreakpointObserver) { }
 
   ngOnInit(): void {
-
+    this.breakpointObserver
+      .observe([Breakpoints.HandsetPortrait])
+      .subscribe(result => {
+        this.showAccordion = result.matches;
+      })
   }
 
   ngOnChanges() {
@@ -104,9 +112,13 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
     return this.currentRole?.permissions.some(el => el.permission === permission.permission);
   }
 
-  grantPermissionToRole(permission: Permission) {
-    this.rolesService.grantPermission(this.currentRole!.id, permission.permission).subscribe(result => {
-      this.currentRole?.permissions.push(permission);
+  roleHasPermission(role: Role, permission: Permission) {
+    return role.permissions.some(el => el.permission === permission.permission);
+  }
+
+  grantPermissionToRole(role: Role, permission: Permission) {
+    this.rolesService.grantPermission(role.id, permission.permission).subscribe(result => {
+      role.permissions.push(permission);
     })
   }
 
@@ -118,8 +130,8 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
     })
   }
 
-  setRoleAsDefault() {
-    this.rolesService.setAsDefault(this.currentRole!.id).subscribe(result => {
+  setRoleAsDefault(role: Role) {
+    this.rolesService.setAsDefault(role.id).subscribe(result => {
       this.roles = result;
       this.rolesChange.emit(this.roles);
       this.updateCurrentRole();

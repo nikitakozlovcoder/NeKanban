@@ -57,9 +57,10 @@ export class TodoEditingComponent implements OnInit {
     this.isLoaded.next(false);
     this.todoService.getToDo(this.data.toDo.id).subscribe({
       next: (data) => {
-        this.isLoaded.next(true);
         this.todoFormGroup.patchValue(data);
       }
+    }).add(() => {
+      this.isLoaded.next(true);
     })
   }
 
@@ -72,11 +73,12 @@ export class TodoEditingComponent implements OnInit {
       tinymce.activeEditor?.uploadImages().then(() => {
         this.todoService.updateToDo(this.todoFormGroup.getRawValue() as Todo).subscribe({
           next: data => {
-            this.updateLoaded.next(true);
             this.dialogRef.close(data);
           },
           error: () => {
           }
+        }).add(() => {
+          this.updateLoaded.next(true);
         });
       });
     }

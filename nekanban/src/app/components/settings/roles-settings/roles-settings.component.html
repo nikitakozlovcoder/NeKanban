@@ -1,32 +1,58 @@
 <div class="roles-wrapper">
-  <div class="roles-list">
+  <div class="roles-list" [ngClass]="{'roles-list-full-width' : showAccordion}">
     <h2 class="h-minor-title roles-title">Роли</h2>
     <mat-nav-list>
-      <a mat-list-item class="single-role" *ngFor="let role of roles" (click)="getPermissionsForRole(role)" [class.chosen-role]="role.id === currentRole?.id">
-        <div>
-          {{role.name}}
-        </div>
-        <div>
-          <mat-icon (click)="openRoleUpdatingDialog(role)">edit</mat-icon>
-          <mat-icon class="role-delete-icon" (click)="openRoleDeletingDialog(role, $event)" *ngIf="!role.isDefault">delete</mat-icon>
-        </div>
-      </a>
+      <mat-accordion *ngIf="showAccordion; else noAccordion">
+        <mat-expansion-panel hideToggle *ngFor="let role of roles">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{role.name}}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="permissions-list permissions-list-full-width">
+            <mat-card>
+              <div class="permissions-title">
+                <h2 class="h-minor-title">Разрешения</h2>
+                <div>
+                  <mat-checkbox *ngIf="!role.isDefault" (click)="setRoleAsDefault(role)" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
+                  <mat-checkbox *ngIf="role!.isDefault" disabled [checked]="true" matTooltip="Эта роль уже назначена в качестве роли по умолчанию!">Роль по умолчанию</mat-checkbox>
+                </div>
+              </div>
+              <div *ngFor="let permission of allPermissions">
+                <mat-checkbox *ngIf="roleHasPermission(role, permission)" [checked]="true" (click)="revokePermissionFromRole(permission)">{{'Permissions.' + permission.permissionName | translate}}</mat-checkbox>
+                <mat-checkbox *ngIf="!roleHasPermission(role, permission)" (click)="grantPermissionToRole(role, permission)">{{'Permissions.' + permission.permissionName | translate}}</mat-checkbox>
+              </div>
+            </mat-card>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <ng-template #noAccordion>
+        <a  mat-list-item class="single-role" *ngFor="let role of roles" (click)="getPermissionsForRole(role)" [class.chosen-role]="role.id === currentRole?.id">
+          <div>
+            {{role.name}}
+          </div>
+          <div class="role-controls">
+            <mat-icon (click)="openRoleUpdatingDialog(role)">edit</mat-icon>
+            <mat-icon class="role-delete-icon" (click)="openRoleDeletingDialog(role, $event)" *ngIf="!role.isDefault">delete</mat-icon>
+          </div>
+        </a>
+      </ng-template>
     </mat-nav-list>
     <button class="add-role-button" mat-raised-button (click)="openRoleCreationDialog()"><mat-icon>add</mat-icon>Добавить роль</button>
 
   </div>
-  <div class="permissions-list">
+  <div class="permissions-list" *ngIf="!showAccordion">
     <mat-card>
       <div class="permissions-title">
         <h2 class="h-minor-title">Разрешения</h2>
         <div>
-          <mat-checkbox *ngIf="!currentRole!.isDefault" (click)="setRoleAsDefault()" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
+          <mat-checkbox *ngIf="!currentRole!.isDefault" (click)="setRoleAsDefault(currentRole!)" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
           <mat-checkbox *ngIf="currentRole!.isDefault" disabled [checked]="true" matTooltip="Эта роль уже назначена в качестве роли по умолчанию!">Роль по умолчанию</mat-checkbox>
         </div>
       </div>
       <div *ngFor="let permission of allPermissions">
         <mat-checkbox *ngIf="currentRoleHasPermission(permission)" [checked]="true" (click)="revokePermissionFromRole(permission)">{{'Permissions.' + permission.permissionName | translate}}</mat-checkbox>
-        <mat-checkbox *ngIf="!currentRoleHasPermission(permission)" (click)="grantPermissionToRole(permission)">{{'Permissions.' + permission.permissionName | translate}}</mat-checkbox>
+        <mat-checkbox *ngIf="!currentRoleHasPermission(permission)" (click)="grantPermissionToRole(currentRole!, permission)">{{'Permissions.' + permission.permissionName | translate}}</mat-checkbox>
       </div>
     </mat-card>
   </div>

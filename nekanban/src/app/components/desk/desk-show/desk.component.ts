@@ -394,10 +394,6 @@ export class DeskComponent implements OnInit {
     })
   }
 
-  /*checkUserPermission(deskUser: DeskUser, permissionName: string) {
-    return this.rolesService.userHasPermission(this.roles, deskUser, permissionName);
-  }*/
-
   isUserAssigned(todo: Todo) {
     return !!todo.toDoUsers.find(el => el.deskUser.user.id === this.getCurrentUser().id && el.toDoUserType === 1);
   }
