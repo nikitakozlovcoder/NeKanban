@@ -1,6 +1,7 @@
 ﻿import {Injectable} from "@angular/core";
 import {AppHttpService} from "./app-http.service";
 import {Todo} from "../models/todo";
+import {HttpEvent, HttpRequest} from "@angular/common/http";
 
 @Injectable()
 export class TodoService {
@@ -44,6 +45,9 @@ export class TodoService {
   }
 
   attachFile(todoId: number, formData: any) {
-    return this.httpService.put<string>(`ToDos/AttachFile/${todoId}`, formData, {responseType: 'text' as const});
+    return this.httpService.put<HttpEvent<string>>(`ToDos/AttachFile/${todoId}`, formData,
+      {responseType: 'text' as const,
+        reportProgress: true,
+        observe: "events"});
   }
 }

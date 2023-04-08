@@ -1,6 +1,7 @@
 ﻿import {Injectable} from "@angular/core";
 import {AppHttpService} from "./app-http.service";
 import {Comment} from "../models/comment";
+import {HttpEvent} from "@angular/common/http";
 
 @Injectable()
 export class CommentsService {
@@ -35,6 +36,9 @@ export class CommentsService {
   }
 
   attachFile(commentId: number, formData: any) {
-    return this.httpService.put<string>(`Comments/AttachFile/${commentId}`, formData, {responseType: 'text' as const});
+    return this.httpService.put<HttpEvent<string>>(`Comments/AttachFile/${commentId}`, formData,
+      {responseType: 'text' as const,
+        reportProgress: true,
+        observe: "events"});
   }
 }

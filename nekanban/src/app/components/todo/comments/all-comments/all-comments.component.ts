@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 import {Comment} from "../../../../models/comment";
-import {BehaviorSubject, debounceTime, filter, Subject, switchMap} from "rxjs";
+import {BehaviorSubject, debounceTime, filter, interval, last, map, Subject, Subscription, switchMap} from "rxjs";
 import tinymce, {EditorOptions} from "tinymce";
 import {MatDialog} from "@angular/material/dialog";
 import {DeskUser} from "../../../../models/deskUser";
@@ -13,7 +13,10 @@ import {CommentsService} from "../../../../services/comments.service";
 import {EditorConfigService} from "../../../../services/editor-config-service";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
 import {ValidationService} from "../../../../services/validation.service";
+import {EditorUploaderService} from "../../../../services/editor-uploader.service";
+import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
 
+@UntilDestroy({ checkProperties: true })
 @Component({
   selector: 'app-all-comments',
   templateUrl: './all-comments.component.html',
@@ -31,7 +34,6 @@ export class AllCommentsComponent implements OnInit {
   commentDraftLoaded = new BehaviorSubject(false);
   notSend =  true;
   editorLoaded = new BehaviorSubject(false);
-  editorConfig: Partial<EditorOptions>;
   private firstUpdateRequest = true;
   toggleComments = new Subject<any>();
 
@@ -39,21 +41,24 @@ export class AllCommentsComponent implements OnInit {
   @Input() deskUser?: DeskUser;
   @Input() roles: Role[] = [];
 
+  commentInputSubscription = new Subscription();
+
   constructor(private toDoService: TodoService,
               public rolesService: RolesService,
               private dataGeneratorService: DataGeneratorService,
               private commentsService: CommentsService,
               public dialog: MatDialog,
-              private readonly editorConfigService: EditorConfigService,
+              private readonly editorUploaderService: EditorUploaderService,
               private readonly validationService: ValidationService) {
-    this.editorConfig = editorConfigService.getConfig(this.imageUploadHandler);
-    this.editorConfig.max_height = 400;
   }
 
   imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
     let formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
-    this.commentsService.attachFile(this.draftId!, formData).subscribe({
+    this.commentsService.attachFile(this.draftId!, formData).pipe(
+      map(event => this.editorUploaderService.getEventMessage(event, progress)),
+      last()
+    ).subscribe({
       next: (data) => {
         resolve(data);
       }
@@ -185,7 +190,7 @@ export class AllCommentsComponent implements OnInit {
   }
 
   private setFormListeners() {
-    this.commentInput.valueChanges.subscribe({
+    this.commentInputSubscription = this.commentInput.valueChanges.subscribe({
       next: () => {
         this.commentInput.addValidators(this.commentLengthValidator());
         if (this.firstUpdateRequest) {

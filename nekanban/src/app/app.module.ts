@@ -58,6 +58,7 @@ import { TodoCodeComponent } from './components/partials/todo-code/todo-code.com
 import {DialogService} from "./services/dialog.service";
 import {ToastrModule} from "ngx-toastr";
 import {ErrorsMissingTranslationHandler} from "./services/errors-missing-translation-handler";
+import {EditorUploaderService} from "./services/editor-uploader.service";
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -145,6 +146,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     EditorConfigService,
     ValidationService,
     DialogService,
+    EditorUploaderService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

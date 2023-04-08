@@ -24,7 +24,7 @@ export class TinymceEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.editorConfig = this.editorConfigService.getConfig(this.imageUploadHandler);
-    this.editorConfig.max_height = 400;
+    this.editorConfig.max_height = 500;
     this.editorConfig.init_instance_callback = (editor) => {
       editor.on('input', ()=> {
         this.editorChange();

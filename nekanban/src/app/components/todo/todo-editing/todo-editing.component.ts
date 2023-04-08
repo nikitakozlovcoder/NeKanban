@@ -3,9 +3,10 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, last, map} from "rxjs";
 import tinymce, {EditorOptions} from "tinymce";
 import {EditorConfigService} from "../../../services/editor-config-service";
+import {EditorUploaderService} from "../../../services/editor-uploader.service";
 
 @Component({
   selector: 'app-todo-editing',
@@ -20,7 +21,6 @@ export class TodoEditingComponent implements OnInit {
     body: new FormControl<string>('')
   })
 
-  editorConfig: Partial<EditorOptions>;
   isLoaded = new BehaviorSubject(false);
   updateLoaded = new BehaviorSubject(true);
   editorLoaded = new BehaviorSubject(false);
@@ -28,8 +28,7 @@ export class TodoEditingComponent implements OnInit {
   constructor(@Inject(MAT_DIALOG_DATA) public data: {deskId: number, toDo: Todo},
               private todoService: TodoService,
               public dialogRef: MatDialogRef<TodoEditingComponent>,
-              private editorConfigService: EditorConfigService) {
-    this.editorConfig = this.editorConfigService.getConfig(this.imageUploadHandler);
+              private readonly editorUploaderService: EditorUploaderService) {
   }
 
 
@@ -44,7 +43,10 @@ export class TodoEditingComponent implements OnInit {
   imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
     let formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
-    this.todoService.attachFile(this.todoFormGroup.controls.id.value!, formData).subscribe({
+    this.todoService.attachFile(this.todoFormGroup.controls.id.value!, formData).pipe(
+      map(event => this.editorUploaderService.getEventMessage(event, progress)),
+      last()
+    ).subscribe({
       next: (data) => {
         resolve(data);
       }

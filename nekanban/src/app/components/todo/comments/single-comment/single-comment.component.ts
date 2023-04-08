@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Comment} from "../../../../models/comment";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
-import {BehaviorSubject, Observable, Subscription} from "rxjs";
+import {BehaviorSubject, interval, last, map, Observable, Subscription} from "rxjs";
 import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 import tinymce from "tinymce";
 import {EditorConfigService} from "../../../../services/editor-config-service";
@@ -13,13 +13,16 @@ import {ConfirmationComponent} from "../../../dialogs/confirmation/confirmation.
 import {DialogActionTypes} from "../../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
 import {ValidationService} from "../../../../services/validation.service";
+import {EditorUploaderService} from "../../../../services/editor-uploader.service";
+import {UntilDestroy} from "@ngneat/until-destroy";
 
+@UntilDestroy({checkProperties: true})
 @Component({
   selector: 'app-single-comment',
   templateUrl: './single-comment.component.html',
   styleUrls: ['./single-comment.component.css']
 })
-export class SingleCommentComponent implements OnInit, OnDestroy {
+export class SingleCommentComponent implements OnInit {
 
   readonly ViewStateTypes = ViewStateTypes;
   @Input() comment?: Comment;
@@ -34,33 +37,33 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
   commentDeleteLoaded = new BehaviorSubject(true);
   commentUpdatingField = new FormControl<string>(this.comment ? this.comment!.body : '');
 
-  private toggleCommentsSub?: Subscription;
+  private subscriptions = new Subscription();
 
   constructor(private readonly editorConfigService: EditorConfigService,
               private readonly commentsService: CommentsService,
               public readonly rolesService: RolesService,
               private readonly validationService: ValidationService,
-              public dialog: MatDialog) {
+              public dialog: MatDialog,
+              private readonly editorUploaderService: EditorUploaderService) {
   }
 
   ngOnInit(): void {
     this.commentUpdatingField = new FormControl<string>(this.comment ? this.comment!.body : '', [this.commentLengthValidator()]);
-    this.toggleCommentsSub = this.toggleComments.subscribe({
+    this.subscriptions.add(this.toggleComments.subscribe({
       next: () => {
         this.commentUpdatingState = ViewStateTypes.Show;
       }
-    })
+    }));
     this.setFormListeners();
-  }
-
-  ngOnDestroy(): void {
-    this.toggleCommentsSub?.unsubscribe();
   }
 
   imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
     let formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
-    this.commentsService.attachFile(this.comment!.id, formData).subscribe({
+    this.commentsService.attachFile(this.comment!.id, formData).pipe(
+      map(event => this.editorUploaderService.getEventMessage(event, progress)),
+      last()
+    ).subscribe({
       next: (data) => {
         resolve(data);
       }
@@ -107,59 +110,60 @@ export class SingleCommentComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteComment(id: number) {
+  deleteComment() {
     const dialogRef = this.dialog.open(ConfirmationComponent);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == DialogActionTypes.Reject) {
         return;
       }
-      this.makeDeletion(id);
+      this.makeDeletion();
     });
-
   }
 
-  private makeDeletion(id: number) {
+  isAbleToDeleteComment() {
+    if (this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.DeleteAnyComments)) {
+      return true;
+    }
+    return this.comment!.deskUser && this.comment!.deskUser.user.id == this.deskUser!.user.id &&
+      this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.DeleteOwnComments);
+  }
+
+  private makeDeletion() {
     this.commentDeleteLoaded.next(false);
-    if (id == this.deskUser!.user.id) {
-      this.commentsService.deleteOwnComment(id).subscribe({
-        next: data => {
+    if (this.comment!.deskUser &&
+      this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.DeleteOwnComments) &&
+      this.comment!.deskUser.user.id == this.deskUser!.user.id) {
+      this.commentsService.deleteOwnComment(this.comment!.id).subscribe({
+        next: () => {
           this.commentDeleteLoaded.next(true);
-          this.comment = data.find(el => el.id === this.comment?.id);
-          this.commentsDeletion.emit(id);
-        },
-        error: _ => {
+          this.commentsDeletion.emit(this.comment!.id);
         }
+      }).add(() => {
+        this.commentDeleteLoaded.next(true);
       })
     }
     else if (this.rolesService.userHasPermission(this.roles, this.deskUser!, this.rolesService.permissionsTypes.DeleteAnyComments)) {
-      this.commentsService.deleteComment(id).subscribe({
-        next: data => {
+      this.commentsService.deleteComment(this.comment!.id).subscribe({
+        next: () => {
           this.commentDeleteLoaded.next(true);
-          this.comment = data.find(el => el.id === this.comment?.id);
-          this.commentsDeletion.emit(id);
-        },
-        error: _ => {
+          this.commentsDeletion.emit(this.comment!.id);
         }
+      }).add(() => {
+        this.commentDeleteLoaded.next(true);
       })
     }
   }
 
   private setFormListeners() {
-    this.commentUpdatingField.valueChanges.subscribe({
+    this.subscriptions.add(this.commentUpdatingField.valueChanges.subscribe({
       next: () => {
         this.commentUpdatingField.addValidators(this.commentLengthValidator());
       }
-    })
+    }));
   }
 
   private commentLengthValidator() : ValidatorFn {
     return this.validationService.editorMinLengthValidator(tinymce.get(`comment-tinymce-update${this.comment!.id}`), 10);
-    /*return (): ValidationErrors | null => {
-      if (tinymce.get(`comment-tinymce-update${this.comment!.id}`)?.initialized) {
-        return tinymce.get(`comment-tinymce-update${this.comment!.id}`)!.getContent({format : 'text'}).length < 10 ? {commentMinLength: true} : null;
-      }
-      return null;
-    };*/
   }
 }
