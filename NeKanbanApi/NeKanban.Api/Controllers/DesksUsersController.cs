@@ -39,6 +39,13 @@ public class DesksUsersController : BaseAuthController
         return await _desksService.UpdateDesk(deskRemoveUsersModel, deskId, await GetApplicationUser(), ct);
     }
     
+    [HttpDelete("{deskId:int}")]
+    public async Task Exit(int deskId, CancellationToken ct = default)
+    {
+        var user = await GetApplicationUser();
+        await _deskUserService.Exit(user.Id, deskId, ct);
+    }
+    
     [HttpPut("{deskId:int}")]
     public async Task<List<DeskLiteDto>> SetPreferenceType([FromBody]DeskUserUpdatePreferenceType preferenceType, int deskId, CancellationToken ct = default)
     {

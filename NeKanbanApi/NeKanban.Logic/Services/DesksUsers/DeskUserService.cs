@@ -4,6 +4,7 @@ using Batteries.Injection.Attributes;
 using Batteries.Mapper.AppMapper;
 using Batteries.Repository;
 using JetBrains.Annotations;
+using NeKanban.Common;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.Desks;
 using NeKanban.Common.DTOs.DesksUsers;
@@ -48,8 +49,20 @@ public class DeskUserService : IDeskUserService
         var currDeskUser = await _deskUserRepository.SingleOrDefault(x => x.UserId == userId && x.DeskId == deskId, ct);
         if (currDeskUser != null)
         {
-            currDeskUser.IsDeleted = false;
-            await _deskUserRepository.Revoke(currDeskUser, ct);
+            switch (currDeskUser.DeletionReason)
+            {
+                case DeskUserDeletionReason.Exit:
+                    currDeskUser.DeletionReason = null;
+                    await _deskUserRepository.Update(currDeskUser, ct);
+                    break;
+                case DeskUserDeletionReason.Removed:
+                    throw new HttpStatusCodeException(HttpStatusCode.Forbidden);
+                case null:
+                    return;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(currDeskUser.DeletionReason));
+            }
+            
             return;
         }
 
@@ -83,8 +96,21 @@ public class DeskUserService : IDeskUserService
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantRemoveOwnerFromDesk);
         }
-      
+        
         await _deskUserRepository.Remove(deskUser, ct);
+    }
+
+    public async Task Exit(int userId, int id, CancellationToken ct)
+    {
+        var deskUser = await _deskUserRepository
+            .Single(x=> x.UserId == userId && x.DeskId == id, ct);
+        if (deskUser.IsOwner)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantRemoveOwnerFromDesk);
+        }
+
+        deskUser.DeletionReason = DeskUserDeletionReason.Exit;
+        await _deskUserRepository.Update(deskUser, ct);
     }
 
     public async Task<List<DeskLiteDto>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId,

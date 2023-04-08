@@ -14,10 +14,10 @@ COPY ["NeKanban.Data/NeKanban.Data.csproj", "NeKanban.Data/"]
 RUN dotnet restore "NeKanban.Api/NeKanban.Api.csproj"
 COPY . .
 WORKDIR "/src/NeKanban.Api"
-RUN dotnet build "NeKanban.Api.csproj" -c Release -o /app/build
+RUN dotnet build "NeKanban.Api.csproj" -c Debug -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "NeKanban.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "NeKanban.Api.csproj" -c Debug -o /app/publish
 
 FROM base AS final
 WORKDIR /app

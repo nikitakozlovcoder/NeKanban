@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Batteries.Repository;
+namespace Batteries.Repository.Extensions;
 
 public static class ChangeTrackerExtensions
 {

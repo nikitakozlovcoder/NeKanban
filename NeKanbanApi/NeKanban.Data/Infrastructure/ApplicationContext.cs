@@ -1,5 +1,6 @@
 ﻿using Batteries.Injection.Attributes;
 using Batteries.Repository;
+using Batteries.Repository.Extensions;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -68,8 +69,8 @@ public sealed class ApplicationContext : IdentityDbContext<ApplicationUser, Appl
         modelBuilder.Entity<ToDo>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.ToDoDraftFilter || !x.IsDraft);
         modelBuilder.Entity<ToDoUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.ToDoDraftFilter || !x.ToDo!.IsDraft);
         modelBuilder.Entity<Comment>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.CommentDraftFilter || !x.IsDraft);
-        modelBuilder.Entity<DeskUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.DeskUserDeletedFilter || !x.IsDeleted);
-        modelBuilder.Entity<ToDoUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.DeskUserDeletedFilter || !x.DeskUser!.IsDeleted);
+        modelBuilder.Entity<DeskUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.DeskUserDeletedFilter || !x.DeletionReason.HasValue);
+        modelBuilder.Entity<ToDoUser>().HasQueryFilter(x => !_filterSettings.SettingsDefinitions.DeskUserDeletedFilter || !x.DeskUser!.DeletionReason.HasValue);
         modelBuilder.Entity<CommentFileAdapter>().HasOne(x => x.Parent).WithMany(x => x.Files).OnDelete(DeleteBehavior.SetNull);
         modelBuilder.Entity<ToDoFileAdapter>().HasOne(x => x.Parent).WithMany(x => x.Files).OnDelete(DeleteBehavior.SetNull);
         modelBuilder.Entity<ToDoUser>()
