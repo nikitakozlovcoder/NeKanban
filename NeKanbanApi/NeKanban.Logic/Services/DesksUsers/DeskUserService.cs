@@ -90,6 +90,11 @@ public class DeskUserService : IDeskUserService
 
     public async Task RemoveFromDesk(int userId, int id, CancellationToken ct)
     {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            DeskUserDeletedFilter = false
+        });
+        
         var deskUser = await _deskUserRepository
             .Single(x=> x.UserId == userId && x.DeskId == id, ct);
         if (deskUser.IsOwner)
@@ -111,6 +116,39 @@ public class DeskUserService : IDeskUserService
 
         deskUser.DeletionReason = DeskUserDeletionReason.Exit;
         await _deskUserRepository.Update(deskUser, ct);
+    }
+
+    public async Task RevertRemovedDeskUser(int deskUserId, CancellationToken ct)
+    {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            DeskUserDeletedFilter = false
+        });
+        
+        var deskUser = await _deskUserRepository
+            .Single(x=> x.Id == deskUserId, ct);
+
+        if (deskUser.DeletionReason != DeskUserDeletionReason.Removed)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest);
+        }
+
+        deskUser.DeletionReason = null;
+        await _deskUserRepository.Update(deskUser, ct);
+    }
+
+    public async Task<List<DeskUserDeletedDto>> GetDeletedUsers(int deskId, CancellationToken ct)
+    {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            DeskUserDeletedFilter = false
+        });
+
+        var deletedUsers =
+            await _deskUserRepository.ProjectTo<DeskUserDeletedDto>(
+                x => x.DeletionReason.HasValue && x.DeskId == deskId, ct);
+        
+        return deletedUsers;
     }
 
     public async Task<List<DeskLiteDto>> SetPreference(DeskUserUpdatePreferenceType preferenceType, ApplicationUser applicationUser, int deskId,

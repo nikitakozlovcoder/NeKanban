@@ -52,6 +52,20 @@ public class DesksUsersController : BaseAuthController
         var user = await GetApplicationUser();
         return await _deskUserService.SetPreference(preferenceType, user, deskId, ct);
     }
+
+    [HttpGet("{deskId:int}")]
+    public async Task<List<DeskUserDeletedDto>> GetDeleted(int deskId, CancellationToken ct = default)
+    {
+        await EnsureAbleTo<Desk>(PermissionType.ManageDeletedUsers, deskId, ct);
+        return await _deskUserService.GetDeletedUsers(deskId, ct);
+    }
+    
+    [HttpPut("{deskUserId:int}")]
+    public async Task RevertDeleted(int deskUserId, CancellationToken ct = default)
+    {
+        await EnsureAbleTo<DeskUser>(PermissionType.ManageDeletedUsers, deskUserId, ct);
+        await _deskUserService.RevertRemovedDeskUser(deskUserId, ct);
+    }
     
     [HttpPut]
     public async Task<DeskDto> AddUserByLink([FromBody]DeskAddUserByLinkModel model, CancellationToken ct = default)

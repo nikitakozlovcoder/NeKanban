@@ -16,5 +16,6 @@ public enum PermissionType
     AddOrUpdateOwnComments,
     DeleteOwnComments,
     DeleteAnyComments,
-    ManageRoles
+    ManageRoles,
+    ManageDeletedUsers
 }
