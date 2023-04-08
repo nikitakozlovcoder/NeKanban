@@ -13,16 +13,16 @@ public class DefaultPermissionsProvider : IDefaultPermissionProvider
     public DefaultPermissionsProvider()
     {
         _userPermissions = new List<PermissionType>
-        {
-          PermissionType.AssignTasksThemself,
-          PermissionType.MoveTasks,
-          PermissionType.AddOrUpdateOwnComments,
-          PermissionType.DeleteOwnComments,
+        { 
+            PermissionType.AssignTasksThemself, 
+            PermissionType.MoveTasks,
+            PermissionType.AddOrUpdateOwnComments,
+            PermissionType.DeleteOwnComments,
         };
         
         _managerPermissions = new List<PermissionType>
         {
-            PermissionType.ViewInviteLink,
+            PermissionType.ManageInviteLink,
             PermissionType.ManageColumns,
             PermissionType.CreateOrUpdateTasks,
             PermissionType.DeleteAnyComments,

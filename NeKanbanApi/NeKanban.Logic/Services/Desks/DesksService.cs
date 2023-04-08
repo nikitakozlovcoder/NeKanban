@@ -69,7 +69,7 @@ public class DesksService : IDesksService
     public async Task<DeskDto> GetDesk(int id, ApplicationUser user, CancellationToken ct)
     {
         var desk = await _deskRepository.ProjectToSingle<DeskDto>(x => x.Id == id, ct);
-        var canViewInviteLink = await _permissionCheckerService.HasPermission(id, user.Id, PermissionType.ViewInviteLink, ct);
+        var canViewInviteLink = await _permissionCheckerService.HasPermission(id, user.Id, PermissionType.ManageInviteLink, ct);
         desk.InviteLink = canViewInviteLink ? desk.InviteLink : null;
         return desk;
     }

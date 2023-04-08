@@ -3,7 +3,6 @@
 public enum PermissionType
 {
     UpdateGeneralDesk,
-    ViewInviteLink,
     ManageInviteLink,
     DeleteDesk,
     CreateColumns,
