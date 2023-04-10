@@ -4,6 +4,10 @@ import {DeskCreationComponent} from "../../desk/desk-creation/desk-creation.comp
 import {MatDialog} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {MatSidenav} from "@angular/material/sidenav";
+import {DeskUserService} from "../../../services/deskUser.service";
+import {UserStorageService} from "../../../services/userStorage.service";
+import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
+import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 
 @Component({
   selector: 'app-sidenav',
@@ -20,8 +24,11 @@ export class SidenavComponent implements OnInit {
 
   @Input() desks: Desk[] = [];
 
+  @Input() currentDeskId?: number;
+
   constructor(private readonly dialog: MatDialog,
-              private readonly router: Router) {
+              private readonly router: Router,
+              public readonly deskUserService: DeskUserService) {
     this.opened = false;
   }
 
@@ -39,10 +46,23 @@ export class SidenavComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe( result => {
       if (result != undefined) {
-        this.router.navigate(['/desks', result.id]);
+        this.router.navigate(['/desks', result.id]).then();
       }
     });
     this.opened = false;
     this.openedChange.emit(this.opened);
+  }
+
+  exitFromDesk(desk: Desk) {
+    const dialogRef = this.dialog.open(ConfirmationComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == DialogActionTypes.Reject) {
+        return;
+      }
+      this.deskUserService.exitFromDesk(desk.id).subscribe(result => {
+        this.router.navigate(['']).then();
+      })
+    });
   }
 }

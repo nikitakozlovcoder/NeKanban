@@ -13,10 +13,14 @@ export class DeskUserService {
               private readonly userStorageService: UserStorageService) {
   }
   changeRole(deskUserId: number, roleId: number) {
-    return this.httpService.put<DeskUser[]>("DesksUsers/ChangeRole/" + deskUserId, {roleId});
+    return this.httpService.put<DeskUser[]>(`DesksUsers/ChangeRole/${deskUserId}`, {roleId});
   }
 
   getCurrentDeskUser(desk?: Desk) {
-    return desk?.deskUsers.find(el => el.user.id === JSON.parse(this.userStorageService.getUserFromStorage()!).id);
+    return desk?.deskUsers.find(el => el.user.id === this.userStorageService.getUserFromStorage().id);
+  }
+
+  exitFromDesk(deskId: number) {
+    return this.httpService.delete(`DesksUsers/Exit/${deskId}`);
   }
 }

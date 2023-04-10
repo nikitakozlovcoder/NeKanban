@@ -10,7 +10,7 @@ export class UserStorageService {
   }
 
   getUserFromStorage() {
-    return localStorage.getItem("currentUser");
+    return JSON.parse(localStorage.getItem("currentUser")!) as UserWithToken;
   }
 
   setTokens(token: Token) {

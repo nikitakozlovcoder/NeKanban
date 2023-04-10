@@ -1,6 +1,5 @@
 ﻿export enum Permissions {
   UpdateGeneralDesk,
-  ViewInviteLink,
   ManageInviteLink,
   DeleteDesk,
   CreateColumns,

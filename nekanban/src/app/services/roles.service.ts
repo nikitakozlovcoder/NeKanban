@@ -36,7 +36,6 @@ export class RolesService {
 
   userHasAtLeastOnePermissionForGeneralSettings(roles: Role[], deskUser : DeskUser) {
     return this.userHasPermission(roles, deskUser, Permissions.UpdateGeneralDesk) ||
-      this.userHasPermission(roles, deskUser, Permissions.ViewInviteLink) ||
       this.userHasPermission(roles, deskUser, Permissions.ManageInviteLink) ||
       this.userHasPermission(roles, deskUser, Permissions.DeleteDesk);
   }
