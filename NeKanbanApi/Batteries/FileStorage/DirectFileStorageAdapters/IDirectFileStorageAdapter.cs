@@ -1,5 +1,4 @@
-﻿using Batteries.FileStorage.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Batteries.FileStorage.DirectFileStorageAdapters;
 

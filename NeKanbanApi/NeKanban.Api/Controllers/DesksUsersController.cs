@@ -6,7 +6,6 @@ using NeKanban.Common.DTOs.DesksUsers;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.DeskModels;
 using NeKanban.Common.Models.DeskUserModels;
-using NeKanban.Common.ViewModels;
 using NeKanban.Controllers.Auth;
 using NeKanban.Logic.Services.Desks;
 using NeKanban.Logic.Services.DesksUsers;

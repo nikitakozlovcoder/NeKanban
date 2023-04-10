@@ -9,8 +9,6 @@ using NeKanban.Common.DTOs.Columns;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.ColumnModels;
-using NeKanban.Common.ViewModels.Columns;
-using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Logic.Services.Columns;
 
@@ -80,7 +78,7 @@ public class ColumnsService : IColumnsService
     public async Task<List<ColumnDto>> MoveColumn(int columnId, ColumnMoveModel model, CancellationToken ct)
     {
         var column = await _columnRepository.First(x=> x.Id == columnId, ct);
-        var columns = await _columnRepository.ToList(x => x.DeskId == column!.DeskId, ct);
+        var columns = await _columnRepository.ToList(x => x.DeskId == column.DeskId, ct);
         var positionToMove = model.Position;
         foreach (var columnItem in columns.OrderBy(x=> x.Order))
         {

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using NeKanban.Common.DTOs.Desks;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.DeskModels;
-using NeKanban.Common.ViewModels;
 using NeKanban.Controllers.Auth;
 using NeKanban.Logic.Services.Desks;
 using NeKanban.Logic.Services.MyDesks;

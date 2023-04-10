@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Batteries.Mapper.Interfaces;
 using NeKanban.Common.DTOs.ApplicationUsers;
-using NeKanban.Common.DTOs.Roles;
 using NeKanban.Common.Entities;
 using NeKanban.Common.ViewModels.Roles;
 

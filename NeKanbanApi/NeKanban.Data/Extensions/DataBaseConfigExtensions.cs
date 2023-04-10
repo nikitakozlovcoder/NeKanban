@@ -1,9 +1,6 @@
-﻿using Batteries.Repository;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NeKanban.Common.Entities;
 using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Data.Extensions;

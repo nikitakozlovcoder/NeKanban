@@ -3,7 +3,6 @@ using Batteries.Mapper.Interfaces;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.DesksUsers;
 using NeKanban.Common.Entities;
-using NeKanban.Common.ViewModels;
 
 namespace NeKanban.Common.DTOs.ToDoUsers;
 

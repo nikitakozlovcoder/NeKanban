@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ToDoModels;
-using NeKanban.Common.ViewModels.ToDos;
 using NeKanban.Controllers.Auth;
 using NeKanban.Logic.Services.DesksUsers;
 using NeKanban.Logic.Services.ToDos;
