@@ -1,5 +1,4 @@
 ﻿using Batteries.FileStorage.FileStorageProxies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NeKanban.Controllers;

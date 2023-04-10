@@ -2,7 +2,6 @@
 using Batteries.Repository;
 using JetBrains.Annotations;
 using NeKanban.Common.Entities;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Data.Infrastructure.QueryFilters;
 using NeKanban.Logic.Services.Security;
 

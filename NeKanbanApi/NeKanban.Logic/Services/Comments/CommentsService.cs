@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using NeKanban.Common.DTOs.Comments;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.CommentModels;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Data.Infrastructure.QueryFilters;
 using NeKanban.Logic.Services.DesksUsers;
 using NeKanban.Logic.ValidationProfiles.Comments;
@@ -163,10 +162,5 @@ public class CommentsService : ICommentsService
     {
         await _commentsRepository.Remove(comment, ct);
         return await GetComments(comment.ToDoId, ct);
-    }
-    
-    private Task<CommentDto> GetComment(int id, CancellationToken ct)
-    {
-        return _commentsRepository.ProjectToSingle<CommentDto>(x => x.Id == id, ct);
     }
 }

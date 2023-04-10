@@ -7,7 +7,6 @@ using NeKanban.Common.DTOs.Desks;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Models.ColumnModels;
 using NeKanban.Common.Models.DeskModels;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Columns;
 using NeKanban.Logic.Services.DesksUsers;
 using NeKanban.Logic.Services.Roles;
@@ -63,7 +62,7 @@ public class DesksService : IDesksService
     public async Task DeleteDesk(int id, CancellationToken ct)
     {
         var desk = await _deskRepository.First(x => x.Id == id, ct);
-        await _deskRepository.Remove(desk!, ct);
+        await _deskRepository.Remove(desk, ct);
     }
 
     public async Task<DeskDto> GetDesk(int id, ApplicationUser user, CancellationToken ct)
@@ -78,8 +77,8 @@ public class DesksService : IDesksService
     {
         var desk = await _deskRepository.Single(x => x.Id == id, ct);
         _mapper.AutoMap(deskUpdateModel, desk);
-        await _deskRepository.Update(desk!, ct);
-        return await GetDesk(desk!.Id, user, ct);
+        await _deskRepository.Update(desk, ct);
+        return await GetDesk(desk.Id, user, ct);
     }
 
     public async Task<DeskDto> UpdateDesk(DeskInviteLinkModel inviteLinkModel, int id, ApplicationUser user, CancellationToken ct)

@@ -1,5 +1,4 @@
 ﻿using Batteries.Injection.Attributes;
-using Batteries.Repository;
 using Batteries.Repository.Extensions;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.DTOs.Desks;
 using NeKanban.Common.Entities;
-using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Logic.Services.MyDesks;
 

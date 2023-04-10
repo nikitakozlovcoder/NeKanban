@@ -1,14 +1,11 @@
 ﻿using System.Net;
 using Batteries.Exceptions;
 using Batteries.Injection.Attributes;
-using Batteries.Mapper.AppMapper;
 using Batteries.Repository;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using NeKanban.Common.Constants;
 using NeKanban.Common.DTOs.ToDos;
 using NeKanban.Common.Entities;
-using NeKanban.Data.Infrastructure;
 
 namespace NeKanban.Logic.Services.ToDos.ToDoUsers;
 
@@ -18,15 +15,12 @@ public class ToDoUserService : IToDoUserService
 {
     private readonly IRepository<ToDoUser> _toDoUserRepository;
     private readonly IToDoService _toDoService;
-    private readonly IAppMapper _mapper;
     public ToDoUserService(
         IRepository<ToDoUser> toDoUserRepository,
-        IToDoService toDoService,
-        IAppMapper mapper)
+        IToDoService toDoService)
     {
         _toDoUserRepository = toDoUserRepository;
         _toDoService = toDoService;
-        _mapper = mapper;
     }
 
     public async Task<ToDoDto> AssignUser(int todoId, int deskUserId, CancellationToken ct)

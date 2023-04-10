@@ -1,6 +1,5 @@
 ﻿using Batteries.Repository;
 using NeKanban.Common.Entities;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Security;
 using NeKanban.Security.Constants;
 

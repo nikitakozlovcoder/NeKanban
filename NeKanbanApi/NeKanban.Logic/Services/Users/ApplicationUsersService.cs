@@ -9,7 +9,6 @@ using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.UserModel;
 using NeKanban.Common.ViewModels;
-using NeKanban.Data.Infrastructure;
 using NeKanban.Logic.Services.Tokens;
 
 namespace NeKanban.Logic.Services.Users;

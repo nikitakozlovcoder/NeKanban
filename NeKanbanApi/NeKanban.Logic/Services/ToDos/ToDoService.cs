@@ -177,7 +177,7 @@ public class ToDoService : IToDoService
         var toDo = await _toDoRepository.QueryableSelect().Include(x=> x.Column)
             .FirstAsync(x => x.Id == toDoId, ct);
         var isMoveValid = await _columnRepository.QueryableSelect()
-            .AnyAsync(x => x.Id == model.ColumnId && x.DeskId == toDo!.Column!.DeskId, ct);
+            .AnyAsync(x => x.Id == model.ColumnId && x.DeskId == toDo.Column!.DeskId, ct);
         if (!isMoveValid)
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest);
@@ -186,7 +186,7 @@ public class ToDoService : IToDoService
         var others = await _toDoRepository.QueryableSelect()
             .Where(x => x.ColumnId == model.ColumnId && x.Id != toDoId && x.Order >= model.Order).OrderBy(x=> x.Order).ToListAsync(ct);
         var order = model.Order;
-        toDo!.ColumnId = model.ColumnId;
+        toDo.ColumnId = model.ColumnId;
         toDo.Order = order;
         
         foreach (var item in others)
