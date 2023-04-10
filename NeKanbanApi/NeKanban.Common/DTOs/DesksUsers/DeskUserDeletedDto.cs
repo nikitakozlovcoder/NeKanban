@@ -9,7 +9,7 @@ public class DeskUserDeletedDto: BaseEntityModel<int>, IAutoMapFrom<DeskUser, De
 {
     public required int UserId { get; set; }
     public required ApplicationUserDto User { get; set; }
-    public required DeskUserDeletionReason? DeletionReason;
+    public required DeskUserDeletionReason? DeletionReason { get; set; }
     
     public static void ConfigureMap(IMappingExpression<DeskUser, DeskUserDeletedDto> cfg)
     {
