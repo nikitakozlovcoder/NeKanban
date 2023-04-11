@@ -25,6 +25,7 @@
     "UnknownError": "Неизвестная ошибка",
     "DuplicateEmail": "Учетная запись с таким адресом электронной почты уже существует!",
     "ValidationError": "Неверные данные!",
-    "CantDeleteRoleWhenAnyUserHasThisRole": "Нельзя удалить роль, на которую назначен хотя бы один участник!"
+    "CantDeleteRoleWhenAnyUserHasThisRole": "Нельзя удалить роль, на которую назначен хотя бы один участник!",
+    "CantJoinOnLink": "Не удалось присоединиться по ссылке"
   }
 }

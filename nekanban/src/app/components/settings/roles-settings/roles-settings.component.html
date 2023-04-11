@@ -5,8 +5,14 @@
       <mat-accordion *ngIf="showAccordion; else noAccordion">
         <mat-expansion-panel hideToggle *ngFor="let role of roles">
           <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{role.name}}
+            <mat-panel-title class="roles-panel-title">
+              <div class="role-name">
+                {{role.name}}
+              </div>
+              <div class="role-controls">
+                <mat-icon (click)="openRoleUpdatingDialog(role, $event)">edit</mat-icon>
+                <mat-icon class="role-delete-icon" (click)="openRoleDeletingDialog(role, $event)" *ngIf="!role.isDefault">delete</mat-icon>
+              </div>
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="permissions-list permissions-list-full-width">
@@ -28,11 +34,11 @@
       </mat-accordion>
       <ng-template #noAccordion>
         <a  mat-list-item class="single-role" *ngFor="let role of roles" (click)="getPermissionsForRole(role)" [class.chosen-role]="role.id === currentRole?.id">
-          <div>
+          <div class="role-name">
             {{role.name}}
           </div>
           <div class="role-controls">
-            <mat-icon (click)="openRoleUpdatingDialog(role)">edit</mat-icon>
+            <mat-icon (click)="openRoleUpdatingDialog(role, $event)">edit</mat-icon>
             <mat-icon class="role-delete-icon" (click)="openRoleDeletingDialog(role, $event)" *ngIf="!role.isDefault">delete</mat-icon>
           </div>
         </a>

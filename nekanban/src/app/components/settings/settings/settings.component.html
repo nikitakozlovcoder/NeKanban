@@ -1,7 +1,7 @@
 <div *ngIf="(isLoaded | async ) && desk && desks.length">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened" >
-      <app-sidenav [desks]="desks" [(opened)]="opened"></app-sidenav>
+      <app-sidenav [desks]="desks" [(opened)]="opened" [currentDeskId]="desk.id"></app-sidenav>
     </mat-sidenav>
 
     <mat-sidenav-content>

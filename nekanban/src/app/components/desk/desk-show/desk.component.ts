@@ -297,7 +297,7 @@ export class DeskComponent implements OnInit {
 
 
   getCurrentUser() {
-    return JSON.parse(this.userStorageService.getUserFromStorage()!);
+    return this.userStorageService.getUserFromStorage();
   }
 
   getToDos(deskId: number) {

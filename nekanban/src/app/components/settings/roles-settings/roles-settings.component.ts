@@ -68,7 +68,8 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
     });
   }
 
-  openRoleUpdatingDialog(role: Role) {
+  openRoleUpdatingDialog(role: Role, event: MouseEvent) {
+    event.stopPropagation();
     const dialogRef = this.dialog.open(RoleUpdatingComponent, {
       data: {role},
       width: '400px',

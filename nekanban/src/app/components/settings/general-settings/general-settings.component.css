@@ -74,4 +74,7 @@
     width: unset;
     white-space: initial;
   }
+  .remove-link-button {
+    margin-left: 0;
+  }
 }
