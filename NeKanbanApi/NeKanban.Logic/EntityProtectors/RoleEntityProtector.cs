@@ -12,7 +12,7 @@ public class RoleEntityProtector : BaseEntityProtector<Role>
 {
     private readonly IRepository<Role> _roleRepository;
     public RoleEntityProtector(IPermissionCheckerService permissionCheckerService,
-        IRepository<Role> roleRepository) : base(permissionCheckerService)
+        IRepository<Role> roleRepository, IRepository<DeskUser> deskUserRepository) : base(permissionCheckerService, deskUserRepository)
     {
         _roleRepository = roleRepository;
     }
