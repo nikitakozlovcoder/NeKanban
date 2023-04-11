@@ -23,4 +23,12 @@ export class DeskUserService {
   exitFromDesk(deskId: number) {
     return this.httpService.delete(`DesksUsers/Exit/${deskId}`);
   }
+
+  getDeletedUsers(deskId: number) {
+    return this.httpService.get<DeskUser[]>(`DesksUsers/GetDeleted/${deskId}`);
+  }
+
+  revertDeletedUser(deskUserId: number) {
+    return this.httpService.put(`DesksUsers/RevertDeleted/${deskUserId}`, {});
+  }
 }

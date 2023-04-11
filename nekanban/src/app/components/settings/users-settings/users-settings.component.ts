@@ -9,7 +9,8 @@ import {Router} from "@angular/router";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, switchMap} from "rxjs";
+import {DeletionReason} from "../../../constants/deletionReason";
 
 @Component({
   selector: 'app-users-settings',
@@ -19,10 +20,13 @@ import {BehaviorSubject} from "rxjs";
 export class UsersSettingsComponent implements OnInit {
 
   @Input() desk: Desk | undefined;
+  @Input() deskId?: number;
   @Output() deskChange = new EventEmitter<Desk>;
   @Input() roles: Role[] = [];
   @Input() desks: Desk[] = [];
+  @Input() deletedUsers: DeskUser[] = [];
   isUserRemoveLoaded = new BehaviorSubject(true);
+  deletionReason = DeletionReason;
 
   constructor(public readonly rolesService: RolesService,
               public readonly deskUserService: DeskUserService,
@@ -31,6 +35,7 @@ export class UsersSettingsComponent implements OnInit {
               private readonly dialog: MatDialog) { }
 
   ngOnInit(): void {
+    this.loadDeletedUsers(this.deskId!);
   }
 
   changeUserRole(roleId: number, deskUserId: number) {
@@ -51,6 +56,12 @@ export class UsersSettingsComponent implements OnInit {
     });
   }
 
+  loadDeletedUsers(deskId: number) {
+    this.deskUserService.getDeletedUsers(deskId).subscribe(result => {
+      this.deletedUsers = result;
+    })
+  }
+
   removeUser(usersId: number[]) {
     const dialogRef = this.dialog.open(ConfirmationComponent);
 
@@ -63,6 +74,16 @@ export class UsersSettingsComponent implements OnInit {
 
   }
 
+  revertDeleted(deskUserId: number) {
+    this.deskUserService.revertDeletedUser(deskUserId).pipe(switchMap(() => {
+      return this.deskService.getDesk(this.desk!.id)
+    })).subscribe(result => {
+      this.desk = result;
+      this.deskChange.emit(this.desk);
+      this.loadDeletedUsers(this.desk.id);
+    });
+  }
+
   private makeRemoval(usersId: number[]) {
     this.isUserRemoveLoaded.next(false);
     this.deskService.removeUserFromDesk(usersId, this.desk!.id).subscribe({
@@ -71,6 +92,8 @@ export class UsersSettingsComponent implements OnInit {
           this.router.navigate(['']).then();
         }
         this.desk = data;
+        this.deskChange.emit(this.desk);
+        this.loadDeletedUsers(this.desk.id);
       },
       error: () => {
       }

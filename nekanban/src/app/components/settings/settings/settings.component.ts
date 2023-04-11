@@ -7,6 +7,7 @@ import {Role} from "../../../models/Role";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DeskUserService} from "../../../services/deskUser.service";
 import {BehaviorSubject, map, combineLatest, combineLatestWith, filter} from "rxjs";
+import {DeskUser} from "../../../models/deskUser";
 
 @Component({
   selector: 'app-settings',
@@ -22,6 +23,7 @@ export class SettingsComponent implements OnInit {
   desksLoaded = new BehaviorSubject(false);
   currentDeskLoaded = new BehaviorSubject(false);
   rolesLoaded = new BehaviorSubject(false);
+  deskId?: number;
   get isLoaded() {
     return combineLatest([this.desksLoaded, this.currentDeskLoaded, this.rolesLoaded]).
     pipe(map(x => x.every(isLoaded => isLoaded)));
@@ -39,9 +41,10 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.loadDesks(parseInt(params['id']));
-      this.loadCurrentDesk(parseInt(params['id']));
-      this.initRolesForDesk(parseInt(params['id']));
+      this.deskId = parseInt(params['id']);
+      this.loadDesks(this.deskId);
+      this.loadCurrentDesk(this.deskId);
+      this.initRolesForDesk(this.deskId);
     })
     this.desksLoaded.pipe(combineLatestWith(this.currentDeskLoaded)).pipe(
       combineLatestWith(this.rolesLoaded), filter(el => el[0].every(x => x === true) && el[1] === true)

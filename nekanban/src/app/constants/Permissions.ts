@@ -13,5 +13,6 @@
   AddOrUpdateOwnComments,
   DeleteOwnComments,
   DeleteAnyComments,
-  ManageRoles
+  ManageRoles,
+  ManageDeletedUsers
 }

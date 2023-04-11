@@ -19,7 +19,8 @@
     "DeleteAnyComments": "Удалять любые комментарии",
     "ManageRoles": "Управление ролями",
     "CreateOrUpdateTasks": "Создавать задачи и редактировать их",
-    "AddOrUpdateOwnComments": "Создавать комментарии и редактировать их"
+    "AddOrUpdateOwnComments": "Создавать комментарии и редактировать их",
+    "ManageDeletedUsers" : "Управлять удаленными пользователями"
   },
   "Errors": {
     "UnknownError": "Неизвестная ошибка",

@@ -1,14 +1,14 @@
 <div class ="users-list">
   <mat-spinner class="spinner-centered" *ngIf="!(isUserRemoveLoaded | async)" diameter="20"></mat-spinner>
   <div class="single-user-title">
-    <h2 class="h-minor-title">Имя пользователя</h2>
-    <h2 class="h-minor-title">Роль</h2>
+    <h2 class="h-18px">Имя пользователя</h2>
+    <h2 class="h-18px">Роль</h2>
   </div>
   <div class="single-user-container" *ngFor="let user of desk!.deskUsers; index as i">
     <div class="single-user">
       <p class="desk-user-name">{{user.user.name}} {{user.user.surname}}</p>
       <div class="select" *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ChangeUserRole) && !desk!.deskUsers[i].isOwner">
-        <select (change)="changeUserRole(desk!.deskUsers[i].role.id, desk!.deskUsers[i].id)" [(ngModel)]="desk!.deskUsers[i].role.id">
+        <select class="user-role-select" (change)="changeUserRole(desk!.deskUsers[i].role.id, desk!.deskUsers[i].id)" [(ngModel)]="desk!.deskUsers[i].role.id">
           <option *ngFor="let role of roles" [ngValue]="role.id">
             {{role.name}}
           </option>
@@ -30,6 +30,27 @@
         {{desk!.deskUsers[i].role.name}}
       </div>
       <mat-icon class="cancel-icon" *ngIf="(isUserRemoveLoaded | async) && rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.RemoveUsers) && !desk!.deskUsers[i].isOwner" (click)="removeUser([user.user.id])" matTooltip="Удалить пользователя">cancel</mat-icon>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
+
+</div>
+<div class ="users-list" *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageDeletedUsers)">
+  <h2 class="h-main-title deleted-users-title">Удаленные пользователи</h2>
+  <div class="single-user-title">
+    <h2 class="h-18px">Имя пользователя</h2>
+    <h2 class="h-18px">Причина удаления</h2>
+  </div>
+  <div class="single-user-container" *ngFor="let user of deletedUsers; index as i">
+    <div class="single-deleted-user">
+      <p class="desk-user-name">{{user.user.name}} {{user.user.surname}}</p>
+      <div class="deletion-reason" *ngIf="user.deletionReason === deletionReason.Exited">
+        Покинул доску
+      </div>
+      <div class="deletion-reason" *ngIf="user.deletionReason === deletionReason.Kicked">
+        Исключен
+      </div>
+      <button class="user-restore-button" mat-raised-button color="primary" (click)="revertDeleted(user.id)"><mat-icon>undo</mat-icon>Восстановить</button>
     </div>
     <mat-divider></mat-divider>
   </div>
