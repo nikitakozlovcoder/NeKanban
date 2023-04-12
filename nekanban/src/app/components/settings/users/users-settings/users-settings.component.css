@@ -62,7 +62,11 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-@media screen and (max-width: 925px) {
+.exited-user-delete-icon {
+  margin: 0;
+}
+
+@media screen and (max-width: 600px) {
   .single-user-title h2 {
     flex: 50%;
   }
@@ -81,6 +85,9 @@
   }
   .single-user .select {
     max-width: 100%;
+  }
+  .exited-user-deletion-reason {
+    flex: 40%;
   }
 }
 

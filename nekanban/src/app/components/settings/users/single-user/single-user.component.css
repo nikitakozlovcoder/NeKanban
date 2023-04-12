@@ -1,0 +1,166 @@
+.users-list .mat-list-item a mat-icon {
+  margin-left: auto;
+}
+
+.test-list {
+  display: flex;
+}
+
+.role-selector {
+  width: 150px;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.single-user {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  height: 50px;
+}
+.desk-user-name {
+  width: 200px;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.cancel-icon {
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.role-name {
+  /*margin-left: 0;
+  margin-right: 50px;*/
+  flex: 50%
+}
+.single-user-title {
+  display: flex;
+  padding: 10px 10px 0;
+}
+.single-user-title h2:first-child {
+  width: 200px;
+}
+.deleted-users-title {
+  margin: 10px auto;
+  text-align: center;
+}
+.deletion-reason {
+  width: 170px;
+}
+.single-deleted-user {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  height: 50px;
+  padding: 10px;
+}
+.user-role-select {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.exited-user-delete-icon {
+  margin: 0;
+}
+.full-width-button {
+  width: 100%;
+}
+mat-card {
+  margin: 1px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+@media screen and (max-width: 600px) {
+  .single-user-title h2 {
+    flex: 50%;
+  }
+  .desk-user-name {
+    flex: 50%;
+    margin: 0;
+  }
+  .deletion-reason {
+    width: 50%;
+  }
+  .user-restore-button {
+    margin-top: 20px;
+  }
+  .single-deleted-user {
+    height: initial;
+  }
+  .single-user .select {
+    max-width: 100%;
+  }
+  .exited-user-deletion-reason {
+    flex: 40%;
+  }
+  mat-card .select {
+    margin-top: 10px;
+    max-width: 100%;
+  }
+}
+
+
+
+
+
+/* SELECT */
+.select {
+  position: relative;
+  flex: 40%;
+  max-width: 200px;
+  /*min-width: 120px;*/
+}
+.select svg {
+  position: absolute;
+  right: 12px;
+  top: calc(50% - 3px);
+  width: 10px;
+  height: 6px;
+  stroke-width: 2px;
+  stroke: #9098a9;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.select select {
+  -webkit-appearance: none;
+  padding: 7px 40px 7px 12px;
+  width: 100%;
+  border: 1px solid #e8eaed;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 1px 3px -2px #9098a9;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  transition: all 150ms ease;
+}
+.select select:required:invalid {
+  color: #5a667f;
+}
+.select select option {
+  color: #223254;
+}
+.select select option[value=""][disabled] {
+  display: none;
+}
+.select select:focus {
+  outline: none;
+  border-color: #07f;
+  box-shadow: 0 0 0 2px rgba(0,119,255,0.2);
+}
+.select select:hover + svg {
+  stroke: #07f;
+}
+.sprites {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  user-select: none;
+}

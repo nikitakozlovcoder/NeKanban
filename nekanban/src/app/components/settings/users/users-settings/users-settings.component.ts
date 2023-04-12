@@ -1,16 +1,17 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Desk} from "../../../models/desk";
-import {Role} from "../../../models/Role";
-import {DeskUser} from "../../../models/deskUser";
-import {RolesService} from "../../../services/roles.service";
-import {DeskUserService} from "../../../services/deskUser.service";
-import {DeskService} from "../../../services/desk.service";
+import {Desk} from "../../../../models/desk";
+import {Role} from "../../../../models/Role";
+import {DeskUser} from "../../../../models/deskUser";
+import {RolesService} from "../../../../services/roles.service";
+import {DeskUserService} from "../../../../services/deskUser.service";
+import {DeskService} from "../../../../services/desk.service";
 import {Router} from "@angular/router";
-import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
-import {DialogActionTypes} from "../../../constants/DialogActionTypes";
+import {ConfirmationComponent} from "../../../dialogs/confirmation/confirmation.component";
+import {DialogActionTypes} from "../../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
 import {BehaviorSubject, switchMap} from "rxjs";
-import {DeletionReason} from "../../../constants/deletionReason";
+import {DeletionReason} from "../../../../constants/deletionReason";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-users-settings',
@@ -27,14 +28,21 @@ export class UsersSettingsComponent implements OnInit {
   @Input() deletedUsers: DeskUser[] = [];
   isUserRemoveLoaded = new BehaviorSubject(true);
   deletionReason = DeletionReason;
+  hideTableHeaders = false;
 
   constructor(public readonly rolesService: RolesService,
               public readonly deskUserService: DeskUserService,
               private readonly deskService: DeskService,
               private readonly router: Router,
-              private readonly dialog: MatDialog) { }
+              private readonly dialog: MatDialog,
+              private readonly breakpointObserver: BreakpointObserver) { }
 
   ngOnInit(): void {
+    this.breakpointObserver
+      .observe([Breakpoints.HandsetPortrait])
+      .subscribe(result => {
+        this.hideTableHeaders = result.matches;
+      })
     this.loadDeletedUsers(this.deskId!);
   }
 
@@ -60,6 +68,17 @@ export class UsersSettingsComponent implements OnInit {
     this.deskUserService.getDeletedUsers(deskId).subscribe(result => {
       this.deletedUsers = result;
     })
+  }
+
+  handleDeskChange(desk: Desk) {
+    this.desk = desk;
+    this.deskChange.emit(this.desk);
+    this.loadDeletedUsers(this.desk.id);
+  }
+
+  handleDeskUsersChange(deskUsers: DeskUser[]) {
+    this.desk!.deskUsers = deskUsers;
+    this.deskChange.emit(this.desk);
   }
 
   removeUser(usersId: number[]) {

@@ -34,7 +34,7 @@ import {UserStorageService} from "./services/userStorage.service";
 import { SettingsComponent } from './components/settings/settings/settings.component';
 import { HeaderComponent } from './components/partials/header/header.component';
 import { GeneralSettingsComponent } from './components/settings/general-settings/general-settings.component';
-import { UsersSettingsComponent } from './components/settings/users-settings/users-settings.component';
+import { UsersSettingsComponent } from './components/settings/users/users-settings/users-settings.component';
 import { RolesSettingsComponent } from './components/settings/roles-settings/roles-settings.component';
 import {MatListModule} from "@angular/material/list";
 import { RoleCreationComponent } from './components/settings/dialogs/role-creation/role-creation.component';
@@ -59,6 +59,7 @@ import {DialogService} from "./services/dialog.service";
 import {ToastrModule} from "ngx-toastr";
 import {ErrorsMissingTranslationHandler} from "./services/errors-missing-translation-handler";
 import {EditorUploaderService} from "./services/editor-uploader.service";
+import { SingleUserComponent } from './components/settings/users/single-user/single-user.component';
 
 const appRoutes: Routes = [
   { path: 'authorization', component: AuthorizationComponent},
@@ -106,6 +107,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     RawHtmlViewerComponent,
     TinymceEditorComponent,
     TodoCodeComponent,
+    SingleUserComponent,
   ],
   imports: [
     BrowserAnimationsModule,
