@@ -73,6 +73,12 @@ mat-card {
   margin-top: 5px;
   margin-bottom: 5px;
 }
+.black-spinner {
+  margin-left: 20px;
+}
+::ng-deep .black-spinner circle {
+  stroke: black;
+}
 
 @media screen and (max-width: 600px) {
   .single-user-title h2 {

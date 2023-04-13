@@ -27,6 +27,7 @@ export class SingleUserComponent implements OnInit {
   @Input() isUserDeleted?: boolean;
   @Output() deskChange = new EventEmitter<Desk>;
   @Output() deskUsersChange = new EventEmitter<DeskUser[]>;
+  @Output() deletedUsersChange = new EventEmitter<DeskUser[]>;
   isUserRemoveLoaded = new BehaviorSubject(true);
   deletionReason = DeletionReason;
   showUserCard = false;

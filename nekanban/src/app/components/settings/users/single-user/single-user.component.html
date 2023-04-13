@@ -1,4 +1,3 @@
-
 <ng-container *ngIf="!isUserDeleted; else deletedUser">
   <div class="single-user"  *ngIf="!showUserCard; else existingUserCard">
     <p class="desk-user-name">{{deskUser!.user.name}} {{deskUser!.user.surname}}</p>
@@ -33,6 +32,8 @@
                 rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.RemoveUsers) &&
                 !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])" matTooltip="Удалить пользователя">cancel
     </mat-icon>
+    <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="24" class="spinner-centered black-spinner">
+    </mat-spinner>
   </div>
   <ng-template #existingUserCard>
     <mat-card>
@@ -85,11 +86,13 @@
       <div class="deletion-reason">
         Исключен
       </div>
-      <button class="user-restore-button"
+      <button *ngIf="(isUserRemoveLoaded | async)" class="user-restore-button"
               mat-raised-button color="primary" (click)="revertDeleted(deskUser!.id)">
         <mat-icon>undo</mat-icon>
         Восстановить
       </button>
+      <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="30" color="primary">
+      </mat-spinner>
     </ng-template>
   </div>
   <ng-template #deletedUserCard>
@@ -108,21 +111,20 @@
           <mat-icon>cancel</mat-icon>
           Удалить
         </button>
-        <!--<mat-icon class="cancel-icon exited-user-delete-icon"
-                  *ngIf="(isUserRemoveLoaded | async)  &&
-                rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.RemoveUsers) &&
-                !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])" matTooltip="Удалить пользователя">cancel
-        </mat-icon>-->
+        <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="30" color="warn">
+        </mat-spinner>
       </ng-container>
      <ng-template #kickedUserCard>
        <div>
          <span class="h-14px">Причина удаления:</span> Исключен
        </div>
-       <button class="user-restore-button full-width-button"
+       <button *ngIf="(isUserRemoveLoaded | async)" class="user-restore-button full-width-button"
                mat-raised-button color="primary" (click)="revertDeleted(deskUser!.id)">
          <mat-icon>undo</mat-icon>
          Восстановить
        </button>
+       <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="30" class="spinner-centered" color="primary">
+       </mat-spinner>
      </ng-template>
     </mat-card>
   </ng-template>

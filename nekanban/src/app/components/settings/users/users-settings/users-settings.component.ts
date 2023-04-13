@@ -27,6 +27,7 @@ export class UsersSettingsComponent implements OnInit {
   @Input() desks: Desk[] = [];
   @Input() deletedUsers: DeskUser[] = [];
   isUserRemoveLoaded = new BehaviorSubject(true);
+  areUsersLoaded = new BehaviorSubject(false);
   deletionReason = DeletionReason;
   hideTableHeaders = false;
 
@@ -65,8 +66,10 @@ export class UsersSettingsComponent implements OnInit {
   }
 
   loadDeletedUsers(deskId: number) {
+    this.areUsersLoaded.next(false);
     this.deskUserService.getDeletedUsers(deskId).subscribe(result => {
       this.deletedUsers = result;
+      this.areUsersLoaded.next(true);
     })
   }
 
