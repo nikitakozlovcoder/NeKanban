@@ -6,19 +6,21 @@
 
     <mat-sidenav-content>
       <app-header [currentUser]="getCurrentUser()" [(opened)]="opened" [(desks)]="desks" [currentDeskId]="desk.id"></app-header>
-      <app-desk-info [returnLink]="['/desks', this.desk.id]" [desk]="desk" [currentUser]="deskUserService.getCurrentDeskUser(desk)!" [roles]="roles"></app-desk-info>
+      <div class="settings-container">
+        <app-desk-info [returnLink]="['/desks', this.desk.id]" [desk]="desk" [currentUser]="deskUserService.getCurrentDeskUser(desk)!" [roles]="roles"></app-desk-info>
 
-      <mat-tab-group class="mat-tab-group-wrap" animationDuration="0ms">
-        <mat-tab label="Общие" *ngIf="rolesService.userHasAtLeastOnePermissionForGeneralSettings(roles, deskUserService.getCurrentDeskUser(desk)!)">
-          <app-general-settings [(desk)]="desk" [(desks)]="desks" [roles]="roles"></app-general-settings>
-        </mat-tab>
-        <mat-tab label="Пользователи" *ngIf="rolesService.userHasAtLeastOnePermissionForUsersSettings(roles, deskUserService.getCurrentDeskUser(desk)!)">
-          <app-users-settings [(desk)]="desk" [desks]="desks" [roles]="roles" [deskId]="deskId"></app-users-settings>
-        </mat-tab>
-        <mat-tab label="Роли" *ngIf="rolesService.userHasAtLeastOnePermissionForRolesSettings(roles, deskUserService.getCurrentDeskUser(desk)!)" >
-          <app-roles-settings [(roles)]="roles" [(desk)]="desk"></app-roles-settings>
-        </mat-tab>
-      </mat-tab-group>
+        <mat-tab-group class="mat-tab-group-wrap" animationDuration="0ms">
+          <mat-tab label="Общие" *ngIf="rolesService.userHasAtLeastOnePermissionForGeneralSettings(roles, deskUserService.getCurrentDeskUser(desk)!)">
+            <app-general-settings [(desk)]="desk" [(desks)]="desks" [roles]="roles"></app-general-settings>
+          </mat-tab>
+          <mat-tab label="Пользователи" *ngIf="rolesService.userHasAtLeastOnePermissionForUsersSettings(roles, deskUserService.getCurrentDeskUser(desk)!)">
+            <app-users-settings [(desk)]="desk" [desks]="desks" [roles]="roles" [deskId]="deskId"></app-users-settings>
+          </mat-tab>
+          <mat-tab label="Роли" *ngIf="rolesService.userHasAtLeastOnePermissionForRolesSettings(roles, deskUserService.getCurrentDeskUser(desk)!)" >
+            <app-roles-settings [(roles)]="roles" [(desk)]="desk"></app-roles-settings>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </div>

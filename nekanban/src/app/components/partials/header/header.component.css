@@ -34,8 +34,14 @@
 }
 .user-name {
   margin-right: 40px;
-  padding-left: 10px;
+  padding-left: 5px;
   text-transform: capitalize;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.user-name-no-margin {
+  margin-right: 0;
 }
 mat-toolbar ::ng-deep .mat-progress-spinner circle {
   color: white;
@@ -44,4 +50,7 @@ mat-toolbar ::ng-deep .mat-progress-spinner circle {
 }
 .project-name {
   cursor: pointer;
+}
+.profile-icon {
+  margin-left: 10px;
 }

@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 import {MatSidenav} from "@angular/material/sidenav";
 import {DeskService} from "../../../services/desk.service";
 import {BehaviorSubject} from "rxjs";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-header',
@@ -31,13 +32,17 @@ export class HeaderComponent implements OnInit {
   @Output() openedChange = new EventEmitter<boolean>();
 
   isLogoutLoaded = new BehaviorSubject(true);
-
+  isMobile = false;
   constructor(private readonly userService: UserService,
               private router: Router,
-              private readonly deskService: DeskService) { }
+              private readonly deskService: DeskService,
+              private readonly breakpointObserver: BreakpointObserver) { }
 
 
   ngOnInit(): void {
+    this.breakpointObserver.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+      this.isMobile = result.matches;
+    })
     this.setCurrentDesk();
   }
 

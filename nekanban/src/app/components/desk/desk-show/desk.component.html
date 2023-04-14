@@ -38,7 +38,7 @@
 
                   </mat-card-title>
 
-                  <mat-card-content>
+                  <mat-card-content class="column-content" [ngClass]="{'column-content-first': column.order === -1}">
                     <mat-card-subtitle>
                       <p>Задачи:</p>
                       <button *ngIf="column.order == -1 && rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.CreateOrUpdateTasks)" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" (click)="openToDoCreationDialog()" >

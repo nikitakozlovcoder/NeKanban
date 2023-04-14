@@ -23,3 +23,7 @@ mat-sidenav-content {
 .spinner {
   margin: 20% auto auto;
 }
+.settings-container {
+  max-width: 1140px;
+  margin: 0 auto;
+}

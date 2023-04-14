@@ -9,9 +9,12 @@
 }
 .desk-name {
   margin-bottom: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .settings-button {
   height: min-content;
+  min-width: auto;
 }
 .settings-button mat-icon {
   margin-left: 8px;
@@ -19,4 +22,12 @@
 .desk-info-group {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+.desk-info-title {
+  min-width: 0;
+}
+.desk-creator-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
