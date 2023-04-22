@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Data;
+using System.Net;
 using Batteries.Exceptions;
 using Batteries.FileStorage.FileStorageAdapters;
 using Batteries.FileStorage.FileStorageProxies;
@@ -136,7 +137,7 @@ public class ToDoService : IToDoService
 
     public async Task<ToDoFullDto> ApplyDraftToDo(int toDoId, ApplicationUser user, CancellationToken ct)
     {
-        await using var transaction = await _transactionManager.CreateScope(ct);
+        await using var transaction = await _transactionManager.CreateScope(IsolationLevel.Serializable, ct);
         using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
         {
             ToDoDraftFilter = false
