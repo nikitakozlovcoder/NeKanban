@@ -1,5 +1,7 @@
-﻿using Batteries.Injection.Attributes;
+﻿using System.Data;
+using Batteries.Injection.Attributes;
 using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace NeKanban.Data.Infrastructure.Transactions;
@@ -18,5 +20,10 @@ public class TransactionManager : ITransactionManager
     public async Task<IDbContextTransaction> CreateScope(CancellationToken ct)
     {
         return await _applicationContext.Database.BeginTransactionAsync(ct);
+    }
+    
+    public async Task<IDbContextTransaction> CreateScope(IsolationLevel isolationLevel, CancellationToken ct)
+    {
+        return await _applicationContext.Database.BeginTransactionAsync(isolationLevel, ct);
     }
 }
