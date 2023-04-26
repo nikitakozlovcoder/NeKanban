@@ -99,7 +99,6 @@ export class SingleCommentComponent implements OnInit {
         next: data => {
           this.commentUpdateLoaded.next(true);
           this.comment = data.find(el => el.id === this.comment?.id);
-          this.comment!.createdAtUtc = new Date(this.comment!.createdAtUtc);
           this.commentChange.emit(this.comment);
           this.commentUpdatingState = ViewStateTypes.Show;
           this.commentUpdateEditorLoaded.next(false);

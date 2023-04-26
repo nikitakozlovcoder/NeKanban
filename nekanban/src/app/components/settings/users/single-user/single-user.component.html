@@ -37,8 +37,14 @@
   </div>
   <ng-template #existingUserCard>
     <mat-card>
-      <div>
-        <span class="h-14px">Имя пользователя:</span> {{deskUser!.user.name}} {{deskUser!.user.surname}}
+      <div class="user-card-delete-icon">
+        <div>
+          <span class="h-14px">Имя пользователя:</span> {{deskUser!.user.name}} {{deskUser!.user.surname}}
+        </div>
+        <mat-icon *ngIf="(isUserRemoveLoaded | async)  &&
+                rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.RemoveUsers) &&
+                !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])">delete</mat-icon>
+        <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="24" class="black-spinner"></mat-spinner>
       </div>
       <div class="select"
            *ngIf="rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.ChangeUserRole) &&
@@ -57,15 +63,6 @@
           <polyline points="1 1 5 5 9 1"></polyline>
         </symbol>
       </svg>
-      <button class="user-restore-button full-width-button" mat-raised-button color="warn"
-              *ngIf="(isUserRemoveLoaded | async)  &&
-                rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.RemoveUsers) &&
-                !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])">
-        <mat-icon>cancel</mat-icon>
-        Удалить
-      </button>
-      <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="30" class="spinner-centered" color="warn">
-      </mat-spinner>
     </mat-card>
   </ng-template>
 </ng-container>

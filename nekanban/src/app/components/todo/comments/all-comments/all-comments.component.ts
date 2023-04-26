@@ -116,7 +116,7 @@ export class AllCommentsComponent implements OnInit {
       {
         next: data => {
           this.commentsLoaded.next(true);
-          this.comments = this.SortAndMapComments(data);
+          this.comments = this.sortComments(data);
         },
         error: _ => {
         }
@@ -140,7 +140,7 @@ export class AllCommentsComponent implements OnInit {
           this.commentsService.applyDraft(this.draftId!).subscribe({
             next: data => {
               this.commentsSendingLoaded.next(true);
-              this.comments = this.SortAndMapComments(data);
+              this.comments = this.sortComments(data);
               this.commentInput.setValue("", {emitEvent: false});
               this.getCommentDraft();
             },
@@ -160,16 +160,6 @@ export class AllCommentsComponent implements OnInit {
 
   handleCommentDeletion(id: number) {
     this.comments.splice(this.comments.findIndex(el => el.id === id), 1);
-  }
-
-  private SortAndMapComments(comments: Comment[]) {
-    return this.sortComments(comments.map(el => {
-      return <Comment>{
-        id: el.id,
-        body: el.body,
-        deskUser: el.deskUser,
-        createdAtUtc: new Date(el.createdAtUtc)};
-    }));
   }
 
   private getCommentDraft() {
