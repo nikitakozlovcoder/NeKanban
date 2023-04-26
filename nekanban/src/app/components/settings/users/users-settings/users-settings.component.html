@@ -15,7 +15,7 @@
     <mat-divider *ngIf="!hideTableHeaders"></mat-divider>
   </div>
 </div>
-<div class ="users-list" *ngIf="(areUsersLoaded | async) && rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageDeletedUsers)">
+<div class ="users-list" *ngIf="(areUsersLoaded | async) && deletedUsers.length && rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageDeletedUsers)">
   <h2 class="h-main-title deleted-users-title">Удаленные пользователи</h2>
   <div *ngIf="!hideTableHeaders" class="single-user-title">
     <h2 class="h-18px">Имя пользователя</h2>
