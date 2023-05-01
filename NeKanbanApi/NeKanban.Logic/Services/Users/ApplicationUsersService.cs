@@ -5,6 +5,7 @@ using Batteries.Mapper.AppMapper;
 using Batteries.Repository;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
+using NeKanban.Common.DTOs.RefreshTokens;
 using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.UserModel;
@@ -57,7 +58,16 @@ public class ApplicationUsersService : IApplicationUsersService
 
     public async Task Logout(UserRefreshTokenModel refreshTokenModel, CancellationToken ct)
     {
-        var tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken, false);
+        RefreshTokenReadDto tokenData;
+        try
+        {
+            tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken, true);
+        }
+        catch (ArgumentException)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
+        }
+        
         var user = await _userRepository.Single(x => x.UserName == tokenData.UserUniqueName.ToString(), ct);
         await _tokenProviderService.DeleteRefreshToken(user.Id, tokenData.UniqId, ct);
     }
@@ -70,7 +80,16 @@ public class ApplicationUsersService : IApplicationUsersService
 
     public async Task<JwtTokenPair> RefreshToken(UserRefreshTokenModel refreshTokenModel, CancellationToken ct)
     {
-        var tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken, true);
+        RefreshTokenReadDto tokenData;
+        try
+        {
+            tokenData = _tokenProviderService.ReadJwtRefreshToken(refreshTokenModel.RefreshToken, true);
+        }
+        catch (ArgumentException)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.Unauthorized);
+        }
+      
         var user = await _userRepository.Single(x => x.UserName == tokenData.UserUniqueName.ToString(), ct);
         var isValid = await _tokenProviderService.ValidateRefreshToken(user.Id, tokenData.UniqId, ct);
         if (!isValid)
@@ -88,7 +107,6 @@ public class ApplicationUsersService : IApplicationUsersService
             AccessToken = accessToken,
             RefreshToken = refreshToken.Token,
         };
-
     }
 
     public async Task<ApplicationUserWithTokenVm> GetById(int id,  CancellationToken ct)
