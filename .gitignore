@@ -2,3 +2,5 @@
 NeKanbanApi/.idea
 NeKanbanApi/*/obj
 NeKanbanApi/*/bin
+NeKanbanApi/NeKanban.Api/wwwroot/storage/*
+!NeKanbanApi/NeKanban.Api/wwwroot/storage/.keep

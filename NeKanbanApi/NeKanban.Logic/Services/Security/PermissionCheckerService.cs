@@ -20,8 +20,16 @@ public class PermissionCheckerService : IPermissionCheckerService
 
     public async Task<bool> HasPermission(int deskId, int userId, PermissionType permission, CancellationToken ct)
     {
-        var deskUser = await _deskUserRepository.ProjectToFirstOrDefault<DeskUserPermissionsChallengeDto>(x => x.DeskId == deskId && x.UserId == userId, ct);
+        var deskUser = await _deskUserRepository.ProjectToFirstOrDefault<DeskUserPermissionsChallengeDto>(x => x.DeskId == deskId
+            && x.UserId == userId && !x.DeletionReason.HasValue, ct);
         return deskUser != null && HasPermission(deskUser, permission);
+    }
+
+    public async Task<bool> HasPermission(int deskId, int userId, CancellationToken ct)
+    {
+        var validUserExists = await _deskUserRepository.Any(
+                x => x.DeskId == deskId && x.UserId == userId && !x.DeletionReason.HasValue, ct);
+        return validUserExists;
     }
 
     private static bool HasPermission(DeskUserPermissionsChallengeDto deskUser, PermissionType permission)
