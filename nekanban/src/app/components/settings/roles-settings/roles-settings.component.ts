@@ -33,7 +33,6 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
 
   constructor(public dialog: MatDialog,
               private readonly rolesService: RolesService,
-              public snackBar: MatSnackBar,
               public readonly translate: TranslateService,
               private readonly dialogService: DialogService,
               private readonly breakpointObserver: BreakpointObserver) { }
@@ -91,19 +90,16 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
       if (result == DialogActionTypes.Reject) {
         return;
       }
-
       this.rolesService.deleteRole(role.id).subscribe({
         next: (data: Role[]) => {
           this.roles = data;
           this.rolesChange.emit(this.roles);
-          if (this.currentRole?.id == role.id){
+          if (this.currentRole?.id == role.id) {
             this.currentRole = this.roles.find(x => x.isDefault);
           }
-        },error: (error: HttpErrorResponse) => {
+        },
+        error: (error: HttpErrorResponse) => {
           this.dialogService.openToast(error.error);
-          /*if (error.error === "CantDeleteRoleWhenAnyUserHasThisRole") {
-            this.snackBar.open('Невозможно удалить роль, на которую назначен хотя бы один пользователь!', undefined, {duration:2000, panelClass: ['big-sidenav']})
-          }*/
         }
       });
     });
@@ -118,13 +114,13 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   }
 
   grantPermissionToRole(role: Role, permission: Permission) {
-    this.rolesService.grantPermission(role.id, permission.permission).subscribe(result => {
+    this.rolesService.grantPermission(role.id, permission.permission).subscribe(() => {
       role.permissions.push(permission);
     })
   }
 
   revokePermissionFromRole(permission: Permission) {
-    this.rolesService.revokePermission(this.currentRole!.id, permission.permission).subscribe(result => {
+    this.rolesService.revokePermission(this.currentRole!.id, permission.permission).subscribe(() => {
       this.currentRole!.permissions = this.currentRole!.permissions.filter(el => {
         return el.permission != permission.permission;
       });

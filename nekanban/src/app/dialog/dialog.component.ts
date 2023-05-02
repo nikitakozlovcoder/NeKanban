@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Column} from "../models/column";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import ErrorTypes from "../constants/ErrorTypes";
 
 @Component({

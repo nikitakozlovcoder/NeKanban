@@ -296,6 +296,9 @@ mat-card-title mat-spinner {
   overflow: auto;
   display: flex;
 }
+.cards-list div:last-child mat-card {
+  margin-right: 1px;
+}
 
 .single-user ::ng-deep.mat-list-item-content {
   justify-content: space-between;
@@ -321,6 +324,9 @@ mat-card-title-group {
 }
 .column-content-first .todos-list {
   height: calc(100% - 49px);
+}
+.column-content-first .todos-list-no-columns-add-button {
+  height: calc(100% - 26px);
 }
 /*.column-content {
   height: 100%;

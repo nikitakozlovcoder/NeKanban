@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Comment} from "../../../../models/comment";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
-import {BehaviorSubject, interval, last, map, Observable, Subscription} from "rxjs";
-import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
+import {BehaviorSubject, last, map, Observable, Subscription} from "rxjs";
+import {FormControl, ValidatorFn} from "@angular/forms";
 import tinymce from "tinymce";
 import {EditorConfigService} from "../../../../services/editor-config-service";
 import {CommentsService} from "../../../../services/comments.service";

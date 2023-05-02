@@ -3,7 +3,7 @@
     <div class="desk-info-title">
       <mat-card-title class="settings-desk-name">
         <mat-icon *ngIf="returnLink" [routerLink]="returnLink">arrow_back</mat-icon>
-        <p class="desk-name">1111111 {{desk?.name}}</p>
+        <p class="desk-name">{{desk?.name}}</p>
       </mat-card-title>
       <mat-card-subtitle>
         <p class="desk-creator-name" *ngIf="getDeskOwner()">Руководитель: {{getDeskOwner()!.user.name}} {{getDeskOwner()!.user.surname}}</p>

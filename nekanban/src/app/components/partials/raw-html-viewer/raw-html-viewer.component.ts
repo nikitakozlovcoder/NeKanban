@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {environment} from "../../../../environments/environment";
 
 @Component({

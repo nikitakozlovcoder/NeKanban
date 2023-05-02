@@ -4,8 +4,7 @@ import {Todo} from "../../../models/todo";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 import {BehaviorSubject, last, map} from "rxjs";
-import tinymce, {EditorOptions} from "tinymce";
-import {EditorConfigService} from "../../../services/editor-config-service";
+import tinymce from "tinymce";
 import {EditorUploaderService} from "../../../services/editor-uploader.service";
 
 @Component({
@@ -70,7 +69,6 @@ export class TodoEditingComponent implements OnInit {
     }
     else {
       this.updateLoaded.next(false);
-      tinymce.activeEditor?.uploadImages().then(() => {
         this.todoService.updateToDo(this.todoFormGroup.getRawValue() as Todo).subscribe({
           next: data => {
             this.dialogRef.close(data);
@@ -80,7 +78,6 @@ export class TodoEditingComponent implements OnInit {
         }).add(() => {
           this.updateLoaded.next(true);
         });
-      });
     }
   }
 }

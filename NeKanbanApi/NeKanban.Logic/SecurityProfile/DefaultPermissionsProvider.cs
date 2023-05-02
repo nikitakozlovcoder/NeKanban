@@ -26,6 +26,7 @@ public class DefaultPermissionsProvider : IDefaultPermissionProvider
             PermissionType.ManageColumns,
             PermissionType.CreateOrUpdateTasks,
             PermissionType.DeleteAnyComments,
+            PermissionType.ManageAssigners,
         };
         
         _managerPermissions.AddRange(_userPermissions);

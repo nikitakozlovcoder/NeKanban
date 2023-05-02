@@ -1,16 +1,12 @@
 import {HttpErrorResponse} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {DialogComponent} from "../dialog/dialog.component";
 import {AppHttpService} from "./app-http.service";
 import {catchError, tap, throwError} from "rxjs";
-import ErrorTypes from "../constants/ErrorTypes";
 import {ErrorCodes} from "../constants/ErrorCodes";
 import {UserStorageService} from "./userStorage.service";
 import {UserWithToken} from "../models/user-with-token";
 import {Token} from "../models/token";
-import {Desk} from "../models/desk";
 import {DialogService} from "./dialog.service";
 
 @Injectable()

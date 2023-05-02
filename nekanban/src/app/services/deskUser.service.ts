@@ -31,4 +31,16 @@ export class DeskUserService {
   revertDeletedUser(deskUserId: number) {
     return this.httpService.put(`DesksUsers/RevertDeleted/${deskUserId}`, {});
   }
+
+  inviteByLink(guid: number) {
+    return this.httpService.put<Desk>("DesksUsers/AddUserByLink/", {uid: guid});
+  }
+
+  removeUserFromDesk(usersId: number[], deskId: number) {
+    return this.httpService.put<Desk>("DesksUsers/RemoveUsers/" + deskId, {usersToRemove: usersId});
+  }
+
+  addPreference(id: number, preference: number) {
+    return this.httpService.put<Desk[]>("DesksUsers/SetPreferenceType/" + id, {preference});
+  }
 }

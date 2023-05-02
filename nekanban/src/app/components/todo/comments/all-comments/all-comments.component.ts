@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
+import {FormControl, ValidatorFn} from "@angular/forms";
 import {Comment} from "../../../../models/comment";
-import {BehaviorSubject, debounceTime, filter, last, map, from, Subject, Subscription, switchMap} from "rxjs";
-import tinymce, {EditorOptions} from "tinymce";
+import {BehaviorSubject, debounceTime, filter, last, map, Subject, Subscription, switchMap} from "rxjs";
+import tinymce from "tinymce";
 import {MatDialog} from "@angular/material/dialog";
 import {DeskUser} from "../../../../models/deskUser";
 import {Role} from "../../../../models/Role";
@@ -10,13 +10,9 @@ import {TodoService} from "../../../../services/todo.service";
 import {RolesService} from "../../../../services/roles.service";
 import {DataGeneratorService} from "../../../../services/dataGenerator.service";
 import {CommentsService} from "../../../../services/comments.service";
-import {EditorConfigService} from "../../../../services/editor-config-service";
-import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
 import {ValidationService} from "../../../../services/validation.service";
 import {EditorUploaderService} from "../../../../services/editor-uploader.service";
-import {UntilDestroy, untilDestroyed} from "@ngneat/until-destroy";
-import {Todo} from "../../../../models/todo";
-import {Column} from "../../../../models/column";
+import {UntilDestroy} from "@ngneat/until-destroy";
 
 @UntilDestroy({ checkProperties: true })
 @Component({
@@ -35,6 +31,7 @@ export class AllCommentsComponent implements OnInit {
   commentsSendingLoaded = new BehaviorSubject(true);
   commentDraftLoaded = new BehaviorSubject(false);
   notSend =  true;
+  firstSendAttempt = true;
   editorLoaded = new BehaviorSubject(false);
   private firstUpdateRequest = true;
   toggleComments = new Subject<any>();
@@ -124,8 +121,10 @@ export class AllCommentsComponent implements OnInit {
   }
 
   createComment() {
+    this.commentInput.addValidators(this.commentLengthValidator());
     this.commentInput.updateValueAndValidity();
     if (this.commentInput.invalid) {
+      this.firstSendAttempt = false;
       this.commentInput.markAsTouched();
     }
     else {
@@ -140,6 +139,7 @@ export class AllCommentsComponent implements OnInit {
           this.commentsService.applyDraft(this.draftId!).subscribe({
             next: data => {
               this.commentsSendingLoaded.next(true);
+              this.firstSendAttempt = true;
               this.comments = this.sortComments(data);
               this.commentInput.setValue("", {emitEvent: false});
               this.getCommentDraft();
@@ -169,7 +169,9 @@ export class AllCommentsComponent implements OnInit {
         this.commentDraftLoaded.next(true);
         this.notSend = true;
         this.commentInput.setValue(data.body, {emitEvent: false});
-        this.commentInput.addValidators(this.commentLengthValidator());
+        if (!this.firstSendAttempt) {
+          this.commentInput.addValidators(this.commentLengthValidator());
+        }
         this.draftId = data.id;
       }
     });
@@ -188,10 +190,12 @@ export class AllCommentsComponent implements OnInit {
   private setFormListeners() {
     this.commentInputSubscription = this.commentInput.valueChanges.subscribe({
       next: () => {
-        this.commentInput.addValidators(this.commentLengthValidator());
-        if (this.firstUpdateRequest) {
-          this.firstUpdateRequest = false;
-          return;
+        if (!this.firstSendAttempt) {
+          this.commentInput.addValidators(this.commentLengthValidator());
+          if (this.firstUpdateRequest) {
+            this.firstUpdateRequest = false;
+            return;
+          }
         }
         this.draftSubject.next(1);
       }

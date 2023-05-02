@@ -89,7 +89,7 @@ export class SingleUserComponent implements OnInit {
 
   private makeRemoval(usersId: number[]) {
     this.isUserRemoveLoaded.next(false);
-    this.deskService.removeUserFromDesk(usersId, this.deskId!).subscribe({
+    this.deskUserService.removeUserFromDesk(usersId, this.deskId!).subscribe({
       next: data => {
         if (usersId.some(el => el === this.currentDeskUser!.user.id)) {
           this.router.navigate(['']).then();

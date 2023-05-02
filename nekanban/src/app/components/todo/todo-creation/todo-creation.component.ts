@@ -1,5 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
@@ -11,9 +10,8 @@ import {
   map,
   Subject,
   Subscription,
-  switchMap, tap
+  switchMap
 } from "rxjs";
-import {HttpEvent, HttpEventType} from "@angular/common/http";
 import {EditorUploaderService} from "../../../services/editor-uploader.service";
 
 @Component({

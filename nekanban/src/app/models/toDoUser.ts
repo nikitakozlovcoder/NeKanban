@@ -1,6 +1,6 @@
 ﻿import {DeskUser} from "./deskUser";
 
-export interface ToDoUsers {
+export interface ToDoUser {
   id: number;
   deskUser: DeskUser;
   toDoUserType: number;

@@ -16,7 +16,7 @@
         </mat-card-title>
 
         <!--<div cdkDropListGroup>-->
-        <div class="desk-cards-inside" [ngClass]="{'desk-cards-inside-margin' : rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.CreateColumns)}">
+        <!--<div class="desk-cards-inside" [ngClass]="{'desk-cards-inside-margin' : rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.CreateColumns)}">
           <ng-scrollbar class="my-scrollbar" track="horizontal" [autoWidthDisabled]="false" [autoHeightDisabled]="false">
             <div cdkDropList
                  [cdkDropListData]="columns"
@@ -33,7 +33,7 @@
                     <button mat-button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)" [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                     <mat-menu #menu="matMenu">
                       <button mat-menu-item (click)="openColumnUpdatingDialog(column)"><mat-icon>edit</mat-icon>Редактировать</button>
-                      <button mat-menu-item *ngIf="getToDosForColumn(column.id).length === 0 && column.type === 0" (click)="removeColumn(column.id)"><mat-icon>delete</mat-icon>Удалить</button>
+                      <button mat-menu-item *ngIf="column.todos.length === 0 && column.type === 0" (click)="removeColumn(column.id)"><mat-icon>delete</mat-icon>Удалить</button>
                     </mat-menu>
 
                   </mat-card-title>
@@ -48,7 +48,7 @@
                     <div
                       cdkDropList
                       [cdkDropListData]="column.todos"
-                      class="todos-list"
+                      class="todos-list" [ngClass]="{'todos-list-no-columns-add-button': !rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)}"
                       (cdkDropListDropped)="drop($event, column.id)">
                       <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="!rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.MoveTasks)" >
                         <p (click)="openTaskShowingDialog(toDo)" class="todo-name">
@@ -66,6 +66,55 @@
               </div>
             </div>
           </ng-scrollbar>
+        </div>-->
+        <div class="desk-cards-inside" [ngClass]="{'desk-cards-inside-margin' : rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.CreateColumns)}">
+          <div cdkDropList
+               [cdkDropListData]="columns"
+               class="cards-list"
+               (cdkDropListDropped)="dropColumn($event)"
+               cdkDropListOrientation="horizontal"
+               cdkDropListGroup
+          >
+            <div *ngFor="let column of columns; index as i">
+              <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(!(column.type === 0 && rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)))">
+                <mat-card-title class="column-card-title">
+                  <mat-spinner *ngIf="!isColumnDeleteLoaded[i]" diameter="20"></mat-spinner>
+                  <p #columnName [matTooltip]="column.name" [matTooltipDisabled]="!(columnName.offsetWidth < columnName.scrollWidth)">{{column.name}}</p>
+                  <button mat-button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)" [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="openColumnUpdatingDialog(column)"><mat-icon>edit</mat-icon>Редактировать</button>
+                    <button mat-menu-item *ngIf="column.todos.length === 0 && column.type === 0" (click)="removeColumn(column.id)"><mat-icon>delete</mat-icon>Удалить</button>
+                  </mat-menu>
+
+                </mat-card-title>
+
+                <mat-card-content class="column-content" [ngClass]="{'column-content-first': column.order === -1}">
+                  <mat-card-subtitle>
+                    <p>Задачи:</p>
+                    <button *ngIf="column.order == -1 && rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.CreateOrUpdateTasks)" mat-mini-fab color="primary" aria-label="Example icon button with a menu icon" (click)="openToDoCreationDialog()" >
+                      <mat-icon>add</mat-icon>
+                    </button>
+                  </mat-card-subtitle>
+                  <div
+                    cdkDropList
+                    [cdkDropListData]="column.todos"
+                    class="todos-list" [ngClass]="{'todos-list-no-columns-add-button': !rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)}"
+                    (cdkDropListDropped)="drop($event, column.id)">
+                    <div class="example-box" *ngFor="let toDo of column.todos" cdkDrag [cdkDragDisabled]="!rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.MoveTasks)" >
+                      <p (click)="openTaskShowingDialog(toDo)" class="todo-name">
+                            <span>
+                              <mat-icon matTooltip="Вы назначены исполнителем этой задачи!" class="assigned-icon" *ngIf="isUserAssigned(toDo)">circle</mat-icon>
+                            </span>
+                        <app-todo-code [todoCode]="toDo.code"></app-todo-code>{{toDo.name}}
+                      </p>
+                      <mat-icon *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.CreateOrUpdateTasks)" (click)="openToDoEditingDialog(toDo)" class="todo-edit-icon">edit</mat-icon>
+                    </div>
+                  </div>
+                </mat-card-content>
+
+              </mat-card>
+            </div>
+          </div>
         </div>
       </mat-card>
     </mat-sidenav-content>

@@ -6,8 +6,9 @@
 
     <mat-sidenav-content>
       <app-header [currentUser]="getCurrentUser()" [(opened)]="opened" [(desks)]="desks" [currentDeskId]="desk.id"></app-header>
+      <app-desk-info [returnLink]="['/desks', this.desk.id]" [desk]="desk" [currentUser]="deskUserService.getCurrentDeskUser(desk)!" [roles]="roles"></app-desk-info>
       <div class="settings-container">
-        <app-desk-info [returnLink]="['/desks', this.desk.id]" [desk]="desk" [currentUser]="deskUserService.getCurrentDeskUser(desk)!" [roles]="roles"></app-desk-info>
+
 
         <mat-tab-group class="mat-tab-group-wrap" animationDuration="0ms">
           <mat-tab label="Общие" *ngIf="rolesService.userHasAtLeastOnePermissionForGeneralSettings(roles, deskUserService.getCurrentDeskUser(desk)!)">

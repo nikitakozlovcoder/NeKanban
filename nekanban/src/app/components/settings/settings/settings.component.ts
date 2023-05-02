@@ -7,7 +7,6 @@ import {Role} from "../../../models/Role";
 import {ActivatedRoute, Router} from "@angular/router";
 import {DeskUserService} from "../../../services/deskUser.service";
 import {BehaviorSubject, map, combineLatest, combineLatestWith, filter} from "rxjs";
-import {DeskUser} from "../../../models/deskUser";
 
 @Component({
   selector: 'app-settings',

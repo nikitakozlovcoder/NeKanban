@@ -5,7 +5,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {MatSidenav} from "@angular/material/sidenav";
 import {DeskUserService} from "../../../services/deskUser.service";
-import {UserStorageService} from "../../../services/userStorage.service";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 
@@ -60,7 +59,7 @@ export class SidenavComponent implements OnInit {
       if (result == DialogActionTypes.Reject) {
         return;
       }
-      this.deskUserService.exitFromDesk(desk.id).subscribe(result => {
+      this.deskUserService.exitFromDesk(desk.id).subscribe(() => {
         this.router.navigate(['']).then();
       })
     });

@@ -7,6 +7,7 @@ import {MatSidenav} from "@angular/material/sidenav";
 import {DeskService} from "../../../services/desk.service";
 import {BehaviorSubject} from "rxjs";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {DeskUserService} from "../../../services/deskUser.service";
 
 @Component({
   selector: 'app-header',
@@ -35,7 +36,7 @@ export class HeaderComponent implements OnInit {
   isMobile = false;
   constructor(private readonly userService: UserService,
               private router: Router,
-              private readonly deskService: DeskService,
+              private readonly deskUserService: DeskUserService,
               private readonly breakpointObserver: BreakpointObserver) { }
 
 
@@ -60,7 +61,7 @@ export class HeaderComponent implements OnInit {
     let founded = this.desks.find(el => el.deskUser.preference === 1);
     this.isFavouriteLoaded.next(false);
     if (founded != undefined) {
-      this.deskService.addPreference(founded.id, 0).subscribe({
+      this.deskUserService.addPreference(founded.id, 0).subscribe({
         next: (data: Desk[]) => {
           this.desks = data;
           this.setCurrentDesk();
@@ -72,7 +73,7 @@ export class HeaderComponent implements OnInit {
     }
 
     if (index != undefined) {
-      this.deskService.addPreference(index, 1).subscribe({
+      this.deskUserService.addPreference(index, 1).subscribe({
         next: (data: Desk[]) => {
           this.desks = data;
           this.desksChange.emit(this.desks);
@@ -87,7 +88,7 @@ export class HeaderComponent implements OnInit {
   removeFromFavourites(index: number |undefined) {
     if (index != undefined) {
       this.isFavouriteLoaded.next(false);
-      this.deskService.addPreference(index, 0).subscribe({
+      this.deskUserService.addPreference(index, 0).subscribe({
         next: (data: Desk[]) => {
           this.desks = data
           this.desksChange.emit(this.desks);
