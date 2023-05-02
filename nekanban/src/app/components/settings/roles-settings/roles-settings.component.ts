@@ -13,6 +13,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import {DialogService} from "../../../services/dialog.service";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {filter, switchMap} from "rxjs";
 
 @Component({
   selector: 'app-roles-settings',
@@ -59,11 +60,9 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
       data: {deskId: this.desk?.id},
       width: '400px',
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.roles = result;
-        this.rolesChange.emit(this.roles);
-      }
+    dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
+      this.roles = result;
+      this.rolesChange.emit(this.roles);
     });
   }
 
@@ -74,34 +73,28 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
       width: '400px',
     });
 
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.roles = result;
-        this.rolesChange.emit(this.roles);
-        this.updateCurrentRole();
-      }
+    dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
+      this.roles = result;
+      this.rolesChange.emit(this.roles);
+      this.updateCurrentRole();
     });
   }
 
   openRoleDeletingDialog(role: Role, $event: MouseEvent) {
     $event.stopPropagation();
     const dialogRef = this.dialog.open(ConfirmationComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == DialogActionTypes.Reject) {
-        return;
-      }
-      this.rolesService.deleteRole(role.id).subscribe({
-        next: (data: Role[]) => {
-          this.roles = data;
-          this.rolesChange.emit(this.roles);
-          if (this.currentRole?.id == role.id) {
-            this.currentRole = this.roles.find(x => x.isDefault);
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-          this.dialogService.openToast(error.error);
+    dialogRef.afterClosed().pipe(filter(x => x === DialogActionTypes.Accept),
+      switchMap(() => this.rolesService.deleteRole(role.id))).subscribe({
+      next: (data) => {
+        this.roles = data;
+        this.rolesChange.emit(this.roles);
+        if (this.currentRole?.id == role.id) {
+          this.currentRole = this.roles.find(x => x.isDefault);
         }
-      });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.dialogService.openToast(error.error);
+      }
     });
   }
 

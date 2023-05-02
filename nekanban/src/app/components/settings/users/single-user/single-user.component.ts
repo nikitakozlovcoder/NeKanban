@@ -3,7 +3,7 @@ import {DeskUser} from "../../../../models/deskUser";
 import {RolesService} from "../../../../services/roles.service";
 import {Role} from "../../../../models/Role";
 import {DeskUserService} from "../../../../services/deskUser.service";
-import {BehaviorSubject, switchMap} from "rxjs";
+import {BehaviorSubject, filter, switchMap} from "rxjs";
 import {DeletionReason} from "../../../../constants/deletionReason";
 import {ConfirmationComponent} from "../../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../../constants/DialogActionTypes";
@@ -67,12 +67,8 @@ export class SingleUserComponent implements OnInit {
   removeUser(usersId: number[]) {
     const dialogRef = this.dialog.open(ConfirmationComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == DialogActionTypes.Reject) {
-        return;
-      }
-      this.makeRemoval(usersId);
-    });
+    dialogRef.afterClosed().pipe(filter(x => x === DialogActionTypes.Accept))
+      .subscribe(() => this.makeRemoval(usersId));
 
   }
 

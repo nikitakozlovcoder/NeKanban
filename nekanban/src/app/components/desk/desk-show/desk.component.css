@@ -334,3 +334,6 @@ mat-card-title-group {
 .todos-list {
   height: 100%;
 }*/
+.column-menu-button {
+  min-width: 24px !important;
+}

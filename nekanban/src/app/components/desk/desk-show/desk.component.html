@@ -80,7 +80,7 @@
                 <mat-card-title class="column-card-title">
                   <mat-spinner *ngIf="!isColumnDeleteLoaded[i]" diameter="20"></mat-spinner>
                   <p #columnName [matTooltip]="column.name" [matTooltipDisabled]="!(columnName.offsetWidth < columnName.scrollWidth)">{{column.name}}</p>
-                  <button mat-button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)" [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+                  <button mat-button class="column-menu-button" *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)" [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
                   <mat-menu #menu="matMenu">
                     <button mat-menu-item (click)="openColumnUpdatingDialog(column)"><mat-icon>edit</mat-icon>Редактировать</button>
                     <button mat-menu-item *ngIf="column.todos.length === 0 && column.type === 0" (click)="removeColumn(column.id)"><mat-icon>delete</mat-icon>Удалить</button>

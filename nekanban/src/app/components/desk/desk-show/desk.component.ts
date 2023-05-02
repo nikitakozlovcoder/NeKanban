@@ -17,8 +17,10 @@ import {ColumnUpdatingComponent} from "../../column/column-updating/column-updat
 import {RolesService} from "../../../services/roles.service";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
-import { BehaviorSubject, combineLatest, map } from "rxjs";
+import {BehaviorSubject, combineLatest, filter, map, switchMap, tap} from "rxjs";
 import {UserStorageService} from "../../../services/userStorage.service";
+import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
+import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 
 @Component({
   selector: 'app-desk',
@@ -139,17 +141,11 @@ export class DeskComponent implements OnInit {
       else {
         position = event.container.data[event.currentIndex].order;
       }
-      this.columnService.moveColumn(event.container.data[event.previousIndex].id, position).subscribe({
+      this.columnService.moveColumn(event.container.data[event.previousIndex].id, position).pipe(
+        map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b)))
+      ).subscribe({
         next: data => {
-          this.columns = data.sort(function (a: Column, b: Column) {
-            if (a.order > b.order) {
-              return 1;
-            }
-            if (a.order < b.order) {
-              return -1;
-            }
-            return 0;
-          });
+          this.columns = data;
           this.reloadTodosForColumns(this.toDos);
         },
         error: _ => {
@@ -226,21 +222,15 @@ export class DeskComponent implements OnInit {
       data: {deskId: this.desk?.id},
       width: '400px'
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.columns = result.sort(function (a: Column, b: Column) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
-        this.columns.forEach(() => this.isColumnDeleteLoaded.push(true))
-
-        this.reloadTodosForColumns(this.toDos);
-      }
+    dialogRef.afterClosed().pipe(
+      filter(x => x),
+      map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b))),
+      tap(x => {
+        x.forEach(() => this.isColumnDeleteLoaded.push(true))
+      })
+    ).subscribe( result => {
+      this.columns = result;
+      this.reloadTodosForColumns(this.toDos);
     })
   }
 
@@ -250,21 +240,15 @@ export class DeskComponent implements OnInit {
 
   getColumns(deskId: number) {
     this.columnsLoaded.next(false);
-    this.columnService.getColumns(deskId).subscribe({
+    this.columnService.getColumns(deskId).pipe(
+      tap(() => this.columnsLoaded.next(true)),
+      map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b))),
+      tap(x => {
+        x.forEach(() => this.isColumnDeleteLoaded.push(true))
+      })
+    ).subscribe({
       next: data => {
-        this.columnsLoaded.next(true);
-        this.columns = data.sort(function (a, b) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
-        this.columns.forEach(() => {
-          this.isColumnDeleteLoaded.push(true);
-        })
+        this.columns = data;
         this.reloadTodosForColumns(this.toDos);
       },
       error: () => {
@@ -273,25 +257,21 @@ export class DeskComponent implements OnInit {
   }
 
   removeColumn(columnId: number) {
-    this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = false;
-    this.columnService.removeColumn(columnId).subscribe({
-      next: data => {
-        this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = true;
-        this.columns = data.sort(function (a: Column, b: Column) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
-        this.reloadTodosForColumns(this.toDos);
+    const dialogRef = this.dialog.open(ConfirmationComponent);
 
-      },
-      error: () => {
-      }
-    })
+    dialogRef.afterClosed().pipe(filter(x => x === DialogActionTypes.Accept),
+      tap(() => this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = false),
+      switchMap(() => this.columnService.removeColumn(columnId)),
+      tap(() => this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = true),
+      map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b))))
+      .subscribe({
+        next: data => {
+          this.columns = data;
+          this.reloadTodosForColumns(this.toDos);
+        },
+        error: () => {
+        }
+      })
   }
 
 
@@ -328,24 +308,21 @@ export class DeskComponent implements OnInit {
       data: {deskId: this.desk?.id, isEdit: false},
       width: '600px'
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.toDos.push(result);
-        this.reloadTodosForColumns(this.toDos);
-        /*this.toDos = result;
-        for (let i = 0; i < this.columns.length; i++) {
-          this.columns[i].todos =  result.filter( (todo : Todo) => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
-            if (a.order > b.order) {
-              return 1;
-            }
-            if (a.order < b.order) {
-              return -1;
-            }
-            return 0;
-          });
-        }*/
-
-      }
+    dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
+      this.toDos.push(result);
+      this.reloadTodosForColumns(this.toDos);
+      /*this.toDos = result;
+      for (let i = 0; i < this.columns.length; i++) {
+        this.columns[i].todos =  result.filter( (todo : Todo) => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
+          if (a.order > b.order) {
+            return 1;
+          }
+          if (a.order < b.order) {
+            return -1;
+          }
+          return 0;
+        });
+      }*/
     })
   }
   openToDoEditingDialog(todo: Todo) {
@@ -353,11 +330,9 @@ export class DeskComponent implements OnInit {
       data: {deskId: this.desk?.id, toDo: todo},
       width: '600px'
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if (result !== undefined) {
-        this.toDos[this.toDos.findIndex(el => el.id === todo.id)] = result;
-        this.reloadTodosForColumns(this.toDos);
-      }
+    dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
+      this.toDos[this.toDos.findIndex(el => el.id === todo.id)] = result;
+      this.reloadTodosForColumns(this.toDos);
     })
   }
 
@@ -367,19 +342,11 @@ export class DeskComponent implements OnInit {
       width: '400px'
     });
 
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.columns = result.sort(function (a: Column, b: Column) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
+    dialogRef.afterClosed().pipe(filter(x => x),
+      map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b))))
+      .subscribe( result => {
+        this.columns = result;
         this.reloadTodosForColumns(this.toDos);
-      }
     })
   }
 
@@ -395,4 +362,13 @@ export class DeskComponent implements OnInit {
     });
   }
 
+  private columnComparator(a: Column, b: Column) {
+    if (a.order > b.order) {
+      return 1;
+    }
+    if (a.order < b.order) {
+      return -1;
+    }
+    return 0;
+  }
 }
