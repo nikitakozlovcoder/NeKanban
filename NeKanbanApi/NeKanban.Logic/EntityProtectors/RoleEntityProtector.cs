@@ -19,7 +19,7 @@ public class RoleEntityProtector : BaseEntityProtector<Role>
 
     protected override async Task<int?> GetDeskId(int entityId, CancellationToken ct)
     {
-        var deskId = await _roleRepository.SingleOrDefault(x => x.Id == entityId, x => (int?)x.DeskId, ct);
+        var deskId = await _roleRepository.Single(x => x.Id == entityId, x => (int?)x.DeskId, ct);
         return deskId;
     }
 }

@@ -28,6 +28,6 @@ public class CommentEntityProtector : BaseEntityProtector<Comment>
             CommentDraftFilter = false
         });
         
-        return _commentsRepository.SingleOrDefault(x => x.Id == entityId, x => (int?)x.ToDo!.Column!.DeskId, ct);
+        return _commentsRepository.Single(x => x.Id == entityId, x => (int?)x.ToDo!.Column!.DeskId, ct);
     }
 }
