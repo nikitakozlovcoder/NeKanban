@@ -27,7 +27,7 @@ public class ToDoEntityProtector : BaseEntityProtector<ToDo>
             ToDoDraftFilter = false
         });
         
-        var deskId = await _toDoRepository.FirstOrDefault(x => x.Id == entityId,
+        var deskId = await _toDoRepository.First(x => x.Id == entityId,
             x => x.Column == null ? null : (int?) x.Column.DeskId, ct: ct);
         return deskId;
     }
