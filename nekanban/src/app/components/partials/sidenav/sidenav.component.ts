@@ -21,9 +21,8 @@ export class SidenavComponent implements OnInit {
 
   @Input() opened: boolean;
   @Output() openedChange = new EventEmitter<boolean>();
-
   @Input() desks: Desk[] = [];
-
+  @Output() exitEvent = new EventEmitter<number>;
   @Input() currentDeskId?: number;
 
   constructor(private readonly dialog: MatDialog,
@@ -56,7 +55,13 @@ export class SidenavComponent implements OnInit {
 
     dialogRef.afterClosed().pipe(filter(x => x === DialogActionTypes.Accept),
       switchMap(() => this.deskUserService.exitFromDesk(desk.id))).subscribe(() => {
-        this.router.navigate(['']).then();
+        if (desk.id === this.currentDeskId) {
+          this.router.navigate(['']).then();
+        }
+        else {
+          this.closeSidenav();
+          this.exitEvent.emit(desk.id);
+        }
     });
   }
 }

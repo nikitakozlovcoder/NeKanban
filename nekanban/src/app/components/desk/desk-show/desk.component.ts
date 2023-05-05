@@ -21,6 +21,7 @@ import {BehaviorSubject, combineLatest, filter, map, switchMap, tap} from "rxjs"
 import {UserStorageService} from "../../../services/userStorage.service";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-desk',
@@ -36,6 +37,8 @@ export class DeskComponent implements OnInit {
   toDos: Todo[] = [];
   isColumnDeleteLoaded: boolean[] = [];
   roles : Role[] = [];
+  columnsLocked = false;
+  showFab = false;
   desksLoaded = new BehaviorSubject(false);
   deskLoaded = new BehaviorSubject(false);
   columnsLoaded = new BehaviorSubject(false);
@@ -56,9 +59,17 @@ export class DeskComponent implements OnInit {
               public readonly rolesService: RolesService,
               public readonly deskUserService: DeskUserService,
               private readonly route: ActivatedRoute,
-              private readonly userStorageService: UserStorageService) { }
+              private readonly userStorageService: UserStorageService,
+              private readonly breakpointObserver: BreakpointObserver) { }
 
   ngOnInit(): void {
+    this.handleParams();
+    this.breakpointObserver.observe([Breakpoints.HandsetPortrait]).subscribe( result => {
+      this.showFab = result.matches;
+    })
+  }
+
+  private handleParams() {
     this.route.params.subscribe(params => {
       if (params['id'] === undefined) {
         this.deskService.getDesks().subscribe(result => {
@@ -352,6 +363,14 @@ export class DeskComponent implements OnInit {
 
   isUserAssigned(todo: Todo) {
     return !!todo.toDoUsers.find(el => el.deskUser.user.id === this.getCurrentUser().id && el.toDoUserType === 1);
+  }
+
+  toggleColumnsLock() {
+    this.columnsLocked = !this.columnsLocked;
+  }
+
+  handleExit() {
+    this.handleParams();
   }
 
   private initRolesForDesk(deskId: number) {

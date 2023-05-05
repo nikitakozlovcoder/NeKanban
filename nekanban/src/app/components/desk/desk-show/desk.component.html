@@ -1,10 +1,18 @@
 <ng-container *ngIf="((isLoaded | async) && desks && desks.length); else noItemsRef">
   <mat-sidenav-container class="example-container" >
     <mat-sidenav class = "my-sidenav" mode="over" [(opened)]="opened" >
-      <app-sidenav [desks]="desks" [(opened)]="opened" [currentDeskId]="desk!.id"></app-sidenav>
+      <app-sidenav [desks]="desks" [(opened)]="opened" [currentDeskId]="desk!.id" (exitEvent)="handleExit()"></app-sidenav>
     </mat-sidenav>
 
-    <mat-sidenav-content>
+    <mat-sidenav-content class="desk-content">
+      <button matTooltip="Заблокировать" *ngIf="showFab && !columnsLocked &&
+      rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)" class="block-columns-button" (click)="toggleColumnsLock()" mat-mini-fab>
+        <mat-icon>lock</mat-icon>
+      </button>
+      <button matTooltip="Разблокировать" *ngIf="showFab && columnsLocked &&
+      rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)" class="block-columns-button" (click)="toggleColumnsLock()" mat-mini-fab>
+        <mat-icon>lock_open</mat-icon>
+      </button>
       <app-header [currentUser]="getCurrentUser()" [(opened)]="opened" [(desks)]="desks" [currentDeskId]="getCurrentDesk()?.id"></app-header>
       <app-desk-info *ngIf="desk" [settingsLink]="['/desks', desk!.id, 'settings']" [desk]="desk" [currentUser]="deskUserService.getCurrentDeskUser(desk)!" [roles]="roles"></app-desk-info>
 
@@ -76,7 +84,7 @@
                cdkDropListGroup
           >
             <div *ngFor="let column of columns; index as i">
-              <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="(!(column.type === 0 && rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)))">
+              <mat-card class = "column-card" cdkDrag [cdkDragDisabled]="columnsLocked || (!(column.type === 0 && rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageColumns)))">
                 <mat-card-title class="column-card-title">
                   <mat-spinner *ngIf="!isColumnDeleteLoaded[i]" diameter="20"></mat-spinner>
                   <p #columnName [matTooltip]="column.name" [matTooltipDisabled]="!(columnName.offsetWidth < columnName.scrollWidth)">{{column.name}}</p>

@@ -337,3 +337,12 @@ mat-card-title-group {
 .column-menu-button {
   min-width: 24px !important;
 }
+.block-columns-button {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1000;
+}
+.desk-content {
+  position: relative;
+}
