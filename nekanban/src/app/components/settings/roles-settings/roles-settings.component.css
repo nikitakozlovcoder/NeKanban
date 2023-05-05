@@ -69,3 +69,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.role-delete-spinner {
+  margin-left: 15px;
+}

@@ -37,8 +37,7 @@ export class DeskComponent implements OnInit {
   toDos: Todo[] = [];
   isColumnDeleteLoaded: boolean[] = [];
   roles : Role[] = [];
-  columnsLocked = false;
-  showFab = false;
+  useDragDelay = false;
   desksLoaded = new BehaviorSubject(false);
   deskLoaded = new BehaviorSubject(false);
   columnsLoaded = new BehaviorSubject(false);
@@ -65,7 +64,7 @@ export class DeskComponent implements OnInit {
   ngOnInit(): void {
     this.handleParams();
     this.breakpointObserver.observe([Breakpoints.HandsetPortrait]).subscribe( result => {
-      this.showFab = result.matches;
+      this.useDragDelay = result.matches;
     })
   }
 
@@ -296,17 +295,6 @@ export class DeskComponent implements OnInit {
       next: data => {
         this.toDos = data;
         this.reloadTodosForColumns(this.toDos);
-        /*for (let i = 0; i < this.columns.length; i++) {
-          this.columns[i].todos =  data.filter( todo => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
-            if (a.order > b.order) {
-              return 1;
-            }
-            if (a.order < b.order) {
-              return -1;
-            }
-            return 0;
-          });
-        }*/
         this.todosLoaded.next(true);
       },
       error: () => {
@@ -322,18 +310,6 @@ export class DeskComponent implements OnInit {
     dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
       this.toDos.push(result);
       this.reloadTodosForColumns(this.toDos);
-      /*this.toDos = result;
-      for (let i = 0; i < this.columns.length; i++) {
-        this.columns[i].todos =  result.filter( (todo : Todo) => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
-      }*/
     })
   }
   openToDoEditingDialog(todo: Todo) {
@@ -363,10 +339,6 @@ export class DeskComponent implements OnInit {
 
   isUserAssigned(todo: Todo) {
     return !!todo.toDoUsers.find(el => el.deskUser.user.id === this.getCurrentUser().id && el.toDoUserType === 1);
-  }
-
-  toggleColumnsLock() {
-    this.columnsLocked = !this.columnsLocked;
   }
 
   handleExit() {

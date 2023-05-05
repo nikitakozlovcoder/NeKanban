@@ -9,11 +9,10 @@ import { ConfirmationComponent } from "../../dialogs/confirmation/confirmation.c
 import { DialogActionTypes } from "../../../constants/DialogActionTypes";
 import { RolesService } from "../../../services/roles.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import {DialogService} from "../../../services/dialog.service";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
-import {filter, switchMap} from "rxjs";
+import {BehaviorSubject, filter, switchMap, tap} from "rxjs";
 
 @Component({
   selector: 'app-roles-settings',
@@ -31,6 +30,8 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   allPermissions: Permission[] = [];
   currentRole: Role | undefined;
   showAccordion = false;
+  defaultRoleLoaded = new BehaviorSubject(true);
+  roleDeletionLoaded : BehaviorSubject<boolean>[] = [];
 
   constructor(public dialog: MatDialog,
               private readonly rolesService: RolesService,
@@ -44,6 +45,7 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
       .subscribe(result => {
         this.showAccordion = result.matches;
       })
+    this.setLoadingStates();
   }
 
   ngOnChanges() {
@@ -63,7 +65,7 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
     dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
       this.roles = result;
       this.rolesChange.emit(this.roles);
-    });
+    }).add(() => this.setLoadingStates());
   }
 
   openRoleUpdatingDialog(role: Role, event: MouseEvent) {
@@ -77,13 +79,14 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
       this.roles = result;
       this.rolesChange.emit(this.roles);
       this.updateCurrentRole();
-    });
+    }).add(() => this.setLoadingStates());
   }
 
   openRoleDeletingDialog(role: Role, $event: MouseEvent) {
     $event.stopPropagation();
     const dialogRef = this.dialog.open(ConfirmationComponent);
     dialogRef.afterClosed().pipe(filter(x => x === DialogActionTypes.Accept),
+      tap(() => this.roleDeletionLoaded[this.roles.findIndex(el => el.id === role.id)].next(false)),
       switchMap(() => this.rolesService.deleteRole(role.id))).subscribe({
       next: (data) => {
         this.roles = data;
@@ -95,7 +98,7 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
       error: (error: HttpErrorResponse) => {
         this.dialogService.openToast(error.error);
       }
-    });
+    }).add(() => this.setLoadingStates());
   }
 
   currentRoleHasPermission(permission: Permission) {
@@ -121,14 +124,22 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   }
 
   setRoleAsDefault(role: Role) {
+    this.defaultRoleLoaded.next(false);
     this.rolesService.setAsDefault(role.id).subscribe(result => {
       this.roles = result;
       this.rolesChange.emit(this.roles);
       this.updateCurrentRole();
+    }).add(() => {
+      this.defaultRoleLoaded.next(true);
     })
   }
 
   private updateCurrentRole() {
     this.currentRole = this.roles.find(el => el.id === this.currentRole!.id);
+  }
+
+  private setLoadingStates() {
+    this.roleDeletionLoaded = [];
+    this.roles.forEach(() => this.roleDeletionLoaded.push(new BehaviorSubject<boolean>(true)));
   }
 }
