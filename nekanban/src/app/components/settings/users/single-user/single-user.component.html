@@ -63,6 +63,10 @@
           <polyline points="1 1 5 5 9 1"></polyline>
         </symbol>
       </svg>
+
+      <div class="role-name" *ngIf="deskUser!.isOwner">
+        Владелец
+      </div>
     </mat-card>
   </ng-template>
 </ng-container>
@@ -94,26 +98,24 @@
   </div>
   <ng-template #deletedUserCard>
     <mat-card>
-      <div>
-        <span class="h-14px">Имя пользователя:</span> {{deskUser!.user.name}} {{deskUser!.user.surname}}
-      </div>
       <ng-container *ngIf="deskUser!.deletionReason === deletionReason.Exited; else kickedUserCard">
-        <div>
-          <span class="h-14px">Причина удаления:</span> Покинул доску
-        </div>
-        <button class="user-restore-button full-width-button" mat-raised-button color="warn"
-                *ngIf="(isUserRemoveLoaded | async)  &&
+        <div class="user-card-delete-icon">
+          <div>
+            <p><span class="h-14px">Имя пользователя:</span> {{deskUser!.user.name}} {{deskUser!.user.surname}}</p>
+            <p><span class="h-14px">Причина удаления:</span> Покинул доску</p>
+          </div>
+          <mat-icon *ngIf="(isUserRemoveLoaded | async)  &&
                 rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.RemoveUsers) &&
-                !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])">
-          <mat-icon>cancel</mat-icon>
-          Удалить
-        </button>
-        <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="30" color="warn">
-        </mat-spinner>
+                !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])">delete</mat-icon>
+          <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="24" class="black-spinner"></mat-spinner>
+        </div>
       </ng-container>
      <ng-template #kickedUserCard>
-       <div>
-         <span class="h-14px">Причина удаления:</span> Исключен
+       <div class="user-card-delete-icon">
+         <div>
+           <p><span class="h-14px">Имя пользователя:</span> {{deskUser!.user.name}} {{deskUser!.user.surname}}</p>
+           <p><span class="h-14px">Причина удаления:</span> Исключен</p>
+         </div>
        </div>
        <button *ngIf="(isUserRemoveLoaded | async)" class="user-restore-button full-width-button"
                mat-raised-button color="primary" (click)="revertDeleted(deskUser!.id)">

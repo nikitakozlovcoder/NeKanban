@@ -63,6 +63,7 @@
 .roles-panel-title {
   justify-content: space-between;
   min-width: 0;
+  margin-right: 0;
 }
 .role-name {
   overflow: hidden;
