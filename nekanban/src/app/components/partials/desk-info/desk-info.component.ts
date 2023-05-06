@@ -3,7 +3,6 @@ import {Desk} from "../../../models/desk";
 import {DeskUser} from "../../../models/deskUser";
 import {RolesService} from "../../../services/roles.service";
 import {Role} from "../../../models/Role";
-import {UserService} from "../../../services/user.service";
 import {DeskUserService} from "../../../services/deskUser.service";
 
 @Component({

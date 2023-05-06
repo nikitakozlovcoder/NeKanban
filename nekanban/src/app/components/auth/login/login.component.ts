@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, UntypedFormControl, ValidationErrors, Validators} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {UserService} from "../../../services/user.service";
-import {BehaviorSubject, mergeMap, of} from "rxjs";
+import {BehaviorSubject} from "rxjs";
 
 @Component({
   selector: 'app-login',
@@ -17,18 +17,9 @@ export class LoginComponent implements OnInit {
 
   hide = true;
   loginFormGroup = new FormGroup({
-    email: new FormControl<string>('', [Validators.required, Validators.email]),
-    password: new FormControl<string>('', [Validators.required])
+    email: new FormControl<string>(''),
+    password: new FormControl<string>('')
   });
-
-
-  getEmailErrorMessage() {
-    if (this.loginFormGroup.controls.email.hasError('required')) {
-      return 'Поле не должно быть пустым!';
-    }
-
-    return this.loginFormGroup.controls.email.hasError('email') ? 'Некорректный email' : '';
-  }
 
   makeLogin() {
     this.busy.next(true);

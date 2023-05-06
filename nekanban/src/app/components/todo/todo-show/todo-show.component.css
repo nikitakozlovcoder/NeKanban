@@ -103,12 +103,20 @@ mat-dialog-container {
   position: relative;
   padding: 32px;
 }
-
-
+.column-card {
+  min-width: 0;
+  flex: 1;
+}
+.todo-title {
+  overflow-wrap: break-word;
+}
 
 @media screen and (max-width: 925px) {
   .todo-container {
     flex-direction: column;
+  }
+  .column-card {
+    max-width: 100%;
   }
   .task-settings-card {
     margin: 0;

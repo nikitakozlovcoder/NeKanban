@@ -1,8 +1,9 @@
 <h2 class="mat-h2">Мои доски</h2>
 <div class="sidenav-container">
   <mat-nav-list>
-    <mat-list-item *ngFor="let desk of desks; index as i" [routerLink]="['/desks', desk.id]" (click)="closeSidenav()">
-      <a matLine>{{ desk.name }}<mat-divider></mat-divider></a>
+    <mat-list-item *ngFor="let desk of desks; index as i" >
+      <a class="desk-link" [routerLink]="['/desks', desk.id]" (click)="closeSidenav()" matLine>{{ desk.name }}<mat-divider></mat-divider></a>
+      <mat-icon *ngIf="!desk.deskUser.isOwner" matTooltip="Покинуть доску" (click)="exitFromDesk(desk)">delete_outline</mat-icon>
     </mat-list-item>
   </mat-nav-list>
   <div class = "menu-bottom-button">

@@ -1,5 +1,5 @@
 ﻿import {Injectable} from "@angular/core";
-import tinymce, {Editor} from "tinymce";
+import {Editor} from "tinymce";
 import {ValidationErrors, ValidatorFn} from "@angular/forms";
 
 @Injectable()

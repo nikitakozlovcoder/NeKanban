@@ -1,5 +1,5 @@
 ﻿import {Column} from "./column";
-import {ToDoUsers} from "./todousers";
+import {ToDoUser} from "./toDoUser";
 
 export interface Todo {
   id: number;
@@ -7,6 +7,6 @@ export interface Todo {
   body?: string;
   column: Column;
   order: number;
-  toDoUsers: ToDoUsers[];
+  toDoUsers: ToDoUser[];
   code: number;
 }

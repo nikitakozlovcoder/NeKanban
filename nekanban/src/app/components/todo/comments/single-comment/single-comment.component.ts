@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Comment} from "../../../../models/comment";
 import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
-import {BehaviorSubject, interval, last, map, Observable, Subscription} from "rxjs";
-import {FormControl, ValidationErrors, ValidatorFn} from "@angular/forms";
+import {BehaviorSubject, filter, last, map, Observable, Subscription} from "rxjs";
+import {FormControl, ValidatorFn} from "@angular/forms";
 import tinymce from "tinymce";
 import {EditorConfigService} from "../../../../services/editor-config-service";
 import {CommentsService} from "../../../../services/comments.service";
@@ -99,7 +99,6 @@ export class SingleCommentComponent implements OnInit {
         next: data => {
           this.commentUpdateLoaded.next(true);
           this.comment = data.find(el => el.id === this.comment?.id);
-          this.comment!.createdAtUtc = new Date(this.comment!.createdAtUtc);
           this.commentChange.emit(this.comment);
           this.commentUpdatingState = ViewStateTypes.Show;
           this.commentUpdateEditorLoaded.next(false);
@@ -116,10 +115,7 @@ export class SingleCommentComponent implements OnInit {
   deleteComment() {
     const dialogRef = this.dialog.open(ConfirmationComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == DialogActionTypes.Reject) {
-        return;
-      }
+    dialogRef.afterClosed().pipe(filter(x => x === DialogActionTypes.Accept)).subscribe(() => {
       this.makeDeletion();
     });
   }

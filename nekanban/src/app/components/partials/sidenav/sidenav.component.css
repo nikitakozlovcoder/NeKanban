@@ -27,3 +27,14 @@
   margin-left: 10px;
   margin-right: 10px;
 }
+.desks-list-item {
+  display: flex;
+  justify-content: space-between;
+}
+.sidenav-container ::ng-deep .mat-list-text {
+  height: 100%;
+}
+.desk-link {
+  height: 100%;
+  padding: 14px 0 !important;
+}

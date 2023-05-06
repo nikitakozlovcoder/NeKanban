@@ -1,0 +1,43 @@
+<div class ="users-list">
+  <mat-spinner class="spinner-centered" *ngIf="!(isUserRemoveLoaded | async)" diameter="20"></mat-spinner>
+  <div *ngIf="!hideTableHeaders" class="single-user-title">
+    <h2 class="h-18px">Имя пользователя</h2>
+    <h2 class="h-18px">Роль</h2>
+  </div>
+  <div class="single-user-container" *ngFor="let deskUser of desk!.deskUsers; index as i">
+    <app-single-user [deskUser]="deskUser"
+                     [currentDeskUser]="deskUserService.getCurrentDeskUser(desk)!"
+                     [deskId]="desk!.id"
+                     [roles]="roles"
+                     [isUserDeleted]="false"
+                     (deskChange)="handleDeskChange($event)"
+                     (deskUsersChange)="handleDeskUsersChange($event)"></app-single-user>
+    <mat-divider *ngIf="!hideTableHeaders"></mat-divider>
+  </div>
+</div>
+<ng-container *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!,
+rolesService.permissionsTypes.ManageDeletedUsers);">
+  <div class ="users-list" *ngIf="(areUsersLoaded | async) && deletedUsers.length; else usersNotLoaded">
+    <h2 class="h-main-title deleted-users-title">Удаленные пользователи</h2>
+    <div *ngIf="!hideTableHeaders" class="single-user-title">
+      <h2 class="h-18px">Имя пользователя</h2>
+      <h2 class="h-18px">Причина удаления</h2>
+    </div>
+    <div class="single-user-container" *ngFor="let deskUser of deletedUsers; index as i">
+      <app-single-user [deskUser]="deskUser"
+                       [currentDeskUser]="deskUserService.getCurrentDeskUser(desk)!"
+                       [deskId]="desk!.id"
+                       [roles]="roles"
+                       [isUserDeleted]="true"
+                       (deskChange)="handleDeskChange($event)"
+                       (deskUsersChange)="handleDeskUsersChange($event)"></app-single-user>
+      <mat-divider *ngIf="!hideTableHeaders"></mat-divider>
+    </div>
+  </div>
+</ng-container>
+<ng-template #usersNotLoaded>
+  <div *ngIf="!(areUsersLoaded | async)">
+    <mat-spinner class="spinner spinner-centered" diameter="50"></mat-spinner>
+  </div>
+</ng-template>
+

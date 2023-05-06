@@ -98,10 +98,8 @@ mat-form-field
 .column-card {
   width: 200px;
   float: left;
-  margin-right: 15px;
-  margin-bottom: 10px;
-  margin-left: 1px;
-  margin-top: 1px;
+  margin: 1px 15px 10px 1px;
+  height: calc(100% - 43px);
 }
 
 .example-list {
@@ -144,7 +142,7 @@ mat-form-field
 }
 
 .example-box:last-child {
-  border: none;
+  /*&border: none;*/
 }
 
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
@@ -298,6 +296,9 @@ mat-card-title mat-spinner {
   overflow: auto;
   display: flex;
 }
+.cards-list div:last-child mat-card {
+  margin-right: 1px;
+}
 
 .single-user ::ng-deep.mat-list-item-content {
   justify-content: space-between;
@@ -311,4 +312,37 @@ mat-card-title-group {
 }
 .todo-edit-icon {
   cursor: pointer;
+}
+.column-content {
+  height: calc(100% - 43px);
+}
+.todos-list {
+  height: calc(100% - 49px);
+}
+.column-content-first {
+  height: calc(100% - 66px);
+}
+.column-content-first .todos-list {
+  height: calc(100% - 49px);
+}
+.column-content-first .todos-list-no-columns-add-button {
+  height: calc(100% - 26px);
+}
+/*.column-content {
+  height: 100%;
+}
+.todos-list {
+  height: 100%;
+}*/
+.column-menu-button {
+  min-width: 24px !important;
+}
+.block-columns-button {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1000;
+}
+.desk-content {
+  position: relative;
 }

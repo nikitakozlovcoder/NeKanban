@@ -5,6 +5,7 @@
 .roles-list {
   padding: 10px;
   flex: 1;
+  max-width: 40%;
   /*width: 40%;*/
 }
 .permissions-list {
@@ -52,9 +53,22 @@
   padding: 0;
 }
 .roles-list-full-width {
+  max-width: 100%;
   width: 100%;
   box-sizing: border-box;
 }
 .roles-list ::ng-deep .mat-expansion-panel-body {
   padding: 0 10px 10px;
+}
+.roles-panel-title {
+  justify-content: space-between;
+  min-width: 0;
+}
+.role-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.role-delete-spinner {
+  margin-left: 15px;
 }

@@ -1,6 +1,5 @@
 ﻿export enum Permissions {
   UpdateGeneralDesk,
-  ViewInviteLink,
   ManageInviteLink,
   DeleteDesk,
   CreateColumns,
@@ -14,5 +13,6 @@
   AddOrUpdateOwnComments,
   DeleteOwnComments,
   DeleteAnyComments,
-  ManageRoles
+  ManageRoles,
+  ManageDeletedUsers
 }

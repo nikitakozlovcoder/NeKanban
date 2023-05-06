@@ -15,11 +15,13 @@ import {TodoCreationComponent} from "../../todo/todo-creation/todo-creation.comp
 import {TodoEditingComponent} from "../../todo/todo-editing/todo-editing.component";
 import {ColumnUpdatingComponent} from "../../column/column-updating/column-updating.component";
 import {RolesService} from "../../../services/roles.service";
-import {DeskUser} from "../../../models/deskUser";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
-import { BehaviorSubject, combineLatest, map } from "rxjs";
+import {BehaviorSubject, combineLatest, filter, map, switchMap, tap} from "rxjs";
 import {UserStorageService} from "../../../services/userStorage.service";
+import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
+import {DialogActionTypes} from "../../../constants/DialogActionTypes";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-desk',
@@ -35,6 +37,7 @@ export class DeskComponent implements OnInit {
   toDos: Todo[] = [];
   isColumnDeleteLoaded: boolean[] = [];
   roles : Role[] = [];
+  useDragDelay = false;
   desksLoaded = new BehaviorSubject(false);
   deskLoaded = new BehaviorSubject(false);
   columnsLoaded = new BehaviorSubject(false);
@@ -55,9 +58,17 @@ export class DeskComponent implements OnInit {
               public readonly rolesService: RolesService,
               public readonly deskUserService: DeskUserService,
               private readonly route: ActivatedRoute,
-              private readonly userStorageService: UserStorageService) { }
+              private readonly userStorageService: UserStorageService,
+              private readonly breakpointObserver: BreakpointObserver) { }
 
   ngOnInit(): void {
+    this.handleParams();
+    this.breakpointObserver.observe([Breakpoints.HandsetPortrait]).subscribe( result => {
+      this.useDragDelay = result.matches;
+    })
+  }
+
+  private handleParams() {
     this.route.params.subscribe(params => {
       if (params['id'] === undefined) {
         this.deskService.getDesks().subscribe(result => {
@@ -103,7 +114,7 @@ export class DeskComponent implements OnInit {
     } else {
       let newOrder;
       if (event.container.data.length > 0) {
-        if (event.currentIndex == event.container.data.length) {
+        if (event.currentIndex === event.container.data.length) {
           newOrder = event.container.data[event.currentIndex-1].order + 1;
         }
         else {
@@ -140,17 +151,11 @@ export class DeskComponent implements OnInit {
       else {
         position = event.container.data[event.currentIndex].order;
       }
-      this.columnService.moveColumn(event.container.data[event.previousIndex].id, position).subscribe({
+      this.columnService.moveColumn(event.container.data[event.previousIndex].id, position).pipe(
+        map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b)))
+      ).subscribe({
         next: data => {
-          this.columns = data.sort(function (a: Column, b: Column) {
-            if (a.order > b.order) {
-              return 1;
-            }
-            if (a.order < b.order) {
-              return -1;
-            }
-            return 0;
-          });
+          this.columns = data;
           this.reloadTodosForColumns(this.toDos);
         },
         error: _ => {
@@ -221,26 +226,21 @@ export class DeskComponent implements OnInit {
       });
     }
   }
+
   openColumnCreationDialog() {
     const dialogRef = this.dialog.open(ColumnCreationComponent, {
       data: {deskId: this.desk?.id},
       width: '400px'
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.columns = result.sort(function (a: Column, b: Column) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
-        this.columns.forEach(() => this.isColumnDeleteLoaded.push(true))
-
-        this.reloadTodosForColumns(this.toDos);
-      }
+    dialogRef.afterClosed().pipe(
+      filter(x => x),
+      map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b))),
+      tap(x => {
+        x.forEach(() => this.isColumnDeleteLoaded.push(true))
+      })
+    ).subscribe( result => {
+      this.columns = result;
+      this.reloadTodosForColumns(this.toDos);
     })
   }
 
@@ -250,21 +250,15 @@ export class DeskComponent implements OnInit {
 
   getColumns(deskId: number) {
     this.columnsLoaded.next(false);
-    this.columnService.getColumns(deskId).subscribe({
+    this.columnService.getColumns(deskId).pipe(
+      tap(() => this.columnsLoaded.next(true)),
+      map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b))),
+      tap(x => {
+        x.forEach(() => this.isColumnDeleteLoaded.push(true))
+      })
+    ).subscribe({
       next: data => {
-        this.columnsLoaded.next(true);
-        this.columns = data.sort(function (a, b) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
-        this.columns.forEach(() => {
-          this.isColumnDeleteLoaded.push(true);
-        })
+        this.columns = data;
         this.reloadTodosForColumns(this.toDos);
       },
       error: () => {
@@ -273,31 +267,26 @@ export class DeskComponent implements OnInit {
   }
 
   removeColumn(columnId: number) {
-    this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = false;
-    this.columnService.removeColumn(columnId).subscribe({
-      next: data => {
-        this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = true
-        ;
-        this.columns = data.sort(function (a: Column, b: Column) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
-        this.reloadTodosForColumns(this.toDos);
+    const dialogRef = this.dialog.open(ConfirmationComponent);
 
-      },
-      error: () => {
-      }
-    })
+    dialogRef.afterClosed().pipe(filter(x => x === DialogActionTypes.Accept),
+      tap(() => this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = false),
+      switchMap(() => this.columnService.removeColumn(columnId)),
+      tap(() => this.isColumnDeleteLoaded[this.columns.findIndex(column => column.id === columnId)] = true),
+      map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b))))
+      .subscribe({
+        next: data => {
+          this.columns = data;
+          this.reloadTodosForColumns(this.toDos);
+        },
+        error: () => {
+        }
+      })
   }
 
 
   getCurrentUser() {
-    return JSON.parse(this.userStorageService.getUserFromStorage()!);
+    return this.userStorageService.getUserFromStorage();
   }
 
   getToDos(deskId: number) {
@@ -305,17 +294,7 @@ export class DeskComponent implements OnInit {
     this.todoService.getToDos(deskId).subscribe({
       next: data => {
         this.toDos = data;
-        for (let i = 0; i < this.columns.length; i++) {
-          this.columns[i].todos =  data.filter( todo => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
-            if (a.order > b.order) {
-              return 1;
-            }
-            if (a.order < b.order) {
-              return -1;
-            }
-            return 0;
-          });
-        }
+        this.reloadTodosForColumns(this.toDos);
         this.todosLoaded.next(true);
       },
       error: () => {
@@ -323,40 +302,14 @@ export class DeskComponent implements OnInit {
     })
   }
 
-  getToDosForColumn(columnId: number) {
-    return this.toDos.filter( todo => todo.column.id === columnId).sort(function (a: Todo, b: Todo) {
-      if (a.order > b.order) {
-        return 1;
-      }
-      if (a.order < b.order) {
-        return -1;
-      }
-      return 0;
-    });
-  }
   openToDoCreationDialog() {
     const dialogRef = this.dialog.open(TodoCreationComponent, {
       data: {deskId: this.desk?.id, isEdit: false},
       width: '600px'
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.toDos.push(result);
-        this.reloadTodosForColumns(this.toDos);
-        /*this.toDos = result;
-        for (let i = 0; i < this.columns.length; i++) {
-          this.columns[i].todos =  result.filter( (todo : Todo) => todo.column.id === this.columns[i].id).sort(function (a: Todo, b: Todo) {
-            if (a.order > b.order) {
-              return 1;
-            }
-            if (a.order < b.order) {
-              return -1;
-            }
-            return 0;
-          });
-        }*/
-
-      }
+    dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
+      this.toDos.push(result);
+      this.reloadTodosForColumns(this.toDos);
     })
   }
   openToDoEditingDialog(todo: Todo) {
@@ -364,11 +317,9 @@ export class DeskComponent implements OnInit {
       data: {deskId: this.desk?.id, toDo: todo},
       width: '600px'
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if (result !== undefined) {
-        this.toDos[this.toDos.findIndex(el => el.id === todo.id)] = result;
-        this.reloadTodosForColumns(this.toDos);
-      }
+    dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
+      this.toDos[this.toDos.findIndex(el => el.id === todo.id)] = result;
+      this.reloadTodosForColumns(this.toDos);
     })
   }
 
@@ -378,24 +329,20 @@ export class DeskComponent implements OnInit {
       width: '400px'
     });
 
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.columns = result.sort(function (a: Column, b: Column) {
-          if (a.order > b.order) {
-            return 1;
-          }
-          if (a.order < b.order) {
-            return -1;
-          }
-          return 0;
-        });
+    dialogRef.afterClosed().pipe(filter(x => x),
+      map(x => x.sort((a: Column, b: Column) => this.columnComparator(a, b))))
+      .subscribe( result => {
+        this.columns = result;
         this.reloadTodosForColumns(this.toDos);
-      }
     })
   }
 
   isUserAssigned(todo: Todo) {
     return !!todo.toDoUsers.find(el => el.deskUser.user.id === this.getCurrentUser().id && el.toDoUserType === 1);
+  }
+
+  handleExit() {
+    this.handleParams();
   }
 
   private initRolesForDesk(deskId: number) {
@@ -406,4 +353,13 @@ export class DeskComponent implements OnInit {
     });
   }
 
+  private columnComparator(a: Column, b: Column) {
+    if (a.order > b.order) {
+      return 1;
+    }
+    if (a.order < b.order) {
+      return -1;
+    }
+    return 0;
+  }
 }

@@ -14,12 +14,12 @@
       </div>
     </ng-container>
 
-    <mat-card-subtitle *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ViewInviteLink)" class="invite-link">
+    <mat-card-subtitle *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageInviteLink)" class="invite-link">
       <p class="h-minor-title invite-link-title"><mat-icon>link</mat-icon>Ссылка для приглашения участников:</p>
       <div class="invite-link-content">
         <p *ngIf="hasInviteLink()" class="p-link" [cdkCopyToClipboard]="getInviteLink()!" (click)="snackBar.open('Ссылка скопирована!', undefined, {duration:2000})" matTooltip="Скопировать ссылку">{{ getInviteLink() }}</p>
-        <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageInviteLink) && !hasInviteLink() && (isLinkLoaded | async)" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
-        <button *ngIf="rolesService.userHasPermission(this.roles, deskUserService.getCurrentDeskUser(desk)!, rolesService.permissionsTypes.ManageInviteLink) && hasInviteLink() && (isLinkLoaded | async)" class = "remove-link-button" mat-raised-button color="primary" (click)="removeLink()">Удалить ссылку</button>
+        <button *ngIf="!hasInviteLink() && (isLinkLoaded | async)" class = "register_button" mat-raised-button color="primary" (click)="generateLink()">Сгенерировать ссылку</button>
+        <button *ngIf="hasInviteLink() && (isLinkLoaded | async)" class = "remove-link-button" mat-raised-button color="primary" (click)="removeLink()">Удалить ссылку</button>
         <mat-spinner class="link-remove-spinner" diameter="36" *ngIf="!(isLinkLoaded | async)"></mat-spinner>
       </div>
     </mat-card-subtitle>

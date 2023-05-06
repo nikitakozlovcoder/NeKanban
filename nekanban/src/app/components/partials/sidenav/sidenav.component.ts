@@ -4,6 +4,10 @@ import {DeskCreationComponent} from "../../desk/desk-creation/desk-creation.comp
 import {MatDialog} from "@angular/material/dialog";
 import {Router} from "@angular/router";
 import {MatSidenav} from "@angular/material/sidenav";
+import {DeskUserService} from "../../../services/deskUser.service";
+import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
+import {DialogActionTypes} from "../../../constants/DialogActionTypes";
+import {filter, switchMap} from "rxjs";
 
 @Component({
   selector: 'app-sidenav',
@@ -17,11 +21,13 @@ export class SidenavComponent implements OnInit {
 
   @Input() opened: boolean;
   @Output() openedChange = new EventEmitter<boolean>();
-
   @Input() desks: Desk[] = [];
+  @Output() exitEvent = new EventEmitter<number>;
+  @Input() currentDeskId?: number;
 
   constructor(private readonly dialog: MatDialog,
-              private readonly router: Router) {
+              private readonly router: Router,
+              public readonly deskUserService: DeskUserService) {
     this.opened = false;
   }
 
@@ -37,12 +43,25 @@ export class SidenavComponent implements OnInit {
     const dialogRef = this.dialog.open(DeskCreationComponent, {
       width: '400px',
     });
-    dialogRef.afterClosed().subscribe( result => {
-      if (result != undefined) {
-        this.router.navigate(['/desks', result.id]);
-      }
+    dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
+      this.router.navigate(['/desks', result.id]).then();
     });
     this.opened = false;
     this.openedChange.emit(this.opened);
+  }
+
+  exitFromDesk(desk: Desk) {
+    const dialogRef = this.dialog.open(ConfirmationComponent);
+
+    dialogRef.afterClosed().pipe(filter(x => x === DialogActionTypes.Accept),
+      switchMap(() => this.deskUserService.exitFromDesk(desk.id))).subscribe(() => {
+        if (desk.id === this.currentDeskId) {
+          this.router.navigate(['']).then();
+        }
+        else {
+          this.closeSidenav();
+          this.exitEvent.emit(desk.id);
+        }
+    });
   }
 }

@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormControl, UntypedFormControl, Validators} from "@angular/forms";
+import {FormControl, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ColumnService} from "../../../services/column.service";
 import {Column} from "../../../models/column";

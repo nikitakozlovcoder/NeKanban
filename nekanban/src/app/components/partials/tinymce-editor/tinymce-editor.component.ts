@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl, ValidatorFn} from "@angular/forms";
+import {FormControl} from "@angular/forms";
 import {EditorConfigService} from "../../../services/editor-config-service";
 import tinymce, {EditorOptions} from "tinymce";
 import {environment} from "../../../../environments/environment";

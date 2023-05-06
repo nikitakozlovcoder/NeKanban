@@ -12,11 +12,18 @@ export class ConfirmationComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<ConfirmationComponent>) { }
 
   ngOnInit(): void {
+    this.dialogRef.beforeClosed().subscribe((data) => {
+      if (!data) {
+        this.dialogRef.close(DialogActionTypes.Reject);
+      }
+    })
   }
 
   closeWithAccept() {
     this.dialogRef.close(DialogActionTypes.Accept);
   }
+
+
   closeWithReject() {
     this.dialogRef.close(DialogActionTypes.Reject);
   }

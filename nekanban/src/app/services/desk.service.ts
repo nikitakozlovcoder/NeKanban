@@ -19,10 +19,6 @@ export class DeskService {
     return this.httpService.post<Desk>("Desks/CreateDesk", {name});
   }
 
-  addPreference(id: number, preference: number) {
-    return this.httpService.put<Desk[]>("DesksUsers/SetPreferenceType/" + id, {preference});
-  }
-
   updateDesk(id: number, name: string) {
     return this.httpService.put<Desk>("Desks/UpdateDesk/" + id, {name});
   }
@@ -37,14 +33,6 @@ export class DeskService {
 
   removeLink(deskId: number) {
     return this.httpService.put<Desk>("Desks/InviteLink/" + deskId, {action: InviteLinkAction.Remove});
-  }
-
-  inviteByLink(guid: number) {
-    return this.httpService.put<Desk>("DesksUsers/AddUserByLink/", {uid: guid});
-  }
-
-  removeUserFromDesk(usersId: number[], deskId: number) {
-    return this.httpService.put<Desk>("DesksUsers/RemoveUsers/" + deskId, {usersToRemove: usersId});
   }
 
   removeDesk(deskId: number) {

@@ -1,0 +1,128 @@
+<ng-container *ngIf="!isUserDeleted; else deletedUser">
+  <div class="single-user"  *ngIf="!showUserCard; else existingUserCard">
+    <p class="desk-user-name">{{deskUser!.user.name}} {{deskUser!.user.surname}}</p>
+    <div class="select"
+         *ngIf="rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.ChangeUserRole) &&
+           !deskUser!.isOwner">
+      <select class="user-role-select" (change)="changeUserRole(deskUser!.role.id, deskUser!.id)" [(ngModel)]="deskUser!.role.id">
+        <option *ngFor="let role of roles" [ngValue]="role.id">
+          {{role.name}}
+        </option>
+      </select>
+      <svg *ngIf="rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.ChangeUserRole) && !deskUser!.isOwner">
+        <use xlink:href="#select-arrow-down"></use>
+      </svg>
+    </div>
+    <svg class="sprites">
+      <symbol id="select-arrow-down" viewbox="0 0 10 6">
+        <polyline points="1 1 5 5 9 1"></polyline>
+      </symbol>
+    </svg>
+
+    <div class="role-name" *ngIf="deskUser!.isOwner">
+      Владелец
+    </div>
+    <div class="role-name"
+         *ngIf="!rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.ChangeUserRole) &&
+           !deskUser!.isOwner">
+      {{deskUser!.role.name}}
+    </div>
+    <mat-icon class="cancel-icon"
+              *ngIf="(isUserRemoveLoaded | async) &&
+                rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.RemoveUsers) &&
+                !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])" matTooltip="Удалить пользователя">cancel
+    </mat-icon>
+    <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="24" class="spinner-centered black-spinner">
+    </mat-spinner>
+  </div>
+  <ng-template #existingUserCard>
+    <mat-card>
+      <div class="user-card-delete-icon">
+        <div>
+          <span class="h-14px">Имя пользователя:</span> {{deskUser!.user.name}} {{deskUser!.user.surname}}
+        </div>
+        <mat-icon *ngIf="(isUserRemoveLoaded | async)  &&
+                rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.RemoveUsers) &&
+                !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])">delete</mat-icon>
+        <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="24" class="black-spinner"></mat-spinner>
+      </div>
+      <div class="select"
+           *ngIf="rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.ChangeUserRole) &&
+           !deskUser!.isOwner">
+        <select class="user-role-select" (change)="changeUserRole(deskUser!.role.id, deskUser!.id)" [(ngModel)]="deskUser!.role.id">
+          <option *ngFor="let role of roles" [ngValue]="role.id">
+            {{role.name}}
+          </option>
+        </select>
+        <svg *ngIf="rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.ChangeUserRole) && !deskUser!.isOwner">
+          <use xlink:href="#select-arrow-down"></use>
+        </svg>
+      </div>
+      <svg class="sprites">
+        <symbol id="select-arrow-down" viewbox="0 0 10 6">
+          <polyline points="1 1 5 5 9 1"></polyline>
+        </symbol>
+      </svg>
+    </mat-card>
+  </ng-template>
+</ng-container>
+<ng-template #deletedUser>
+  <div class="single-deleted-user" *ngIf="!showUserCard; else deletedUserCard">
+    <p class="desk-user-name">{{deskUser!.user.name}} {{deskUser!.user.surname}}</p>
+    <ng-container *ngIf="deskUser!.deletionReason === deletionReason.Exited; else kickedUser">
+      <div class="deletion-reason exited-user-deletion-reason">
+        Покинул доску
+      </div>
+      <mat-icon class="cancel-icon exited-user-delete-icon"
+                *ngIf="(isUserRemoveLoaded | async)  &&
+                rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.RemoveUsers) &&
+                !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])" matTooltip="Удалить пользователя">cancel
+      </mat-icon>
+    </ng-container>
+    <ng-template #kickedUser>
+      <div class="deletion-reason">
+        Исключен
+      </div>
+      <button *ngIf="(isUserRemoveLoaded | async)" class="user-restore-button"
+              mat-raised-button color="primary" (click)="revertDeleted(deskUser!.id)">
+        <mat-icon>undo</mat-icon>
+        Восстановить
+      </button>
+      <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="30" color="primary">
+      </mat-spinner>
+    </ng-template>
+  </div>
+  <ng-template #deletedUserCard>
+    <mat-card>
+      <div>
+        <span class="h-14px">Имя пользователя:</span> {{deskUser!.user.name}} {{deskUser!.user.surname}}
+      </div>
+      <ng-container *ngIf="deskUser!.deletionReason === deletionReason.Exited; else kickedUserCard">
+        <div>
+          <span class="h-14px">Причина удаления:</span> Покинул доску
+        </div>
+        <button class="user-restore-button full-width-button" mat-raised-button color="warn"
+                *ngIf="(isUserRemoveLoaded | async)  &&
+                rolesService.userHasPermission(this.roles, currentDeskUser!, rolesService.permissionsTypes.RemoveUsers) &&
+                !deskUser!.isOwner" (click)="removeUser([deskUser!.user.id])">
+          <mat-icon>cancel</mat-icon>
+          Удалить
+        </button>
+        <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="30" color="warn">
+        </mat-spinner>
+      </ng-container>
+     <ng-template #kickedUserCard>
+       <div>
+         <span class="h-14px">Причина удаления:</span> Исключен
+       </div>
+       <button *ngIf="(isUserRemoveLoaded | async)" class="user-restore-button full-width-button"
+               mat-raised-button color="primary" (click)="revertDeleted(deskUser!.id)">
+         <mat-icon>undo</mat-icon>
+         Восстановить
+       </button>
+       <mat-spinner *ngIf="!(isUserRemoveLoaded | async)" diameter="30" class="spinner-centered" color="primary">
+       </mat-spinner>
+     </ng-template>
+    </mat-card>
+  </ng-template>
+</ng-template>

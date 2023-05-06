@@ -3,10 +3,19 @@
     <h2 class="h-minor-title roles-title">Роли</h2>
     <mat-nav-list>
       <mat-accordion *ngIf="showAccordion; else noAccordion">
-        <mat-expansion-panel hideToggle *ngFor="let role of roles">
+        <mat-expansion-panel hideToggle *ngFor="let role of roles; index as i">
           <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{role.name}}
+            <mat-panel-title class="roles-panel-title">
+              <div class="role-name">
+                {{role.name}}
+              </div>
+              <div class="role-controls">
+                <mat-icon (click)="openRoleUpdatingDialog(role, $event)">edit</mat-icon>
+                <mat-icon class="role-delete-icon" (click)="openRoleDeletingDialog(role, $event)" *ngIf="!role.isDefault && (roleDeletionLoaded[i] | async)">
+                  delete
+                </mat-icon>
+                <mat-spinner *ngIf="!(roleDeletionLoaded[i] | async)" diameter="24" class="black-spinner role-delete-spinner"></mat-spinner>
+              </div>
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="permissions-list permissions-list-full-width">
@@ -14,8 +23,9 @@
               <div class="permissions-title">
                 <h2 class="h-minor-title">Разрешения</h2>
                 <div>
-                  <mat-checkbox *ngIf="!role.isDefault" (click)="setRoleAsDefault(role)" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
-                  <mat-checkbox *ngIf="role!.isDefault" disabled [checked]="true" matTooltip="Эта роль уже назначена в качестве роли по умолчанию!">Роль по умолчанию</mat-checkbox>
+                  <mat-checkbox *ngIf="!currentRole!.isDefault && (defaultRoleLoaded | async)" (click)="setRoleAsDefault(currentRole!)" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
+                  <mat-checkbox *ngIf="currentRole!.isDefault && (defaultRoleLoaded | async)" disabled [checked]="true" matTooltip="Эта роль уже назначена в качестве роли по умолчанию!">Роль по умолчанию</mat-checkbox>
+                  <mat-spinner *ngIf="!(defaultRoleLoaded | async)" diameter="24" class="black-spinner"></mat-spinner>
                 </div>
               </div>
               <div *ngFor="let permission of allPermissions">
@@ -27,13 +37,16 @@
         </mat-expansion-panel>
       </mat-accordion>
       <ng-template #noAccordion>
-        <a  mat-list-item class="single-role" *ngFor="let role of roles" (click)="getPermissionsForRole(role)" [class.chosen-role]="role.id === currentRole?.id">
-          <div>
+        <a  mat-list-item class="single-role" *ngFor="let role of roles; index as i" (click)="getPermissionsForRole(role)" [class.chosen-role]="role.id === currentRole?.id">
+          <div class="role-name">
             {{role.name}}
           </div>
           <div class="role-controls">
-            <mat-icon (click)="openRoleUpdatingDialog(role)">edit</mat-icon>
-            <mat-icon class="role-delete-icon" (click)="openRoleDeletingDialog(role, $event)" *ngIf="!role.isDefault">delete</mat-icon>
+            <mat-icon (click)="openRoleUpdatingDialog(role, $event)">edit</mat-icon>
+            <mat-icon class="role-delete-icon" (click)="openRoleDeletingDialog(role, $event)" *ngIf="!role.isDefault && (roleDeletionLoaded[i] | async)">
+              delete
+            </mat-icon>
+            <mat-spinner *ngIf="!(roleDeletionLoaded[i] | async)" diameter="24" class="black-spinner role-delete-spinner"></mat-spinner>
           </div>
         </a>
       </ng-template>
@@ -46,8 +59,9 @@
       <div class="permissions-title">
         <h2 class="h-minor-title">Разрешения</h2>
         <div>
-          <mat-checkbox *ngIf="!currentRole!.isDefault" (click)="setRoleAsDefault(currentRole!)" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
-          <mat-checkbox *ngIf="currentRole!.isDefault" disabled [checked]="true" matTooltip="Эта роль уже назначена в качестве роли по умолчанию!">Роль по умолчанию</mat-checkbox>
+          <mat-checkbox *ngIf="!currentRole!.isDefault && (defaultRoleLoaded | async)" (click)="setRoleAsDefault(currentRole!)" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
+          <mat-checkbox *ngIf="currentRole!.isDefault && (defaultRoleLoaded | async)" disabled [checked]="true" matTooltip="Эта роль уже назначена в качестве роли по умолчанию!">Роль по умолчанию</mat-checkbox>
+          <mat-spinner *ngIf="!(defaultRoleLoaded | async)" diameter="24" class="black-spinner"></mat-spinner>
         </div>
       </div>
       <div *ngFor="let permission of allPermissions">

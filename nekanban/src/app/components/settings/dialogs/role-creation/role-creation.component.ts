@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {UntypedFormControl, Validators} from "@angular/forms";
-import {Todo} from "../../../../models/todo";
 import {RolesService} from "../../../../services/roles.service";
 import {Role} from "../../../../models/Role";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";

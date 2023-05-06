@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Desk} from "../../../models/desk";
-import {DeskUser} from "../../../models/deskUser";
 import {RolesService} from "../../../services/roles.service";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
@@ -12,9 +11,7 @@ import {environment} from "../../../../environments/environment";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {MatDialog} from "@angular/material/dialog";
-import {User} from "../../../models/user";
-import {UserService} from "../../../services/user.service";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, filter} from "rxjs";
 
 @Component({
   selector: 'app-general-settings',
@@ -105,13 +102,8 @@ export class GeneralSettingsComponent implements OnInit {
   removeDesk(deskId: number) {
     const dialogRef = this.dialog.open(ConfirmationComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == DialogActionTypes.Reject) {
-        return;
-      }
-      this.makeDeskRemoval(deskId);
-    });
-
+    dialogRef.afterClosed().pipe(filter(x => x === DialogActionTypes.Accept))
+      .subscribe(() => this.makeDeskRemoval(deskId));
   }
 
   private makeDeskRemoval(deskId: number) {

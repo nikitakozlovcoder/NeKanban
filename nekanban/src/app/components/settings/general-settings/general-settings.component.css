@@ -10,7 +10,6 @@
 }
 .invite-link-title {
   display: flex;
-  align-items: center;
   color: rgba(0,0,0,.87);
 }
 .invite-link-title mat-icon {
@@ -73,5 +72,11 @@
     text-overflow: clip;
     width: unset;
     white-space: initial;
+  }
+  .remove-link-button {
+    margin-left: 0;
+  }
+  .p-link {
+    margin-bottom: 10px;
   }
 }
