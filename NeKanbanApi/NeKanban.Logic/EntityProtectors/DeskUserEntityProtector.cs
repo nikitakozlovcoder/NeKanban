@@ -2,7 +2,6 @@
 using Batteries.Repository;
 using JetBrains.Annotations;
 using NeKanban.Common.Entities;
-using NeKanban.Data.Infrastructure.QueryFilters;
 using NeKanban.Logic.Services.Security;
 
 namespace NeKanban.Logic.EntityProtectors;
@@ -12,21 +11,15 @@ namespace NeKanban.Logic.EntityProtectors;
 public class DeskUserEntityProtector : BaseEntityProtector<DeskUser>
 {
     private readonly IRepository<DeskUser> _deskUserRepository;
-    private readonly QueryFilterSettings _queryFilterSettings;
     public DeskUserEntityProtector(IRepository<DeskUser> deskUserRepository,
-        IPermissionCheckerService permissionCheckerService, QueryFilterSettings queryFilterSettings) : base(permissionCheckerService, deskUserRepository)
+        IPermissionCheckerService permissionCheckerService) : base(permissionCheckerService)
     {
         _deskUserRepository = deskUserRepository;
-        _queryFilterSettings = queryFilterSettings;
     }
 
     protected override async Task<int?> GetDeskId(int entityId, CancellationToken ct)
     {
-        using var scope = _queryFilterSettings.CreateScope(new QueryFilterSettingsDefinitions
-        {
-            DeskUserDeletedFilter = false
-        });
-        var deskUser = await _deskUserRepository.FirstOrDefault(x => x.Id == entityId, ct);
-        return deskUser?.DeskId;
+        var deskUser = await _deskUserRepository.First(x => x.Id == entityId, ct);
+        return deskUser.DeskId;
     }
 }

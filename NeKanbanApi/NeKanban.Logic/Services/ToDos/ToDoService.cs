@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Data;
+using System.Net;
 using Batteries.Exceptions;
 using Batteries.FileStorage.FileStorageAdapters;
 using Batteries.FileStorage.FileStorageProxies;
@@ -136,7 +137,7 @@ public class ToDoService : IToDoService
 
     public async Task<ToDoFullDto> ApplyDraftToDo(int toDoId, ApplicationUser user, CancellationToken ct)
     {
-        await using var transaction = await _transactionManager.CreateScope(ct);
+        await using var transaction = await _transactionManager.CreateScope(IsolationLevel.Serializable, ct);
         using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
         {
             ToDoDraftFilter = false
@@ -176,13 +177,8 @@ public class ToDoService : IToDoService
     {
         var toDo = await _toDoRepository.QueryableSelect().Include(x=> x.Column)
             .FirstAsync(x => x.Id == toDoId, ct);
-        var isMoveValid = await _columnRepository.QueryableSelect()
-            .AnyAsync(x => x.Id == model.ColumnId && x.DeskId == toDo.Column!.DeskId, ct);
-        if (!isMoveValid)
-        {
-            throw new HttpStatusCodeException(HttpStatusCode.BadRequest);
-        }
-        
+        await _columnRepository
+            .AnyOrThrow(x => x.Id == model.ColumnId && x.DeskId == toDo.Column!.DeskId, ct);
         var others = await _toDoRepository.QueryableSelect()
             .Where(x => x.ColumnId == model.ColumnId && x.Id != toDoId && x.Order >= model.Order).OrderBy(x=> x.Order).ToListAsync(ct);
         var order = model.Order;

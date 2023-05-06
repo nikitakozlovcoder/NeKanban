@@ -167,6 +167,11 @@ public class DeskUserService : IDeskUserService
 
     public async Task<List<DeskUserDto>> ChangeRole(DeskUserRoleChangeModel model, int deskUserId, CancellationToken ct)
     {
+        using var scope = _filterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            DeskUserDeletedFilter = false
+        });
+        
         var deskUser = await _deskUserRepository.Single(x => x.Id == deskUserId, ct);
         if (deskUser.IsOwner)
         {

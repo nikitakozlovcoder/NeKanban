@@ -10,6 +10,7 @@ using NeKanban.Common.Entities;
 using NeKanban.Common.Exceptions;
 using NeKanban.Common.Models.RoleModels;
 using NeKanban.Common.ViewModels.Roles;
+using NeKanban.Data.Infrastructure.QueryFilters;
 using NeKanban.Logic.SecurityProfile;
 using NeKanban.Security.Constants;
 
@@ -24,18 +25,21 @@ public class RolesService : IRolesService
     private readonly IRepository<DeskUser> _deskUserRepository;
     private readonly IRepository<RolePermission> _permissionsRepository;
     private readonly IDefaultPermissionProvider _defaultPermissionProvider;
+    private readonly QueryFilterSettings _queryFilterSettings;
 
     public RolesService(IRepository<Role> rolesRepository,
         IAppMapper mapper,
         IRepository<DeskUser> deskUserRepository,
         IRepository<RolePermission> permissionsRepository,
-        IDefaultPermissionProvider defaultPermissionProvider)
+        IDefaultPermissionProvider defaultPermissionProvider,
+        QueryFilterSettings queryFilterSettings)
     {
         _rolesRepository = rolesRepository;
         _mapper = mapper;
         _deskUserRepository = deskUserRepository;
         _permissionsRepository = permissionsRepository;
         _defaultPermissionProvider = defaultPermissionProvider;
+        _queryFilterSettings = queryFilterSettings;
     }
 
     public Task<List<RoleWithPermissionsDto>> GetRoles(int deskId, CancellationToken ct)
@@ -77,21 +81,36 @@ public class RolesService : IRolesService
 
     public async Task<List<RoleWithPermissionsDto>> DeleteRole(int roleId, CancellationToken ct)
     {
-        var anyUsersWithRole = await _deskUserRepository.Any(x => x.RoleId == roleId, ct);
-        if (anyUsersWithRole)
+        var deskId = await _rolesRepository.Single(x => x.Id == roleId, x => x.DeskId, ct);
+        var defaultRoleId = await _rolesRepository.Single(x => x.IsDefault && x.DeskId == deskId, x => x.Id, ct);
+        if (roleId == defaultRoleId)
+        {
+            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantDeleteDefaultRole);
+        }
+        
+        using var scope = _queryFilterSettings.CreateScope(new QueryFilterSettingsDefinitions
+        {
+            DeskUserDeletedFilter = false
+        });
+        
+        var anyNotDeletedUserWithRole = await _deskUserRepository.Any(x => x.RoleId == roleId && !x.DeletionReason.HasValue, ct);
+        if (anyNotDeletedUserWithRole)
         {
             throw new HttpStatusCodeException(HttpStatusCode.BadRequest,
                 Exceptions.CantDeleteRoleWhenAnyUserHasThisRole);
         }
 
-        var role = await _rolesRepository.Single(x => x.Id == roleId, ct);
-        if (role.IsDefault)
+        var usersToChangeRole =
+            await _deskUserRepository.ToList(x => x.RoleId == roleId && x.DeletionReason.HasValue, ct);
+
+        foreach (var userToChangeRole in usersToChangeRole)
         {
-            throw new HttpStatusCodeException(HttpStatusCode.BadRequest, Exceptions.CantDeleteDefaultRole);
+            userToChangeRole.RoleId = defaultRoleId;
         }
 
-        await _rolesRepository.Remove(role, ct);
-        return await GetRoles(role.DeskId, ct);
+        await _deskUserRepository.Update(usersToChangeRole, ct);
+        await _rolesRepository.Remove(roleId, ct);
+        return await GetRoles(deskId, ct);
     }
 
     public Task GrantPermission(int roleId, PermissionType permissionType, CancellationToken ct)
