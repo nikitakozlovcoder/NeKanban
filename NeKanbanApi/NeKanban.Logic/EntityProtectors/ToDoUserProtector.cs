@@ -12,7 +12,7 @@ public class ToDoUserProtector : BaseEntityProtector<ToDoUser>
 {
     private readonly IRepository<ToDoUser> _toDoUserRepository;
     public ToDoUserProtector(IPermissionCheckerService permissionCheckerService,
-        IRepository<ToDoUser> toDoUserRepository, IRepository<DeskUser> deskUserRepository) : base(permissionCheckerService, deskUserRepository)
+        IRepository<ToDoUser> toDoUserRepository) : base(permissionCheckerService)
     {
         _toDoUserRepository = toDoUserRepository;
     }

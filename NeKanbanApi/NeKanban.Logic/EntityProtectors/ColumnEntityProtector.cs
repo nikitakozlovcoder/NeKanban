@@ -12,7 +12,7 @@ public class ColumnEntityProtector : BaseEntityProtector<Column>
 {
     private readonly IRepository<Column> _columnRepository;
     public ColumnEntityProtector(IPermissionCheckerService permissionCheckerService,
-        IRepository<Column> columnRepository, IRepository<DeskUser> deskUserRepository) : base(permissionCheckerService, deskUserRepository)
+        IRepository<Column> columnRepository) : base(permissionCheckerService)
     {
         _columnRepository = columnRepository;
     }

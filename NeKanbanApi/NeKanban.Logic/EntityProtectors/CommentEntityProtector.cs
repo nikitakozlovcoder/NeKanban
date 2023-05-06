@@ -15,7 +15,7 @@ public class CommentEntityProtector : BaseEntityProtector<Comment>
     private readonly QueryFilterSettings _filterSettings;
     public CommentEntityProtector(IPermissionCheckerService permissionCheckerService,
         IRepository<Comment> commentsRepository,
-        QueryFilterSettings filterSettings, IRepository<DeskUser> deskUserRepository) : base(permissionCheckerService, deskUserRepository)
+        QueryFilterSettings filterSettings) : base(permissionCheckerService)
     {
         _commentsRepository = commentsRepository;
         _filterSettings = filterSettings;

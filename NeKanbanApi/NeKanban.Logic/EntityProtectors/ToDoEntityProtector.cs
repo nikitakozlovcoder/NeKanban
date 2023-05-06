@@ -14,8 +14,7 @@ public class ToDoEntityProtector : BaseEntityProtector<ToDo>
     private readonly IRepository<ToDo> _toDoRepository;
     private readonly QueryFilterSettings _filterSettings;
     public ToDoEntityProtector(IPermissionCheckerService permissionCheckerService,
-        IRepository<ToDo> toDoRepository, QueryFilterSettings filterSettings, 
-        IRepository<DeskUser> deskUserRepository) : base(permissionCheckerService, deskUserRepository)
+        IRepository<ToDo> toDoRepository, QueryFilterSettings filterSettings) : base(permissionCheckerService)
     {
         _toDoRepository = toDoRepository;
         _filterSettings = filterSettings;
