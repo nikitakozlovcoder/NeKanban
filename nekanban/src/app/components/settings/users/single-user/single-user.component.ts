@@ -3,7 +3,7 @@ import {DeskUser} from "../../../../models/deskUser";
 import {RolesService} from "../../../../services/roles.service";
 import {Role} from "../../../../models/Role";
 import {DeskUserService} from "../../../../services/deskUser.service";
-import {BehaviorSubject, filter, switchMap} from "rxjs";
+import {BehaviorSubject, filter, Subscription, switchMap} from "rxjs";
 import {DeletionReason} from "../../../../constants/deletionReason";
 import {ConfirmationComponent} from "../../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../../constants/DialogActionTypes";
@@ -12,7 +12,9 @@ import {DeskService} from "../../../../services/desk.service";
 import {Desk} from "../../../../models/desk";
 import {Router} from "@angular/router";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {UntilDestroy} from "@ngneat/until-destroy";
 
+@UntilDestroy({checkProperties: true})
 @Component({
   selector: 'app-single-user',
   templateUrl: './single-user.component.html',
@@ -31,6 +33,8 @@ export class SingleUserComponent implements OnInit {
   isUserRemoveLoaded = new BehaviorSubject(true);
   deletionReason = DeletionReason;
   showUserCard = false;
+  private subscriptions = new Subscription();
+
   constructor(public readonly rolesService: RolesService,
               public readonly deskUserService: DeskUserService,
               private readonly dialog: MatDialog,
@@ -39,11 +43,11 @@ export class SingleUserComponent implements OnInit {
               private readonly breakpointObserver: BreakpointObserver) { }
 
   ngOnInit(): void {
-    this.breakpointObserver
+    this.subscriptions.add(this.breakpointObserver
       .observe([Breakpoints.HandsetPortrait])
       .subscribe(result => {
         this.showUserCard = result.matches;
-      })
+      }));
   }
 
   changeUserRole(roleId: number, deskUserId: number) {

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {DeskService} from "../../services/desk.service";
 import {DialogService} from "../../services/dialog.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {DeskUserService} from "../../services/deskUser.service";

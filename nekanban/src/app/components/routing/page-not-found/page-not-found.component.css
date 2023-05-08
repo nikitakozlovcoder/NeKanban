@@ -5,9 +5,11 @@
   --green: #2ccf6d;
 }
 .row {
-  margin-top: 20vh;
   display: flex;
   justify-content: center;
+  max-width: 1140px;
+  margin: 20vh auto;
+  align-items: center;
 }
 html,
 body {
@@ -55,6 +57,7 @@ h1 {
 
 h2 {
   font-weight: bold;
+  margin-bottom: 20px;
 }
 
 .hamburger-menu {
@@ -193,6 +196,17 @@ nav[data-state=open] ul li:nth-child(4) {
   width: 100%;
 }
 
+@media screen and (max-width: 800px) {
+  .row {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0;
+  }
+  h1, h2 {
+    text-align: center;
+  }
+}
+
 @media screen and (max-width: 768px) {
   body {
     display: block;
@@ -205,4 +219,10 @@ nav[data-state=open] ul li:nth-child(4) {
 }
 .not-found-text {
   max-width: 500px;
+}
+.not-found-img {
+  flex: 1;
+}
+.not-found-home-button {
+  margin-top: 20px;
 }

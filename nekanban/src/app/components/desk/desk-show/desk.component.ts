@@ -17,12 +17,14 @@ import {ColumnUpdatingComponent} from "../../column/column-updating/column-updat
 import {RolesService} from "../../../services/roles.service";
 import {Role} from "../../../models/Role";
 import {DeskUserService} from "../../../services/deskUser.service";
-import {BehaviorSubject, combineLatest, filter, map, switchMap, tap} from "rxjs";
+import {BehaviorSubject, combineLatest, filter, map, Subscription, switchMap, tap} from "rxjs";
 import {UserStorageService} from "../../../services/userStorage.service";
 import {ConfirmationComponent} from "../../dialogs/confirmation/confirmation.component";
 import {DialogActionTypes} from "../../../constants/DialogActionTypes";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {UntilDestroy} from "@ngneat/until-destroy";
 
+@UntilDestroy({checkProperties: true})
 @Component({
   selector: 'app-desk',
   templateUrl: './desk.component.html',
@@ -43,6 +45,7 @@ export class DeskComponent implements OnInit {
   columnsLoaded = new BehaviorSubject(false);
   todosLoaded = new BehaviorSubject(false);
   rolesLoaded = new BehaviorSubject(false);
+  private subscriptions = new Subscription();
 
   get isLoaded() {
     return combineLatest([this.desksLoaded, this.columnsLoaded, this.todosLoaded, this.rolesLoaded, this.deskLoaded])
@@ -63,9 +66,9 @@ export class DeskComponent implements OnInit {
 
   ngOnInit(): void {
     this.handleParams();
-    this.breakpointObserver.observe([Breakpoints.HandsetPortrait]).subscribe( result => {
+    this.subscriptions.add(this.breakpointObserver.observe([Breakpoints.HandsetPortrait]).subscribe( result => {
       this.useDragDelay = result.matches;
-    })
+    }));
   }
 
   private handleParams() {

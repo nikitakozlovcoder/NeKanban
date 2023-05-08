@@ -4,7 +4,6 @@ import {Todo} from "../../../models/todo";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {TodoService} from "../../../services/todo.service";
 import {BehaviorSubject, last, map} from "rxjs";
-import tinymce from "tinymce";
 import {EditorUploaderService} from "../../../services/editor-uploader.service";
 
 @Component({
