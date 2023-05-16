@@ -66,25 +66,22 @@ p, h1, h2, h3, h4, h5, h6{
 .comments-body-wrap table {
   border-collapse: collapse;
 }
-/* Apply a default padding if legacy cellpadding attribute is missing */
+
 .comments-body-wrap table:not([cellpadding]) th,
 .comments-body-wrap table:not([cellpadding]) td {
   padding: 0.4rem;
 }
-/* Set default table styles if a table has a positive border attribute
-   and no inline css */
+
 .comments-body-wrap table[border]:not([border="0"]):not([style*="border-width"]) th,
 .comments-body-wrap table[border]:not([border="0"]):not([style*="border-width"]) td {
   border-width: 1px;
 }
-/* Set default table styles if a table has a positive border attribute
-   and no inline css */
+
 .comments-body-wrap table[border]:not([border="0"]):not([style*="border-style"]) th,
 .comments-body-wrap table[border]:not([border="0"]):not([style*="border-style"]) td {
   border-style: solid;
 }
-/* Set default table styles if a table has a positive border attribute
-   and no inline css */
+
 .comments-body-wrap table[border]:not([border="0"]):not([style*="border-color"]) th,
 .comments-body-wrap table[border]:not([border="0"]):not([style*="border-color"]) td {
   border-color: #ccc;
@@ -137,25 +134,21 @@ p, h1, h2, h3, h4, h5, h6{
 .description table {
   border-collapse: collapse;
 }
-/* Apply a default padding if legacy cellpadding attribute is missing */
 .description table:not([cellpadding]) th,
 .description table:not([cellpadding]) td {
   padding: 0.4rem;
 }
-/* Set default table styles if a table has a positive border attribute
-   and no inline css */
+
 .description table[border]:not([border="0"]):not([style*="border-width"]) th,
 .description table[border]:not([border="0"]):not([style*="border-width"]) td {
   border-width: 1px;
 }
-/* Set default table styles if a table has a positive border attribute
-   and no inline css */
+
 .description table[border]:not([border="0"]):not([style*="border-style"]) th,
 .description table[border]:not([border="0"]):not([style*="border-style"]) td {
   border-style: solid;
 }
-/* Set default table styles if a table has a positive border attribute
-   and no inline css */
+
 .description table[border]:not([border="0"]):not([style*="border-color"]) th,
 .description table[border]:not([border="0"]):not([style*="border-color"]) td {
   border-color: #ccc;
@@ -195,10 +188,6 @@ p, h1, h2, h3, h4, h5, h6{
 
 
 .todo-show-wrap mat-dialog-container {
-  /*resize: both;
-  min-width: 880px;
-  min-height: 400px;
-  max-height: 95vh;*/
 }
 .todo-show-wrap *::-webkit-scrollbar,
 .todo-show-wrap  *::-webkit-scrollbar-thumb {

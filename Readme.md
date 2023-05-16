@@ -8,8 +8,8 @@
 - EF Core
   
 ## Запуск проекта
-В корневой папки запустить docker-compose ```docker compose up api```;
-В папке ```/NeKanban/nekanban``` выполнить команду ```npm start``` предварительно скачав все пакеты (```npm i```)
+В корневой папке запустить docker-compose ```docker compose up api```;<br />
+В папке ```/NeKanban/nekanban``` выполнить команду ```npm start```, предварительно скачав все пакеты (```npm i```).
 
 ### Применение миграций
 ```docker compose up migrator``` или ```dotnet ef database update --verbose --project ..\NeKanban.Data``` из папки ```NeKanban/NeKanban.Api```
@@ -25,10 +25,10 @@
 
 [Проект в github](https://github.com/nikitakozlovcoder/NeKanban)
 - После начала работы над задачей создается feature ветка из dev ветки, пример наименования ```NK-5```;
-- Пример именования коммита ```NK-5 add task modal window```
-- Задача переносится в колонку ```Разработка```
-- После заверешения работы над задачей dev ветка вливается в feature ветку и открывается merge request в dev ветку
-- Задача переносится в колонку Ревью
+- Пример именования коммита ```NK-5 add task modal window```;
+- Задача переносится в колонку ```Разработка```;
+- После заверешения работы над задачей dev ветка вливается в feature ветку и открывается merge request в dev ветку;
+- Задача переносится в колонку Ревью.
 
 # Рабочие окружения
 ## Локальное окружение

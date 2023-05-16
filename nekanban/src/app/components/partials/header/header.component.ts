@@ -20,7 +20,6 @@ export class HeaderComponent implements OnInit {
   @Input() currentUser: User | undefined;
   desk: Desk | undefined;
   @Input() currentDeskId: number | undefined;
-  //@Output() deskChange = new EventEmitter<Desk>;
   isFavouriteLoaded = new BehaviorSubject(true);
   @Input() sidenav : MatSidenav | undefined;
   @Input() desks: Desk[] = [];
