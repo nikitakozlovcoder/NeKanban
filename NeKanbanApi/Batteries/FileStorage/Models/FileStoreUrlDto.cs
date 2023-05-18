@@ -1,5 +1,4 @@
-﻿
-namespace Batteries.FileStorage.Models;
+﻿namespace Batteries.FileStorage.Models;
 
 public class FileStoreUrlDto : FileStoreDto
 {

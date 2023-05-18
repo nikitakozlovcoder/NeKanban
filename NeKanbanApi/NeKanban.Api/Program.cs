@@ -102,7 +102,8 @@ else
     dbCtx.TestConnection();
 }
 
-app.UseCors(x=> x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+var allowedOrigins = builder.Configuration.GetValue<string[]>("AllowedOrigins")!;
+app.UseCors(x=> x.AllowAnyHeader().AllowAnyMethod().WithOrigins(allowedOrigins));
 app.UseStaticFiles();
 app.UseAppExceptionHandler();
 if (app.Environment.IsDevelopment())
