@@ -16,9 +16,6 @@ export class RolesService {
     this.getAllPermissions().subscribe(result => {
       this.permissions = result;
     })
-    /*this.httpService.get<DeskRole[]>("Roles/GetRolesAndPermissions/").subscribe(result => {
-      this.rolesAndPermissions = result;
-    })*/
   }
 
   userHasPermission(roles: Role[], deskUser : DeskUser, permission: Permissions) : boolean {

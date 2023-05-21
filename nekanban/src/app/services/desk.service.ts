@@ -1,5 +1,4 @@
 ﻿import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AppHttpService} from "./app-http.service";
 
 import {Desk} from "../models/desk";

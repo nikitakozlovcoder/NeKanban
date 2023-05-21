@@ -141,10 +141,6 @@ mat-form-field
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.example-box:last-child {
-  /*&border: none;*/
-}
-
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
@@ -252,9 +248,6 @@ mat-card-title p {
   height: 16px;
   width: 16px;
   margin-right: 5px;
-  /*text-align: center;
-  vertical-align: middle;
-  margin-right: 7px;*/
 }
 
 .spinner-white {
@@ -328,12 +321,6 @@ mat-card-title-group {
 .column-content-first .todos-list-no-columns-add-button {
   height: calc(100% - 26px);
 }
-/*.column-content {
-  height: 100%;
-}
-.todos-list {
-  height: 100%;
-}*/
 .column-menu-button {
   min-width: 24px !important;
 }

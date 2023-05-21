@@ -1,7 +1,7 @@
 ﻿import {Injectable} from "@angular/core";
 import {AppHttpService} from "./app-http.service";
 import {Todo} from "../models/todo";
-import {HttpEvent, HttpRequest} from "@angular/common/http";
+import {HttpEvent} from "@angular/common/http";
 
 @Injectable()
 export class TodoService {

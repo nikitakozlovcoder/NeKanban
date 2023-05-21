@@ -25,14 +25,4 @@ export class EditorConfigService {
       plugins: ['lists', 'link', 'image', 'table', 'code', 'help', 'wordcount', 'autoresize'],
     };
   }
-
-  /*private imageUploadHandler = (blobInfo: any, progress: any) => new Promise<string>((resolve, reject) => {
-    let formData = new FormData();
-    formData.append('file', blobInfo.blob(), blobInfo.filename());
-    this.todoService.attachFile(this.todoId!, formData).subscribe({
-      next: (data) => {
-        resolve(data);
-      }
-    });
-  });*/
 }

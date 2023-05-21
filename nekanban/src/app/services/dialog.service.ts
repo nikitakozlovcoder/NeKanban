@@ -1,7 +1,6 @@
 ﻿import {Injectable} from "@angular/core";
 import {ToastrService} from "ngx-toastr";
-import {MissingTranslationHandler, TranslateService} from "@ngx-translate/core";
-import {ErrorsMissingTranslationHandler} from "./errors-missing-translation-handler";
+import {TranslateService} from "@ngx-translate/core";
 import {ErrorCodes} from "../constants/ErrorCodes";
 
 @Injectable()

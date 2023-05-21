@@ -1,8 +1,4 @@
 .column-card {
-  /*display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  min-width: 500px;*/
   width: 100%;
   box-sizing: border-box;
 }
@@ -36,15 +32,12 @@
 .description {
   max-width: 700px;
   padding-right: 15px;
-  /*white-space:pre-wrap;*/
 }
 .user-select {
   width: 100%;
 }
 .todo-wrap {
-  /*max-width: 900px;*/
   max-height: 95vh;
-  /*overflow: auto;*/
   position: relative;
 }
 mat-dialog-container {
@@ -71,7 +64,6 @@ mat-dialog-container {
   max-width: 100%;
 }
 ::ng-deep .todo-wrap .ng-scroll-content {
-  /*padding: 32px;*/
   display: block;
   max-width: 100%;
   min-width: 90%;

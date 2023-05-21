@@ -4,9 +4,11 @@ import {Role} from "../../../../models/Role";
 import {DeskUser} from "../../../../models/deskUser";
 import {RolesService} from "../../../../services/roles.service";
 import {DeskUserService} from "../../../../services/deskUser.service";
-import {BehaviorSubject, switchMap} from "rxjs";
+import {BehaviorSubject, Subscription, switchMap} from "rxjs";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {UntilDestroy} from "@ngneat/until-destroy";
 
+@UntilDestroy({checkProperties:true})
 @Component({
   selector: 'app-users-settings',
   templateUrl: './users-settings.component.html',
@@ -23,17 +25,18 @@ export class UsersSettingsComponent implements OnInit {
   isUserRemoveLoaded = new BehaviorSubject(true);
   areUsersLoaded = new BehaviorSubject(false);
   hideTableHeaders = false;
+  private subscriptions = new Subscription();
 
   constructor(public readonly rolesService: RolesService,
               public readonly deskUserService: DeskUserService,
               private readonly breakpointObserver: BreakpointObserver) { }
 
   ngOnInit(): void {
-    this.breakpointObserver
+    this.subscriptions.add(this.breakpointObserver
       .observe([Breakpoints.HandsetPortrait])
       .subscribe(result => {
         this.hideTableHeaders = result.matches;
-      })
+      }));
     this.loadDeletedUsers(this.deskId!);
   }
 

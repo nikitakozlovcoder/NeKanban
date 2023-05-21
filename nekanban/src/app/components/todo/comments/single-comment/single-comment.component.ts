@@ -4,7 +4,6 @@ import {ViewStateTypes} from "../../../../constants/ViewStateTypes";
 import {BehaviorSubject, filter, last, map, Observable, Subscription} from "rxjs";
 import {FormControl, ValidatorFn} from "@angular/forms";
 import tinymce from "tinymce";
-import {EditorConfigService} from "../../../../services/editor-config-service";
 import {CommentsService} from "../../../../services/comments.service";
 import {DeskUser} from "../../../../models/deskUser";
 import {RolesService} from "../../../../services/roles.service";
@@ -39,8 +38,7 @@ export class SingleCommentComponent implements OnInit {
 
   private subscriptions = new Subscription();
 
-  constructor(private readonly editorConfigService: EditorConfigService,
-              private readonly commentsService: CommentsService,
+  constructor(private readonly commentsService: CommentsService,
               public readonly rolesService: RolesService,
               private readonly validationService: ValidationService,
               public dialog: MatDialog,

@@ -4,11 +4,12 @@ import {Desk} from "../../../models/desk";
 import {UserService} from "../../../services/user.service";
 import {Router} from "@angular/router";
 import {MatSidenav} from "@angular/material/sidenav";
-import {DeskService} from "../../../services/desk.service";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Subscription} from "rxjs";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {DeskUserService} from "../../../services/deskUser.service";
+import {UntilDestroy} from "@ngneat/until-destroy";
 
+@UntilDestroy({checkProperties: true})
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -17,23 +18,18 @@ import {DeskUserService} from "../../../services/deskUser.service";
 export class HeaderComponent implements OnInit {
 
   @Input() currentUser: User | undefined;
-
   desk: Desk | undefined;
   @Input() currentDeskId: number | undefined;
-
-  //@Output() deskChange = new EventEmitter<Desk>;
   isFavouriteLoaded = new BehaviorSubject(true);
-
   @Input() sidenav : MatSidenav | undefined;
-
   @Input() desks: Desk[] = [];
   @Output() desksChange = new EventEmitter<Desk[]>;
-
   @Input() opened = false;
   @Output() openedChange = new EventEmitter<boolean>();
-
   isLogoutLoaded = new BehaviorSubject(true);
   isMobile = false;
+  private subscriptions = new Subscription();
+
   constructor(private readonly userService: UserService,
               private router: Router,
               private readonly deskUserService: DeskUserService,
@@ -41,9 +37,9 @@ export class HeaderComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.breakpointObserver.observe(Breakpoints.HandsetPortrait).subscribe(result => {
+    this.subscriptions.add(this.breakpointObserver.observe(Breakpoints.HandsetPortrait).subscribe(result => {
       this.isMobile = result.matches;
-    })
+    }));
     this.setCurrentDesk();
   }
 

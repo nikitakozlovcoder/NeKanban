@@ -12,8 +12,10 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { TranslateService } from "@ngx-translate/core";
 import {DialogService} from "../../../services/dialog.service";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
-import {BehaviorSubject, filter, switchMap, tap} from "rxjs";
+import {BehaviorSubject, filter, Subscription, switchMap, tap} from "rxjs";
+import {UntilDestroy} from "@ngneat/until-destroy";
 
+@UntilDestroy({checkProperties: true})
 @Component({
   selector: 'app-roles-settings',
   templateUrl: './roles-settings.component.html',
@@ -32,19 +34,20 @@ export class RolesSettingsComponent implements OnInit, OnChanges {
   showAccordion = false;
   defaultRoleLoaded = new BehaviorSubject(true);
   roleDeletionLoaded : BehaviorSubject<boolean>[] = [];
+  private subscriptions = new Subscription();
 
-  constructor(public dialog: MatDialog,
+  constructor(private readonly dialog: MatDialog,
               private readonly rolesService: RolesService,
               public readonly translate: TranslateService,
               private readonly dialogService: DialogService,
               private readonly breakpointObserver: BreakpointObserver) { }
 
   ngOnInit(): void {
-    this.breakpointObserver
+    this.subscriptions.add(this.breakpointObserver
       .observe([Breakpoints.HandsetPortrait])
       .subscribe(result => {
         this.showAccordion = result.matches;
-      })
+      }));
     this.setLoadingStates();
   }
 
