@@ -23,8 +23,8 @@
               <div class="permissions-title">
                 <h2 class="h-minor-title">Разрешения</h2>
                 <div>
-                  <mat-checkbox *ngIf="!currentRole!.isDefault && (defaultRoleLoaded | async)" (click)="setRoleAsDefault(currentRole!)" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
-                  <mat-checkbox *ngIf="currentRole!.isDefault && (defaultRoleLoaded | async)" disabled [checked]="true" matTooltip="Эта роль уже назначена в качестве роли по умолчанию!">Роль по умолчанию</mat-checkbox>
+                  <mat-checkbox *ngIf="!role!.isDefault && (defaultRoleLoaded | async)" (click)="setRoleAsDefault(role)" matTooltip="Роль, которая будет автоматически назначена новому участнику при добавлении по ссылке">Роль по умолчанию</mat-checkbox>
+                  <mat-checkbox *ngIf="role!.isDefault && (defaultRoleLoaded | async)" disabled [checked]="true" matTooltip="Эта роль уже назначена в качестве роли по умолчанию!">Роль по умолчанию</mat-checkbox>
                   <mat-spinner *ngIf="!(defaultRoleLoaded | async)" diameter="24" class="black-spinner"></mat-spinner>
                 </div>
               </div>
