@@ -12,7 +12,7 @@ public class DeskUserDto: BaseEntityModel<int>, IAutoMapFrom<DeskUser, DeskUserD
     public required ApplicationUserDto? User { get; set; }
     public required RoleDto? Role { get; set; }
     public required bool IsOwner { get; set; }
-    public DeskUserDeletionReason? DeletionReason { get; set; }
+    public required DeskUserDeletionReason? DeletionReason { get; set; }
     public required PreferenceType Preference { get; set; }
     public string PreferenceName => Preference.ToString();
 
