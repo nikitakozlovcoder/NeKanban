@@ -40,8 +40,10 @@
 - драйвер: postgres
 - connectionstring: "Host=localhost; Port=5432;Database=nekanban; User Id=postgres; Password=password;"
 ## Staging окружение
+### backend
+- url: http://46.19.64.33:7146
 ### Frontend
-- url: https://nikitakozlovcoder.github.io/NeKanban
+- url: http://46.19.64.33
 
 
 
