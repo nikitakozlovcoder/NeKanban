@@ -53,7 +53,8 @@ export class SingleUserComponent implements OnInit {
   changeUserRole(roleId: number, deskUserId: number) {
     this.deskUserService.changeRole(deskUserId, roleId).subscribe({
       next: (data: DeskUser[]) => {
-        this.deskUsersChange.emit(data.sort(function (a: DeskUser, b: DeskUser) {
+        this.deskUsersChange.emit(data.filter(x => !x.deletionReason).
+        sort(function (a: DeskUser, b: DeskUser) {
           if (a.id > b.id) {
             return 1;
           }
