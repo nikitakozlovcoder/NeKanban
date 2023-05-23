@@ -14,11 +14,6 @@
       <mat-icon>favorite_border</mat-icon>
     </button>
   </div>
-  <div *ngIf="desk === undefined">
-    <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-      <mat-icon>favorite_border</mat-icon>
-    </button>
-  </div>
   <mat-spinner class="spinner-centered spinner-white" diameter="24" *ngIf="!(isFavouriteLoaded | async)"></mat-spinner>
   <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" (click)="logout()">
     <mat-icon *ngIf="isLogoutLoaded | async">logout</mat-icon>

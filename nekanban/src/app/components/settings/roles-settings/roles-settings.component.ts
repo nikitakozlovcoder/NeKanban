@@ -23,14 +23,14 @@ import {UntilDestroy} from "@ngneat/until-destroy";
 })
 export class RolesSettingsComponent implements OnInit, OnChanges {
 
-  @Input() desk: Desk | undefined;
+  @Input() desk?: Desk;
   @Output() deskChange = new EventEmitter<Desk>;
   @Input() roles: Role[] = [];
   @Output() rolesChange = new EventEmitter<Role[]>;
   @Input() desks: Desk[] = [];
   permissions: Permission[] = [];
   allPermissions: Permission[] = [];
-  currentRole: Role | undefined;
+  currentRole?: Role;
   showAccordion = false;
   defaultRoleLoaded = new BehaviorSubject(true);
   roleDeletionLoaded : BehaviorSubject<boolean>[] = [];
