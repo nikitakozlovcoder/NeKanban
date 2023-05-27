@@ -108,6 +108,7 @@ mat-dialog-container {
 }
 .assignee-chip p {
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 @media screen and (max-width: 925px) {

@@ -9,7 +9,6 @@
           <mat-card-title>
             <p class="todo-title"><app-todo-code [todoCode]="todo!.code"></app-todo-code>{{todo!.name}}</p>
           </mat-card-title>
-
           <mat-card-content *ngIf="todo!.body">
             <mat-card-subtitle>
               <p>Описание:</p>
@@ -17,14 +16,8 @@
             <app-raw-html-viewer [html]="todo!.body"></app-raw-html-viewer>
           </mat-card-content>
         </div>
-
-
       </div>
       <div class = "task-settings-card">
-        <!--<mat-card-title>
-          <p>Свойства задания</p>
-        </mat-card-title>-->
-
         <mat-card-content>
           <mat-card-subtitle class="todo-creator-subtitle">
             <p>Создатель:
@@ -50,11 +43,6 @@
                 <p>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</p>
               </mat-chip>
             </mat-chip-list>
-            <!--<mat-nav-list class ="employees-list">
-              <mat-list-item *ngFor="let user of getToDoUsers()">
-                <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
-              </mat-list-item>
-            </mat-nav-list>-->
           </mat-card-subtitle>
         </mat-card-content>
       </div>
