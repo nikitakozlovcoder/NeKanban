@@ -220,13 +220,15 @@ mat-card-title p {
   padding-bottom: 5px;
 }
 
-.todo-name, mat-card-title p {
+mat-card-title p {
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 0 auto 0 0;
 }
 
 .todo-name {
+  overflow-wrap: break-word;
+  overflow: auto;
   cursor: pointer;
 }
 .desk-name {
@@ -242,6 +244,7 @@ mat-card-title p {
 }
 
 .assigned-icon {
+  display: inline;
   font-size: 16px;
   color: rgba(63,81,181, 0.8);
   vertical-align: text-top;

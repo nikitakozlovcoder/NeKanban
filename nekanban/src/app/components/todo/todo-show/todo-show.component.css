@@ -3,7 +3,7 @@
   box-sizing: border-box;
 }
 .task-settings-card {
-  min-width: 250px;
+  width: 250px;
   margin-left: 10px;
 }
 .employees-list {
@@ -50,12 +50,12 @@ mat-dialog-container {
   cursor: pointer;
 }
 .todo-creator-subtitle, .todo-creator-subtitle p {
-  margin: 0;
   font-weight: normal;
+  margin: 0 0 10px;
 }
 .assignees-title {
-  margin: 0;
   font-weight: normal;
+  margin: 0 0 10px;
 }
 .todo-container {
   display: flex;
@@ -75,7 +75,8 @@ mat-dialog-container {
   font-size: 14px;
 }
 .creator-name {
-  margin-bottom: 10px;
+  font-weight: normal;
+  color: #000000de;
 }
 .drag-handler {
   position: absolute;
@@ -102,7 +103,13 @@ mat-dialog-container {
 .todo-title {
   overflow-wrap: break-word;
 }
-
+.assignee-chip {
+  overflow: hidden;
+}
+.assignee-chip p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 @media screen and (max-width: 925px) {
   .todo-container {
     flex-direction: column;

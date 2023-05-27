@@ -3,34 +3,34 @@
     <div class="drag-handler drag-handler-left" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary=".cdk-overlay-container"></div>
     <div class="drag-handler drag-handler-top" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary=".cdk-overlay-container"></div>
     <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
-    <div class="todo-container">
-      <mat-card class = "column-card">
+    <mat-card class="todo-container">
+      <div class = "column-card">
         <div>
           <mat-card-title>
             <p class="todo-title"><app-todo-code [todoCode]="todo!.code"></app-todo-code>{{todo!.name}}</p>
           </mat-card-title>
 
-          <mat-card-content>
+          <mat-card-content *ngIf="todo!.body">
             <mat-card-subtitle>
               <p>Описание:</p>
             </mat-card-subtitle>
-            <app-raw-html-viewer *ngIf="todo!.body" [html]="todo!.body"></app-raw-html-viewer>
+            <app-raw-html-viewer [html]="todo!.body"></app-raw-html-viewer>
           </mat-card-content>
         </div>
 
 
-      </mat-card>
-      <mat-card class = "task-settings-card">
-        <mat-card-title>
+      </div>
+      <div class = "task-settings-card">
+        <!--<mat-card-title>
           <p>Свойства задания</p>
-        </mat-card-title>
+        </mat-card-title>-->
 
         <mat-card-content>
           <mat-card-subtitle class="todo-creator-subtitle">
-            <p>Создатель:</p>
+            <p>Создатель:
+            <span class="creator-name" *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</span>
+              <span class="creator-name" *ngIf="getToDoCreator() === undefined">---</span></p>
           </mat-card-subtitle>
-          <p class="creator-name" *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</p>
-          <p class="creator-name" *ngIf="getToDoCreator() === undefined">---</p>
           <mat-card-subtitle>
             <div class="employees-settings" *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself) || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)">
               <mat-form-field class="user-select" appearance="fill">
@@ -45,15 +45,20 @@
             </div>
             <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
             <p *ngIf="getToDoUsers().length" class="assignees-title">Назначенные исполнители:</p>
-            <mat-nav-list class ="employees-list">
+            <mat-chip-list aria-label="Dog selection">
+              <mat-chip class="assignee-chip" *ngFor="let user of getToDoUsers()">
+                <p>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</p>
+              </mat-chip>
+            </mat-chip-list>
+            <!--<mat-nav-list class ="employees-list">
               <mat-list-item *ngFor="let user of getToDoUsers()">
                 <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
               </mat-list-item>
-            </mat-nav-list>
+            </mat-nav-list>-->
           </mat-card-subtitle>
         </mat-card-content>
-      </mat-card>
-    </div>
+      </div>
+    </mat-card>
 
     <app-all-comments [roles]="data.roles" [todoId]="data.todoId" [deskUser]="data.deskUser"></app-all-comments>
   </div>
