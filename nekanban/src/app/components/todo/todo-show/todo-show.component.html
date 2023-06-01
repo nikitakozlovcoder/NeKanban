@@ -25,36 +25,28 @@
               <span class="creator-name" *ngIf="getToDoCreator() === undefined">---</span></p>
           </mat-card-subtitle>
           <mat-card-subtitle>
-            <div class="employees-settings" *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself) || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)">
-              <mat-form-field class="user-select" appearance="fill">
-                <mat-label>Исполнители</mat-label>
-                <mat-select *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)" #select [formControl]="users" multiple (closed)="changeUsers(select)">
-                  <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
-                </mat-select>
-                <mat-select *ngIf="!rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) && rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
-                  <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
-            <ng-container *ngIf="areUsersLoaded|async">
-              <p *ngIf="getToDoUsers().length" class="assignees-title">Назначенные исполнители:</p>
-              <mat-chip-list aria-label="Dog selection">
-                <mat-chip class="assignee-chip" *ngFor="let user of getToDoUsers()" [matMenuTriggerFor]="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) ? assigneeMenu : emptyMenu">
-                  <p>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</p>
+              <p class="assignees-title">Назначенные исполнители:</p>
+              <mat-chip-list aria-label="Users selection">
+                <mat-chip class="assignee-chip" *ngFor="let assigneeTodoUser of getToDoUsers(); index as i"
+                          [matMenuTriggerFor]="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) ||
+                          (assigneeTodoUser.deskUser.id === data.deskUser.id &&
+                          rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)) ? assigneeMenu : null">
+                  <p *ngIf="assigneesLoaded[i] | async">{{assigneeTodoUser.deskUser.user.name}} {{assigneeTodoUser.deskUser.user.surname}}</p>
                   <mat-menu #assigneeMenu>
-                    <button mat-menu-item (click)="removeUser(user.id)"><mat-icon>delete</mat-icon>Удалить</button>
+                    <button mat-menu-item (click)="removeUser(assigneeTodoUser.id)"><mat-icon>delete</mat-icon>Удалить</button>
                   </mat-menu>
-                  <mat-menu style="display: none;" #emptyMenu></mat-menu>
+                  <mat-spinner *ngIf="!(assigneesLoaded[i] | async)" diameter="24" class="black-spinner"></mat-spinner>
                 </mat-chip>
-                <mat-chip [matMenuTriggerFor]="addUserMenu">
-                  <mat-icon>add</mat-icon>
+                <mat-chip *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)
+                 || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)"
+                          [matTooltip]="freeUsers.length ? 'Добавить исполнителей' : 'Все участники уже назначены на эту задачу!'" [disabled]="!freeUsers.length" [matMenuTriggerFor]="freeUsers.length ? addUserMenu : null">
+                  <mat-icon *ngIf="newAssigneeLoaded | async">add</mat-icon>
+                  <mat-spinner *ngIf="!(newAssigneeLoaded | async)" class="black-spinner" diameter="24"></mat-spinner>
                 </mat-chip>
-                <mat-menu #addUserMenu>
-                  <button *ngFor="let deskUser of getFreeUsers()" (click)="assignUser(deskUser.id)" mat-menu-item>{{deskUser.user.name}} {{deskUser.user.surname}}</button>
+                <mat-menu xPosition="before" #addUserMenu>
+                  <button *ngFor="let deskUser of freeUsers" (click)="assignUser(deskUser.id)" mat-menu-item>{{deskUser.user.name}} {{deskUser.user.surname}}</button>
                 </mat-menu>
               </mat-chip-list>
-            </ng-container>
           </mat-card-subtitle>
         </mat-card-content>
       </div>

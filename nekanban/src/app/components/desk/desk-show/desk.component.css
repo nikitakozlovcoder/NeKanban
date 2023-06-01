@@ -230,6 +230,7 @@ mat-card-title p {
   overflow-wrap: break-word;
   overflow: auto;
   cursor: pointer;
+  max-width: 150px;
 }
 .desk-name {
   padding-bottom: 5px;
