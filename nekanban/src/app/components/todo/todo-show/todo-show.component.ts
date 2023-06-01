@@ -1,9 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Todo} from "../../../models/todo";
-import {
-  UntypedFormControl,
-} from "@angular/forms";
+import {UntypedFormControl,} from "@angular/forms";
 import {Desk} from "../../../models/desk";
 import {User} from "../../../models/user";
 import {MatSelect} from "@angular/material/select";
@@ -12,6 +10,7 @@ import {RolesService} from "../../../services/roles.service";
 import {DeskUser} from "../../../models/deskUser";
 import {Role} from "../../../models/Role";
 import {BehaviorSubject} from "rxjs";
+import {ToDoUserType} from "../../../constants/ToDoUserType";
 
 @Component({
   selector: 'app-task-creation',
@@ -75,6 +74,10 @@ export class TodoShowComponent implements OnInit {
       deskUsers.push(el.user);
     })
     return deskUsers;
+  }
+
+  getFreeUsers() {
+    return this.data.desk.deskUsers.filter(x => !this.todo!.toDoUsers.some(el => el.deskUser.id === x.id && el.toDoUserType !== ToDoUserType.Creator));
   }
 
   getAllTodoUsers() : User[] {
@@ -180,5 +183,29 @@ export class TodoShowComponent implements OnInit {
         })
       }
     }
+  }
+
+  assignUser(deskUserId: number) {
+    this.toDoService.assignUser(this.data.todoId, deskUserId).subscribe({
+      next: data => {
+        this.areUsersLoaded.next(true);
+        this.todo!.toDoUsers = data.toDoUsers;
+        this.dialogRef.disableClose = false;
+      },
+      error: _ => {
+      }
+    })
+  }
+
+  removeUser(todoUserId: number) {
+    this.toDoService.removeUser(todoUserId).subscribe({
+      next: data => {
+        this.areUsersLoaded.next(true);
+        this.todo!.toDoUsers = data.toDoUsers;
+        this.dialogRef.disableClose = false;
+      },
+      error: _ => {
+      }
+    })
   }
 }

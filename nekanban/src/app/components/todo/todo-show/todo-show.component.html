@@ -37,12 +37,24 @@
               </mat-form-field>
             </div>
             <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
-            <p *ngIf="getToDoUsers().length" class="assignees-title">Назначенные исполнители:</p>
-            <mat-chip-list aria-label="Dog selection">
-              <mat-chip class="assignee-chip" *ngFor="let user of getToDoUsers()">
-                <p>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</p>
-              </mat-chip>
-            </mat-chip-list>
+            <ng-container *ngIf="areUsersLoaded|async">
+              <p *ngIf="getToDoUsers().length" class="assignees-title">Назначенные исполнители:</p>
+              <mat-chip-list aria-label="Dog selection">
+                <mat-chip class="assignee-chip" *ngFor="let user of getToDoUsers()" [matMenuTriggerFor]="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) ? assigneeMenu : emptyMenu">
+                  <p>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</p>
+                  <mat-menu #assigneeMenu>
+                    <button mat-menu-item (click)="removeUser(user.id)"><mat-icon>delete</mat-icon>Удалить</button>
+                  </mat-menu>
+                  <mat-menu style="display: none;" #emptyMenu></mat-menu>
+                </mat-chip>
+                <mat-chip [matMenuTriggerFor]="addUserMenu">
+                  <mat-icon>add</mat-icon>
+                </mat-chip>
+                <mat-menu #addUserMenu>
+                  <button *ngFor="let deskUser of getFreeUsers()" (click)="assignUser(deskUser.id)" mat-menu-item>{{deskUser.user.name}} {{deskUser.user.surname}}</button>
+                </mat-menu>
+              </mat-chip-list>
+            </ng-container>
           </mat-card-subtitle>
         </mat-card-content>
       </div>
