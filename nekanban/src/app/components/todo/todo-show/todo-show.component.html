@@ -3,57 +3,54 @@
     <div class="drag-handler drag-handler-left" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary=".cdk-overlay-container"></div>
     <div class="drag-handler drag-handler-top" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle cdkDragBoundary=".cdk-overlay-container"></div>
     <mat-icon class="todo-close-icon" (click)="closeDialog()">close</mat-icon>
-    <div class="todo-container">
-      <mat-card class = "column-card">
+    <mat-card class="todo-container">
+      <div class = "column-card">
         <div>
           <mat-card-title>
             <p class="todo-title"><app-todo-code [todoCode]="todo!.code"></app-todo-code>{{todo!.name}}</p>
           </mat-card-title>
-
-          <mat-card-content>
+          <mat-card-content *ngIf="todo!.body">
             <mat-card-subtitle>
               <p>Описание:</p>
             </mat-card-subtitle>
-            <app-raw-html-viewer *ngIf="todo!.body" [html]="todo!.body"></app-raw-html-viewer>
+            <app-raw-html-viewer [html]="todo!.body"></app-raw-html-viewer>
           </mat-card-content>
         </div>
-
-
-      </mat-card>
-      <mat-card class = "task-settings-card">
-        <mat-card-title>
-          <p>Свойства задания</p>
-        </mat-card-title>
-
+      </div>
+      <div class = "task-settings-card">
         <mat-card-content>
           <mat-card-subtitle class="todo-creator-subtitle">
-            <p>Создатель:</p>
+            <p>Создатель:
+            <span class="creator-name" *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</span>
+              <span class="creator-name" *ngIf="getToDoCreator() === undefined">---</span></p>
           </mat-card-subtitle>
-          <p class="creator-name" *ngIf="getToDoCreator() !== undefined">{{getToDoCreator()!.deskUser.user.name}} {{getToDoCreator()!.deskUser.user.surname}}</p>
-          <p class="creator-name" *ngIf="getToDoCreator() === undefined">---</p>
           <mat-card-subtitle>
-            <div class="employees-settings" *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself) || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)">
-              <mat-form-field class="user-select" appearance="fill">
-                <mat-label>Исполнители</mat-label>
-                <mat-select *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)" #select [formControl]="users" multiple (closed)="changeUsers(select)">
-                  <mat-option *ngFor="let user of getDeskUsers()" [value]="user.id">{{user.name}} {{user.surname}}</mat-option>
-                </mat-select>
-                <mat-select *ngIf="!rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) && rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)" #select [formControl]="user" multiple (closed)="changeSingleUser(select)">
-                  <mat-option [value]="data.deskUser.user.id">{{data.deskUser.user.name}} {{data.deskUser.user.surname}}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <mat-spinner class="spinner-centered" *ngIf="!(areUsersLoaded|async)" diameter="30"></mat-spinner>
-            <p *ngIf="getToDoUsers().length" class="assignees-title">Назначенные исполнители:</p>
-            <mat-nav-list class ="employees-list">
-              <mat-list-item *ngFor="let user of getToDoUsers()">
-                <a matLine>{{user.deskUser.user.name}} {{user.deskUser.user.surname}}</a><mat-divider></mat-divider>
-              </mat-list-item>
-            </mat-nav-list>
+              <p class="assignees-title">Назначенные исполнители:</p>
+              <mat-chip-list aria-label="Users selection">
+                <mat-chip class="assignee-chip" *ngFor="let assigneeTodoUser of getToDoUsers(); index as i"
+                          [matMenuTriggerFor]="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners) ||
+                          (assigneeTodoUser.deskUser.id === data.deskUser.id &&
+                          rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)) ? assigneeMenu : null">
+                  <p *ngIf="assigneesLoaded[i] | async">{{assigneeTodoUser.deskUser.user.name}} {{assigneeTodoUser.deskUser.user.surname}}</p>
+                  <mat-menu #assigneeMenu>
+                    <button mat-menu-item (click)="removeUser(assigneeTodoUser.id)"><mat-icon>delete</mat-icon>Удалить</button>
+                  </mat-menu>
+                  <mat-spinner *ngIf="!(assigneesLoaded[i] | async)" diameter="24" class="black-spinner"></mat-spinner>
+                </mat-chip>
+                <mat-chip *ngIf="rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.ManageAssigners)
+                 || rolesService.userHasPermission(data.roles, data.deskUser, rolesService.permissionsTypes.AssignTasksThemself)"
+                          [matTooltip]="freeUsers.length ? 'Добавить исполнителей' : 'Все участники уже назначены на эту задачу!'" [disabled]="!freeUsers.length" [matMenuTriggerFor]="freeUsers.length ? addUserMenu : null">
+                  <mat-icon *ngIf="newAssigneeLoaded | async">add</mat-icon>
+                  <mat-spinner *ngIf="!(newAssigneeLoaded | async)" class="black-spinner" diameter="24"></mat-spinner>
+                </mat-chip>
+                <mat-menu xPosition="before" #addUserMenu>
+                  <button *ngFor="let deskUser of freeUsers" (click)="assignUser(deskUser.id)" mat-menu-item>{{deskUser.user.name}} {{deskUser.user.surname}}</button>
+                </mat-menu>
+              </mat-chip-list>
           </mat-card-subtitle>
         </mat-card-content>
-      </mat-card>
-    </div>
+      </div>
+    </mat-card>
 
     <app-all-comments [roles]="data.roles" [todoId]="data.todoId" [deskUser]="data.deskUser"></app-all-comments>
   </div>

@@ -308,7 +308,7 @@ export class DeskComponent implements OnInit {
   openToDoCreationDialog() {
     const dialogRef = this.dialog.open(TodoCreationComponent, {
       data: {deskId: this.desk?.id, isEdit: false},
-      width: '600px'
+      width: '670px'
     });
     dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
       this.toDos.push(result);
@@ -318,7 +318,7 @@ export class DeskComponent implements OnInit {
   openToDoEditingDialog(todo: Todo) {
     const dialogRef = this.dialog.open(TodoEditingComponent, {
       data: {deskId: this.desk?.id, toDo: todo},
-      width: '600px'
+      width: '670px'
     });
     dialogRef.afterClosed().pipe(filter(x => x)).subscribe( result => {
       this.toDos[this.toDos.findIndex(el => el.id === todo.id)] = result;
