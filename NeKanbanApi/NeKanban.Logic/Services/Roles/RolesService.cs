@@ -135,7 +135,7 @@ public class RolesService : IRolesService
     public Task<int?> GetDefaultRoleId(int deskId, CancellationToken ct)
     {
         return _rolesRepository
-            .FirstOrDefault(x => x.DeskId == deskId,
+            .FirstOrDefault(x => x.DeskId == deskId && x.IsDefault,
                 x => (int?) x.Id, ct);
     }
 
